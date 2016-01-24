@@ -1,4 +1,3 @@
-// XXX GPL TODO?
 package com.avrgaming.civcraft.util;
 
 import java.lang.reflect.Method;

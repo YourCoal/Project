@@ -1,4 +1,4 @@
-pckage com.avrgaming.civcraft.event;
+package com.avrgaming.civcraft.event;
 
 import java.util.Calendar;
 
