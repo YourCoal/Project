@@ -194,7 +194,6 @@ public class CivSettings {
 	public static ArrayList<String> kitItems = new ArrayList<String>();
 	public static HashMap<Integer, ConfigRemovedRecipes> removedRecipies = new HashMap<Integer, ConfigRemovedRecipes>();
 	public static HashSet<Material> restrictedUndoBlocks = new HashSet<Material>();
-	public static boolean hasVanishNoPacket = false;
 	
 	public static final String MINI_ADMIN = "civ.admin";
 	public static final String MODERATOR = "civ.moderator";
@@ -268,9 +267,9 @@ public class CivSettings {
 		LoreCraftableMaterial.buildRecipes();
 		Template.initAttachableTypes();
 		
-		if (CivSettings.plugin.hasPlugin("VanishNoPacket")) {
-			hasVanishNoPacket = true;
-		}
+//		if (CivSettings.plugin.hasPlugin("VanishNoPacket")) {
+//			hasVanishNoPacket = true;
+//		}
 
 	}
 	

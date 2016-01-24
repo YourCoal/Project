@@ -68,8 +68,6 @@ import com.avrgaming.civcraft.structure.TradeOutpost;
 import com.avrgaming.civcraft.structure.Wall;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.template.Template;
-import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.threading.sync.SyncUpdateTags;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
@@ -2354,12 +2352,10 @@ public class Town extends SQLObject {
 	
 	public void addOutlaw(String name) {
 		this.outlaws.add(name);
-		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void removeOutlaw(String name) {
 		this.outlaws.remove(name);
-		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void changeCiv(Civilization newCiv) {

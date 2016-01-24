@@ -1,21 +1,3 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
 package com.avrgaming.civcraft.main;
 
 import java.io.IOException;
@@ -63,10 +45,8 @@ import com.avrgaming.civcraft.listener.ChatListener;
 import com.avrgaming.civcraft.listener.CustomItemManager;
 import com.avrgaming.civcraft.listener.DebugListener;
 import com.avrgaming.civcraft.listener.DisableXPListener;
-import com.avrgaming.civcraft.listener.HeroChatListener;
 import com.avrgaming.civcraft.listener.MarkerPlacementManager;
 import com.avrgaming.civcraft.listener.PlayerListener;
-import com.avrgaming.civcraft.listener.TagAPIListener;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterialListener;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
 import com.avrgaming.civcraft.mobs.MobSpawner;
@@ -216,13 +196,9 @@ public final class CivCraft extends JavaPlugin {
 		pluginManager.registerEvents(new FishingListener(), this);	
 		pluginManager.registerEvents(new PvPListener(), this);
 		
-		if (hasPlugin("TagAPI")) {
-			pluginManager.registerEvents(new TagAPIListener(), this);
-		}
-		
-		if (hasPlugin("HeroChat")) {
-			pluginManager.registerEvents(new HeroChatListener(), this);
-		}
+//		if (hasPlugin("TagAPI")) {
+//			pluginManager.registerEvents(new TagAPIListener(), this);
+//		}
 	}
 	
 	private void registerNPCHooks() {

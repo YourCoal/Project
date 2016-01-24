@@ -9,18 +9,13 @@
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/dhutils.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/guava-15.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/HeroChat.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/json.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/junit-4.11.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/mockito-all-1.9.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/NameTags1.8.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/NoCheatPlus.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/slf4j-simple-1.7.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/spigot-1.8.8.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/TagAPI.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/TitleAPI.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/VanishNoPacket.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/Vault.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/1This Is Organized/myciv/jars/WorldBorder.jar"/>
 	<classpathentry kind="output" path="bin"/>
