@@ -73,7 +73,6 @@ import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PlotPermissions;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.structurevalidation.StructureValidator;
 import com.avrgaming.civcraft.template.Template;
@@ -815,8 +814,6 @@ public abstract class Buildable extends SQLObject {
 //		}
 		
 		onCheck();
-		
-		LinkedList<RoadBlock> deletedRoadBlocks = new LinkedList<RoadBlock>();
 		ArrayList<ChunkCoord> claimCoords = new ArrayList<ChunkCoord>();
 		for (int x = 0; x < regionX; x++) {
 			for (int y = 0; y < regionY; y++) {
@@ -875,11 +872,6 @@ public abstract class Buildable extends SQLObject {
 						throw new CivException("Cannot build here, there is already a structure here.");
 					}
 					
-					RoadBlock rb = CivGlobal.getRoadBlock(coord);
-					if (rb != null) {
-						deletedRoadBlocks.add(rb);
-					}
-				
 					BorderData border = Config.Border(b.getWorld().getName());
 					if (border != null) {
 						if(!border.insideBorder(b.getLocation().getX(), b.getLocation().getZ(), Config.ShapeRound())) {
@@ -903,12 +895,6 @@ public abstract class Buildable extends SQLObject {
 			} catch (Exception e) {
 			}
 		}
-		
-		/* Delete any road blocks we happen to come across. */
-		for (RoadBlock rb : deletedRoadBlocks) {
-			rb.getRoad().deleteRoadBlock(rb);
-		}
-		
 	}
 	
 	public void onCheck() throws CivException {

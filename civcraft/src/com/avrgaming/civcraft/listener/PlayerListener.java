@@ -70,7 +70,6 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
-import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.PlayerChunkNotifyAsyncTask;
@@ -166,13 +165,9 @@ public class PlayerListener implements Listener {
 			if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
 				Vector vec = player.getVehicle().getVelocity();
 				double yComp = vec.getY();
-				
-				vec.multiply(Road.ROAD_HORSE_SPEED);
 				vec.setY(yComp); /* Do not multiply y velocity. */
-				
 				player.getVehicle().setVelocity(vec);
 			} else {
-				speed *= Road.ROAD_PLAYER_SPEED;
 			}
 		}
 		
@@ -216,7 +211,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		if (War.isWarTime() && !resident.isInsideArena()) {
+		if (War.isWarTime()) {
 			if (resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
 				//TownHall townhall = resident.getTown().getTownHall();
 				Capitol capitol = resident.getCiv().getCapitolStructure();

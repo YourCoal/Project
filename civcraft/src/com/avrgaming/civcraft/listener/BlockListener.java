@@ -23,7 +23,7 @@ import gpl.HorseModifier;
 import java.util.HashSet;
 import java.util.Random;
 
-import net.minecraft.server.v1_7_R4.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -33,7 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -100,8 +100,6 @@ import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PlotPermissions;
-import com.avrgaming.civcraft.road.Road;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.BuildableLayer;
 import com.avrgaming.civcraft.structure.Farm;
@@ -121,8 +119,6 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
 import com.avrgaming.moblib.MobLib;
-
-
 
 public class BlockListener implements Listener {
 
@@ -146,13 +142,7 @@ public class BlockListener implements Listener {
 						}
 						return;
 					}
-
-					RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-					if (rb != null) {
-						event.setCancelled(true);
-						return;
-					}
-
+					
 					CampBlock cb = CivGlobal.getCampBlock(bcoord);
 					if (cb != null) {
 						event.setCancelled(true);
@@ -198,12 +188,6 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null) {
-			event.setCancelled(true);
-			return;
-		}
-
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
 			event.setCancelled(true);
@@ -219,12 +203,6 @@ public class BlockListener implements Listener {
 
 		StructureBlock sb = CivGlobal.getStructureBlock(bcoord);
 		if (sb != null) {
-			event.setCancelled(true);
-			return;
-		}
-
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null) {
 			event.setCancelled(true);
 			return;
 		}
@@ -439,12 +417,6 @@ public class BlockListener implements Listener {
 				return;
 			}
 
-			RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-			if (rb != null) {
-				event.setCancelled(true);
-				return;
-			}
-
 			CampBlock cb = CivGlobal.getCampBlock(bcoord);
 			if (cb != null) {
 				event.setCancelled(true);
@@ -639,18 +611,6 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null) {
-			if (rb.isAboveRoadBlock()) {
-				if (resident.getCiv() != rb.getRoad().getCiv()) {
-					event.setCancelled(true);
-					CivMessage.sendError(event.getPlayer(), 
-							"Cannot place blocks "+(Road.HEIGHT-1)+" blocks above a road that does not belong to your civ.");
-				}
-			}
-			return;
-		}
-
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null && !cb.canBreak(event.getPlayer().getName())) {
 			event.setCancelled(true);
@@ -733,20 +693,6 @@ public class BlockListener implements Listener {
 			event.setCancelled(true);
 			TaskMaster.syncTask(new StructureBlockHitEvent(event.getPlayer().getName(), bcoord, sb, event.getBlock().getWorld()), 0);
 			return;
-		}
-
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null && !rb.isAboveRoadBlock()) {
-			if (War.isWarTime()) {
-				/* Allow blocks to be 'destroyed' during war time. */
-				WarRegen.destroyThisBlock(event.getBlock(), rb.getTown());
-				event.setCancelled(true);
-				return;
-			} else {
-				event.setCancelled(true);
-				rb.onHit(event.getPlayer());
-				return;
-			}
 		}
 
 		ProtectedBlock pb = CivGlobal.getProtectedBlock(bcoord);
@@ -1504,11 +1450,6 @@ public class BlockListener implements Listener {
 			return false;
 		}
 
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null) {
-			return false;
-		}
-
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
 			return false;
@@ -1603,6 +1544,7 @@ public class BlockListener implements Listener {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST) 
 	public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
 		if (!allowPistonAction(event.getRetractLocation())) {

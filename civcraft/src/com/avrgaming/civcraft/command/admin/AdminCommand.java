@@ -84,10 +84,8 @@ public class AdminCommand extends CommandBase {
 		commands.put("items", "Opens inventory which allows you to spawn in custom items.");
 		commands.put("item", "Does special things to the item in your hand.");
 		commands.put("timer", "Manage timers.");
-		commands.put("road", "Road management commands");
 		commands.put("clearendgame", "[key] [civ] - clears this end game condition for this civ.");
 		commands.put("endworld", "Starts the Apocalypse.");
-		commands.put("arena", "Arena management commands.");
 		commands.put("perk", "Admin perk management.");
 		commands.put("mob", "Mob management commands");
 	}
@@ -170,16 +168,6 @@ public class AdminCommand extends CommandBase {
 		}
 		
 		player.openInventory(spawnInventory);
-	}
-	
-	public void arena_cmd() {
-		AdminArenaCommand cmd = new AdminArenaCommand();	
-		cmd.onCommand(sender, null, "arena", this.stripArgs(args, 1));
-	}
-	
-	public void road_cmd() {
-		AdminRoadCommand cmd = new AdminRoadCommand();	
-		cmd.onCommand(sender, null, "camp", this.stripArgs(args, 1));
 	}
 	
 	public void item_cmd() {

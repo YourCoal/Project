@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
@@ -73,7 +72,6 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.StructureBlock;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PlotPermissions;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.template.Template.TemplateType;
@@ -903,8 +901,6 @@ public class Camp extends Buildable {
 		int yTotal = 0;
 		int yCount = 0;
 		
-		RoadBlock rb;
-		LinkedList<RoadBlock> deletedRoadBlocks = new LinkedList<RoadBlock>();
 		for (int x = 0; x < regionX; x++) {
 			for (int y = 0; y < regionY; y++) {
 				for (int z = 0; z < regionZ; z++) {
@@ -946,24 +942,9 @@ public class Camp extends Buildable {
 					yTotal += b.getWorld().getHighestBlockYAt(centerBlock.getX()+x, centerBlock.getZ()+z);
 					yCount++;
 					
-					rb = CivGlobal.getRoadBlock(coord);
-					if (CivGlobal.getRoadBlock(coord) != null) {
-						/*
-						 * XXX Special case. Since road blocks can be built in wilderness
-						 * we don't want people griefing with them. Building a structure over
-						 * a road block should always succeed.
-						 */
-						deletedRoadBlocks.add(rb);
 					}
 				}
 			}
-		}
-		
-		/* Delete any roads that we're building over. */
-		for (RoadBlock roadBlock : deletedRoadBlocks) {
-			roadBlock.getRoad().deleteRoadBlock(roadBlock);
-		}
-		
 		double highestAverageBlock = (double)yTotal / (double)yCount;
 		
 		if (((centerBlock.getY() > (highestAverageBlock+10)) || 
