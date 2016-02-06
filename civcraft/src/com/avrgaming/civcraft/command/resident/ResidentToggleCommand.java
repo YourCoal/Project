@@ -19,8 +19,14 @@ public class ResidentToggleCommand extends CommandBase {
 		commands.put("showscout", "Toggles displaying of scout tower messages.");
 		commands.put("combatinfo", "Toggles displaying of combat information.");
 		commands.put("itemdrops", "Toggles displaying of item drops.");
+		commands.put("titles", "Toggles displaying of titles on screen.");
 		
 	}
+	
+	public void titles_cmd() throws CivException {
+		toggle();
+	}
+	
 	public void itemdrops_cmd() throws CivException {
 		toggle();
 	}
@@ -53,6 +59,10 @@ public class ResidentToggleCommand extends CommandBase {
 	
 		boolean result;
 		switch(args[0].toLowerCase()) {
+		case "titles":
+			resident.setTitleAPI(!resident.isTitleAPI());
+			result = resident.isTitleAPI();
+			break;
 		case "map":
 			resident.setShowMap(!resident.isShowMap());
 			result = resident.isShowMap();

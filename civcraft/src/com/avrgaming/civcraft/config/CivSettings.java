@@ -44,10 +44,12 @@ import com.avrgaming.global.perks.Perk;
 
 public class CivSettings {
 	
+	public static boolean hasTitleAPI = false;
 	public static CivCraft plugin;
+	//TODO Enable this?
 	public static final long MOB_REMOVE_INTERVAL = 5000;
+	
 	/* Number of days that you can remain in debt before an action occurs. */
-
 	//TODO make this configurable.
 	public static final int GRACE_DAYS = 3; 
 	
@@ -90,7 +92,6 @@ public class CivSettings {
 	public static Map<Integer, ConfigCottageLevel> cottageLevels = new HashMap<Integer, ConfigCottageLevel>();
 	public static ArrayList<ConfigTempleSacrifice> templeSacrifices = new ArrayList<ConfigTempleSacrifice>();
 	public static Map<Integer, ConfigMineLevel> mineLevels = new HashMap<Integer, ConfigMineLevel>();
-	public static Map<Integer, ConfigTradeShipLevel> tradeShipLevels = new HashMap<Integer, ConfigTradeShipLevel>();
 	
 	public static FileConfiguration wonderConfig; /* wonders.yml */
 	public static Map<String, ConfigBuildableInfo> wonders = new HashMap<String, ConfigBuildableInfo>();
@@ -261,7 +262,11 @@ public class CivSettings {
 //		if (CivSettings.plugin.hasPlugin("VanishNoPacket")) {
 //			hasVanishNoPacket = true;
 //		}
-
+		
+		//XXX Enable TitleAPI Plugin
+		if (CivSettings.plugin.hasPlugin("TitleAPI")) {
+			hasTitleAPI = true;
+		}
 	}
 	
 	private static void initRestrictedUndoBlocks() {
@@ -431,7 +436,6 @@ public class CivSettings {
 		ConfigPlatinumReward.loadConfig(civConfig, platinumRewards);
 		ConfigValidMod.loadConfig(nocheatConfig, validMods);
 		ConfigFishing.loadConfig(fishingConfig, fishingDrops);
-		ConfigTradeShipLevel.loadConfig(structureConfig, tradeShipLevels);
 	
 		ConfigRemovedRecipes.removeRecipes(materialsConfig, removedRecipies );
 		CivGlobal.preGenerator.preGenerate();
@@ -521,6 +525,11 @@ public class CivSettings {
 		switchItems.add(Material.JUNGLE_DOOR);
 		switchItems.add(Material.ACACIA_DOOR);
 		switchItems.add(Material.DARK_OAK_DOOR);
+		switchItems.add(Material.ACACIA_FENCE_GATE);
+		switchItems.add(Material.BIRCH_FENCE_GATE);
+		switchItems.add(Material.DARK_OAK_FENCE_GATE);
+		switchItems.add(Material.SPRUCE_FENCE_GATE);
+		switchItems.add(Material.JUNGLE_FENCE_GATE);
 	}
 	
 	private static void initBlockPlaceExceptions() {
@@ -623,10 +632,18 @@ public class CivSettings {
 		double data = cfg.getDouble(path);
 		return data;
 	}
-
+	
+	public static boolean getBoolean(FileConfiguration cfg, String path) throws InvalidConfiguration {
+		if (!cfg.contains(path)) {
+			throw new InvalidConfiguration("Could not get configuration boolean "+path);
+		}
+		boolean data = cfg.getBoolean(path);
+		return data;
+	}
+	
 	public static int getMaxNameLength() {
 		// TODO make this configurable?
-		return 32;
+		return 64;
 	}
 
 	public static String getNameCheckRegex() throws InvalidConfiguration {

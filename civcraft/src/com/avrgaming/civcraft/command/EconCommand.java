@@ -2,6 +2,7 @@ package com.avrgaming.civcraft.command;
 
 import java.sql.SQLException;
 
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import com.avrgaming.civcraft.config.CivSettings;
@@ -92,12 +93,6 @@ public class EconCommand extends CommandBase {
 		resident.getTreasury().setDebt(amount);
 		resident.save();
 		CivMessage.sendSuccess(sender, "Set.");
-	}
-	
-	private void validEcon() throws CivException {
-		if (!getPlayer().isOp() || !getPlayer().hasPermission(CivSettings.ECON)) {
-			throw new CivException("You must be OP to use this command.");
-		}		
 	}
 	
 	public void add_cmd() throws CivException {
@@ -258,6 +253,14 @@ public class EconCommand extends CommandBase {
 			return;
 		}
 		CivMessage.sendSuccess(player, resident.getTreasury().getBalance()+" coins.");
+	}
+	
+	private void validEcon() throws CivException {
+		if(!(sender instanceof ConsoleCommandSender)) {
+			if (!getPlayer().isOp() || !getPlayer().hasPermission(CivSettings.ECON)) {
+				throw new CivException("You must be OP or have permission to use this command.");
+			}
+		}	
 	}
 	
 	@Override

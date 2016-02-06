@@ -21,7 +21,6 @@ import com.avrgaming.civcraft.structure.Library;
 import com.avrgaming.civcraft.structure.Quarry;
 import com.avrgaming.civcraft.structure.Store;
 import com.avrgaming.civcraft.structure.Structure;
-import com.avrgaming.civcraft.structure.TradeShip;
 import com.avrgaming.civcraft.structure.Trommel;
 
 public class ConfigTownUpgrade {
@@ -202,26 +201,6 @@ public class ConfigTownUpgrade {
 			}
 			if (didUpgradeFishery) {
 				CivMessage.sendTown(town, "Our Fisheries are now level "+fisheryLevel);
-			} break;
-		case "set_tradeship_upgrade_level":
-			boolean didUpgradeTradeShip = false;
-			int tradeshipLevel = 1;
-			for (Structure structure : town.getStructures()) {
-				if (structure.getConfigId().equalsIgnoreCase("ti_trade_ship")) {
-					if (structure != null && (structure instanceof Fishery)) {
-						TradeShip tradeShip = (TradeShip)structure;
-						if (tradeShip.getUpgradeLvl() < Integer.valueOf(args[1].trim())) {
-							didUpgradeFishery = true;
-							tradeShip.setUpgradeLvl(Integer.valueOf(args[1].trim()));
-							tradeShip.reprocessCommandSigns();
-							town.saved_tradeship_upgrade_levels = tradeShip.getLevel();
-							tradeshipLevel = tradeShip.getLevel();
-						}
-					}
-				}
-			}
-			if (didUpgradeTradeShip) {
-				CivMessage.sendTown(town, "Our Trade Ships is now level "+tradeshipLevel);
 			} break;
 		}
 	}

@@ -21,6 +21,12 @@ public class AdminLagCommand extends CommandBase {
 		commands.put("blockupdate", "[#] - sets the block update limit to this amount.");
 		commands.put("quarries", "Toggles quarries globally.");
 		commands.put("fisheries", "Toggles fisheries globally.");
+		commands.put("speedchunks", "Toggles speed check updates to chunks or always");
+	}
+	
+	public void speedchunks_cmd() {
+		CivGlobal.speedChunks = !CivGlobal.speedChunks;
+		CivMessage.sendSuccess(sender, "Speed Check on Chunk enabled: "+CivGlobal.speedChunks);
 	}
 	
 	public void fisheries_cmd() {

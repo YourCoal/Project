@@ -224,6 +224,9 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 		if ((regionY + centerBlock.getLocation().getBlockY()) >= 255) {
 			throw new CivException("Cannot build war camp here, would go over the minecraft height limit.");
 		}
+		if (player.getLocation().getY() < CivGlobal.minBuildHeight) {
+			throw new CivException("Cannot build here, you must be closer to the surface.");
+		}	
 		int minsLeft = this.isWarCampCooldownLeft();
 		if (minsLeft > 0) {
 			throw new CivException("Building a War Camp is on cooldown. You must wait "+minsLeft+" mins before you can build another.");

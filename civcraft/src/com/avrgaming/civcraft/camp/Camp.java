@@ -758,6 +758,9 @@ public class Camp extends Buildable {
 		if ((regionY + centerBlock.getLocation().getBlockY()) >= 255) {
 			throw new CivException("Cannot build camp here, would go over the minecraft height limit.");
 		}
+		if (player.getLocation().getY() < CivGlobal.minBuildHeight) {
+			throw new CivException("Cannot build here, you must be closer to the surface.");
+		}
 		if (!player.isOp()) {
 			Buildable.validateDistanceFromSpawn(centerBlock.getLocation());
 		}

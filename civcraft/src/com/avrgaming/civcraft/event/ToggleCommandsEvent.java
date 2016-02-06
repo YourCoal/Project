@@ -14,6 +14,7 @@ import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.util.CivColor;
+import com.avrgaming.civcraft.war.War;
 
 public class ToggleCommandsEvent implements EventInterface {
 	
@@ -43,26 +44,28 @@ public class ToggleCommandsEvent implements EventInterface {
 	}
 	
 	public static void disableCommands() {
-		File file = new File("toggleCmdsOff.yml");
-		if (!file.exists()) {
-			CivLog.warning("No toggleCmdsOff.yml to run commands from");
-			return;
-		} try {
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			String line;
-			try {
-				CivMessage.globalHeading(CivColor.BOLD+"Some commands are now disabled until after War Time");
-				while ((line = br.readLine()) != null) {
-					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), line);
+		if (War.hasWars()) {
+			File file = new File("toggleCmdsOff.yml");
+			if (!file.exists()) {
+				CivLog.warning("No toggleCmdsOff.yml to run commands from");
+				return;
+			} try {
+				BufferedReader br = new BufferedReader(new FileReader(file));
+				String line;
+				try {
+					CivMessage.globalTitle(CivColor.BOLD+"2 Hours Before War", CivColor.LightGray+CivColor.ITALIC+"Some commands were just disabled.");
+					while ((line = br.readLine()) != null) {
+						Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), line);
+					}
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					return;
 				}
-				br.close();
-			} catch (IOException e) {
+			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				return;
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return;
 		}
 	}
 	
@@ -75,7 +78,7 @@ public class ToggleCommandsEvent implements EventInterface {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
 			try {
-				CivMessage.globalHeading(CivColor.BOLD+"All commands are now enabled.");
+//				CivMessage.globalHeading(CivColor.BOLD+"All commands are now enabled.");
 				while ((line = br.readLine()) != null) {
 					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), line);
 				}

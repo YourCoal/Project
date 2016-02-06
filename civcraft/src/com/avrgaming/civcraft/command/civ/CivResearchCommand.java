@@ -42,7 +42,7 @@ public class CivResearchCommand extends CommandBase {
 			throw new CivException("Couldn't find technology named "+techname);
 		}
 		
-		if (!civ.getTreasury().hasEnough(tech.cost)) {
+		if (!civ.getTreasury().hasEnough(tech.getAdjustedTechCost(civ))) {
 			throw new CivException("You do not have enough coins to research "+tech.name);
 		}
 		
@@ -124,12 +124,10 @@ public class CivResearchCommand extends CommandBase {
 		CivMessage.sendHeading(sender, "Available Research");
 		for (ConfigTech tech : techs) {
 			CivMessage.send(sender, tech.name+CivColor.LightGray+" Cost: "+
-					CivColor.Yellow+tech.cost+CivColor.LightGray+" Beakers: "+
+					CivColor.Yellow+tech.getAdjustedTechCost(civ)+CivColor.LightGray+" Beakers: "+
 					CivColor.Yellow+tech.beaker_cost);
-		}
-				
+		}	
 	}
-	
 	
 	@Override
 	public void doDefaultAction() throws CivException {
@@ -150,5 +148,4 @@ public class CivResearchCommand extends CommandBase {
 			throw new CivException("Only civ leaders and advisers can access research.");
 		}		
 	}
-
 }
