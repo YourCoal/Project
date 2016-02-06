@@ -21,12 +21,12 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 
 public class PlayerChunkNotifyAsyncTask implements Runnable {
-
+	
 	Location from;
 	Location to;
 	String playerName;
 	
-	public static int BORDER_SPAM_TIMEOUT = 30000; //30 second border spam protection.
+	public static int BORDER_SPAM_TIMEOUT = 10000; //10 second border spam protection.
 	public static HashMap<String, Date> cultureEnterTimes = new HashMap<String, Date>();
 	
 	public PlayerChunkNotifyAsyncTask(Location from, Location to, String playerName) {
@@ -36,30 +36,25 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 	}
 	
 	public static String getNotifyColor(CultureChunk toCc, Relation.Status status, Player player) {
-
 		String color = CivColor.White;
 		switch (status) {
 		case NEUTRAL:
 			if (toCc.getTown().isOutlaw(player.getName())) {
 				color = CivColor.Yellow;
 			}
-			
 			break;
 		case HOSTILE:
 			color = CivColor.Yellow;
 			break;
 		case WAR:
 			color = CivColor.Rose;
-
 			break;
 		case PEACE:
 			color = CivColor.LightBlue;
-
 			break;
 		case ALLY:
 			color = CivColor.Green;
 		}
-		
 		return color;
 	}
 	
@@ -74,14 +69,12 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 		} catch (CivException e) {
 			return "";
 		}
-		
 		if (town.getBuffManager().hasBuff("buff_hanging_gardens_regen")) {
 			Resident resident = CivGlobal.getResident(player);
 			if (resident != null && resident.getTown() == town) {
 				CivMessage.send(player, CivColor.Green+ChatColor.ITALIC+"You feel invigorated by the glorious hanging gardens.");
 			}
 		}
-		
 		if (!tc.isOutpost()) {
 			return CivColor.LightGray+"Entering "+CivColor.White+town.getName()+" "+town.getPvpString()+" ";
 		} else {
@@ -90,14 +83,12 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 	}
 	
 	private void showPlotMoveMessage() {
-		
 		TownChunk fromTc = CivGlobal.getTownChunk(from);
 		TownChunk toTc = CivGlobal.getTownChunk(to);
 		CultureChunk fromCc = CivGlobal.getCultureChunk(from);
 		CultureChunk toCc = CivGlobal.getCultureChunk(to);
 		Camp toCamp = CivGlobal.getCampFromChunk(new ChunkCoord(to));
 		Camp fromCamp = CivGlobal.getCampFromChunk(new ChunkCoord(from));
-
 		Player player;
 		Resident resident;
 		try {
@@ -107,59 +98,57 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			return;
 		}
 		
-		String out = "";
+		String title = "";
+		String subTitle = "";
 		
 		//We've entered a camp.
 		if (toCamp != null && toCamp != fromCamp) {
-			out += CivColor.Gold+"Camp "+toCamp.getName()+" "+CivColor.Rose+"[PvP]";
+			title += CivColor.Gold+"Camp "+toCamp.getName()+" "+CivColor.Rose+"[PvP]";
 		}
 		
 		if (toCamp == null && fromCamp != null) {
-			out += getToWildMessage();
+			title += getToWildMessage();
 		}
 		
 		// From Wild, to town
 		if (fromTc == null && toTc != null) {			
 			// To Town
-			out += getToTownMessage(toTc.getTown(), toTc);
+			title += getToTownMessage(toTc.getTown(), toTc);
 		}
 		
 		// From a town... to the wild
 		if (fromTc != null && toTc == null) {
-			out += getToWildMessage();
+			title += getToWildMessage();
 		}
 		
 		// To another town(should never happen with culture...)
 		if (fromTc != null && toTc != null && fromTc.getTown() != toTc.getTown()) {
-			out += getToTownMessage(toTc.getTown(), toTc);
+			title += getToTownMessage(toTc.getTown(), toTc);
 		}
 		
 		if (toTc != null) {
-			out += toTc.getOnEnterString(player, fromTc);
+			title += toTc.getOnEnterString(player, fromTc);
 		}
 		
 		// Leaving culture to the wild.
 		if (fromCc != null && toCc == null) {
-			out += fromCc.getOnLeaveString();
+			title += fromCc.getOnLeaveString();
 		}
 		
 		// Leaving wild, entering culture. 
 		if (fromCc == null && toCc != null) {
-			out += toCc.getOnEnterString();
+			title += toCc.getOnEnterString();
 			onCultureEnter(toCc);
 		}
 		
 		//Leaving one civ's culture, into another. 
 		if (fromCc != null && toCc !=null && fromCc.getCiv() != toCc.getCiv()) {
-			out += fromCc.getOnLeaveString() +" | "+ toCc.getOnEnterString();
+			title += fromCc.getOnLeaveString() +" | "+ toCc.getOnEnterString();
 			onCultureEnter(toCc);
 		}
 		
-		if (!out.equals("")) {
-			//ItemMessage im = new ItemMessage(CivCraft.getPlugin());
-			//im.sendMessage(player, CivColor.BOLD+out, 3);
-			
-			CivMessage.send(player, out);
+		if (!title.equals("")) {
+			CivMessage.sendTitle(player, title, subTitle);
 		}
 		
 		if (resident.isShowInfo()) {

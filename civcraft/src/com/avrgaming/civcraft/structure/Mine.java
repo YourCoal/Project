@@ -119,7 +119,13 @@ public class Mine extends Structure {
 			break;
 		}
 	}
-
+	
+	public double getBonusHammers() {
+		int level = getLevel();
+		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
+		return lvl.hammers;	
+	}
+	
 	public int getLevel() {
 		return this.getConsumeComponent().getLevel();
 	}

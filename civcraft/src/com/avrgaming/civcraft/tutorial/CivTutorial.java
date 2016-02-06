@@ -122,7 +122,30 @@ public class CivTutorial {
 					ChatColor.RESET+"You can craft the founding flag item below."
 					));
 			
-			tutorialInventory.setItem(19,getInfoBookForItem("mat_found_civ"));
+			for (ConfigMaterialCategory cat : ConfigMaterialCategory.getCategories()) {
+				for (ConfigMaterial mat : cat.materials.values()) {
+					if (mat.id.equals("mat_found_civ")) {
+						ItemStack stack = getInfoBookForItem(mat.id);
+						if (stack != null) {
+							stack = LoreGuiItem.setAction(stack, "TutorialRecipe");
+							tutorialInventory.setItem(19,LoreGuiItem.asGuiItem(stack));
+						}
+					} else if (mat.id.equals("mat_found_camp")) {
+						ItemStack stack = getInfoBookForItem(mat.id);
+						if (stack != null) {
+							stack = LoreGuiItem.setAction(stack, "TutorialRecipe");
+							tutorialInventory.setItem(18,LoreGuiItem.asGuiItem(stack));
+						}
+					}
+				}
+			}
+			
+			/* Add back buttons. */
+			ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Catagories");
+			backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
+			backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
+			backButton = LoreGuiItem.setActionData(backButton, "invName", guiInventory.getName());
+			tutorialInventory.setItem(26, backButton);
 			
 			tutorialInventory.setItem(11, LoreGuiItem.build(CivColor.LightBlue+ChatColor.BOLD+"Need to know a recipe?", ItemManager.getId(Material.WORKBENCH), 0, 
 					ChatColor.RESET+"Type /res book to obtain the tutorial book",
@@ -208,6 +231,12 @@ public class CivTutorial {
 				LoreGuiItemListener.guiInventories.put(inv.getName(), inv);
 			}
 			
+			/* Add back buttons. */
+			ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Catagories");
+			backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
+			backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
+			backButton = LoreGuiItem.setActionData(backButton, "invName", guiInventory.getName());
+			craftingHelpInventory.setItem(LoreGuiItem.MAX_INV_SIZE-1, backButton);
 			LoreGuiItemListener.guiInventories.put(craftingHelpInventory.getName(), craftingHelpInventory);
 		}
 		

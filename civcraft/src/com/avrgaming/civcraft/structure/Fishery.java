@@ -4,7 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -12,9 +16,11 @@ import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.BlockCoord;
+import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.SimpleBlock;
 
@@ -28,6 +34,7 @@ public class Fishery extends Structure {
 	public static final double FISH_T4_RATE = CivSettings.getDoubleStructure("fishery.t4_rate"); //100%
 	
 	private int level = 1;
+	private Biome biome = null;
 	public int skippedCounter = 0;
 	public ReentrantLock lock = new ReentrantLock();
 	
@@ -63,6 +70,7 @@ public class Fishery extends Structure {
 	@Override
 	public void onPostBuild(BlockCoord absCoord, SimpleBlock commandBlock) {
 		this.level = getTown().saved_fishery_level;
+		this.setBiome(this.getCorner().getBlock().getBiome());
 	}
 	
 	public int getLevel() {
@@ -71,6 +79,27 @@ public class Fishery extends Structure {
 	
 	public void setLevel(int level) {
 		this.level = level;
+	}
+	
+	public Biome getBiome() {
+		if (biome == null) {
+		try {
+			World world = Bukkit.getWorld("world");
+			BlockCoord block = this.getCenterLocation();
+			Chunk chunk = (Chunk) world.getChunkAt(block.getX(), block.getZ());
+			ChunkCoord coord = new ChunkCoord(chunk);
+			CultureChunk cc = new CultureChunk(this.getTown(), coord);
+			biome = cc.getBiome();
+			this.setBiome(cc.getBiome());
+		} catch (IllegalStateException e) {
+		} finally {
+			biome = Biome.BIRCH_FOREST_HILLS;
+			}
+		} return biome;
+	}
+	
+	public void setBiome(Biome biome) {
+		this.biome = biome;
 	}
 	
 	private StructureSign getSignFromSpecialId(int special_id) {

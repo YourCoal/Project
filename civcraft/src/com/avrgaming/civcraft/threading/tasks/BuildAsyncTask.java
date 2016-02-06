@@ -41,7 +41,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 	public Boolean aborted = false;
 	public Date lastSave; 
 	
-	private final int SAVE_INTERVAL = 5*1000; /* once every 5 sec. */
+	private final int SAVE_INTERVAL = 4*1000; /* once every 4 sec. */
 	
 	public BuildAsyncTask(Buildable bld, Template t, int s, int blocks_per_tick, Block center ) {
 		buildable = bld;
@@ -87,7 +87,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (buildable.getTown().getMotherCiv() != null) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while we're conquered by "+buildable.getTown().getCiv().getName());
 					try {
-						Thread.sleep(1800000); //30 min notify.
+						Thread.sleep(900000); //15 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -97,7 +97,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (inProgress != null && inProgress != buildable) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while we're constructing a "+inProgress.getDisplayName());
 					try {
-						Thread.sleep(600000); //10 min notify.
+						Thread.sleep(60000); //1 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -106,7 +106,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (buildable.getTown().getTownHall() == null) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while you have no town hall.");
 					try {
-						Thread.sleep(600000); //10 min notify.
+						Thread.sleep(60000); //1 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 

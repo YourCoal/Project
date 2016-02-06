@@ -20,6 +20,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.util.BlockCoord;
@@ -32,6 +33,19 @@ public class Structure extends Buildable {
 		
 		this.info = CivSettings.structures.get(id);
 		this.setTown(town);
+		this.setCorner(new BlockCoord(center));
+		this.hitpoints = info.max_hitpoints;
+
+		// Disallow duplicate structures with the same hash.
+		Structure struct = CivGlobal.getStructure(this.getCorner());
+		if (struct != null) {
+			throw new CivException("There is a structure already here.");
+		}
+	}
+	
+	public Structure(Location center, String id) throws CivException {
+		
+		this.info = CivSettings.structures.get(id);
 		this.setCorner(new BlockCoord(center));
 		this.hitpoints = info.max_hitpoints;
 
@@ -68,18 +82,25 @@ public class Structure extends Buildable {
 				struct = (Structure) new Bank(rs);
 			}
 			break;
+		case "s_nuclearplant":
+			if (rs == null) {
+				struct = (Structure) new NuclearPlant(center, id, town);
+			} else {
+				struct = (Structure) new NuclearPlant(rs);
+			}
+			break;
+		case "s_teslatower":
+			if (rs == null) {
+				struct = (Structure) new TeslaTower(center, id, town);
+			} else {
+				struct = (Structure) new TeslaTower(rs);
+			}
+			break;
 		case "ti_fishery":
 			if (rs == null) {
 				struct = (Structure) new Fishery(center, id, town);
 			} else {
 				struct = (Structure) new Fishery(rs);
-			}
-			break;	
-		case "ti_trade_ship":
-			if (rs == null) {
-				struct = (Structure) new TradeShip(center, id, town);
-			} else {
-				struct = (Structure) new TradeShip(rs);
 			}
 			break;
 		case "ti_quarry":
@@ -223,9 +244,9 @@ public class Structure extends Buildable {
 			break;
 		case "s_shipyard":
 			if (rs == null) {
-				struct = (Structure) new WaterStructure(center, id, town);
+				struct = (Structure) new Shipyard(center, id, town);
 			} else {
-				struct = (Structure) new WaterStructure(rs);
+				struct = (Structure) new Shipyard(rs);
 			}
 			break;
 		case "ti_wall":
@@ -321,7 +342,6 @@ public class Structure extends Buildable {
 		}
 	}
 	
-	
 	public static void init() throws SQLException {
 		if (!SQL.hasTable(TABLE_NAME)) {
 			String table_create = "CREATE TABLE " + SQL.tb_prefix + TABLE_NAME+" (" + 
@@ -403,6 +423,56 @@ public class Structure extends Buildable {
 		hashmap.put("template_y", this.getTemplateY());
 		hashmap.put("template_z", this.getTemplateZ());
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);
+	}
+	
+	public void deleteSkipUndo() throws SQLException {
+		super.delete();
+		if (this.getTown() != null) {
+			/* Release trade goods if we are a trade outpost. */
+			if (this instanceof TradeOutpost) {
+				TradeOutpost outpost = (TradeOutpost)this;
+				if (outpost.getGood() != null) {
+					outpost.getGood().setStruct(null);
+					outpost.getGood().setTown(null);
+					outpost.getGood().setCiv(null);
+					outpost.getGood().save();
+				}
+			}
+			if (this instanceof FishingBoat) {
+				FishingBoat outpost1 = (FishingBoat)this;
+				if (outpost1.getGood() != null) {
+					outpost1.getGood().setStruct(null);
+					outpost1.getGood().setTown(null);
+					outpost1.getGood().setCiv(null);
+					outpost1.getGood().save();
+				}
+			}
+			if (!(this instanceof Wall)) {
+				for (StructureSign sign : this.getSigns()) {
+					sign.delete();
+				} try {
+					this.undoFromTemplate();	
+				} catch (IOException | CivException e1) {
+					e1.printStackTrace();
+					this.fancyDestroyStructureBlocks();
+				}
+				CivGlobal.removeStructure(this);
+				this.getTown().removeStructure(this);
+				this.unbindStructureBlocks();
+			} else {
+				CivGlobal.removeStructure(this);
+				this.getTown().removeStructure(this);
+				this.unbindStructureBlocks();
+				if (this instanceof Wall) {
+					Wall wall = (Wall)this;
+					wall.deleteOnDisband();
+				}
+			}
+			CivGlobal.removeStructure(this);
+			this.getTown().removeStructure(this);
+			this.unbindStructureBlocks();
+		}
+		SQL.deleteNamedObject(this, TABLE_NAME);
 	}
 	
 	@Override

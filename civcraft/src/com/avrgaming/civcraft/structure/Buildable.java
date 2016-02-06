@@ -75,6 +75,7 @@ import com.avrgaming.civcraft.util.FireworkEffectPlayer;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.SimpleBlock.Type;
+import com.avrgaming.civcraft.war.War;
 import com.avrgaming.global.perks.Perk;
 import com.wimbli.WorldBorder.BorderData;
 import com.wimbli.WorldBorder.Config;
@@ -413,10 +414,7 @@ public abstract class Buildable extends SQLObject {
 			return;
 		}
 		
-
-		
 		Template tpl;
-		
 		tpl = new Template();
 		try {
 			tpl.initTemplate(centerLoc, this);
@@ -427,10 +425,8 @@ public abstract class Buildable extends SQLObject {
 			e.printStackTrace();
 			throw e;
 		}
-		
 		buildPlayerPreview(player, centerLoc, tpl);
 	}
-	
 	
 	public void buildPlayerPreview(Player player, Location centerLoc, Template tpl) throws CivException, IOException {
 		centerLoc = repositionCenter(centerLoc, tpl.dir(), tpl.size_x, tpl.size_z);
@@ -443,7 +439,12 @@ public abstract class Buildable extends SQLObject {
 				" the structure's location.");
 		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"If this location looks good, type 'yes'. Otherwise, type anything else to cancel building.");
 		Resident resident = CivGlobal.getResident(player);
-		resident.startPreviewTask(tpl, centerLoc.getBlock(), player.getUniqueId());
+		if (!War.isWarTime()) {
+			resident.startPreviewTask(tpl, centerLoc.getBlock(), player.getUniqueId());
+		}
+		if (War.isWarTime()) {
+			CivMessage.send(resident, CivColor.Rose+CivColor.ITALIC+"Because it is WarTime, you will not see a preview of this structure.");
+		}
 		
 		/* Run validation on position. */
 		//validate(player, this, tpl, centerLoc, null);
@@ -681,7 +682,6 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	protected void checkBlockPermissionsAndRestrictions(Player player, Block centerBlock, int regionX, int regionY, int regionZ, Location origin) throws CivException {
-		
 		boolean foundTradeGood = false;
 		TradeOutpost tradeOutpost = null;
 		boolean ignoreBorders = false;
@@ -750,7 +750,7 @@ public abstract class Buildable extends SQLObject {
 		}
 		
 		if (this.isTileImprovement()) {
-			ignoreBorders = true;
+			//ignoreBorders = true;
 			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
 			
 			if (getTown().getTileImprovementCount() >= level.tile_improvements) {
@@ -779,9 +779,12 @@ public abstract class Buildable extends SQLObject {
 			throw new CivException("You're too high to build structures.");
 		}
 		
-		if (centerBlock.getLocation().getY() <= 7) {
+		if (centerBlock.getLocation().getY() <= 12) {
 			throw new CivException("You can not place structures this close to bedrock!");
+		}
 		
+		if (player.getLocation().getY() < CivGlobal.minBuildHeight) {
+			throw new CivException("Cannot build here, you must be closer to the surface.");
 		}
 		
 		if ((regionY + centerBlock.getLocation().getBlockY()) >= 255) {

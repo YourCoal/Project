@@ -132,8 +132,20 @@ public class Wall extends Structure {
 	}
 	
 	@Override
-	public void resumeBuildFromTemplate() throws Exception
-	{
+	public void resumeBuildFromTemplate() throws Exception {
+	}
+	
+	public void deleteOnDisband() throws SQLException {
+		if (this.wallBlocks != null) {
+			for (WallBlock wb : this.wallBlocks.values()) {
+				wb.delete();
+			}
+		}
+		if (wallChunks != null) {
+			for (ChunkCoord coord : wallChunks) {
+				CivGlobal.removeWallChunk(this, coord);
+			}
+		}
 	}
 	
 	@Override 
@@ -340,8 +352,8 @@ public class Wall extends Structure {
 			throw new CivException("Cannot build here, wall is too high.");
 		}
 		
-		if (loc.getBlockY() <= 1) {
-			throw new CivException("Cannot build here, too close to bedrock.");
+		if (loc.getBlockY() < CivGlobal.minBuildHeight) {
+			throw new CivException("Cannot build here, you must be closer to the surface.");
 		}
 		
 		BlockCoord bcoord = new BlockCoord(loc);

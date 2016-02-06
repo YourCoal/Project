@@ -41,7 +41,6 @@ public class Capitol extends TownHall {
 	public Capitol(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
-	
 
 	protected Capitol(Location center, String id, Town town)
 			throws CivException {
@@ -86,12 +85,25 @@ public class Capitol extends TownHall {
 			return;
 		}
 		
+		Boolean hasPermission = false;
+		if((resident.getTown().isMayor(resident)) || (resident.getTown().getAssistantGroup().hasMember(resident)) || (resident.getCiv().getLeaderGroup().hasMember(resident)) || (resident.getCiv().getAdviserGroup().hasMember(resident))){
+			hasPermission = true;
+		}
+		
 		switch (sign.getAction()) {
 		case "prev":
-			changeIndex((index-1));
+			if(hasPermission){
+				changeIndex((index-1));
+			} else {
+				CivMessage.sendError(resident, "You do not have permission to use this sign.");
+			}
 			break;
 		case "next":
-			changeIndex((index+1));
+			if(hasPermission){
+				changeIndex((index+1));
+			} else {
+				CivMessage.sendError(resident, "You do not have permission to use this sign.");
+			}
 			break;
 		case "respawn":
 			ArrayList<RespawnLocationHolder> respawnables =  this.getTown().getCiv().getAvailableRespawnables();

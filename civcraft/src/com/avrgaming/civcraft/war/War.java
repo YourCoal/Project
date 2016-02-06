@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import com.avrgaming.civcraft.camp.WarCamp;
 import com.avrgaming.civcraft.config.CivSettings;
@@ -117,18 +116,46 @@ public class War {
 		processDefeated();
 	}
 	
-	/**
-	 * @return the warTime
-	 */
 	public static boolean isWarTime() {
 		return warTime;
 	}
-
-	/**
-	 * @param warTime the warTime to set
-	 */
+	
+	public static boolean hasWars() {
+		for (Civilization civ : CivGlobal.getCivs()) {
+			for (Relation relation : civ.getDiplomacyManager().getRelations()) {
+				if (relation.getStatus().equals(Status.WAR)) {
+					return true;
+				}
+			}
+		} return false;
+	}
+	
 	public static void setWarTime(boolean warTime) {
-		
+		if (warTime == true && !War.hasWars()) {
+			
+			//XXX TEST
+			new Thread(new Runnable(){
+                public void run() {
+                    try {
+        				Thread.sleep(1000);
+        				CivMessage.globalTitle(CivColor.BOLD+"Wartime was Skipped", CivColor.LightGray+CivColor.ITALIC+"There were no wars for this wartime.");
+        				ToggleCommandsEvent.enableCommands();
+        				Thread.sleep(3500);
+        				CivMessage.globalTitle(CivColor.BOLD+"Wartime was Skipped", CivColor.LightGray+CivColor.ITALIC+"All commands are now enabled.");
+        				Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+                }
+            }).start();
+			//XXX TEST
+			
+			
+				//CivMessage.globalTitle(CivColor.BOLD+"Wartime was Skipped", CivColor.ITALIC+"There were no wars for this wartime.");
+				//ToggleCommandsEvent.enableCommands();
+				return;
+			} else if (warTime == false && !War.isWarTime()) {
+		}
 		if (warTime == false) {
 			/* War time has ended. */
 			War.setStart(null);
@@ -147,26 +174,51 @@ public class War {
 			File file = new File("wartime");
 			file.delete();
 			
-			ToggleCommandsEvent.enableCommands();
-			CivMessage.globalHeading(CivColor.BOLD+"WarTime Has Ended");
-			/* display some stats. */
-			CivMessage.global("Most Lethal: "+WarStats.getTopKiller());
-			List<String> civs = WarStats.getCapturedCivs();
-			if (civs.size() > 0) {
-				for (String str : civs) {
-					CivMessage.global(str);
-				}
-			}
-			WarStats.clearStats();
+			//XXX TEST
+			new Thread(new Runnable(){
+                public void run() {
+                    try {
+        				Thread.sleep(1000);
+        				CivMessage.globalTitle(CivColor.BOLD+"Wartime has Ended", CivColor.LightGray+CivColor.ITALIC+"All commands are now enabled.");
+        				ToggleCommandsEvent.enableCommands();
+        				Thread.sleep(3500);
+        				CivMessage.globalTitle(CivColor.BOLD+"Wartime has Ended", CivColor.LightGray+CivColor.ITALIC+"Most Lethal: "+WarStats.getTopKiller());
+        				Thread.sleep(3500);
+        				CivMessage.globalTitle(CivColor.BOLD+"Wartime has Ended", CivColor.LightGray+CivColor.ITALIC+"Most Deaths: "+WarStats.getTopDeaths());
+        				Thread.sleep(3500);
+        				CivMessage.globalTitle(CivColor.BOLD+"Wartime has Ended", CivColor.LightGray+CivColor.ITALIC+"Captured Civs: "+WarStats.getCapturedCivs());
+        				Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+                }
+            }).start();
+			//XXX TEST
 			
+//			ToggleCommandsEvent.enableCommands();
+//			CivMessage.globalTitle(CivColor.BOLD+"WarTime Has Ended", CivColor.ITALIC+"Most Lethal: ");
+//			/* display some stats. */
+//			CivMessage.global("Most Lethal: "+WarStats.getTopKiller());
+//			List<String> civs = WarStats.getCapturedCivs();
+//			if (civs.size() > 0) {
+//				for (String str : civs) {
+//					CivMessage.global(str);
+//				}
+//			}
+//			WarStats.clearStats();
 			for (Civilization civ : CivGlobal.getCivs()) {
 				civ.onWarEnd();
 			}
-			
 		} else {
+			int mins = 0;
+			try {
+				mins = CivSettings.getInteger(CivSettings.warConfig, "war.time_length");
+			} catch (InvalidConfiguration e2) {
+				e2.printStackTrace();
+			}
 			/* War time has started. */
 			ToggleCommandsEvent.disableCommands();
-			CivMessage.globalHeading(CivColor.BOLD+"WarTime Has Started");
+			CivMessage.globalTitle(CivColor.BOLD+"WarTime Has Started",CivColor.ITALIC+"Some structures & other stuff has been disabled.");
 			War.setStart(new Date());
 			War.repositionPlayers("You've been teleported back to your town hall. WarTime has started and you were in enemy territory.");
 			//War.vassalTownsWithNoTownHalls();
@@ -187,26 +239,17 @@ public class War {
 			CivGlobal.trommelsEnabled = false;
 			CivGlobal.tradeEnabled = false;
 			
-			try {
-				int mins = CivSettings.getInteger(CivSettings.warConfig, "war.time_length");
-				Calendar endCal = Calendar.getInstance();
-				endCal.add(Calendar.MINUTE, mins);
-
-				War.setEnd(endCal.getTime());
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
+			Calendar endCal = Calendar.getInstance();
+			endCal.add(Calendar.MINUTE, mins);
+			War.setEnd(endCal.getTime());
 		}
-		
 		War.warTime = warTime;
 	}
 
-	/*
-	 * When a civ conqueres a town, then has its capitol conquered,
+	/*  When a civ conqueres a town, then has its capitol conquered,
 	 * the town that it just conquered needs to go to the new owner.
 	 * If the new owner was the town's old owner, then that town is no longer
-	 * defeated.
-	 */
+	 * defeated. */
 	public static void transferDefeated(Civilization loser, Civilization winner) {
 		
 		/* Transfer any defeated towns */

@@ -11,7 +11,6 @@ import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.threading.tasks.FisheryAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.QuarryAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
 import com.avrgaming.civcraft.util.BlockCoord;
@@ -54,19 +53,12 @@ public class UpdateEventTimer extends CivAsyncTask {
 							}
 							TaskMaster.asyncTask("quarry-"+struct.getCorner().toString(), new QuarryAsyncTask(struct), 0);
 						}
-						if (struct.getUpdateEvent().equals("fishery_process")) {
-							if (!CivGlobal.fisheriesEnabled) {
-								continue;
-							}
-							TaskMaster.asyncTask("fishery-"+struct.getCorner().toString(), new FisheryAsyncTask(struct), 0);
-						}
 					}
 					
 					struct.onUpdate();
 				} catch (Exception e) {
 					e.printStackTrace();
-					//We need to catch any exception so that an error in one town/structure/good does not
-					//break things for everybody.
+					//We need to catch any exception so that an error in one town/structure/good does not break things for everybody.
 					//TODO log exception into a file or something...
 	//				if (struct.getTown() == null) {
 	//					RJ.logException("TownUnknown struct:"+struct.config.displayName, e);

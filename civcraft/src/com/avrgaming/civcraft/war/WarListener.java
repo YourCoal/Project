@@ -192,7 +192,7 @@ public class WarListener implements Listener {
 		}
 		
 		if (event.getEntityType().equals(EntityType.PRIMED_TNT) ||
-				event.getEntityType().equals(EntityType.MINECART_TNT)) {
+				event.getEntityType().equals(EntityType.MINECART_TNT) || event.getEntityType().equals(EntityType.CREEPER)) {
 			HashSet<Buildable> structuresHit = new HashSet<Buildable>();
 			for (int y = -yield; y <= yield; y++) {
 				for (int x = -yield; x <= yield; x++) {

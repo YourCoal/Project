@@ -17,7 +17,6 @@ import com.avrgaming.civcraft.structure.Cottage;
 import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
-import com.avrgaming.civcraft.structure.TradeShip;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -72,15 +71,6 @@ public class EffectEventTimer extends CivAsyncTask {
 					Mine mine = (Mine)struct;
 					try {
 						mine.process_mine(this);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				} break;
-			case "process_trade_ship":
-				if (struct instanceof TradeShip) {
-					TradeShip tradeShip = (TradeShip)struct;
-					try {
-						tradeShip.process_trade_ship(this);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

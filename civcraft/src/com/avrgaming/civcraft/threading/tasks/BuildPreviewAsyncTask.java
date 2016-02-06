@@ -56,10 +56,8 @@ public class BuildPreviewAsyncTask extends CivAsyncTask {
 			
 	@Override
 	public void run() {
-		
 		try {
 			int count = 0;
-			
 			for (int y = 0; y < tpl.size_y; y++) {
 				for (int x = 0; x < tpl.size_x; x++) {
 					for (int z = 0; z < tpl.size_z; z++) {
@@ -76,8 +74,7 @@ public class BuildPreviewAsyncTask extends CivAsyncTask {
 							}
 							
 							ItemManager.sendBlockChange(getPlayer(), b.getLocation(), ItemManager.getId(Material.GLASS), 5);
-							resident.previewUndo.put(new BlockCoord(b.getLocation()), 
-									new SimpleBlock(ItemManager.getId(b), ItemManager.getData(b)));
+							resident.previewUndo.put(new BlockCoord(b.getLocation()), new SimpleBlock(ItemManager.getId(b), ItemManager.getData(b)));
 							count++;			
 						} finally {
 							lock.unlock();
