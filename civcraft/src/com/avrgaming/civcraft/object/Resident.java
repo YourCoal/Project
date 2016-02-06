@@ -46,6 +46,7 @@ import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.exception.InvalidNameException;
 import com.avrgaming.civcraft.interactive.InteractiveResponse;
+import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.main.CivData;
@@ -80,6 +81,7 @@ public class Resident extends SQLObject {
 	private boolean civChat = false;
 	private boolean adminChat = false;
 	private boolean combatInfo = false;
+	private boolean titleAPI = true;
 	
 	private boolean usesAntiCheat = false;
 	
@@ -150,6 +152,7 @@ public class Resident extends SQLObject {
 	private Date lastKilledTime = null;
 	private String lastIP = "";
 	private UUID uid;
+	private double walkingModifier = CivSettings.normal_speed;
 	
 	public String debugTown;
 	
@@ -336,7 +339,9 @@ public class Resident extends SQLObject {
 
 	public String getFlagSaveString() {
 		String flagString = "";
-		
+		if (this.isTitleAPI()) {
+			flagString += "titleapi,";
+		}
 		if (this.isShowMap()) {
 			flagString += "map,";
 		}
@@ -379,6 +384,13 @@ public class Resident extends SQLObject {
 		
 		for (String s : split) {
 			switch (s.toLowerCase()) {
+			case "titleapi":
+				if (CivSettings.hasTitleAPI) {
+					this.setTitleAPI(true);
+				} else {
+					this.setTitleAPI(false);
+				}
+				break;
 			case "map":
 				this.setShowMap(true);
 				break;
@@ -1648,5 +1660,46 @@ public class Resident extends SQLObject {
 	
 	public void setUUID(UUID uid) {
 		this.uid = uid;
+	}
+	
+	public double getWalkingModifier() {
+		return walkingModifier;
+	}
+
+	public void setWalkingModifier(double walkingModifier) {
+		this.walkingModifier = walkingModifier;
+	}
+	
+	public void calculateWalkingModifier(Player player) {
+		double speed = CivSettings.normal_speed;
+		/* Set speed from armor. */
+		if (Unit.isWearingFullComposite(player)) {
+			speed *= CivSettings.T4_leather_speed;
+		} else if (Unit.isWearingFullHardened(player)) {
+			speed *= CivSettings.T3_leather_speed;
+		} else if (Unit.isWearingFullRefined(player)) {
+			speed *= CivSettings.T2_leather_speed;
+		} else if (Unit.isWearingFullBasicLeather(player)) {
+			speed *= CivSettings.T1_leather_speed;
+		} else {
+			if (Unit.isWearingAnyDiamond(player)) {
+				speed *= CivSettings.T4_metal_speed;
+			} else if (Unit.isWearingAnyGold(player)) {
+				speed *= CivSettings.T3_metal_speed;
+			} else if (Unit.isWearingAnyChain(player)) {
+				speed *= CivSettings.T2_metal_speed;
+			} else if (Unit.isWearingAnyIron(player)) {
+				speed *= CivSettings.T1_metal_speed;
+			}
+		}
+		this.walkingModifier = speed;
+	}
+	
+	public boolean isTitleAPI() {
+		return titleAPI;
+	}
+	
+	public void setTitleAPI(boolean titleAPI) {
+		this.titleAPI = titleAPI;
 	}
 }

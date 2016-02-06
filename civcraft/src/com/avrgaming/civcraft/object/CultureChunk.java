@@ -32,6 +32,7 @@ public class CultureChunk {
 		this.chunkCoord = coord;
 		biome = BiomeCache.getBiome(this);
 	}
+	
 	public Civilization getCiv() {
 		return town.getCiv();
 	}
@@ -39,6 +40,7 @@ public class CultureChunk {
 	public Town getTown() {
 		return town;
 	}
+	
 	public void setTown(Town town) {
 		this.town = town;
 	}

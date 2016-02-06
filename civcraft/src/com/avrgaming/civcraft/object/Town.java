@@ -1,5 +1,6 @@
 package com.avrgaming.civcraft.object;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -45,6 +46,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
 import com.avrgaming.civcraft.structure.Buildable;
+import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.structure.TradeOutpost;
@@ -314,7 +316,6 @@ public class Town extends SQLObject {
 	
 	@Override
 	public void delete() throws SQLException {
-		
 		/* Remove all our Groups */
 		for (PermissionGroup grp : this.groups.values()) {
 			grp.delete();
@@ -331,7 +332,7 @@ public class Town extends SQLObject {
 		/* Remove all structures in the town. */
 		if (this.structures != null) {
 			for (Structure struct : this.structures.values()) {
-				struct.delete();
+				struct.deleteSkipUndo();;
 			}
 		}
 		
@@ -345,7 +346,12 @@ public class Town extends SQLObject {
 		if (this.wonders != null) {
 			for (Wonder wonder : wonders.values()) {
 				wonder.unbindStructureBlocks();
-				wonder.fancyDestroyStructureBlocks();
+				try {
+					wonder.undoFromTemplate();
+				} catch (IOException | CivException e) {
+					e.printStackTrace();
+					wonder.fancyDestroyStructureBlocks();
+				}
 				wonder.delete();
 			}
 		}
@@ -676,6 +682,17 @@ public class Town extends SQLObject {
 		rates.put("Random Events", newRate - rate);
 		rate = newRate;
 		
+		//XXX To Test, if gov gives techRate
+		if (this.getCiv().hasTechnology("tech_admin")) {
+			double techRate;
+			try {
+				techRate = CivSettings.getDouble(CivSettings.techsConfig, "hammer_tech_buff");
+				rate *= techRate;
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
+		
 		/* Captured Town Penalty */
 		if (this.motherCiv != null) {
 			try {
@@ -717,9 +734,14 @@ public class Town extends SQLObject {
 		sources.put("Culture Biomes", cultureHammers);
 		total += cultureHammers; 
 		
-		/* Grab happiness generated from structures with components. */
+		/* Grab hammers generated from structures with components. */
 		double structures = 0;
+		double mines = 0;
 		for (Structure struct : this.structures.values()) {
+			if (struct instanceof Mine) {
+				Mine mine = (Mine)struct;
+				mines += mine.getBonusHammers();
+			}
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
 					AttributeBase as = (AttributeBase)comp;
@@ -729,10 +751,11 @@ public class Town extends SQLObject {
 				}
 			}
 		}
-
+		
+		sources.put("Mines", mines);
+		
 		total += structures;
 		sources.put("Structures", structures);
-		
 		
 		sources.put("Base Hammers", this.baseHammers);
 		total += this.baseHammers;
@@ -1398,6 +1421,7 @@ public class Town extends SQLObject {
 			out += "<h3><b>"+this.getName()+"</b> (<i>"+this.getCiv().getName()+"</i>)</h3>";		
 			out += "<b>Mayors: "+this.getMayorGroup().getMembersString()+"</b>";
 		} catch (Exception e) {
+			CivLog.debug("Town: "+this.getName());
 			e.printStackTrace();
 		}
 		
@@ -1777,6 +1801,17 @@ public class Town extends SQLObject {
 		double newRate = rate * getGovernment().growth_rate;
 		rates.put("Government", newRate - rate);
 		rate = newRate;
+		
+		//XXX To Test, if gov gives techRate
+		if (this.getCiv().hasTechnology("tech_admin")) {
+			double techRate;
+			try {
+				techRate = CivSettings.getDouble(CivSettings.techsConfig, "growth_tech_buff");
+				rate *= techRate;
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
 		
 		/* Wonders and Goodies. */
 		double additional = this.getBuffManager().getEffectiveDouble(Buff.GROWTH_RATE);
@@ -2334,6 +2369,10 @@ public class Town extends SQLObject {
 		//return outpost_upkeep*outposts.size();
 		return 0;
 	}
+	
+	public boolean isOutlaw(Resident res) {
+		return this.outlaws.contains(res.getUUIDString());
+	}
 
 	public boolean isOutlaw(String name) {
 		Resident res = CivGlobal.getResident(name);
@@ -2560,7 +2599,18 @@ public class Town extends SQLObject {
 		newRate = rate*getGovernment().beaker_rate;
 		rates.put("Government", newRate - rate);
 		rate = newRate;
-	
+		
+		//XXX To Test, if gov gives techRate
+		if (this.getCiv().hasTechnology("tech_admin")) {
+			double techRate;
+			try {
+				techRate = CivSettings.getDouble(CivSettings.techsConfig, "beaker_tech_buff");
+				rate *= techRate;
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
+		
 		/* Additional rate increases from buffs. */
 		/* Great Library buff is made to not stack with Science_Rate */
 		double additional = rate*getBuffManager().getEffectiveDouble(Buff.SCIENCE_RATE);
@@ -2954,8 +3004,9 @@ public class Town extends SQLObject {
 		for (Perk perk : resident.getPersonalTemplatePerks(info)) {
 			perks.add(perk);
 		}
-		
-		return perks;
+		for (Perk perk : resident.getUnboundTemplatePerks(perks, info)) {
+			perks.add(perk);
+		} return perks;
 	}
 
 	public RandomEvent getActiveEvent() {

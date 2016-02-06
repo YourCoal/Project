@@ -1037,8 +1037,9 @@ public class Civilization extends SQLObject {
 					"If you want to change your focus, use /civ research switch instead.");
 		}
 		
-		if (!this.getTreasury().hasEnough(tech.cost)) {
-			throw new CivException("Our Civilization's treasury does have the required "+tech.cost+" coins to start this research.");
+		double cost = tech.getAdjustedTechCost(this);
+		if (!this.getTreasury().hasEnough(cost)) {
+			throw new CivException("Our Civilization's treasury does have the required "+cost+" coins to start this research.");
 		}
 		
 		if (this.hasTech(tech.id)) {
@@ -1052,7 +1053,7 @@ public class Civilization extends SQLObject {
 		this.setResearchTech(tech);
 		this.setResearchProgress(0.0);
 	
-		this.getTreasury().withdraw(tech.cost);
+		this.getTreasury().withdraw(cost);
 		TaskMaster.asyncTask(new UpdateTechBar(this),0);
 	}
 
@@ -1261,6 +1262,9 @@ public class Civilization extends SQLObject {
 		}
 		for (Relation relation : deletedRelations) {
 			try {
+				if (relation.getStatus() == Relation.Status.WAR) {
+					relation.setStatus(Relation.Status.NEUTRAL);
+				}
 				relation.delete();
 			} catch (SQLException e) {
 				e.printStackTrace();
