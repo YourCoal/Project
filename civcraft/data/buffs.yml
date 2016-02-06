@@ -5,6 +5,20 @@
 #
 
 buffs:
+    - id: 'buff_knowledge_advancement'
+      name: 'Profit Sharing'
+      description: 'Reduces the coin cost of all technology researches by <lightgreen>5%<r>, maxinum 20%'
+      value: '0.05'
+      stackable: false
+      parent:
+#
+    - id: 'buff_reduced_anarchy'
+      name: 'Reduced Anarchy'
+      description: 'Civilization experiences 1/2 anarchy time when switching governments.'
+      value: '0.5'
+      stackable: false
+      parent:
+#
     - id: 'buff_construction'
       name: 'Construction'
       description: 'Increases hammer production by <lightgreen>100<r> hammers. <gold>Stackable<r>'
@@ -30,7 +44,7 @@ buffs:
     - id: 'buff_monopoly'
       name: 'Monopoly'
       description: 'Increases coin output from all trade goods in use by <lightgreen>3%<r> <gold>Stackable<r>'
-      value: '0.3'
+      value: '0.03'
       stackable: true
       parent:
     
@@ -79,7 +93,7 @@ buffs:
     - id: 'buff_fire_bomb'
       name: 'Fire Bomb'
       description: 'Increases damage of arrow/cannon towers by a <lightgreen>10%<r> Also makes arrow towers shoot flaming arrows <gold>Stackable<r>'
-      value: '1.0'
+      value: '0.1'
       stackable: false
       parent:
 
@@ -157,14 +171,14 @@ buffs:
     - id: 'buff_pyramid_cottage_bonus'
       name: 'Pyramid Increased Cottage Output'
       description: 'Increases cottage income by 10%'
-      value: '1.1'
+      value: '0.1'
       stackable: false
       parent:
 
     - id: 'buff_pyramid_culture'
       name: 'Pyramid Culture Bonus' 
       description: 'Increases culture output from civilization by 10%'
-      value: '1.1'
+      value: '0.1'
       stackable: false
       parent:
 

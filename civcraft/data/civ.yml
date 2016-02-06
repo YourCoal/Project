@@ -60,6 +60,12 @@ global:
    # Attempt to validate structures to make sure they're not floating.
    structure_validation: 'true'
 
+   # Have speed checks only on chunk changes. default false
+   speed_check_chunks: false
+
+   # Minimum Build Height for Structures, Walls, and Roads. Default: 16
+   min_build_height: 16
+
 platinum:
 ### DAILY EVENTS ######
       # amount of plat ervry day

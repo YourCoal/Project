@@ -655,10 +655,9 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void OnBlockBreakEvent(BlockBreakEvent event) {
 		Resident resident = CivGlobal.getResident(event.getPlayer());
-
 		if (resident == null) {
 			event.setCancelled(true);
 			return;
@@ -1040,8 +1039,13 @@ public class BlockListener implements Listener {
 				if(tc.getTown().getCiv().getDiplomacyManager().atWarWith(resident.getTown().getCiv())) {
 
 					switch (event.getClickedBlock().getType()) {
-					case WOODEN_DOOR:
 					case IRON_DOOR:
+					case BIRCH_DOOR:
+					case WOODEN_DOOR:
+					case SPRUCE_DOOR:
+					case JUNGLE_DOOR:
+					case ACACIA_DOOR:
+					case DARK_OAK_DOOR:
 						return;
 					default:
 						break;
@@ -1146,6 +1150,13 @@ public class BlockListener implements Listener {
 					if (inHand.getType().equals(Material.SEEDS) ||
 						inHand.getType().equals(Material.MELON_SEEDS) ||
 						inHand.getType().equals(Material.PUMPKIN_SEEDS)) {
+						denyBreeding = true;
+					}
+					break;
+				case RABBIT:
+					if (inHand.getType().equals(Material.CARROT) ||
+						inHand.getType().equals(Material.GOLDEN_CARROT) ||
+						inHand.getType().equals(Material.YELLOW_FLOWER)) {
 						denyBreeding = true;
 					}
 					break;
@@ -1608,8 +1619,12 @@ public class BlockListener implements Listener {
 
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
-			if (ItemManager.getId(event.getBlock()) == CivData.WOOD_DOOR ||
-					ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR) {
+			if (ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR ||
+					ItemManager.getId(event.getBlock()) == CivData.BIRCH_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.SPRUCE_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.JUNGLE_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.ACACIA_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.DARK_OAK_DOOR) {
 				event.setNewCurrent(0);
 				return;
 			}

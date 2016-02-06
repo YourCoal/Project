@@ -17,9 +17,13 @@ war:
 
     # Days of the week that war-time will occur
     time_day: 7
-
     # Hour of the day that war-time will start
     time_hour: 16
+    
+    # Days of the week that Disable TP-time will occur
+    disable_cmds_time_day: 7
+    # Hour of the day that TP will be disabled
+    disable_cmds_time_hour: 14
 
     # Days before war time that towns are no longer allowed to declare war
     time_declare_days: 3
@@ -135,6 +139,19 @@ cannon_tower:
     # Defined in number of half-seconds to delay. Higher numbers is lower fire rate.
     fire_rate: 4
 
+tesla_tower:
+    # Damage done by lightning blast
+    damage: 5
+    # Tesla tower range
+    range: 150.0
+    # Distance Tesla towers must be built apart
+    build_distance: 100.0
+    # Min-range of Tesla tower
+    min_range: 10.0
+    # Tesla tower fire rate
+    # Defined in number of half-seconds to delay. Higher numbers is lower fire rate.
+    fire_rate: 20
+
 wall:
    # Maximum height walls can be built at.
    maximum_height: 200
@@ -183,3 +200,12 @@ cannon:
     # Maximum range a cannon shot will travel.
     max_range: 300.0
 
+    control_block_hp: 1
+
+tnt:
+    # amount of blocks to destroy per shot
+    yield: 4
+    # Amount of damage done to PLAYERS when hit by a blast
+    player_damage: 25
+    # Amount of damage d one to STRUCTURES when hit by a blast
+    structure_damage: 10

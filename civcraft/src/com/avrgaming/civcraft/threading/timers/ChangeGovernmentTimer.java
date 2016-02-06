@@ -5,20 +5,25 @@ import java.util.ArrayList;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.object.Buff;
 import com.avrgaming.civcraft.object.Civilization;
+import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 
 public class ChangeGovernmentTimer implements Runnable {
-
+	
+	private Town town;
+	public Town getTown() {
+		return town;
+	}
+	
 	@Override
 	public void run() {
-
 		// For each town in anarchy, search the session DB for it's timer.
 		for (Civilization civ : CivGlobal.getCivs()) {
 			if (civ.getGovernment().id.equalsIgnoreCase("gov_anarchy")) {
 				String key = "changegov_"+civ.getId();
 				ArrayList<SessionEntry> entries;
-				
 				entries = CivGlobal.getSessionDB().lookup(key);
 				if (entries == null || entries.size() < 1) {
 					//We are in anarchy but didn't have a sessiondb entry? huh...
@@ -28,22 +33,29 @@ public class ChangeGovernmentTimer implements Runnable {
 				}
 				
 				SessionEntry se = entries.get(0);
-				
 				int duration = 3600;
 				if (CivGlobal.testFileFlag("debug")) {
 					duration = 1;
 				}
-			
-				if (CivGlobal.hasTimeElapsed(se, (Integer)CivSettings.getIntegerGovernment("anarchy_duration")*duration)) {
-
+				
+				boolean reducedAnarchy = false;
+					for (Town t : civ.getTowns()) {
+						if (t.getBuffManager().hasBuff("buff_reduced_anarchy")) {
+							reducedAnarchy = true;
+							break;
+						}
+					}
+					int anarchyHours = (Integer)CivSettings.getIntegerGovernment("anarchy_duration");
+					if (reducedAnarchy) {
+						anarchyHours *=this.getTown().getBuffManager().getEffectiveDouble(Buff.EXTRACTION);
+					}
+				if (CivGlobal.hasTimeElapsed(se, anarchyHours*duration)) {
 					civ.setGovernment(se.value);
 					CivMessage.global(civ.getName()+" has emerged from anarchy and has adopted "+CivSettings.governments.get(se.value).displayName);
-					
 					CivGlobal.getSessionDB().delete_all(key);
 					civ.save();
 				} 
 			}
 		}		
 	}
-
 }

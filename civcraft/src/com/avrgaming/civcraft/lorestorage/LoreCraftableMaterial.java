@@ -204,7 +204,7 @@ public class LoreCraftableMaterial extends LoreMaterial {
 			}
 		}
 	}
-
+	
 	public static void buildRecipes() {
 		/*
 		 * Loads in materials from configuration file.

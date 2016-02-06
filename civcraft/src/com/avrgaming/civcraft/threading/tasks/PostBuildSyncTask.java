@@ -34,6 +34,7 @@ public class PostBuildSyncTask implements Runnable {
 		this.buildable = buildable;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void start(Template tpl, Buildable buildable) {
 		for (BlockCoord relativeCoord : tpl.doorRelativeLocations) {
 			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
@@ -49,22 +50,20 @@ public class PostBuildSyncTask implements Runnable {
 			}
 		}
 			
-//	for (BlockCoord relativeCoord : tpl.attachableLocations) {
-//			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
-//			BlockCoord absCoord = new BlockCoord(buildable.getCorner().getBlock().getRelative(relativeCoord.getX(), relativeCoord.getY(), relativeCoord.getZ()));
-//
-//			Block block = absCoord.getBlock();
-//			if (block.getTypeId() != sb.getType()) {
-//				block.setTypeIdAndData(sb.getType(), (byte)sb.getData(), false);
-//			}
-//		}
+	for (BlockCoord relativeCoord : tpl.attachableLocations) {
+			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
+			BlockCoord absCoord = new BlockCoord(buildable.getCorner().getBlock().getRelative(relativeCoord.getX(), relativeCoord.getY(), relativeCoord.getZ()));
+
+			Block block = absCoord.getBlock();
+			if (block.getTypeId() != sb.getType()) {
+				block.setTypeIdAndData(sb.getType(), (byte)sb.getData(), false);
+			}
+		}
 		
-		/*
-		 * Use the location's of the command blocks in the template and the buildable's corner 
+		/* Use the location's of the command blocks in the template and the buildable's corner 
 		 * to find their real positions. Then perform any special building we may want to do
 		 * at those locations.
-		 */
-		/* These block coords do not point to a location in the world, just a location in the template. */
+		 * These block coords do not point to a location in the world, just a location in the template. */
 		for (BlockCoord relativeCoord : tpl.commandBlockRelativeLocations) {
 			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
 			StructureSign structSign;

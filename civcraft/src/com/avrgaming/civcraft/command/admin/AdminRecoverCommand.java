@@ -14,39 +14,29 @@ import com.avrgaming.civcraft.recover.RecoverStructuresAsyncTask;
 import com.avrgaming.civcraft.threading.TaskMaster;
 
 public class AdminRecoverCommand extends CommandBase {
-
+	
 	@Override
 	public void init() {
 		command = "/ad recover";
 		displayName = "Admin recover";
-		
 		commands.put("structures", "Finds and recovers all of the 'broken' structures.");
 		commands.put("listbroken", "Lists all broken structures and their locations.");
-		
 		commands.put("listorphantowns", "Lists all of the currently orphaned towns.");
 		commands.put("listorphancivs", "Lists all of the currently orphaned civs.");
-		
 		commands.put("listorphanleaders", "Lists all orphaned leaders.");
 		commands.put("fixleaders", "Looks up leaders of civilizations and sets them back in town.");
-		
 		commands.put("listorphanmayors", "List all leaders who are not mayors of the capitol.");
 		commands.put("fixmayors", "Makes all leaders of civs mayors in the capitol town.");
-		
 		commands.put("forcesaveresidents", "force saves all residents");
 		commands.put("forcesavetowns", "force saves all towns");
 		commands.put("forcesavecivs", "force saves all civs");
-		
 		commands.put("listdefunctcivs", "list all towns with no leader group.");
 		commands.put("killdefunctcivs", "attempts to delete defunct civs.");
-		
 		commands.put("listdefuncttowns", "list all towns with no mayors group");
 		commands.put("killdefuncttowns", "attempts to delete defunct towns.");
-		
 		commands.put("listnocaptials", "list all civs with no capitols");
 		commands.put("cleannocapitols", "clean out all civs with no capitols.");
-		
 		commands.put("fixtownresidents", "Restores all residents to the towns listed in their debug_town field.");
-
 	}
 	
 	public void fixtownresidents_cmd() {
@@ -57,7 +47,6 @@ public class AdminRecoverCommand extends CommandBase {
 					CivLog.error("Couldn't find town:"+resident.debugTown+" for resident:"+resident.getName()+" is this town deleted?");
 					continue;
 				}
-				
 				resident.setTown(town);
 				try {
 					resident.saveNow();
@@ -67,10 +56,10 @@ public class AdminRecoverCommand extends CommandBase {
 			}
 		}
 	}
+	
 	public void listnocapitols_cmd() {
 		CivMessage.sendHeading(sender, "Defunct Civs");
 		for (Civilization civ : CivGlobal.getCivs()) {
-			
 			Town town = CivGlobal.getTown(civ.getCapitolName());
 			if (town == null) {
 				CivMessage.send(sender, civ.getName());
@@ -80,7 +69,6 @@ public class AdminRecoverCommand extends CommandBase {
 	
 	public void cleannocapitols_cmd() {
 		for (Civilization civ : CivGlobal.getCivs()) {
-			
 			Town town = CivGlobal.getTown(civ.getCapitolName());
 			if (town == null) {
 				CivMessage.send(sender, "Deleting "+civ.getName());
@@ -165,37 +153,29 @@ public class AdminRecoverCommand extends CommandBase {
 			if (capitol == null) {
 				continue;
 			}
-			
 			Resident leader = civ.getLeader();
 			if (leader == null) {
 				continue;
 			}
-			
 			CivMessage.send(sender, "Broken: "+leader.getName()+" in civ: "+civ.getName()+" in capitol:"+capitol.getName());
-			
 		}
-		
 		CivMessage.sendSuccess(sender, "Finished");
 	}
 	
 	public void fixmayors_cmd() {
-		
 		for (Civilization civ : CivGlobal.getCivs()) {
 			Town capitol = civ.getTown(civ.getCapitolName());
 			if (capitol == null) {
 				continue;
 			}
-			
 			Resident leader = civ.getLeader();
 			if (leader == null) {
 				continue;
 			}
-			
 			if (capitol.getMayorGroup() == null) {
 				CivMessage.send(sender, "Town:"+capitol.getName()+" doesnt have a mayors group??");
 				continue;
 			}
-			
 			capitol.getMayorGroup().addMember(leader);
 			try {
 				capitol.getMayorGroup().saveNow();
@@ -203,21 +183,16 @@ public class AdminRecoverCommand extends CommandBase {
 				e.printStackTrace();
 			}
 			CivMessage.send(sender, "Fixed "+leader.getName()+" in civ: "+civ.getName()+" in capitol:"+capitol.getName());
-			
 		}
-		
 		CivMessage.sendSuccess(sender, "Finished");
-		
 	}
-
+	
 	public void fixleaders_cmd() {
-		
 		for (Civilization civ : CivGlobal.getCivs()) {
 			Resident res = civ.getLeader();
 			if (res == null) {
 				continue;
 			}
-			
 			if (!res.hasTown()) {
 				Town capitol = civ.getTown(civ.getCapitolName());
 				if (capitol == null) {
@@ -232,7 +207,6 @@ public class AdminRecoverCommand extends CommandBase {
 				}
 				CivMessage.send(sender, "Fixed Civ:"+civ.getName()+" leader:"+res.getName());
 			}
-			
 			if (!civ.getLeaderGroup().hasMember(res)) {
 				civ.getLeaderGroup().addMember(res);
 				try {
@@ -241,36 +215,29 @@ public class AdminRecoverCommand extends CommandBase {
 					e.printStackTrace();
 				}
 			}
-			
 		}
 	}
 	
 	public void listorphanleaders_cmd() {
 		CivMessage.sendHeading(sender, "Orphan Leaders");
-		
 		for (Civilization civ : CivGlobal.getCivs()) {
 			Resident res = civ.getLeader();
 			if (res == null) {
 				continue;
 			}
-			
 			if (!res.hasTown()) {
 				Town capitol = civ.getTown(civ.getCapitolName());
 				if (capitol == null) {
 					CivMessage.send(sender, "-- no capitol for civ "+civ.getName());
 					continue;
 				}
-				
 				CivMessage.send(sender, "Broken Civ:"+civ.getName()+" Leader:"+res.getName());
 			}
-			
 		}
-		
 	}
 	
 	public void listorphantowns_cmd() {
 		CivMessage.sendHeading(sender, "Orphan Towns");
-		
 		for (Town town : CivGlobal.orphanTowns) {
 			CivMessage.send(sender, town.getName());
 		}
@@ -278,11 +245,9 @@ public class AdminRecoverCommand extends CommandBase {
 	
 	public void listorphancivs_cmd() {
 		CivMessage.sendHeading(sender, "Orphan Civs");
-		
 		for (Civilization civ : CivGlobal.orphanCivs) {
 			CivMessage.send(sender, civ.getName()+ " capitol:"+civ.getCapitolName());
 		}
-		
 	}
 	
 	public void listbroken_cmd() {
@@ -293,24 +258,19 @@ public class AdminRecoverCommand extends CommandBase {
 	public void structures_cmd() {
 		CivMessage.send(sender, "Starting Recover Task");
 		TaskMaster.syncTask(new RecoverStructuresAsyncTask(sender, false), 0);
-		
 	}
 	
 	@Override
 	public void doDefaultAction() throws CivException {
 		showHelp();
 	}
-
+	
 	@Override
 	public void showHelp() {
 		showBasicHelp();
 	}
-
+	
 	@Override
 	public void permissionCheck() throws CivException {
-		//Permissions checked in /ad command above.
 	}
-
-	
-	
 }

@@ -255,13 +255,15 @@ public class BuildAsyncTask extends CivAsyncTask {
 		// of the build task async.
 		synchronized (this.aborted) {
 			if (!this.aborted) {
-				if (sb.getType() == CivData.WOOD_DOOR || sb.getType() == CivData.IRON_DOOR) {
+				if (sb.getType() == CivData.IRON_DOOR || sb.getType() == CivData.WOOD_DOOR || sb.getType() == CivData.BIRCH_DOOR ||
+					sb.getType() == CivData.SPRUCE_DOOR || sb.getType() == CivData.JUNGLE_DOOR || sb.getType() == CivData.ACACIA_DOOR ||
+					sb.getType() == CivData.DARK_OAK_DOOR || Template.isAttachable(sb.getType())) {
 					// dont build doors, save it for post sync build.
 				}
 				else {
 					sbs.add(sb);
 				}
-			
+				
 				if (buildable.isDestroyable() == false && sb.getType() != CivData.AIR) {
 					if (sb.specialType != Type.COMMAND) {
 						BlockCoord coord = new BlockCoord(sb.worldname, sb.x, sb.y, sb.z);

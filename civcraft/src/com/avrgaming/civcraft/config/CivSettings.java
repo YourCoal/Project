@@ -1,21 +1,3 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
 package com.avrgaming.civcraft.config;
 
 import java.io.BufferedReader;
@@ -58,7 +40,6 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.randomevents.ConfigRandomEvent;
 import com.avrgaming.civcraft.structure.Wall;
 import com.avrgaming.civcraft.template.Template;
-import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.global.perks.Perk;
 
 public class CivSettings {
@@ -109,6 +90,7 @@ public class CivSettings {
 	public static Map<Integer, ConfigCottageLevel> cottageLevels = new HashMap<Integer, ConfigCottageLevel>();
 	public static ArrayList<ConfigTempleSacrifice> templeSacrifices = new ArrayList<ConfigTempleSacrifice>();
 	public static Map<Integer, ConfigMineLevel> mineLevels = new HashMap<Integer, ConfigMineLevel>();
+	public static Map<Integer, ConfigTradeShipLevel> tradeShipLevels = new HashMap<Integer, ConfigTradeShipLevel>();
 	
 	public static FileConfiguration wonderConfig; /* wonders.yml */
 	public static Map<String, ConfigBuildableInfo> wonders = new HashMap<String, ConfigBuildableInfo>();
@@ -195,9 +177,12 @@ public class CivSettings {
 	public static HashMap<Integer, ConfigRemovedRecipes> removedRecipies = new HashMap<Integer, ConfigRemovedRecipes>();
 	public static HashSet<Material> restrictedUndoBlocks = new HashSet<Material>();
 	
+	public static final String HACKER = "civ.hacker";
 	public static final String MINI_ADMIN = "civ.admin";
 	public static final String MODERATOR = "civ.moderator";
 	public static final String FREE_PERKS = "civ.freeperks";
+	public static final String SPECIAL_PERKS = "civ.specialperks";
+	public static final String JUNGLE_TEMPLATES = "civ.jungleperks";
 	public static final String ECON = "civ.econ";
 	public static final int MARKET_COIN_STEP = 5;
 	public static final int MARKET_BUYSELL_COIN_DIFF = 30;
@@ -257,10 +242,16 @@ public class CivSettings {
 		startingCoins = CivSettings.getDouble(civConfig, "global.starting_coins");
 		
 		alwaysCrumble.add(CivData.BEDROCK);
-		alwaysCrumble.add(ItemManager.getId(Material.GOLD_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.DIAMOND_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.IRON_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.REDSTONE_BLOCK));
+		alwaysCrumble.add(CivData.COAL_BLOCK);
+		alwaysCrumble.add(CivData.IRON_BLOCK);
+		alwaysCrumble.add(CivData.GOLD_BLOCK);
+		alwaysCrumble.add(CivData.LAPIS_BLOCK);
+		alwaysCrumble.add(CivData.REDSTONE_BLOCK);
+		alwaysCrumble.add(CivData.DIAMOND_BLOCK);
+		alwaysCrumble.add(CivData.EMERALD_BLOCK);
+		alwaysCrumble.add(CivData.ENDER_CHEST);
+		alwaysCrumble.add(CivData.HAY_BALE);
+		alwaysCrumble.add(CivData.SPONGE);
 		
 		LoreEnhancement.init();
 		LoreCraftableMaterial.buildStaticMaterials();
@@ -278,9 +269,33 @@ public class CivSettings {
 		restrictedUndoBlocks.add(Material.CARROT);
 		restrictedUndoBlocks.add(Material.POTATO);
 		restrictedUndoBlocks.add(Material.REDSTONE);
+		restrictedUndoBlocks.add(Material.REDSTONE_WIRE);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_OFF);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_ON);
+		restrictedUndoBlocks.add(Material.DIODE_BLOCK_OFF);
+		restrictedUndoBlocks.add(Material.DIODE_BLOCK_ON);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_ON);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR);
 		restrictedUndoBlocks.add(Material.STRING);
+		restrictedUndoBlocks.add(Material.LEVER);
+		restrictedUndoBlocks.add(Material.TRIPWIRE);
+		restrictedUndoBlocks.add(Material.SUGAR_CANE_BLOCK);
+		restrictedUndoBlocks.add(Material.POWERED_RAIL);
+		restrictedUndoBlocks.add(Material.RAILS);
+		restrictedUndoBlocks.add(Material.DETECTOR_RAIL);
+		restrictedUndoBlocks.add(Material.ACTIVATOR_RAIL);
+		restrictedUndoBlocks.add(Material.LADDER);
+		restrictedUndoBlocks.add(Material.VINE);
+		restrictedUndoBlocks.add(Material.WEB);
+		restrictedUndoBlocks.add(Material.SAPLING);
+		restrictedUndoBlocks.add(Material.STONE_PLATE);
+		restrictedUndoBlocks.add(Material.WOOD_PLATE);
+		restrictedUndoBlocks.add(Material.GOLD_PLATE);
+		restrictedUndoBlocks.add(Material.IRON_PLATE);
+		restrictedUndoBlocks.add(Material.TRIPWIRE_HOOK);
+		restrictedUndoBlocks.add(Material.MELON_STEM);
+		restrictedUndoBlocks.add(Material.PUMPKIN_STEM);
 	}
 
 	private static void initPlayerEntityWeapons() {
@@ -318,7 +333,6 @@ public class CivSettings {
 	}
 
 	public static FileConfiguration loadCivConfig(String filepath) throws FileNotFoundException, IOException, InvalidConfigurationException {
-
 		File file = new File(plugin.getDataFolder().getPath()+"/data/"+filepath);
 		if (!file.exists()) {
 			CivLog.warning("Configuration file:"+filepath+" was missing. Streaming to disk from Jar.");
@@ -332,7 +346,30 @@ public class CivSettings {
 		return cfg;
 	}
 	
-		
+	public static void reloadFishingConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		CivSettings.fishingDrops.clear();
+		fishingConfig = loadCivConfig("fishing.yml");
+		ConfigFishing.loadConfig(fishingConfig, fishingDrops);
+	}
+	
+	public static void reloadGovConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		CivSettings.governments.clear();
+		governmentConfig = loadCivConfig("governments.yml");
+		ConfigGovernment.loadConfig(governmentConfig, governments);
+	}
+	
+	public static void reloadNoCheatConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		CivSettings.validMods.clear();
+		nocheatConfig = loadCivConfig("nocheat.yml");
+		ConfigValidMod.loadConfig(nocheatConfig, validMods);
+	}
+	
+	public static void reloadPerkConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		CivSettings.perks.clear();
+		nocheatConfig = loadCivConfig("nocheat.yml");
+		ConfigPerk.loadConfig(perkConfig, perks);
+	}
+	
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
@@ -394,6 +431,7 @@ public class CivSettings {
 		ConfigPlatinumReward.loadConfig(civConfig, platinumRewards);
 		ConfigValidMod.loadConfig(nocheatConfig, validMods);
 		ConfigFishing.loadConfig(fishingConfig, fishingDrops);
+		ConfigTradeShipLevel.loadConfig(structureConfig, tradeShipLevels);
 	
 		ConfigRemovedRecipes.removeRecipes(materialsConfig, removedRecipies );
 		CivGlobal.preGenerator.preGenerate();
@@ -445,6 +483,7 @@ public class CivSettings {
 		switchItems.add(Material.CAKE_BLOCK);
 		switchItems.add(Material.CAULDRON);
 		switchItems.add(Material.CHEST);
+		switchItems.add(Material.TRAPPED_CHEST);
 		switchItems.add(Material.COMMAND);
 		switchItems.add(Material.DIODE);
 		switchItems.add(Material.DIODE_BLOCK_OFF);
@@ -454,7 +493,6 @@ public class CivSettings {
 		switchItems.add(Material.FURNACE);
 		switchItems.add(Material.JUKEBOX);
 		switchItems.add(Material.LEVER);
-	//	switchItems.add(Material.LOCKED_CHEST);
 		switchItems.add(Material.STONE_BUTTON);
 		switchItems.add(Material.STONE_PLATE);
 		switchItems.add(Material.IRON_DOOR);
@@ -465,7 +503,7 @@ public class CivSettings {
 		switchItems.add(Material.WOOD_PLATE);
 		//switchItems.put(Material.WOOD_BUTTON, 0); //intentionally left out
 		
-		// 1.5 additions.
+		// 1.5-1.7 additions.
 		switchItems.add(Material.HOPPER);
 		switchItems.add(Material.HOPPER_MINECART);
 		switchItems.add(Material.DROPPER);
@@ -475,8 +513,14 @@ public class CivSettings {
 		switchItems.add(Material.TRAPPED_CHEST);
 		switchItems.add(Material.GOLD_PLATE);
 		switchItems.add(Material.IRON_PLATE);
+		switchItems.add(Material.IRON_TRAPDOOR);
 		
-		
+		// 1.8 additions.
+		switchItems.add(Material.SPRUCE_DOOR);
+		switchItems.add(Material.BIRCH_DOOR);
+		switchItems.add(Material.JUNGLE_DOOR);
+		switchItems.add(Material.ACACIA_DOOR);
+		switchItems.add(Material.DARK_OAK_DOOR);
 	}
 	
 	private static void initBlockPlaceExceptions() {

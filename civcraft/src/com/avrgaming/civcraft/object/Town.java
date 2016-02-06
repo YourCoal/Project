@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
@@ -51,6 +52,7 @@ import com.avrgaming.civcraft.structure.Wall;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
+import com.avrgaming.civcraft.threading.tasks.BuildUndoTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -117,6 +119,7 @@ public class Town extends SQLObject {
 	private boolean pvp = false;
 	
 	public ArrayList<BuildAsyncTask> build_tasks = new ArrayList<BuildAsyncTask>();
+	public ArrayList<BuildUndoTask> undo_tasks = new ArrayList<BuildUndoTask>();
 	public Buildable lastBuildableBuilt = null;
 
 	public boolean leaderWantsToDisband = false;
@@ -130,6 +133,10 @@ public class Town extends SQLObject {
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
 	public int saved_bank_level = 1;
 	public double saved_bank_interest_amount = 0;
+	public int saved_trommel_level = 1;
+	public int saved_quarry_level = 1;
+	public int saved_fishery_level = 1;
+	public int saved_tradeship_upgrade_levels = 1;
 	
 	/* Happiness Stuff */
 	private double baseHappy = 0.0;
@@ -448,15 +455,15 @@ public class Town extends SQLObject {
 	}
 	
 	public boolean hasResident(String name) {
-		return residents.containsKey(name.toLowerCase());
+		return residents.containsKey(name);
 	}
 	
 	public boolean hasResident(Resident res) {
-		return hasResident(res.getName());
+		return hasResident(res.getUUID().toString());
 	}
 	
 	public void addResident(Resident res) throws AlreadyRegisteredException {
-		String key = res.getName().toLowerCase();
+		String key = res.getUUID().toString();
 		
 		if (residents.containsKey(key)) {
 			throw new AlreadyRegisteredException(res.getName()+" already a member of town "+this.getName());
@@ -2329,24 +2336,26 @@ public class Town extends SQLObject {
 	}
 
 	public boolean isOutlaw(String name) {
-		return this.outlaws.contains(name);
+		Resident res = CivGlobal.getResident(name);
+		return this.outlaws.contains(res.getUUIDString());
 	}
 	
 	public void addOutlaw(String name) {
-		this.outlaws.add(name);
+		Resident res = CivGlobal.getResident(name);
+		this.outlaws.add(res.getUUIDString());
 	}
 	
 	public void removeOutlaw(String name) {
-		this.outlaws.remove(name);
+		Resident res = CivGlobal.getResident(name);
+		this.outlaws.remove(res.getUUIDString());
 	}
 	
 	public void changeCiv(Civilization newCiv) {
-		
 		/* Remove this town from its old civ. */
 		Civilization oldCiv = this.civ;
 		oldCiv.removeTown(this);
 		oldCiv.save();
-			
+		
 		/* Add this town to the new civ. */
 		newCiv.addTown(this);
 		newCiv.save();
@@ -2354,9 +2363,11 @@ public class Town extends SQLObject {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			Resident resident = CivGlobal.getResident(outlaw);
-			if (newCiv.hasResident(resident)) {
+			if (outlaw.length() >= 2){
+				Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
+				if (newCiv.hasResident(resident)) {
 				removeUs.add(outlaw);
+				}
 			}
 		}
 		
@@ -2740,9 +2751,24 @@ public class Town extends SQLObject {
 			e.printStackTrace();
 			return null;
 		}
+		HashSet<Resident> UnResidents = new HashSet<Resident>();
+		HashSet<Resident> NonResidents = new HashSet<Resident>();
+		for (PermissionGroup group : this.getGroups()) {
+			for (Resident res : group.getMemberList()) {
+				if (res.getCiv() != null) {
+				if (res.getCiv() != this.getCiv()) {
+					NonResidents.add(res);
+					}
+				} else {
+					UnResidents.add(res);
+				}
+			}
+		}
 		double happy_resident = per_resident * this.getResidents().size();
-		sources.put("Residents", happy_resident);
-		total += happy_resident;
+		double happy_Nonresident = (per_resident*0.25) * NonResidents.size();
+		double happy_Unresident = per_resident * UnResidents.size();
+		sources.put("Residents", (happy_resident+happy_Nonresident+happy_Unresident));
+		total += happy_resident+happy_Nonresident+happy_Unresident;
 		
 		/* Try to reduce war unhappiness via the component. */
 		if (sources.containsKey("War")) {

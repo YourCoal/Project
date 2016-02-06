@@ -83,7 +83,6 @@ import com.avrgaming.civcraft.threading.tasks.ChunkGenerateTask;
 import com.avrgaming.civcraft.threading.tasks.CultureProcessAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
 import com.avrgaming.civcraft.threading.tasks.TradeGoodPostGenTask;
-import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
 import com.avrgaming.civcraft.threading.timers.DailyTimer;
 import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.AsciiMap;
@@ -149,7 +148,6 @@ public class DebugCommand extends CommandBase {
 		commands.put("listconquered", "shows a list of conquered civilizations.");
 		commands.put("camp", "Debugs camps.");
 		commands.put("blockinfo", "[x] [y] [z] shows block info for this block.");
-		commands.put("trommel", "[name] - turn on this town's trommel debugging.");
 		commands.put("fakeresidents", "[town] [count] - Adds this many fake residents to a town.");
 		commands.put("clearresidents", "[town] - clears this town of it's random residents.");
 		commands.put("biomehere", "- shows you biome info where you're standing.");
@@ -185,6 +183,24 @@ public class DebugCommand extends CommandBase {
 		commands.put("cannon", "builds a war cannon.");
 		commands.put("saveinv", "save an inventory");
 		commands.put("restoreinv", "restore your inventory.");
+		commands.put("regenunclaimedchunk", "regens every unclaimed chunk that has a trade good in it");
+		commands.put("structures", "Show structures debug options");
+	}
+	
+	public void structures_cmd() {
+		DebugStructuresCommand cmd = new DebugStructuresCommand();	
+		cmd.onCommand(sender, null, "structures", this.stripArgs(args, 1));
+	}
+	
+	public void regenunclaimedchunk_cmd() {
+		World world = Bukkit.getWorld("World");
+		for(ChunkCoord coord : CivGlobal.preGenerator.goodPicks.keySet()) {
+			TownChunk tc = CivGlobal.getTownChunk(coord);
+			if (tc == null) {
+			world.regenerateChunk(coord.getX(), coord.getZ());
+			CivMessage.send(sender, "Regened:"+coord);
+			}
+		}
 	}
 	
 	public void saveinv_cmd() throws CivException {
@@ -761,18 +777,6 @@ public class DebugCommand extends CommandBase {
 			}
 		}
 		CivMessage.sendSuccess(sender, "Added "+count+" residents.");
-	}
-	
-	public void trommel_cmd() throws CivException {
-		Town town = getNamedTown(1);
-		
-		if (TrommelAsyncTask.debugTowns.contains(town.getName())) {
-			TrommelAsyncTask.debugTowns.remove(town.getName());
-		} else {
-			TrommelAsyncTask.debugTowns.add(town.getName());
-		}
-		
-		CivMessage.send(sender, "Trommel toggled.");
 	}
 	
 	public void blockinfo_cmd() throws CivException {

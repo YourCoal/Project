@@ -12,6 +12,7 @@ import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigGrocerLevel;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivGlobal;
+import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.StructureSign;
@@ -115,20 +116,24 @@ public class Grocer extends Structure {
 	@Override
 	public void updateSignText() {
 		int count = 0;
-	
 		for (count = 0; count < level; count++) {
 			StructureSign sign = getSignFromSpecialId(count);
 			ConfigGrocerLevel grocerlevel = CivSettings.grocerLevels.get(count+1);
-			
+			if (sign == null) {
+				CivLog.error("sign from special id was null, id:"+count);
+				return;
+				}
 			sign.setText("Buy\n"+grocerlevel.itemName+"\n"+
 						 "For "+grocerlevel.price+" Coins\n"+
 					     getNonResidentFeeString());
-			
 			sign.update();
 		}
-		
 		for (; count < getSigns().size(); count++) {
 			StructureSign sign = getSignFromSpecialId(count);
+			if (sign == null) {
+				CivLog.error("sign from special id was null, id:"+count);
+				return;
+				}
 			sign.setText("Grocer Shelf\nEmpty");
 			sign.update();
 		}

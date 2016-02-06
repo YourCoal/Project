@@ -172,56 +172,6 @@ public class PerkManager {
 	}
 	
 	public void markAsUsed(Resident resident, Perk parent) throws SQLException, NotVerifiedException {
-		Connection context = null;
-		PreparedStatement s = null;
-		
-		try {
-			context = SQL.getPerkConnection();	
-			Integer userID = getUserWebsiteId(resident);
-			Integer perkID = getPerkWebsiteId(parent);
-			
-			if (perkID == 0) {
-				CivLog.error("Couldn't find perk id in website DB. Looking for ident:"+parent.getIdent());
-				return;
-			}
-			
-			String sql = "UPDATE `userperks` SET `used_phase` = ? WHERE `user_id` = ? AND `perk_id` = ? AND (`used_phase` IS NULL OR `used_phase` NOT LIKE ?) LIMIT 1";
-			s = context.prepareStatement(sql);
-			s.setString(1, CivGlobal.getPhase());
-			s.setInt(2, userID);
-			s.setInt(3, perkID);
-			s.setString(4, CivGlobal.getPhase());
-			
-			int update = s.executeUpdate();
-			if (update != 1) {
-				CivLog.error("Marked an unexpected number of perks as used. Marked "+update+" should have been 1");
-			}
-			return;
-		} finally {
-			SQL.close(null, s, context);
-		}
-	}
-
-	private static Integer getPerkWebsiteId(Perk parent) throws SQLException {
-		Connection context = null;
-		ResultSet rs = null;
-		PreparedStatement s = null;
-		
-		try {
-			context = SQL.getPerkConnection();	
-			String sql = "SELECT `id` FROM `perks` WHERE `ident` = ?";
-			s = context.prepareStatement(sql);
-			s.setString(1, parent.getIdent());
-			
-			rs = s.executeQuery();
-			Integer perkID = 0;
-			if (rs.next()) {
-				perkID = rs.getInt("id");
-			}
-			return perkID;
-		} finally {
-			SQL.close(rs, s, context);
-		}
 	}
 	
 	public void updatePlatinum(Resident resident, Integer plat) throws SQLException, NotVerifiedException {

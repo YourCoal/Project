@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Queue;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -30,6 +31,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
+import com.avrgaming.civcraft.threading.sync.SyncBuildUpdateTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.PlayerBlockChangeUtil;
@@ -48,6 +50,7 @@ public class Template {
 	public int size_z;
 	private String dir;
 	private String filepath;
+	private Queue<SimpleBlock> sbs; //Blocks to add to main sync task queue;
 	
 	/* Save the command block locations when we init the template, so we dont have to search for them later. */
 	public ArrayList<BlockCoord> commandBlockRelativeLocations = new ArrayList<BlockCoord>();
@@ -139,10 +142,19 @@ public class Template {
 		attachableTypes.add(ItemManager.getId(Material.ACTIVATOR_RAIL));
 	}
 	
+	public static boolean isAttachable(int blockID) {
+		if (attachableTypes.contains(blockID)) {
+			return true;
+		} return false;
+	}
 	
-	public Template() 
-	{
-		
+	public Template() {
+		sbs = new LinkedList<SimpleBlock>();	
+	}
+	
+	public void updateBlocksQueue(Queue<SimpleBlock> sbs) {
+		SyncBuildUpdateTask.queueSimpleBlock(sbs);
+		return;
 	}
 	
 	/*public CivTemplate(Location center, String name, Type type) throws TownyException, IOException {
@@ -559,7 +571,9 @@ public class Template {
 			
 			SimpleBlock block = new SimpleBlock(blockId, blockData);
 			
-			if (blockId == CivData.WOOD_DOOR || blockId == CivData.IRON_DOOR) {
+			if (blockId == CivData.IRON_DOOR || blockId == CivData.WOOD_DOOR || blockId == CivData.BIRCH_DOOR ||
+					blockId == CivData.SPRUCE_DOOR || blockId == CivData.JUNGLE_DOOR || blockId == CivData.ACACIA_DOOR || 
+					blockId == CivData.DARK_OAK_DOOR) {
 				this.doorRelativeLocations.add(new BlockCoord("", blockX, blockY, blockZ));
 			}
 			
@@ -624,11 +638,11 @@ public class Template {
 					}
 				}
 			}
-			
+			if (isAttachable(blockId)) {
+				this.attachableLocations.add(new BlockCoord("", blockX, blockY, blockZ));
+			}
 			blocks[blockX][blockY][blockZ] = block;
-			
 		}
-		
 		this.blocks = blocks;
 		return;
 	}
@@ -723,37 +737,33 @@ public class Template {
 	
 	public void buildUndoTemplate(Template tpl, Block centerBlock) {
 		HashMap<Chunk, Chunk> chunkUpdates = new HashMap<Chunk, Chunk>();
-		
 		for (int x = 0; x < tpl.size_x; x++) {
 			for (int y = 0; y < tpl.size_y; y++) {
 				for (int z = 0; z < tpl.size_z; z++) {
 					Block b = centerBlock.getRelative(x, y, z);
-						if (CivSettings.restrictedUndoBlocks.contains(ItemManager.getId(b))) {
-							continue;
-						}
-					
-						ItemManager.setTypeIdAndData(b, tpl.blocks[x][y][z].getType(), (byte)tpl.blocks[x][y][z].getData(), false);
-//						try {
-//							nms.setBlockFast(b.getWorld(), b.getX(), b.getY(), b.getZ(), tpl.blocks[x][y][z].getType(), 
-//								(byte)tpl.blocks[x][y][z].getData());
-//						} catch (Exception e) {
-//							e.printStackTrace();
-//							//throw new CivException("Couldn't build undo template unknown error:"+e.getMessage());
-//						}
-						
-						chunkUpdates.put(b.getChunk(), b.getChunk());
-						
-						if (ItemManager.getId(b) == CivData.WALL_SIGN || ItemManager.getId(b) == CivData.SIGN) {
-							Sign s2 = (Sign)b.getState();
-							s2.setLine(0, tpl.blocks[x][y][z].message[0]);
-							s2.setLine(1, tpl.blocks[x][y][z].message[1]);
-							s2.setLine(2, tpl.blocks[x][y][z].message[2]);
-							s2.setLine(3, tpl.blocks[x][y][z].message[3]);
-							s2.update();
-						}
+					if (CivSettings.restrictedUndoBlocks.contains(ItemManager.getId(b))) {
+						continue;
+					}
+					SimpleBlock sb = tpl.blocks[x][y][z];
+					// Convert relative x,y,z to real x,y,z in world.
+					sb.x = x+centerBlock.getX();
+					sb.y = y+centerBlock.getY();
+					sb.z = z+centerBlock.getZ();
+					sb.worldname = centerBlock.getWorld().getName();
+					sbs.add(sb);
+					chunkUpdates.put(b.getChunk(), b.getChunk());
+					if (ItemManager.getId(b) == CivData.WALL_SIGN || ItemManager.getId(b) == CivData.SIGN) {
+						Sign s2 = (Sign)b.getState();
+						s2.setLine(0, tpl.blocks[x][y][z].message[0]);
+						s2.setLine(1, tpl.blocks[x][y][z].message[1]);
+						s2.setLine(2, tpl.blocks[x][y][z].message[2]);
+						s2.setLine(3, tpl.blocks[x][y][z].message[3]);
+						s2.update();
+					}
 				}
 			}
 		}
+		updateBlocksQueue(sbs);
 	}
 	
 	public String dir() {

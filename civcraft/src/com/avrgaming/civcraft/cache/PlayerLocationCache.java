@@ -12,7 +12,7 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.BlockCoord;
 
 public class PlayerLocationCache {
-
+	
 	private BlockCoord coord;
 	private String name;
 	private Resident resident;
@@ -20,23 +20,19 @@ public class PlayerLocationCache {
 	private boolean vanished;
 	
 	private static ConcurrentHashMap<String, PlayerLocationCache> cache = new ConcurrentHashMap<String, PlayerLocationCache>();
-	//public static ReentrantLock lock = new ReentrantLock();
 	
 	public static PlayerLocationCache get(String name) {
 		return cache.get(name);
 	}
-		
+	
 	public static void add(Player player) {
-		
 		if (cache.containsKey(player.getName())) {
 			return;
 		}
-		
 		Resident resident = CivGlobal.getResident(player);
 		if (resident == null) {
 			return;
 		}
-		
 		PlayerLocationCache pc = new PlayerLocationCache();
 		pc.setCoord(new BlockCoord(player.getLocation()));
 		pc.setResident(resident);
@@ -51,16 +47,13 @@ public class PlayerLocationCache {
 	}
 	
 	public static void updateLocation(Player player) {
-		
 		PlayerLocationCache pc = get(player.getName());
 		if (pc == null) {
 			add(player);
 			return;
 		}
-		
 		pc.getCoord().setFromLocation(player.getLocation());
 		pc.setDead(player.isDead());
-		
 		Resident resident = CivGlobal.getResident(player);
 		if (resident != null) {
 		}
@@ -73,14 +66,11 @@ public class PlayerLocationCache {
 	
 	public static List<PlayerLocationCache> getNearbyPlayers(BlockCoord bcoord, double radiusSquared) {
 		LinkedList<PlayerLocationCache> list = new LinkedList<PlayerLocationCache>();
-		
 		for (PlayerLocationCache pc : cache.values()) {
 			if (pc.getCoord().distanceSquared(bcoord) < radiusSquared) {
 				list.add(pc);
 			}
-		}
-		
-		return list;
+		} return list;
 	}
 	
 	public BlockCoord getCoord() {
@@ -107,7 +97,6 @@ public class PlayerLocationCache {
 		this.resident = resident;
 	}
 	
-	
 	@Override
 	public int hashCode() {
 		return name.hashCode();
@@ -118,25 +107,22 @@ public class PlayerLocationCache {
 		if (other instanceof PlayerLocationCache) {
 			PlayerLocationCache otherCache = (PlayerLocationCache)other;
 			return otherCache.getName().equalsIgnoreCase(this.getName());
-		}
-		return false;
+		} return false;
 	}
-
+	
 	public boolean isDead() {
 		return isDead;
 	}
-
+	
 	public void setDead(boolean isDead) {
 		this.isDead = isDead;
 	}
-
+	
 	public boolean isVanished() {
 		return vanished;
 	}
-
+	
 	public void setVanished(boolean vanished) {
 		this.vanished = vanished;
 	}
-
-
 }

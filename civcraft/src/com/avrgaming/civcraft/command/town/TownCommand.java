@@ -80,6 +80,21 @@ public class TownCommand extends CommandBase {
 		commands.put("enablestructure", "[coord] attempts to enable the specified structure if its currently disabled.");
 	}
 	
+	public void location_cmd() throws CivException {
+		Town town = getSelectedTown();
+		Resident resident = getResident();
+		if (resident.getTown() == town) {
+			TownHall townhall = town.getTownHall();
+			if (townhall == null) {
+				CivMessage.send(sender, CivColor.LightPurple+CivColor.BOLD+town.getName()+" Location:");
+				CivMessage.send(sender, CivColor.Rose+CivColor.BOLD+"NO TOWN HALL");
+			} else {
+				CivMessage.send(sender, CivColor.LightPurple+CivColor.BOLD+town.getName()+" Location:");
+				CivMessage.send(sender, CivColor.LightGreen+townhall.getCorner());
+			}
+		}
+	}
+	
 	public void enablestructure_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Resident resident = getResident();

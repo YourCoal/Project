@@ -1,6 +1,5 @@
 package com.avrgaming.civcraft.command;
 
-
 import java.util.Queue;
 
 import org.bukkit.OfflinePlayer;
@@ -9,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import com.avrgaming.civcraft.main.CivMessage;
 
 public class ReportPlayerInventoryTask implements Runnable {
-
+	
 	Queue<OfflinePlayer> offplayers;
 	CommandSender sender;
 	
@@ -17,20 +16,17 @@ public class ReportPlayerInventoryTask implements Runnable {
 		this.sender = sender;
 		this.offplayers = offplayers;
 	}
-
+	
 //	private int countItem(ItemStack[] stacks, int id) {
 //		int total = 0;
 //		for (ItemStack stack : stacks) {
 //			if (stack == null) {
 //				continue;
 //			}
-//			
 //			if (ItemManager.getId(stack) == id) {
 //				total += stack.getAmount();
 //			}
-//		}
-//		
-//		return total;
+//		} return total;
 //	}
 	
 	@Override
@@ -41,11 +37,8 @@ public class ReportPlayerInventoryTask implements Runnable {
 //			if (off == null) {
 //				sender.sendMessage("Done.");
 //				return;
-//			}
-//			
-//			try {
+//			} try {
 //				PlayerFile pFile = new PlayerFile(off);
-//				
 //				int diamondBlocks = countItem(pFile.getEnderchestContents(), ItemManager.getId(Material.DIAMOND_BLOCK));
 //				int diamonds = countItem(pFile.getEnderchestContents(), ItemManager.getId(Material.DIAMOND));
 //				int goldBlocks = countItem(pFile.getEnderchestContents(), ItemManager.getId(Material.GOLD_BLOCK));
@@ -55,7 +48,6 @@ public class ReportPlayerInventoryTask implements Runnable {
 //				int diamondOre = countItem(pFile.getEnderchestContents(), ItemManager.getId(Material.DIAMOND_ORE));
 //				int goldOre = countItem(pFile.getEnderchestContents(), ItemManager.getId(Material.GOLD_ORE));
 //				int emeraldOre = countItem(pFile.getEnderchestContents(), ItemManager.getId(Material.EMERALD_ORE));
-//				
 //				String out =  off.getName()+": DB:"+diamondBlocks+" EB:"+emeraldBlocks+" GB:"+goldBlocks+" D:"+diamonds+" E:"+emeralds+" G:"+
 //						gold+" DO:"+diamondOre+" EO:"+emeraldOre+" GO:"+goldOre;
 //				if (diamondBlocks != 0 || diamonds != 0 || goldBlocks != 0 || gold != 0 || emeraldBlocks != 0 
@@ -63,8 +55,6 @@ public class ReportPlayerInventoryTask implements Runnable {
 //					CivMessage.send(sender, out);
 //					CivLog.info("REPORT:"+out);
 //				}
-//				
-//				
 //				diamondBlocks = countItem(pFile.getInventoryContents(), ItemManager.getId(Material.DIAMOND_BLOCK));
 //				diamonds = countItem(pFile.getInventoryContents(), ItemManager.getId(Material.DIAMOND));
 //				goldBlocks = countItem(pFile.getInventoryContents(), ItemManager.getId(Material.GOLD_BLOCK));
@@ -74,7 +64,6 @@ public class ReportPlayerInventoryTask implements Runnable {
 //				diamondOre = countItem(pFile.getInventoryContents(), ItemManager.getId(Material.DIAMOND_ORE));
 //				goldOre = countItem(pFile.getInventoryContents(), ItemManager.getId(Material.GOLD_ORE));
 //				emeraldOre = countItem(pFile.getInventoryContents(), ItemManager.getId(Material.EMERALD_ORE));
-//				
 //				String out2 =  off.getName()+": DB:"+diamondBlocks+" EB:"+emeraldBlocks+" GB:"+goldBlocks+" D:"+diamonds+" E:"+emeralds+" G:"+
 //						gold+" DO:"+diamondOre+" EO:"+emeraldOre+" GO:"+goldOre;
 //				if (diamondBlocks != 0 || diamonds != 0 || goldBlocks != 0 || gold != 0 || emeraldBlocks != 0 
@@ -86,9 +75,6 @@ public class ReportPlayerInventoryTask implements Runnable {
 //				CivLog.info("REPORT: "+off.getName()+" EXCEPTION:"+e.getMessage());
 //			}
 //		}
-//		
 //		TaskMaster.syncTask(new ReportPlayerInventoryTask(sender, offplayers));
-		
 	}
-
 }

@@ -73,6 +73,14 @@ public class EventTimer {
 			e.printStackTrace();
 		}
 		
+		/* Setup disable commands event. */
+		try {
+			ToggleCommandsEvent toggleCommandsEvent = new ToggleCommandsEvent();
+			new EventTimer("togglecmds", toggleCommandsEvent, toggleCommandsEvent.getNextDate());
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+		}
+		
 		/* Setup war event. */
 		try {
 			WarEvent WarEvent = new WarEvent();

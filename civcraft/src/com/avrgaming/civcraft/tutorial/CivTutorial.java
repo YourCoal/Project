@@ -168,18 +168,27 @@ public class CivTutorial {
 				if (cat.craftableCount == 0) {
 					continue;
 				}
-				
-				ItemStack infoRec = LoreGuiItem.build(cat.name, 
-						ItemManager.getId(Material.WRITTEN_BOOK), 
-						0, 
+				int identifier;
+				if (cat.name.contains("Fish")) {
+					identifier = ItemManager.getId(Material.RAW_FISH);
+				} else if (cat.name.contains("Catalyst")) {
+					identifier = ItemManager.getId(Material.BOOK);
+				} else if (cat.name.contains("Gear")) {
+					identifier = ItemManager.getId(Material.IRON_SWORD);
+				} else if (cat.name.contains("Materials")) {
+					identifier = ItemManager.getId(Material.WOOD_STEP);
+				} else if (cat.name.contains("Tools")) {
+					identifier = ItemManager.getId(Material.IRON_SPADE);
+				} else {
+					identifier = ItemManager.getId(Material.WRITTEN_BOOK);
+				}
+				ItemStack infoRec = LoreGuiItem.build(cat.name, identifier, 0, 
 						CivColor.LightBlue+cat.materials.size()+" Items",
 						CivColor.Gold+"<Click To Open>");
 						infoRec = LoreGuiItem.setAction(infoRec, "OpenInventory");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invType", "showGuiInv");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invName", cat.name+" Recipes");
-						
 						craftingHelpInventory.addItem(infoRec);
-						
 						
 				Inventory inv = Bukkit.createInventory(player, LoreGuiItem.MAX_INV_SIZE, cat.name+" Recipes");
 				for (ConfigMaterial mat : cat.materials.values()) {

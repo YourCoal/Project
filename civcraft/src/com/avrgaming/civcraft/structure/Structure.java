@@ -68,7 +68,27 @@ public class Structure extends Buildable {
 				struct = (Structure) new Bank(rs);
 			}
 			break;
-		
+		case "ti_fishery":
+			if (rs == null) {
+				struct = (Structure) new Fishery(center, id, town);
+			} else {
+				struct = (Structure) new Fishery(rs);
+			}
+			break;	
+		case "ti_trade_ship":
+			if (rs == null) {
+				struct = (Structure) new TradeShip(center, id, town);
+			} else {
+				struct = (Structure) new TradeShip(rs);
+			}
+			break;
+		case "ti_quarry":
+			if (rs == null) {
+				struct = (Structure) new Quarry(center, id, town);
+			} else {
+				struct = (Structure) new Quarry(rs);
+			}
+			break;
 		case "s_trommel":
 			if (rs == null) {
 				struct = (Structure) new Trommel(center, id, town);

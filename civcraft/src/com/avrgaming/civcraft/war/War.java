@@ -12,6 +12,7 @@ import com.avrgaming.civcraft.camp.WarCamp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.endgame.EndGameCondition;
 import com.avrgaming.civcraft.event.EventTimer;
+import com.avrgaming.civcraft.event.ToggleCommandsEvent;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
@@ -135,15 +136,18 @@ public class War {
 			War.restoreAllTowns();
 			War.repositionPlayers("You've been teleported back to your town hall. WarTime ended and you were in enemy territory.");
 			War.processDefeated();
-		
+			
 			CivGlobal.growthEnabled = true;
+			CivGlobal.fisheriesEnabled = true;
+			CivGlobal.quarriesEnabled = true;
 			CivGlobal.trommelsEnabled = true;
 			CivGlobal.tradeEnabled = true;
 			
 			/* Delete any wartime file used to prevent reboots. */
 			File file = new File("wartime");
 			file.delete();
-		
+			
+			ToggleCommandsEvent.enableCommands();
 			CivMessage.globalHeading(CivColor.BOLD+"WarTime Has Ended");
 			/* display some stats. */
 			CivMessage.global("Most Lethal: "+WarStats.getTopKiller());
@@ -161,6 +165,7 @@ public class War {
 			
 		} else {
 			/* War time has started. */
+			ToggleCommandsEvent.disableCommands();
 			CivMessage.globalHeading(CivColor.BOLD+"WarTime Has Started");
 			War.setStart(new Date());
 			War.repositionPlayers("You've been teleported back to your town hall. WarTime has started and you were in enemy territory.");
@@ -177,6 +182,8 @@ public class War {
 			}
 			
 			CivGlobal.growthEnabled = false;
+			CivGlobal.fisheriesEnabled = false;
+			CivGlobal.quarriesEnabled = false;
 			CivGlobal.trommelsEnabled = false;
 			CivGlobal.tradeEnabled = false;
 			
@@ -342,6 +349,7 @@ public class War {
 		
 		WarRegen.restoreBlocksFor(WarCamp.RESTORE_NAME);
 		WarRegen.restoreBlocksFor(Cannon.RESTORE_NAME);
+		WarRegen.restoreBlocksFor(WarListener.RESTORE_NAME);
 		Cannon.cleanupAll();
 	}
 

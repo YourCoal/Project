@@ -133,7 +133,7 @@ public class CivGlobal {
 	public static HashSet<String> researchedTechs = new HashSet<String>();
 	
 	/* TODO change this to true for MC 1.8 */
-	public static boolean useUUID = false;
+	public static boolean useUUID = true;
 	
 	public static Map<Integer, Boolean> CivColorInUse = new ConcurrentHashMap<Integer, Boolean>();
 	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
@@ -154,7 +154,9 @@ public class CivGlobal {
 	
 	//TODO convert this to completely static?
 	private static SessionDatabase sdb;
-
+	
+	public static boolean fisheriesEnabled = true;
+	public static boolean quarriesEnabled = true;
 	public static boolean trommelsEnabled = true;
 	public static boolean towersEnabled = true;
 	public static boolean growthEnabled = true;
@@ -635,29 +637,29 @@ public class CivGlobal {
 	}
 	
 	public static Resident getResident(Player player) {
-		return residents.get(player.getName().toLowerCase());
+		return residents.get(player.getName());
 	}
 	
 	public static Resident getResident(Resident resident) {
-		return residents.get(resident.getName().toLowerCase());
+		return residents.get(resident.getName());
 	}
 
 	public static boolean hasResident(String name) {
-		return residents.containsKey(name.toLowerCase());
+		return residents.containsKey(name);
 	}
 
 	public static void addResident(Resident res) {
-		residents.put(res.getName().toLowerCase(), res);
+		residents.put(res.getName(), res);
 		residentsViaUUID.put(res.getUUID(), res);
 	}
 	
 	public static void removeResident(Resident res) {
-		residents.remove(res.getName().toLowerCase());
+		residents.remove(res.getName());
 		residentsViaUUID.remove(res.getUUID());
 	}
 
 	public static Resident getResident(String name) {
-		return residents.get(name.toLowerCase());
+		return residents.get(name);
 	}
 	
 	public static Resident getResidentViaUUID(UUID uuid) {
@@ -835,7 +837,6 @@ public class CivGlobal {
 		if (res == null) {
 			throw new CivException("No resident named "+name);
 		}
-		
 		Player player = Bukkit.getPlayer(res.getUUID());
 		if (player == null)
 			throw new CivException("No player named "+name);
@@ -1016,7 +1017,11 @@ public class CivGlobal {
 	public static ProtectedBlock getProtectedBlock(BlockCoord coord) {
 		return protectedBlocks.get(coord);
 	}
-
+	
+	public static ProtectedBlock removeProtectedBlock(BlockCoord coord) {
+		return protectedBlocks.remove(coord);
+	}
+	
 	public static SessionDatabase getSessionDB() {
 		return sdb;
 	}
@@ -1125,7 +1130,14 @@ public class CivGlobal {
 	}
 	
 	public static void removeProtectedItemFrame(UUID id) {
-		ItemFrameStorage store = getProtectedItemFrame(id);
+		CivLog.debug("Remove ID: "+id);
+			if (id == null) {
+				return;
+			}
+			ItemFrameStorage store = getProtectedItemFrame(id);
+			if (store == null) {
+				return;
+			}
 		ItemFrameStorage.attachedBlockMap.remove(store.getAttachedBlock());
 		protectedItemFrames.remove(id);
 	}

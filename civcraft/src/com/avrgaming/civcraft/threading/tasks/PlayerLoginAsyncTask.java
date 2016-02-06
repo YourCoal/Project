@@ -15,9 +15,11 @@ import com.avrgaming.civcraft.exception.InvalidNameException;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Relation;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.tutorial.CivTutorial;
@@ -29,6 +31,11 @@ import com.avrgaming.global.perks.PlatinumManager;
 
 public class PlayerLoginAsyncTask implements Runnable {
 	
+	private Town town;
+	public Town getTown() {
+		return town;
+	}
+	
 	UUID playerUUID;
 	public PlayerLoginAsyncTask(UUID playerUUID) {
 		this.playerUUID = playerUUID;
@@ -39,7 +46,6 @@ public class PlayerLoginAsyncTask implements Runnable {
 		if (player == null) {
 			throw new CivException("Player offline now. May have been kicked.");
 		}
-		
 		return player;
 	}
 	
@@ -47,19 +53,23 @@ public class PlayerLoginAsyncTask implements Runnable {
 	public void run() {
 		try {
 			CivLog.info("Running PlayerLoginAsyncTask for "+getPlayer().getName()+" UUID("+playerUUID+")");
-			Resident resident = CivGlobal.getResident(getPlayer().getName());
+			Resident resident = CivGlobal.getResidentViaUUID(playerUUID);
+			if (resident != null && !resident.getName().equals(getPlayer().getName())) {
+				CivGlobal.removeResident(resident);
+				resident.setName(getPlayer().getName());
+				resident.save();
+				CivGlobal.addResident(resident);
+			}
 			
-			/* 
-			 * Test to see if player has changed their name. If they have, these residents
-			 * will not match. Disallow players changing their name without admin approval. 
-			 */
+			/* Test to see if player has changed their name. If they have, these residents
+			 * will not match. Disallow players changing their name without admin approval. */
 			if (CivGlobal.getResidentViaUUID(getPlayer().getUniqueId()) != resident) {
 				TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, 
 						"Your user ID on record does not match the player name you're attempting to log in with."+
 						"If you changed your name, please change it back or contact an admin to request a name change."));
 				return;
 			}
-	
+			
 			if (resident == null) {
 				CivLog.info("No resident found. Creating for "+getPlayer().getName());
 				try {
@@ -104,7 +114,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 			if (!resident.isGivenKit()) {
 				TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
 			}
-					
+			
 			if (War.isWarTime() && War.isOnlyWarriors()) {
 				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
 					//Allowed to connect since player is OP or mini admin.
@@ -132,18 +142,18 @@ public class PlayerLoginAsyncTask implements Runnable {
 					String relationName = status.name();
 					
 					if (War.isWarTime() && status.equals(Relation.Status.WAR)) {
-						/* 
-						 * Test for players who were not logged in when war time started.
+						/* Test for players who were not logged in when war time started.
 						 * If they were not logged in, they are enemies, and are inside our borders
-						 * they need to be teleported back to their own town hall.
-						 */
+						 * they need to be teleported back to their own town hall. */
 						
 						if (resident.getLastOnline() < War.getStart().getTime()) {
 							resident.teleportHome();
 							CivMessage.send(resident, CivColor.LightGray+"You've been teleported back to your home since you've logged into enemy during WarTime.");
 						}
+					} else if (status.equals(Relation.Status.HOSTILE) || status.equals(Relation.Status.WAR) || this.getTown().isOutlaw(resident.getName())) {
+						resident.teleportHome();
+						CivMessage.send(resident, CivColor.LightGray+"You have been teleported home because you logged out in enemy territory.");
 					}
-					
 					CivMessage.sendCiv(cc.getCiv(), color+getPlayer().getDisplayName()+"("+relationName+") has logged-in to our borders.");
 				}
 			}
@@ -157,22 +167,35 @@ public class PlayerLoginAsyncTask implements Runnable {
 			//TODO set default modes?
 			resident.showWarnings(getPlayer());
 			resident.loadPerks();
-	
 			try {
+				String perkMessage = "";
 				if (CivSettings.getString(CivSettings.perkConfig, "system.free_perks").equalsIgnoreCase("true")) {
 					resident.giveAllFreePerks();
+					perkMessage = "You have access to the Following Perks: ";
 				} else if (CivSettings.getString(CivSettings.perkConfig, "system.free_admin_perks").equalsIgnoreCase("true")) {
 					if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
 						resident.giveAllFreePerks();
+						perkMessage = "You have access to the Following Perks:  ";
+						perkMessage += "Weather Perk -:- ";
 					}
 				}
+				if (getPlayer().hasPermission(CivSettings.SPECIAL_PERKS)) {
+					resident.giveAllSpecialPerks();
+					perkMessage += "Special Perks -:- ";
+				}
+				if (getPlayer().hasPermission(CivSettings.JUNGLE_TEMPLATES)) {
+					resident.giveAllJunglePerks();
+					perkMessage += "Jungle Templates -:- ";
+				}
+				perkMessage += "All of these useable with /res perks";
+				CivMessage.send(resident, CivColor.LightGreen+perkMessage);
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
 			
-			
 			/* Send Anti-Cheat challenge to player. */
 			if (!getPlayer().hasPermission("civ.ac_valid")) {
+				CivLog.warning("Before Checking Player");
 				resident.setUsesAntiCheat(false);
 				ACManager.sendChallenge(getPlayer());
 			} else {
@@ -233,14 +256,19 @@ public class PlayerLoginAsyncTask implements Runnable {
 			}
 			
 			if (EndConditionDiplomacy.canPeopleVote()) {
-				CivMessage.send(resident, CivColor.LightGreen+"The Council of Eight is built! Use /vote to vote for your favorite Civilization!");
+				CivMessage.send(resident, CivColor.LightGreen+"The Council of Eight is built! Use "+CivColor.BOLD+"/civ vote"+CivColor.LightGreen+" to vote for your favorite Civilization!");
+			}
+			Civilization civ = resident.getCiv();
+			if (civ != null) {
+				if (civ.MOTD() != null) {
+					CivMessage.send(resident, CivColor.LightPurple+"[Civ MOTD] "+CivColor.White+resident.getCiv().MOTD());
+				}
 			}
 		} catch (CivException playerNotFound) {
 			// Player logged out while async task was running.
 			CivLog.warning("Couldn't complete PlayerLoginAsyncTask. Player may have been kicked while async task was running.");
+		} catch (InvalidNameException e) {
+			e.printStackTrace();
 		}
 	}
-	
-
-
 }

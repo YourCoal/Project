@@ -1,5 +1,6 @@
 package com.avrgaming.civcraft.command.camp;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
@@ -17,13 +18,13 @@ import com.avrgaming.civcraft.questions.JoinCampResponse;
 import com.avrgaming.civcraft.util.CivColor;
 
 public class CampCommand extends CommandBase {
+	
 	public static final long INVITE_TIMEOUT = 30000; //30 seconds
-
+	
 	@Override
 	public void init() {
 		command = "/camp";
 		displayName = "Camp";
-		
 		commands.put("undo", "Unbuilds the camp, issues a refund.");
 		commands.put("add", "[name] - adds this player to our camp.");
 		commands.put("remove", "[name] - removes this player from our camp.");
@@ -32,6 +33,43 @@ public class CampCommand extends CommandBase {
 		commands.put("info", "Shows information about your current camp.");
 		commands.put("disband", "Disbands this camp.");
 		commands.put("upgrade", "Manage camp upgrades.");
+		commands.put("refresh", "Refresh all entitiy-type (ladders, doors, etc) blocks in your camp.");
+		commands.put("locate", "Get coordinates of your camp.");
+	}
+	
+	public void locate_cmd() throws CivException {
+		Resident resident = getResident();
+		if (!resident.hasCamp()) {
+			throw new CivException("You are not currently in a camp.");
+		}
+		Camp camp = resident.getCamp();
+		if (camp != null)  {
+			CivMessage.send(sender, "");
+			CivMessage.send(sender, CivColor.LightGray+CivColor.BOLD+"Camp Location:");
+			CivMessage.send(sender, CivColor.LightGreen+camp.getCorner());
+			CivMessage.send(sender, "");
+		}
+	}
+	
+	public void refresh_cmd() throws CivException {
+		Resident resident = getResident();
+		if (!resident.hasCamp()) {
+			throw new CivException("You are not currently in a camp.");
+		}
+		Camp camp = resident.getCamp();
+		if (camp.getOwner() != resident) {
+			throw new CivException("Only the owner of the camp can refresh it.");
+		}
+		if (camp.isDestroyed()) {
+			throw new CivException("Your camp is destroyed and cannot be refreshed.");
+		} try {
+			camp.repairFromTemplate();
+		} catch (IOException e) {
+		} catch (CivException e) {
+			e.printStackTrace();
+		}
+		camp.reprocessCommandSigns();
+		CivMessage.send(sender, "Repaired the camp. Check your Chests/firepit/garden, items were ejected by the refresh.");
 	}
 	
 	public void upgrade_cmd() {
@@ -42,24 +80,28 @@ public class CampCommand extends CommandBase {
 	public void info_cmd() throws CivException {
 		Camp camp = this.getCurrentCamp();
 		SimpleDateFormat sdf = new SimpleDateFormat("M/dd h:mm:ss a z");
-
 		CivMessage.sendHeading(sender, "Camp "+camp.getName()+" Info");
 		HashMap<String,String> info = new HashMap<String, String>();
 		info.put("Owner", camp.getOwnerName());
 		info.put("Members", ""+camp.getMembers().size());
 		info.put("Next Raid", ""+sdf.format(camp.getNextRaidDate()));
 		CivMessage.send(sender, this.makeInfoString(info, CivColor.Green, CivColor.LightGreen));
-		
 		info.clear();
 		info.put("Hours of Fire Left", ""+camp.getFirepoints());
 		info.put("Longhouse Level", ""+camp.getLonghouseLevel()+""+camp.getLonghouseCountString());
 		CivMessage.send(sender, this.makeInfoString(info, CivColor.Green, CivColor.LightGreen));
-
 		info.clear();
 		info.put("Members", camp.getMembersString());
 		CivMessage.send(sender, this.makeInfoString(info, CivColor.Green, CivColor.LightGreen));
 	}
-	
+	//XXX EDIT BELOW
+	//XXX EDIT BELOW
+	//XXX EDIT BELOW
+	//XXX EDIT BELOW
+	//XXX EDIT BELOW
+	//XXX EDIT BELOW
+	//XXX EDIT BELOW
+	//XXX EDIT BELOW
 	public void remove_cmd() throws CivException {
 		this.validCampOwner();
 		Camp camp = getCurrentCamp();

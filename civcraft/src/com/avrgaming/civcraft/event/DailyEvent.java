@@ -19,40 +19,28 @@ public class DailyEvent implements EventInterface {
 	
 	@Override
 	public void process() {
-		
-			CivLog.info("TimerEvent: Daily -------------------------------------");
-
-			while (!CultureProcessAsyncTask.cultureProcessedSinceStartup) {
-				CivLog.info("DailyTimer: Waiting for culture to finish processing.");
-				try {
-					Thread.sleep(10*1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					break;
-				}
+		CivLog.info("TimerEvent: Daily -------------------------------------");
+		while (!CultureProcessAsyncTask.cultureProcessedSinceStartup) {
+			CivLog.info("DailyTimer: Waiting for culture to finish processing.");
+			try {
+				Thread.sleep(10*1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				break;
 			}
-			
-			// TODO I don't think this timer needs to be synchronous.. we can find a way.
-			if (dailyTimerFinished) {
-				CivLog.info("Daily timer was finished, starting a new timer.");
-				dailyTimerFinished = false;
-				if (dayExecuted == 0) {
-					Calendar cal = Calendar.getInstance();
-					dayExecuted = cal.get(Calendar.DAY_OF_MONTH);
-					TaskMaster.syncTask(new DailyTimer(), 0);
-				} else {
-					try {
-						
-						throw new CivException("TRIED TO EXECUTE DAILY EVENT TWICE");
-					} catch (CivException e) {
-						e.printStackTrace();
-					}
-				}
-			} else {
-				CivLog.info("Daily timer was NOT finished. skipped.");
+		} //TODO I don't think this timer needs to be synchronous.. we can find a way.
+		CivLog.info("Daily timer was finished, starting a new timer.");
+		Calendar cal = Calendar.getInstance();
+		if (dayExecuted != cal.get(Calendar.DAY_OF_MONTH)) {
+			dayExecuted = cal.get(Calendar.DAY_OF_MONTH);
+			TaskMaster.syncTask(new DailyTimer(), 0);
+		} else {
+			try {
+				throw new CivException("TRIED TO EXECUTE DAILY EVENT TWICE: "+dayExecuted);
+			} catch (CivException e) {
+				e.printStackTrace();
 			}
-		
-	
+		}
 	}
 
 	@Override

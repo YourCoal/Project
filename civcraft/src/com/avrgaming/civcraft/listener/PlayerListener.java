@@ -51,7 +51,9 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
 import com.avrgaming.civcraft.object.CultureChunk;
+import com.avrgaming.civcraft.object.Relation;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.PlayerChunkNotifyAsyncTask;
@@ -65,6 +67,12 @@ import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarStats;
 
 public class PlayerListener implements Listener {
+	
+	private Town town;
+	public Town getTown() {
+		return town;
+	}
+	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerPickup(PlayerPickupItemEvent event) {
 		
@@ -102,6 +110,26 @@ public class PlayerListener implements Listener {
 				event.getCause().equals(TeleportCause.PLUGIN)) {
 			CivLog.info("[TELEPORT] "+event.getPlayer().getName()+" to:"+event.getTo().getBlockX()+","+event.getTo().getBlockY()+","+event.getTo().getBlockZ()+
 					" from:"+event.getFrom().getBlockX()+","+event.getFrom().getBlockY()+","+event.getFrom().getBlockZ());
+			
+			Player player = event.getPlayer();
+			if (!player.isOp() && !player.hasPermission("civ.admin")) {
+				CultureChunk cc = CivGlobal.getCultureChunk(new ChunkCoord(event.getTo()));
+				Resident resident = CivGlobal.getResident(player);
+				if (cc != null && cc.getCiv() != resident.getCiv() && !cc.getCiv().isAdminCiv()) {
+					Relation.Status status = cc.getCiv().getDiplomacyManager().getRelationStatus(player);
+					if (status.equals(Relation.Status.HOSTILE)) {
+						if (status.equals(Relation.Status.WAR)) {
+							if (this.getTown().isOutlaw(player.getName())) {
+								/* Deny telportation into Civ if not allied. */
+								if (!event.isCancelled()) {
+									event.setCancelled(true);
+									CivMessage.send(resident, CivColor.Red+CivColor.BOLD+"[TELEPORT] "+CivColor.White+"Cannot teleport to ["+CivColor.Green+cc.getCiv().getName()+CivColor.White+"] since you are hostile or war.");
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 		
@@ -142,17 +170,13 @@ public class PlayerListener implements Listener {
 			speed *= CivSettings.T4_metal_speed;
 		}
 		
-		Resident resident = CivGlobal.getResident(player);
-		if (resident != null && resident.isOnRoad()) {	
-			if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
-				Vector vec = player.getVehicle().getVelocity();
-				double yComp = vec.getY();
+		if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
+			Vector vec = player.getVehicle().getVelocity();
+			double yComp = vec.getY();
 				vec.setY(yComp); /* Do not multiply y velocity. */
-				player.getVehicle().setVelocity(vec);
+			player.getVehicle().setVelocity(vec);
 			} else {
-			}
 		}
-		
 		player.setWalkSpeed((float) Math.min(1.0f, speed));
 	}
 	

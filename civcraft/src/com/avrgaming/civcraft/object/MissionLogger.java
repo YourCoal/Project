@@ -44,12 +44,7 @@ public class MissionLogger {
 		hashmap.put("town_id", town.getId());
 		hashmap.put("target_id", target.getId());
 		hashmap.put("time", new Date());
-		if (CivGlobal.useUUID) {
-			hashmap.put("playerName", resident.getUUIDString());
-		} else {
-			hashmap.put("playerName", resident.getName());		
-		}
-		
+		hashmap.put("playerName", resident.getUUIDString());
 		hashmap.put("missionName", missionName);
 		hashmap.put("result", result);
 		
@@ -82,18 +77,13 @@ public class MissionLogger {
 					}
 					
 					String playerName = rs.getString("playerName");
-					if (CivGlobal.useUUID) {
-						playerName = CivGlobal.getResidentViaUUID(UUID.fromString(playerName)).getName();
-					}
-					
+					playerName = CivGlobal.getResidentViaUUID(UUID.fromString(playerName)).getName();
 					String str = sdf.format(date)+" - "+rs.getString("playerName")+":"+target.getName()+":"+rs.getString("missionName")+" -- "+rs.getString("result");
 					out.add(str);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-			}
-			
-			return out;
+			} return out;
 		} finally {
 			SQL.close(rs, ps, context);
 		}
