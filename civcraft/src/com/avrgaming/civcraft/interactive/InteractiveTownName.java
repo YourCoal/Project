@@ -31,7 +31,7 @@ public class InteractiveTownName implements InteractiveResponse {
 			return;
 		}
 		
-		if (!StringUtils.isAlpha(message)) {
+		if (!StringUtils.isAlpha(message) || !StringUtils.isAsciiPrintable(message)) {
 			CivMessage.send(player, CivColor.Rose+ChatColor.BOLD+"Town names must only contain letters(A-Z). Enter another name.");
 			return;
 		}

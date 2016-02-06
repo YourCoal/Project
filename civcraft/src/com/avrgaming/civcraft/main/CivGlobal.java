@@ -166,6 +166,8 @@ public class CivGlobal {
 	public static boolean warningsEnabled = true;
 	public static boolean tradeEnabled = true;
 	public static boolean loadCompleted = false;
+	public static boolean speedChunks = false;
+	public static int minBuildHeight = 16;
 
 	public static ArrayList<Town> orphanTowns = new ArrayList<Town>();
 	public static ArrayList<Civilization> orphanCivs = new ArrayList<Civilization>();
@@ -188,8 +190,8 @@ public class CivGlobal {
 		loadResidents();
 		loadPermissionGroups();
 		loadTownChunks();
-		loadStructures();
 		loadWonders();
+		loadStructures();
 		loadWallBlocks();
 		loadTradeGoods();
 		loadTradeGoodies();
@@ -244,6 +246,18 @@ public class CivGlobal {
 		objective2.setDisplayName("OBJECTIVE2 NAME HERE");*/
 		
 		checkForInvalidStructures();
+		try {
+			minBuildHeight = CivSettings.getInteger(CivSettings.civConfig, "global.min_build_height");
+		} catch (InvalidConfiguration e) {
+			minBuildHeight = 1;
+			e.printStackTrace();
+		} try {
+			speedChunks = CivSettings.getBoolean(CivSettings.civConfig, "global.speed_check_chunks");
+		} catch (InvalidConfiguration e) {
+			speedChunks = false;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		loadCompleted = true;
 	}
 	

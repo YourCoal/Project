@@ -46,6 +46,7 @@ import com.avrgaming.civcraft.listener.DebugListener;
 import com.avrgaming.civcraft.listener.DisableXPListener;
 import com.avrgaming.civcraft.listener.MarkerPlacementManager;
 import com.avrgaming.civcraft.listener.PlayerListener;
+import com.avrgaming.civcraft.listener.armor.ArmorListener;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterialListener;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
 import com.avrgaming.civcraft.mobs.MobSpawner;
@@ -79,6 +80,7 @@ import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
 import com.avrgaming.civcraft.threading.timers.PlayerProximityComponentTimer;
 import com.avrgaming.civcraft.threading.timers.ReduceExposureTimer;
 import com.avrgaming.civcraft.threading.timers.RegenTimer;
+import com.avrgaming.civcraft.threading.timers.TwentySecondTimer;
 import com.avrgaming.civcraft.threading.timers.UnitTrainTimer;
 import com.avrgaming.civcraft.threading.timers.UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.WindmillTimer;
@@ -93,8 +95,9 @@ import com.avrgaming.sls.SLSManager;
 
 public final class CivCraft extends JavaPlugin {
 
-	private boolean isError = false;	
-	private static JavaPlugin plugin;	
+	private boolean isError = false;
+	private static JavaPlugin plugin;
+	public static boolean isDisable = false;
 	
 	private void startTimers() {
 		
@@ -126,6 +129,7 @@ public final class CivCraft extends JavaPlugin {
 		
 		// Structure event timers
 		TaskMaster.asyncTimer("UpdateEventTimer", new UpdateEventTimer(), TimeTools.toTicks(1));
+		TaskMaster.asyncTimer("TwentySecondTimer", new TwentySecondTimer(), TimeTools.toTicks(20));
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
 
 		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
@@ -194,6 +198,7 @@ public final class CivCraft extends JavaPlugin {
 		pluginManager.registerEvents(new WarListener(), this);
 		pluginManager.registerEvents(new FishingListener(), this);	
 		pluginManager.registerEvents(new PvPListener(), this);
+		pluginManager.registerEvents(new ArmorListener(getConfig().getStringList("blocked")), this);
 		
 //		if (hasPlugin("TagAPI")) {
 //			pluginManager.registerEvents(new TagAPIListener(), this);
@@ -259,7 +264,6 @@ public final class CivCraft extends JavaPlugin {
 		getCommand("here").setExecutor(new HereCommand());
 		getCommand("camp").setExecutor(new CampCommand());
 		getCommand("kill").setExecutor(new KillCommand());
-	
 		registerEvents();
 		
 		if (hasPlugin("NoCheatPlus")) {
@@ -269,8 +273,7 @@ public final class CivCraft extends JavaPlugin {
 		}
 		MobLib.registerAllEntities();
 		startTimers();
-		MobSpawner.register();
-				
+		MobSpawner.register();	
 		//creativeInvPacketManager.init(this);		
 	}
 	
@@ -283,6 +286,9 @@ public final class CivCraft extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		MobSpawner.despawnAll();
+		super.onDisable();
+		isDisable = true;
+		SQLUpdate.save();
 	}
 
 	public boolean isError() {

@@ -41,7 +41,6 @@ import org.bukkit.util.Vector;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigTechPotion;
-import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.items.units.UnitItemMaterial;
 import com.avrgaming.civcraft.items.units.UnitMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreMaterial;
@@ -135,65 +134,36 @@ public class PlayerListener implements Listener {
 		
 	private void setModifiedMovementSpeed(Player player) {
 		/* Change move speed based on armor. */
-		double speed = CivSettings.normal_speed;
-		
-		/* Set speed from armor. */
-		if (Unit.isWearingFullComposite(player)) {
-			speed *= CivSettings.T4_leather_speed;
-		}
-		
-		if (Unit.isWearingFullHardened(player)) {
-			speed *= CivSettings.T3_leather_speed;
-		}
-		
-		if (Unit.isWearingFullRefined(player)) {
-			speed *= CivSettings.T2_leather_speed;
-		}
-		
-		if (Unit.isWearingFullBasicLeather(player)) {
-			speed *= CivSettings.T1_leather_speed;
-		}
-		
-		if (Unit.isWearingAnyIron(player)) {
-			speed *= CivSettings.T1_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyChain(player)) {
-			speed *= CivSettings.T2_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyGold(player)) {
-			speed *= CivSettings.T3_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyDiamond(player)) {
-			speed *= CivSettings.T4_metal_speed;
-		}
-		
-		if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
-			Vector vec = player.getVehicle().getVelocity();
-			double yComp = vec.getY();
+		double speed;
+		Resident resident = CivGlobal.getResident(player);
+		if (resident != null) {
+			speed = resident.getWalkingModifier();
+			if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
+				Vector vec = player.getVehicle().getVelocity();
+				double yComp = vec.getY();
 				vec.setY(yComp); /* Do not multiply y velocity. */
-			player.getVehicle().setVelocity(vec);
+				player.getVehicle().setVelocity(vec);
 			} else {
+		}
+		} else {
+			speed =CivSettings.normal_speed;
 		}
 		player.setWalkSpeed((float) Math.min(1.0f, speed));
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerMove(PlayerMoveEvent event) {
-		/*
-		 * Abort if we havn't really moved
-		 */
+		/* Abort if we havn't really moved */
 		if (event.getFrom().getBlockX() == event.getTo().getBlockX() && 
 			event.getFrom().getBlockZ() == event.getTo().getBlockZ() && 
 			event.getFrom().getBlockY() == event.getTo().getBlockY()) {
 			return;
 		}
 		
-		/* Test for enchants effecting movement. */
-		/* TODO can speed be set once? If so we should only calculate speed change when our armor changes. */
-		setModifiedMovementSpeed(event.getPlayer());
+		if (!CivGlobal.speedChunks) {
+			/* Get the Modified Speed for the player. */
+			setModifiedMovementSpeed(event.getPlayer());
+		}
 				
 		ChunkCoord fromChunk = new ChunkCoord(event.getFrom());
 		ChunkCoord toChunk = new ChunkCoord(event.getTo());
@@ -203,9 +173,12 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
+		if (CivGlobal.speedChunks) {
+			/* Get the Modified Speed for the player. */
+			setModifiedMovementSpeed(event.getPlayer());
+		}
 		TaskMaster.asyncTask(PlayerChunkNotifyAsyncTask.class.getSimpleName(), 
-				new PlayerChunkNotifyAsyncTask(event.getFrom(), event.getTo(), event.getPlayer().getName()), 0);
-
+			new PlayerChunkNotifyAsyncTask(event.getFrom(), event.getTo(), event.getPlayer().getName()), 0);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -252,7 +225,6 @@ public class PlayerListener implements Listener {
 	public void onEntityDeath(EntityDeathEvent event) {
 		if (event.getEntity() instanceof Player) {
 			//Unit.removeUnit(((Player)event.getEntity()));
-			
 			ArrayList<ItemStack> stacksToRemove = new ArrayList<ItemStack>();
 			for (ItemStack stack : event.getDrops()) {
 				if (stack != null) {
@@ -264,7 +236,6 @@ public class PlayerListener implements Listener {
 							stacksToRemove.add(stack);
 							continue;
 						}
-						
 						if (material instanceof UnitItemMaterial) {
 							stacksToRemove.add(stack);
 							continue;
@@ -272,7 +243,6 @@ public class PlayerListener implements Listener {
 					}
 				}
 			}
-			
 			for (ItemStack stack : stacksToRemove) {
 				event.getDrops().remove(stack);
 			}
@@ -282,6 +252,9 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		if (War.isWarTime()) {
+			if (event.getEntity() != null) {
+				WarStats.incrementPlayerDeaths(event.getEntity().getName());
+			}
 			if (event.getEntity().getKiller() != null) {
 				WarStats.incrementPlayerKills(event.getEntity().getKiller().getName());
 			}

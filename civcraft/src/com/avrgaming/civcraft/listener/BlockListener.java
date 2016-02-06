@@ -20,6 +20,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
@@ -46,6 +47,8 @@ import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
@@ -56,6 +59,7 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
@@ -70,6 +74,7 @@ import com.avrgaming.civcraft.camp.CampBlock;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigTempleSacrifice;
 import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
@@ -231,7 +236,21 @@ public class BlockListener implements Listener {
 			}
 		}
 	}
-
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onEntityDamageByEntityEvent(LightningStrikeEvent event) {
+//		CivLog.debug("LightningStrike: "+event.getLightning().getUniqueId());
+//		event.setCancelled(true);
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onEntityDamageEvent(EntityDamageEvent event) {
+		if (event.getCause().equals(DamageCause.LIGHTNING)) {
+//		CivLog.debug("onEntityDamageEvent LightningStrike: "+event.getEntity().getUniqueId());
+//		event.setCancelled(true);
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
 		/* Protect the Protected Item Frames! */
@@ -242,21 +261,29 @@ public class BlockListener implements Listener {
 				return;
 			}
 		}
-
+		
 		if (!(event.getEntity() instanceof Player)) {			
 			return;
-		}	
-
+		}
+		
+		if (event.getDamager() instanceof LightningStrike) {
+//			CivLog.debug("onEntityDamageByEntityEvent LightningStrike: "+event.getDamager().getUniqueId());
+			try {
+				event.setDamage(CivSettings.getInteger(CivSettings.warConfig, "tesla_tower.damage"));
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
+		
 		Player defender = (Player)event.getEntity();
 		/* Only protect agaisnt players and entities that players can throw. */
 		if (!CivSettings.playerEntityWeapons.contains(event.getDamager().getType())) {
 			return;
 		}
-
+		
 		if (event.getDamager() instanceof Arrow) {
-
 		}
-
+		
 		if (event.getDamager() instanceof Fireball) {
 			CannonFiredCache cfc = CivCache.cannonBallsFired.get(event.getDamager().getUniqueId());
 			if (cfc != null) {
@@ -1046,6 +1073,12 @@ public class BlockListener implements Listener {
 					case JUNGLE_DOOR:
 					case ACACIA_DOOR:
 					case DARK_OAK_DOOR:
+                    case FENCE_GATE:
+                    case BIRCH_FENCE_GATE:
+                    case SPRUCE_FENCE_GATE:
+                    case JUNGLE_FENCE_GATE:
+					case ACACIA_FENCE_GATE:
+                    case DARK_OAK_FENCE_GATE:
 						return;
 					default:
 						break;

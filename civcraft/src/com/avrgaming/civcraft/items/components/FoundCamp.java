@@ -87,11 +87,10 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 			}
 		}
 		TaskMaster.syncTask(new SyncTask(event.getPlayer().getName()));
-		
 		return;
-		
 	}
-
+	
+	//XXX Edit timings when messages are displayed.
 	@Override
 	public void execute(String playerName) {
 		Player player;
@@ -101,13 +100,18 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 			return;
 		}
 		Resident resident = CivGlobal.getResident(playerName);
-		
-		CivMessage.sendHeading(player, "Setting up Camp!");
-		CivMessage.send(player, CivColor.LightGreen+"You and your small band of travelers need a place to sleep for the night.");
-		CivMessage.send(player, " ");
-		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new camp be called?");
-		CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
-		
-		resident.setInteractiveMode(new InteractiveCampName());
+		try {
+			Thread.sleep(1500);
+			CivMessage.sendHeading(player, "Setting up Camp!");
+			CivMessage.send(player, CivColor.LightGreen+"You and your small band of travelers need a place to sleep for the night.");
+			CivMessage.send(player, " ");
+			Thread.sleep(1750);
+			CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new camp be called?");
+			Thread.sleep(1000);
+			CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
+			resident.setInteractiveMode(new InteractiveCampName());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

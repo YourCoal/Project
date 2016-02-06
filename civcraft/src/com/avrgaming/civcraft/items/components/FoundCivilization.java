@@ -30,22 +30,18 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 	}
 	
 	public void foundCiv(Player player) throws CivException {
-		
 		Resident resident = CivGlobal.getResident(player);
 		if (resident == null) {
 			throw new CivException("You must be a registered resident to found a civ. This shouldn't happen. Contact an admin.");
 		}
 			
-		/*
-		 * Build a preview for the Capitol structure.
-		 */
+		/* Build a preview for the Capitol structure. */
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Checking structure position...Please wait.");
 		ConfigBuildableInfo info = CivSettings.structures.get("s_capitol");
-		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);	
+		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);
 	}
 	
 	public void onInteract(PlayerInteractEvent event) {
-		
 		event.setCancelled(true);
 		if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) &&
 				!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
