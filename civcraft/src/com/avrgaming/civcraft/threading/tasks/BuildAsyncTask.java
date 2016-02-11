@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.threading.tasks;
 
 import java.sql.SQLException;
@@ -41,7 +59,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 	public Boolean aborted = false;
 	public Date lastSave; 
 	
-	private final int SAVE_INTERVAL = 4*1000; /* once every 4 sec. */
+	private final int SAVE_INTERVAL = 5*1000; /* once every 5 sec. */
 	
 	public BuildAsyncTask(Buildable bld, Template t, int s, int blocks_per_tick, Block center ) {
 		buildable = bld;
@@ -87,7 +105,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (buildable.getTown().getMotherCiv() != null) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while we're conquered by "+buildable.getTown().getCiv().getName());
 					try {
-						Thread.sleep(900000); //15 min notify.
+						Thread.sleep(1800000); //30 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -97,7 +115,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (inProgress != null && inProgress != buildable) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while we're constructing a "+inProgress.getDisplayName());
 					try {
-						Thread.sleep(60000); //1 min notify.
+						Thread.sleep(600000); //10 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -106,7 +124,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (buildable.getTown().getTownHall() == null) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while you have no town hall.");
 					try {
-						Thread.sleep(60000); //1 min notify.
+						Thread.sleep(600000); //10 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -255,15 +273,13 @@ public class BuildAsyncTask extends CivAsyncTask {
 		// of the build task async.
 		synchronized (this.aborted) {
 			if (!this.aborted) {
-				if (sb.getType() == CivData.IRON_DOOR || sb.getType() == CivData.WOOD_DOOR || sb.getType() == CivData.BIRCH_DOOR ||
-					sb.getType() == CivData.SPRUCE_DOOR || sb.getType() == CivData.JUNGLE_DOOR || sb.getType() == CivData.ACACIA_DOOR ||
-					sb.getType() == CivData.DARK_OAK_DOOR || Template.isAttachable(sb.getType())) {
+				if (sb.getType() == CivData.WOOD_DOOR || sb.getType() == CivData.IRON_DOOR) {
 					// dont build doors, save it for post sync build.
 				}
 				else {
 					sbs.add(sb);
 				}
-				
+			
 				if (buildable.isDestroyable() == false && sb.getType() != CivData.AIR) {
 					if (sb.specialType != Type.COMMAND) {
 						BlockCoord coord = new BlockCoord(sb.worldname, sb.x, sb.y, sb.z);

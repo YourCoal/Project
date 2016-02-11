@@ -35,11 +35,7 @@ public class ShowRecipe implements GuiAction {
 		} else {
 			LoreCraftableMaterial cmat = LoreCraftableMaterial.getCraftMaterialFromId(ingred.custom_id);
 			name = cmat.getName();
-			if (cmat.getConfigMaterial().ingredients == null) {
-				message = "Not Craftable";	
-			} else {	
-				message = "Click For Recipe";
-			}
+			message = "Click For Recipe";
 			entryStack = LoreCraftableMaterial.spawn(cmat);
 			entryStack = LoreGuiItem.asGuiItem(entryStack);
 			entryStack = LoreGuiItem.setAction(entryStack, "ShowRecipe");
@@ -103,7 +99,7 @@ public class ShowRecipe implements GuiAction {
 		Player player = (Player)event.getWhoClicked();
 		
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
-		if (craftMat == null || craftMat.getConfigMaterial().ingredients == null) {
+		if (craftMat == null) {
 			/* Do nothing for now. */
 			return;
 		}

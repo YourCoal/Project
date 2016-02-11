@@ -1,6 +1,23 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.structure;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -56,13 +73,13 @@ import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PlotPermissions;
+import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.structurevalidation.StructureValidator;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.template.Template.TemplateType;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
-import com.avrgaming.civcraft.threading.tasks.BuildUndoTask;
 import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
 import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.AABB;
@@ -75,7 +92,6 @@ import com.avrgaming.civcraft.util.FireworkEffectPlayer;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.SimpleBlock.Type;
-import com.avrgaming.civcraft.war.War;
 import com.avrgaming.global.perks.Perk;
 import com.wimbli.WorldBorder.BorderData;
 import com.wimbli.WorldBorder.Config;
@@ -130,7 +146,6 @@ public abstract class Buildable extends SQLObject {
 	public Town getTown() {
 		return town;
 	}
-	
 	public void setTown(Town town) {
 		this.town = town;
 	}
@@ -237,8 +252,8 @@ public abstract class Buildable extends SQLObject {
 		return info.tile_improvement;
 	}
 	
-	public boolean isActive() {
-		return this.isComplete() && (this.isTownHall() || !isDestroyed()) && isEnabled();
+	public boolean isActive() {	
+		return this.isComplete() && !isDestroyed() && isEnabled();
 	}
 
 	public abstract void processUndo() throws CivException;
@@ -364,7 +379,6 @@ public abstract class Buildable extends SQLObject {
 				}
 			}
 		}
-		this.save();
 	}
 	
 	public void buildPlayerPreview(Player player, Location centerLoc) throws CivException, IOException {
@@ -414,7 +428,10 @@ public abstract class Buildable extends SQLObject {
 			return;
 		}
 		
+
+		
 		Template tpl;
+		
 		tpl = new Template();
 		try {
 			tpl.initTemplate(centerLoc, this);
@@ -425,8 +442,10 @@ public abstract class Buildable extends SQLObject {
 			e.printStackTrace();
 			throw e;
 		}
+		
 		buildPlayerPreview(player, centerLoc, tpl);
 	}
+	
 	
 	public void buildPlayerPreview(Player player, Location centerLoc, Template tpl) throws CivException, IOException {
 		centerLoc = repositionCenter(centerLoc, tpl.dir(), tpl.size_x, tpl.size_z);
@@ -439,12 +458,7 @@ public abstract class Buildable extends SQLObject {
 				" the structure's location.");
 		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"If this location looks good, type 'yes'. Otherwise, type anything else to cancel building.");
 		Resident resident = CivGlobal.getResident(player);
-		if (!War.isWarTime()) {
-			resident.startPreviewTask(tpl, centerLoc.getBlock(), player.getUniqueId());
-		}
-		if (War.isWarTime()) {
-			CivMessage.send(resident, CivColor.Rose+CivColor.ITALIC+"Because it is WarTime, you will not see a preview of this structure.");
-		}
+		resident.startPreviewTask(tpl, centerLoc.getBlock(), player.getUniqueId());
 		
 		/* Run validation on position. */
 		//validate(player, this, tpl, centerLoc, null);
@@ -508,19 +522,16 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	public void undoFromTemplate() throws IOException, CivException {
+		Template undo_tpl = new Template();
+		undo_tpl.initUndoTemplate(this.getCorner().toString(), this.getTown().getName());
+		undo_tpl.buildUndoTemplate(undo_tpl, this.getCorner().getBlock());
+		
 		for (BuildAsyncTask task : this.getTown().build_tasks) {
 			if (task.buildable == this) {
 				task.abort();
 			}
 		}
-		String filepath = "templates/undo/"+this.getTown().getName()+"/"+this.getCorner().toString();
-		File f = new File(filepath);
-		if(!f.exists()) {
-			throw new CivException("File Not found: "+filepath);
-		}
-		BuildUndoTask task = new BuildUndoTask(filepath, this.getCorner().toString(), this.getCorner(), 0, this.getTown().getName());
-		this.town.undo_tasks.add(task);
-		BukkitObjects.scheduleAsyncDelayedTask(task, 0);
+		undo_tpl.deleteUndoTemplate(this.getCorner().toString(), this.getTown().getName());
 	}
 	
 	public void unbindStructureBlocks() {
@@ -682,6 +693,7 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	protected void checkBlockPermissionsAndRestrictions(Player player, Block centerBlock, int regionX, int regionY, int regionZ, Location origin) throws CivException {
+		
 		boolean foundTradeGood = false;
 		TradeOutpost tradeOutpost = null;
 		boolean ignoreBorders = false;
@@ -750,7 +762,7 @@ public abstract class Buildable extends SQLObject {
 		}
 		
 		if (this.isTileImprovement()) {
-			//ignoreBorders = true;
+			ignoreBorders = true;
 			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
 			
 			if (getTown().getTileImprovementCount() >= level.tile_improvements) {
@@ -779,12 +791,9 @@ public abstract class Buildable extends SQLObject {
 			throw new CivException("You're too high to build structures.");
 		}
 		
-		if (centerBlock.getLocation().getY() <= 12) {
+		if (centerBlock.getLocation().getY() <= 7) {
 			throw new CivException("You can not place structures this close to bedrock!");
-		}
 		
-		if (player.getLocation().getY() < CivGlobal.minBuildHeight) {
-			throw new CivException("Cannot build here, you must be closer to the surface.");
 		}
 		
 		if ((regionY + centerBlock.getLocation().getBlockY()) >= 255) {
@@ -806,15 +815,16 @@ public abstract class Buildable extends SQLObject {
 //		}
 		
 		onCheck();
+		
+		LinkedList<RoadBlock> deletedRoadBlocks = new LinkedList<RoadBlock>();
 		ArrayList<ChunkCoord> claimCoords = new ArrayList<ChunkCoord>();
 		for (int x = 0; x < regionX; x++) {
 			for (int y = 0; y < regionY; y++) {
 				for (int z = 0; z < regionZ; z++) {
 					Block b = centerBlock.getRelative(x, y, z);
-					String coordinateString = " x: "+b.getX()+" y: "+b.getY()+" z: "+b.getZ();
 					
 					if (ItemManager.getId(b) == CivData.CHEST) {
-						throw new CivException("Cannot build here, would destroy chest: "+coordinateString);
+						throw new CivException("Cannot build here, would destroy chest.");
 					}
 										
 					TownChunk tc = CivGlobal.getTownChunk(b.getLocation());
@@ -824,17 +834,16 @@ public abstract class Buildable extends SQLObject {
 					
 					if (tc != null && !tc.perms.hasPermission(PlotPermissions.Type.DESTROY, CivGlobal.getResident(player))) {
 						// Make sure we have permission to destroy any block in this area.
-						throw new CivException("Cannot build here, you need DESTROY permissions to the block: "+coordinateString);
+						throw new CivException("Cannot build here, you need DESTROY permissions to the block at "+b.getX()+","+b.getY()+","+b.getZ());
 					}
-					
+		
 					BlockCoord coord = new BlockCoord(b);
 					ChunkCoord chunkCoord = new ChunkCoord(coord.getLocation());
 
 					if (tradeOutpost == null) {
 						//not building a trade outpost, prevent protected blocks from being destroyed.
 						if (CivGlobal.getProtectedBlock(coord) != null) {
-							CivGlobal.removeProtectedBlock(coord);
-							CivLog.warning("Removed Protected Block during construction: "+coordinateString);
+							throw new CivException("Cannot build here, protected blocks in the way.");
 						}
 					} else {
 						if (CivGlobal.getTradeGood(coord) != null) {
@@ -847,29 +856,34 @@ public abstract class Buildable extends SQLObject {
 					}
 					
 					if (CivGlobal.getStructureBlock(coord) != null) {
-						throw new CivException("Cannot build here, structure blocks in the way: "+coordinateString);
+						throw new CivException("Cannot build here, structure blocks in the way.");
 					}
 				
 					if (CivGlobal.getFarmChunk(new ChunkCoord(coord.getLocation())) != null) {
-						throw new CivException("Cannot build here, in the same chunk as a farm improvement: "+coordinateString);
+						throw new CivException("Cannot build here, in the same chunk as a farm improvement.");
 					}
 		
 					if (CivGlobal.getWallChunk(chunkCoord) != null) {
-						throw new CivException("Cannot build here, in the same chunk as a wall improvement: "+coordinateString);
+						throw new CivException("Cannot build here, in the same chunk as a wall improvement.");
 					}
 					
 					if (CivGlobal.getCampBlock(coord) != null) {
-						throw new CivException("Cannot build here, structure blocks in the way: "+coordinateString);
+						throw new CivException("Cannot build here, structure blocks in the way.");
 					}
 					
 					if (CivGlobal.getBuildablesAt(coord) != null) {
-						throw new CivException("Cannot build here, there is already a structure here: "+coordinateString);
+						throw new CivException("Cannot build here, there is already a structure here.");
 					}
 					
+					RoadBlock rb = CivGlobal.getRoadBlock(coord);
+					if (rb != null) {
+						deletedRoadBlocks.add(rb);
+					}
+				
 					BorderData border = Config.Border(b.getWorld().getName());
 					if (border != null) {
 						if(!border.insideBorder(b.getLocation().getX(), b.getLocation().getZ(), Config.ShapeRound())) {
-							throw new CivException("Cannot build here. Part of the structure would sit beyond the world border: "+coordinateString);
+							throw new CivException("Cannot build here. Part of the structure would sit beyond the world border.");
 						}
 					}
 				}
@@ -889,6 +903,12 @@ public abstract class Buildable extends SQLObject {
 			} catch (Exception e) {
 			}
 		}
+		
+		/* Delete any road blocks we happen to come across. */
+		for (RoadBlock rb : deletedRoadBlocks) {
+			rb.getRoad().deleteRoadBlock(rb);
+		}
+		
 	}
 	
 	public void onCheck() throws CivException {

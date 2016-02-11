@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.command.resident;
 
 import com.avrgaming.civcraft.command.CommandBase;
@@ -19,14 +37,8 @@ public class ResidentToggleCommand extends CommandBase {
 		commands.put("showscout", "Toggles displaying of scout tower messages.");
 		commands.put("combatinfo", "Toggles displaying of combat information.");
 		commands.put("itemdrops", "Toggles displaying of item drops.");
-		commands.put("titles", "Toggles displaying of titles on screen.");
 		
 	}
-	
-	public void titles_cmd() throws CivException {
-		toggle();
-	}
-	
 	public void itemdrops_cmd() throws CivException {
 		toggle();
 	}
@@ -59,10 +71,6 @@ public class ResidentToggleCommand extends CommandBase {
 	
 		boolean result;
 		switch(args[0].toLowerCase()) {
-		case "titles":
-			resident.setTitleAPI(!resident.isTitleAPI());
-			result = resident.isTitleAPI();
-			break;
 		case "map":
 			resident.setShowMap(!resident.isShowMap());
 			result = resident.isShowMap();

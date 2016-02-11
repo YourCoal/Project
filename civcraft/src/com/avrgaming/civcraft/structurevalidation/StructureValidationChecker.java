@@ -11,7 +11,7 @@ import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.war.War;
 
 public class StructureValidationChecker implements Runnable {
-	
+
 	@Override
 	public void run() {
 		Iterator<Entry<BlockCoord, Structure>> structIter = CivGlobal.getStructureIterator();
@@ -20,21 +20,27 @@ public class StructureValidationChecker implements Runnable {
 			if (struct.getCiv().isAdminCiv()) {
 				continue;
 			}
+			
 			if (War.isWarTime()) {
 				/* Don't do any work once it's war time. */
 				break;
 			}
+			
 			if (!struct.isActive()) {
 				continue;
 			}
+			
 			if (struct.isIgnoreFloating()) {
 				continue;
-			} try {
-				CivLog.warning("Doing a structure validate on "+struct.getDisplayName());
+			}
+			
+			try {
+				CivLog.warning("Doing a structure validate...");
 				struct.validate(null);
 			} catch (CivException e) {
 				e.printStackTrace();
 			}
+			
 			synchronized (this) {
 				try {
 					this.wait(10000);
@@ -44,4 +50,5 @@ public class StructureValidationChecker implements Runnable {
 			}
 		}
 	}
+
 }

@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.permission;
 
 import java.sql.ResultSet;
@@ -43,15 +61,27 @@ public class PermissionGroup extends SQLObject {
 	}
 
 	public void addMember(Resident res) {
-		members.put(res.getUUIDString(), res);
+		if (CivGlobal.useUUID) {
+			members.put(res.getUUIDString(), res);
+		} else {
+			members.put(res.getName(), res);
+		}
 	}
 	
 	public void removeMember(Resident res) {
-		members.remove(res.getUUIDString());
+		if (CivGlobal.useUUID) {
+			members.remove(res.getUUIDString());
+		} else {		
+			members.remove(res.getName());
+		}
 	}
 
 	public boolean hasMember(Resident res) {		
-		return members.containsKey(res.getUUIDString());
+		if (CivGlobal.useUUID) {
+			return members.containsKey(res.getUUIDString());
+		} else {
+			return members.containsKey(res.getName());	
+		}
 	}
 	
 	public void clearMembers() {
@@ -85,6 +115,7 @@ public class PermissionGroup extends SQLObject {
 		this.setTownId(rs.getInt("town_id"));
 		this.setCivId(rs.getInt("civ_id"));
 		loadMembersFromSaveString(rs.getString("members"));
+		
 		if (this.getTownId() != 0) {
 			this.cacheTown = CivGlobal.getTownFromId(this.getTownId());		
 			this.getTown().addGroup(this);
@@ -110,6 +141,7 @@ public class PermissionGroup extends SQLObject {
 	@Override
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
+		
 		hashmap.put("name", this.getName());
 		hashmap.put("members", this.getMembersSaveString());
 		hashmap.put("town_id", this.getTownId());
@@ -128,18 +160,24 @@ public class PermissionGroup extends SQLObject {
 		
 		for (String name : members.keySet()) {
 			ret += name + ",";
-		} return ret;
+		}
+		
+		return ret;
 	}
 	
 	private void loadMembersFromSaveString(String src) {
 		String[] names = src.split(",");
+		
 		for (String n : names) {
 			Resident res;
-			if (n.length() >= 1) {
+			if (CivGlobal.useUUID) {
 				res = CivGlobal.getResidentViaUUID(UUID.fromString(n));
-				if (res != null) {
-					members.put(n, res);
-				}
+			} else {
+				res = CivGlobal.getResident(n);		
+			}
+			
+			if (res != null) {
+				members.put(n, res);
 			}
 		}
 	}
@@ -205,10 +243,18 @@ public class PermissionGroup extends SQLObject {
 	
 	public String getMembersString() {
 		String out = "";
+		
+		if (CivGlobal.useUUID) {
 			for (String uuid : members.keySet()) {
 				Resident res = CivGlobal.getResidentViaUUID(UUID.fromString(uuid));
 				out += res.getName()+", ";
-		} return out;
+			}
+		} else {
+			for (String name : members.keySet()) {
+				out += name+", ";
+			}
+		}
+		return out;
 	}
 
 	public int getCivId() {

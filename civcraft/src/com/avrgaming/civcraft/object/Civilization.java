@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.object;
 
 import java.sql.ResultSet;
@@ -98,14 +116,13 @@ public class Civilization extends SQLObject {
 	public boolean scoutDebug = false;
 	public String scoutDebugPlayer = null;
 	
-	public String messageOfTheDay = "";
-	
 	private LinkedList<WarCamp> warCamps = new LinkedList<WarCamp>();
 	
 	public Civilization(String name, String capitolName, Resident leader) throws InvalidNameException {
 		this.setName(name);
-		this.leaderName = leader.getUUID().toString();
+		this.leaderName = leader.getName();
 		this.setCapitolName(capitolName);
+		
 		this.government = CivSettings.governments.get("gov_tribalism");		
 		this.color = this.pickCivColor();		
 		this.setTreasury(new EconObject(this));
@@ -139,7 +156,6 @@ public class Civilization extends SQLObject {
 					"`coins` double DEFAULT 0,"+
 					"`daysInDebt` int NOT NULL DEFAULT '0',"+
 					"`techs` mediumtext DEFAULT NULL," +
-					"`motd` mediumtext DEFAULT NULL,"+
 					"`researchTech` mediumtext DEFAULT NULL,"+
 					"`researchProgress` float NOT NULL DEFAULT 0,"+
 					"`researched` mediumtext DEFAULT NULL, "+
@@ -165,17 +181,19 @@ public class Civilization extends SQLObject {
 			SQL.makeCol("conquered", "booelan", TABLE_NAME);
 			SQL.makeCol("conquered_date", "long", TABLE_NAME);
 			SQL.makeCol("created_date", "long", TABLE_NAME);
-			SQL.makeCol("motd", "mediumtext", TABLE_NAME);
 		}
 	}
 
 	@Override
 	public void load(ResultSet rs) throws SQLException, InvalidNameException {
 		this.setId(rs.getInt("id"));
-		this.setName(rs.getString("name"));	
-		
-		String resUUID = rs.getString("leaderName");
-		leaderName = resUUID;
+		this.setName(rs.getString("name"));		
+
+		if (CivGlobal.useUUID) {
+			leaderName = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("leaderName"))).getName();
+		} else {
+			leaderName = rs.getString("leaderName");		
+		}
 		
 		capitolName = rs.getString("capitolName");
 		setLeaderGroupName(rs.getString("leaderGroupName"));
@@ -212,13 +230,6 @@ public class Civilization extends SQLObject {
 			this.created_date = new Date(ctime);
 		}
 		
-		String motd = rs.getString("motd");
-		if (motd == null || motd == "") {
-			this.messageOfTheDay = null;
-		} else {
-			this.messageOfTheDay = motd;
-		}
-		
 		this.setTreasury(new EconObject(this));
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
 		this.getTreasury().setDebt(rs.getDouble("debt"));
@@ -233,7 +244,11 @@ public class Civilization extends SQLObject {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-		hashmap.put("leaderName", this.getLeader().getUUIDString());
+		if (CivGlobal.useUUID) {
+			hashmap.put("leaderName", this.getLeader().getUUIDString());
+		} else {
+			hashmap.put("leaderName", leaderName);			
+		}
 		hashmap.put("capitolName", this.capitolName);
 		hashmap.put("leaderGroupName", this.getLeaderGroupName());
 		hashmap.put("advisersGroupName", this.getAdvisersGroupName());
@@ -267,11 +282,6 @@ public class Civilization extends SQLObject {
 			hashmap.put("created_date", null);
 		}
 		
-		if (this.messageOfTheDay != null) {
-			hashmap.put("motd", this.messageOfTheDay);
-		} else {
-			hashmap.put("motd", null);
-		}
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);
 	}
 	
@@ -392,21 +402,13 @@ public class Civilization extends SQLObject {
 	public void setColor(int color) {
 		this.color = color;
 	}
-	
-	public void setMOTD(String message) {
-		this.messageOfTheDay = message;
-	}
-	
-	public String MOTD() {
-		return this.messageOfTheDay;
-	}
-	
+
 	public Resident getLeader() {
-		return CivGlobal.getResidentViaUUID(UUID.fromString(leaderName));
+		return CivGlobal.getResident(leaderName);
 	}
 
 	public void setLeader(Resident leader) {
-		this.leaderName = leader.getUUID().toString();
+		this.leaderName = leader.getName();
 	}
 
 	@Override
@@ -469,7 +471,7 @@ public class Civilization extends SQLObject {
 	}
 
 	public Town getTown(String name) {
-		return towns.get(name);
+		return towns.get(name.toLowerCase());
 	}
 	
 	public void addTown(Town town) {
@@ -1037,9 +1039,8 @@ public class Civilization extends SQLObject {
 					"If you want to change your focus, use /civ research switch instead.");
 		}
 		
-		double cost = tech.getAdjustedTechCost(this);
-		if (!this.getTreasury().hasEnough(cost)) {
-			throw new CivException("Our Civilization's treasury does have the required "+cost+" coins to start this research.");
+		if (!this.getTreasury().hasEnough(tech.cost)) {
+			throw new CivException("Our Civilization's treasury does have the required "+tech.cost+" coins to start this research.");
 		}
 		
 		if (this.hasTech(tech.id)) {
@@ -1053,7 +1054,7 @@ public class Civilization extends SQLObject {
 		this.setResearchTech(tech);
 		this.setResearchProgress(0.0);
 	
-		this.getTreasury().withdraw(cost);
+		this.getTreasury().withdraw(tech.cost);
 		TaskMaster.asyncTask(new UpdateTechBar(this),0);
 	}
 
@@ -1262,9 +1263,6 @@ public class Civilization extends SQLObject {
 		}
 		for (Relation relation : deletedRelations) {
 			try {
-				if (relation.getStatus() == Relation.Status.WAR) {
-					relation.setStatus(Relation.Status.NEUTRAL);
-				}
 				relation.delete();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1640,14 +1638,14 @@ public class Civilization extends SQLObject {
 		int conqueredCivs = 1; /* Your civ already counts */
 		
 		for (Civilization civ : CivGlobal.getConqueredCivs()) {
-			Town capitol = CivGlobal.getTown(civ.getCapitolName());
-			if (capitol == null) {
+			Town capital = CivGlobal.getTown(civ.getCapitolName());
+			if (capital == null) {
 				/* Invalid civ? */
 				totalCivs--;
 				continue;
 			}
 			
-			if (capitol.getCiv() == this) {
+			if (capital.getCiv() == this) {
 				conqueredCivs++;
 			}
 		}

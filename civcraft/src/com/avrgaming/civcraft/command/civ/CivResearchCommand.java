@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.command.civ;
 
 import java.util.ArrayList;
@@ -42,7 +60,7 @@ public class CivResearchCommand extends CommandBase {
 			throw new CivException("Couldn't find technology named "+techname);
 		}
 		
-		if (!civ.getTreasury().hasEnough(tech.getAdjustedTechCost(civ))) {
+		if (!civ.getTreasury().hasEnough(tech.cost)) {
 			throw new CivException("You do not have enough coins to research "+tech.name);
 		}
 		
@@ -124,10 +142,12 @@ public class CivResearchCommand extends CommandBase {
 		CivMessage.sendHeading(sender, "Available Research");
 		for (ConfigTech tech : techs) {
 			CivMessage.send(sender, tech.name+CivColor.LightGray+" Cost: "+
-					CivColor.Yellow+tech.getAdjustedTechCost(civ)+CivColor.LightGray+" Beakers: "+
+					CivColor.Yellow+tech.cost+CivColor.LightGray+" Beakers: "+
 					CivColor.Yellow+tech.beaker_cost);
-		}	
+		}
+				
 	}
+	
 	
 	@Override
 	public void doDefaultAction() throws CivException {
@@ -148,4 +168,5 @@ public class CivResearchCommand extends CommandBase {
 			throw new CivException("Only civ leaders and advisers can access research.");
 		}		
 	}
+
 }

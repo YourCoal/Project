@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.items.components;
 
 import gpl.AttributeUtil;
@@ -23,9 +41,7 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 	@Override
 	public void onPrepareCreate(AttributeUtil attrUtil) {
 		attrUtil.addLore(ChatColor.RESET+CivColor.Gold+"Starts a Camp");
-		attrUtil.addLore(ChatColor.RESET+CivColor.Rose+"<Right Click To Use>");
-		attrUtil.addEnhancement("LoreEnhancementSoulBound", null, null);
-		attrUtil.addLore(CivColor.Gold+"Soulbound");
+		attrUtil.addLore(ChatColor.RESET+CivColor.Rose+"<Right Click To Use>");		
 	}
 	
 	public void foundCamp(Player player) throws CivException {
@@ -55,6 +71,7 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 	}
 	
 	public void onInteract(PlayerInteractEvent event) {
+		
 		event.setCancelled(true);
 		if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) &&
 				!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
@@ -87,10 +104,11 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 			}
 		}
 		TaskMaster.syncTask(new SyncTask(event.getPlayer().getName()));
+		
 		return;
+		
 	}
-	
-	//XXX Edit timings when messages are displayed.
+
 	@Override
 	public void execute(String playerName) {
 		Player player;
@@ -100,18 +118,13 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 			return;
 		}
 		Resident resident = CivGlobal.getResident(playerName);
-		try {
-			Thread.sleep(1500);
-			CivMessage.sendHeading(player, "Setting up Camp!");
-			CivMessage.send(player, CivColor.LightGreen+"You and your small band of travelers need a place to sleep for the night.");
-			CivMessage.send(player, " ");
-			Thread.sleep(1750);
-			CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new camp be called?");
-			Thread.sleep(1000);
-			CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
-			resident.setInteractiveMode(new InteractiveCampName());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		
+		CivMessage.sendHeading(player, "Setting up Camp!");
+		CivMessage.send(player, CivColor.LightGreen+"You and your small band of travelers need a place to sleep for the night.");
+		CivMessage.send(player, " ");
+		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new camp be called?");
+		CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
+		
+		resident.setInteractiveMode(new InteractiveCampName());
 	}
 }

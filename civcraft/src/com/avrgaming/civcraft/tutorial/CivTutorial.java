@@ -122,30 +122,7 @@ public class CivTutorial {
 					ChatColor.RESET+"You can craft the founding flag item below."
 					));
 			
-			for (ConfigMaterialCategory cat : ConfigMaterialCategory.getCategories()) {
-				for (ConfigMaterial mat : cat.materials.values()) {
-					if (mat.id.equals("mat_found_civ")) {
-						ItemStack stack = getInfoBookForItem(mat.id);
-						if (stack != null) {
-							stack = LoreGuiItem.setAction(stack, "TutorialRecipe");
-							tutorialInventory.setItem(19,LoreGuiItem.asGuiItem(stack));
-						}
-					} else if (mat.id.equals("mat_found_camp")) {
-						ItemStack stack = getInfoBookForItem(mat.id);
-						if (stack != null) {
-							stack = LoreGuiItem.setAction(stack, "TutorialRecipe");
-							tutorialInventory.setItem(18,LoreGuiItem.asGuiItem(stack));
-						}
-					}
-				}
-			}
-			
-			/* Add back buttons. */
-			ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Catagories");
-			backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
-			backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
-			backButton = LoreGuiItem.setActionData(backButton, "invName", guiInventory.getName());
-			tutorialInventory.setItem(26, backButton);
+			tutorialInventory.setItem(19,getInfoBookForItem("mat_found_civ"));
 			
 			tutorialInventory.setItem(11, LoreGuiItem.build(CivColor.LightBlue+ChatColor.BOLD+"Need to know a recipe?", ItemManager.getId(Material.WORKBENCH), 0, 
 					ChatColor.RESET+"Type /res book to obtain the tutorial book",
@@ -191,27 +168,18 @@ public class CivTutorial {
 				if (cat.craftableCount == 0) {
 					continue;
 				}
-				int identifier;
-				if (cat.name.contains("Fish")) {
-					identifier = ItemManager.getId(Material.RAW_FISH);
-				} else if (cat.name.contains("Catalyst")) {
-					identifier = ItemManager.getId(Material.BOOK);
-				} else if (cat.name.contains("Gear")) {
-					identifier = ItemManager.getId(Material.IRON_SWORD);
-				} else if (cat.name.contains("Materials")) {
-					identifier = ItemManager.getId(Material.WOOD_STEP);
-				} else if (cat.name.contains("Tools")) {
-					identifier = ItemManager.getId(Material.IRON_SPADE);
-				} else {
-					identifier = ItemManager.getId(Material.WRITTEN_BOOK);
-				}
-				ItemStack infoRec = LoreGuiItem.build(cat.name, identifier, 0, 
+				
+				ItemStack infoRec = LoreGuiItem.build(cat.name, 
+						ItemManager.getId(Material.WRITTEN_BOOK), 
+						0, 
 						CivColor.LightBlue+cat.materials.size()+" Items",
 						CivColor.Gold+"<Click To Open>");
 						infoRec = LoreGuiItem.setAction(infoRec, "OpenInventory");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invType", "showGuiInv");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invName", cat.name+" Recipes");
+						
 						craftingHelpInventory.addItem(infoRec);
+						
 						
 				Inventory inv = Bukkit.createInventory(player, LoreGuiItem.MAX_INV_SIZE, cat.name+" Recipes");
 				for (ConfigMaterial mat : cat.materials.values()) {
@@ -231,12 +199,6 @@ public class CivTutorial {
 				LoreGuiItemListener.guiInventories.put(inv.getName(), inv);
 			}
 			
-			/* Add back buttons. */
-			ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Catagories");
-			backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
-			backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
-			backButton = LoreGuiItem.setActionData(backButton, "invName", guiInventory.getName());
-			craftingHelpInventory.setItem(LoreGuiItem.MAX_INV_SIZE-1, backButton);
 			LoreGuiItemListener.guiInventories.put(craftingHelpInventory.getName(), craftingHelpInventory);
 		}
 		

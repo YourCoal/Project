@@ -8,21 +8,21 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.server.v1_8_R3.DamageSource;
-import net.minecraft.server.v1_8_R3.Entity;
-import net.minecraft.server.v1_8_R3.EntityCreature;
-import net.minecraft.server.v1_8_R3.EntityInsentient;
-import net.minecraft.server.v1_8_R3.EntityLiving;
-import net.minecraft.server.v1_8_R3.GenericAttributes;
-import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
+import net.minecraft.server.v1_7_R4.DamageSource;
+import net.minecraft.server.v1_7_R4.Entity;
+import net.minecraft.server.v1_7_R4.EntityCreature;
+import net.minecraft.server.v1_7_R4.EntityInsentient;
+import net.minecraft.server.v1_7_R4.EntityLiving;
+import net.minecraft.server.v1_7_R4.GenericAttributes;
+import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_7_R4.util.UnsafeList;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -78,7 +78,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 		
 		Field gsa;
 		try {
-			gsa = net.minecraft.server.v1_8_R3.EntityInsentient.class.getDeclaredField("goalSelector");
+			gsa = net.minecraft.server.v1_7_R4.EntityInsentient.class.getDeclaredField("goalSelector");
 			gsa.setAccessible(true);
 			return (PathfinderGoalSelector)gsa.get((EntityInsentient)entity);
 		} catch (NoSuchFieldException e) {
@@ -96,7 +96,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 	public PathfinderGoalSelector getTargetSelector() {
 		Field gsa;
 		try {
-			gsa = net.minecraft.server.v1_8_R3.EntityInsentient.class.getDeclaredField("targetSelector");
+			gsa = net.minecraft.server.v1_7_R4.EntityInsentient.class.getDeclaredField("targetSelector");
 			gsa.setAccessible(true);
 			return (PathfinderGoalSelector)gsa.get((EntityInsentient)entity);
 		} catch (NoSuchFieldException e) {
@@ -137,7 +137,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 		System.out.println("Printing goals:");
 	    Field gsa;
 		try {
-			gsa = PathfinderGoalSelector.class.getDeclaredField("b");
+			gsa = net.minecraft.server.v1_7_R4.PathfinderGoalSelector.class.getDeclaredField("b");
 			gsa.setAccessible(true);
 			//PathfinderGoalSelectorItem item;
 			UnsafeList<?> list = (UnsafeList<?>) gsa.get(goals);
@@ -275,21 +275,21 @@ public abstract class CommonCustomMob implements ICustomMob {
 	
 	
 	public void setAttack(double attack) {
-		entity.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).setValue(attack);
+		entity.getAttributeInstance(GenericAttributes.e).setValue(attack);
 	}
 	
 	public void setMovementSpeed(double speed) {
-		entity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
+		entity.getAttributeInstance(GenericAttributes.d).setValue(speed);
 	}
 	
 	public void setFollowRange(double range) {
-		entity.getAttributeInstance(GenericAttributes.FOLLOW_RANGE).setValue(range);
+		entity.getAttributeInstance(GenericAttributes.b).setValue(range);
 	}
 	
 	public double getFollowRange() {
 		double value;
 		try {
-			value = entity.getAttributeInstance(GenericAttributes.FOLLOW_RANGE).getValue();
+			value = entity.getAttributeInstance(GenericAttributes.b).getValue();
 		} catch (NullPointerException e) {
 			value = 32.0D;
 		}
@@ -298,7 +298,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 	}
 	
 	public void modifySpeed(double percent) {
-		double speed = entity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue();
+		double speed = entity.getAttributeInstance(GenericAttributes.d).getValue();
 		speed *= percent;
 		setMovementSpeed(speed);
 	}
@@ -319,7 +319,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 			if (entity == null) {
 				CivLog.info("Entity was null!");
 			}
-			CivLog.info("Speed:"+entity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue());
+			CivLog.info("Speed:"+entity.getAttributeInstance(GenericAttributes.d).getValue());
 			CivLog.info("MaxHealth:"+entity.getAttributeInstance(GenericAttributes.maxHealth).getValue()+" Health:"+entity.getHealth());
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -59,10 +59,6 @@ public class ConfigBuildableInfo {
 	public List<HashMap<String, String>> components = new LinkedList<HashMap<String, String>>();
 	public boolean has_template = true;
 	
-	//XXX Auto-Generated for a test in BuildStructureList.java
-	public int itemData;
-	public int itemTypeId;
-	
 	public boolean isAvailable(Town town) {
 		if (town.hasTechnology(require_tech)) {
 			if (town.hasUpgrade(require_upgrade)) {

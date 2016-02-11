@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.main;
 
 import java.io.File;
@@ -9,6 +27,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +54,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.camp.CampBlock;
 import com.avrgaming.civcraft.camp.WarCamp;
@@ -44,6 +64,8 @@ import com.avrgaming.civcraft.endgame.EndGameCondition;
 import com.avrgaming.civcraft.event.EventTimer;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
+import com.avrgaming.civcraft.exception.InvalidNameException;
+import com.avrgaming.civcraft.exception.InvalidObjectException;
 import com.avrgaming.civcraft.items.BonusGoodie;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
@@ -64,6 +86,7 @@ import com.avrgaming.civcraft.populators.TradeGoodPreGenerate;
 import com.avrgaming.civcraft.questions.QuestionBaseTask;
 import com.avrgaming.civcraft.questions.QuestionResponseInterface;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
+import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.sessiondb.SessionDatabase;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
@@ -80,6 +103,7 @@ import com.avrgaming.civcraft.threading.tasks.CivLeaderQuestionTask;
 import com.avrgaming.civcraft.threading.tasks.CivQuestionTask;
 import com.avrgaming.civcraft.threading.tasks.CultureProcessAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PlayerQuestionTask;
+import com.avrgaming.civcraft.threading.tasks.UpdateTagBetweenCivsTask;
 import com.avrgaming.civcraft.threading.tasks.onLoadTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.BukkitObjects;
@@ -125,6 +149,7 @@ public class CivGlobal {
 	private static Map<UUID, ItemFrameStorage> protectedItemFrames = new ConcurrentHashMap<UUID, ItemFrameStorage>();
 	private static Map<BlockCoord, BonusGoodie> bonusGoodies = new ConcurrentHashMap<BlockCoord, BonusGoodie>();
 	private static Map<ChunkCoord, HashSet<Wall>> wallChunks = new ConcurrentHashMap<ChunkCoord, HashSet<Wall>>();
+	private static Map<BlockCoord, RoadBlock> roadBlocks = new ConcurrentHashMap<BlockCoord, RoadBlock>();
 	private static Map<BlockCoord, CustomMapMarker> customMapMarkers = new ConcurrentHashMap<BlockCoord, CustomMapMarker>();
 	private static Map<String, Camp> camps = new ConcurrentHashMap<String, Camp>();
 	private static Map<ChunkCoord, Camp> campChunks = new ConcurrentHashMap<ChunkCoord, Camp>();
@@ -133,7 +158,7 @@ public class CivGlobal {
 	public static HashSet<String> researchedTechs = new HashSet<String>();
 	
 	/* TODO change this to true for MC 1.8 */
-	public static boolean useUUID = true;
+	public static boolean useUUID = false;
 	
 	public static Map<Integer, Boolean> CivColorInUse = new ConcurrentHashMap<Integer, Boolean>();
 	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
@@ -154,9 +179,7 @@ public class CivGlobal {
 	
 	//TODO convert this to completely static?
 	private static SessionDatabase sdb;
-	
-	public static boolean fisheriesEnabled = true;
-	public static boolean quarriesEnabled = true;
+
 	public static boolean trommelsEnabled = true;
 	public static boolean towersEnabled = true;
 	public static boolean growthEnabled = true;
@@ -166,8 +189,6 @@ public class CivGlobal {
 	public static boolean warningsEnabled = true;
 	public static boolean tradeEnabled = true;
 	public static boolean loadCompleted = false;
-	public static boolean speedChunks = false;
-	public static int minBuildHeight = 16;
 
 	public static ArrayList<Town> orphanTowns = new ArrayList<Town>();
 	public static ArrayList<Civilization> orphanCivs = new ArrayList<Civilization>();
@@ -190,13 +211,15 @@ public class CivGlobal {
 		loadResidents();
 		loadPermissionGroups();
 		loadTownChunks();
-		loadWonders();
 		loadStructures();
+		loadWonders();
 		loadWallBlocks();
+		loadRoadBlocks();
 		loadTradeGoods();
 		loadTradeGoodies();
 		loadRandomEvents();
 		loadProtectedBlocks();
+		loadTeams();
 		EventTimer.loadGlobalEvents();
 		EndGameCondition.init();
 		War.init();
@@ -246,18 +269,6 @@ public class CivGlobal {
 		objective2.setDisplayName("OBJECTIVE2 NAME HERE");*/
 		
 		checkForInvalidStructures();
-		try {
-			minBuildHeight = CivSettings.getInteger(CivSettings.civConfig, "global.min_build_height");
-		} catch (InvalidConfiguration e) {
-			minBuildHeight = 1;
-			e.printStackTrace();
-		} try {
-			speedChunks = CivSettings.getBoolean(CivSettings.civConfig, "global.speed_check_chunks");
-		} catch (InvalidConfiguration e) {
-			speedChunks = false;
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		loadCompleted = true;
 	}
 	
@@ -278,6 +289,34 @@ public class CivGlobal {
 	
 	private static void loadTradeGoods() {
 		
+	}
+	
+	private static void loadTeams() throws SQLException {
+		Connection context = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		
+		try {
+			context = SQL.getGameConnection();		
+			ps = context.prepareStatement("SELECT * FROM "+SQL.tb_prefix+ArenaTeam.TABLE_NAME);
+			rs = ps.executeQuery();
+	
+			while(rs.next()) {
+				try {
+					new ArenaTeam(rs);
+				} catch (InvalidNameException | InvalidObjectException
+						| CivException e) {
+					e.printStackTrace();
+				}
+			}
+	
+			Collections.sort(ArenaTeam.teamRankings);
+			Collections.reverse(ArenaTeam.teamRankings); //Lazy method.
+			
+			CivLog.info("Loaded "+ArenaTeam.arenaTeams.size()+" Arena Teams");
+		} finally {
+			SQL.close(rs, ps, context);
+		}
 	}
 	
 	private static void loadTradeGoodies() throws SQLException {
@@ -580,6 +619,33 @@ public class CivGlobal {
 		}
 	}
 	
+	private static void loadRoadBlocks() throws SQLException {
+		Connection context = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		
+		try {
+			context = SQL.getGameConnection();		
+			ps = context.prepareStatement("SELECT * FROM "+SQL.tb_prefix+RoadBlock.TABLE_NAME);
+			rs = ps.executeQuery();
+	
+			int count = 0;
+			while(rs.next()) {
+				try {
+					new RoadBlock(rs);
+					count++;
+				} catch (Exception e) {
+					CivLog.warning(e.getMessage());
+					e.printStackTrace();
+				}
+			}
+	
+			CivLog.info("Loaded "+count+" Road Block");
+		} finally {
+			SQL.close(rs, ps, context);
+		}
+	}
+	
 	public static void loadRandomEvents() throws SQLException {
 		Connection context = null;
 		ResultSet rs = null;
@@ -651,29 +717,29 @@ public class CivGlobal {
 	}
 	
 	public static Resident getResident(Player player) {
-		return residents.get(player.getName());
+		return residents.get(player.getName().toLowerCase());
 	}
 	
 	public static Resident getResident(Resident resident) {
-		return residents.get(resident.getName());
+		return residents.get(resident.getName().toLowerCase());
 	}
 
 	public static boolean hasResident(String name) {
-		return residents.containsKey(name);
+		return residents.containsKey(name.toLowerCase());
 	}
 
 	public static void addResident(Resident res) {
-		residents.put(res.getName(), res);
+		residents.put(res.getName().toLowerCase(), res);
 		residentsViaUUID.put(res.getUUID(), res);
 	}
 	
 	public static void removeResident(Resident res) {
-		residents.remove(res.getName());
+		residents.remove(res.getName().toLowerCase());
 		residentsViaUUID.remove(res.getUUID());
 	}
 
 	public static Resident getResident(String name) {
-		return residents.get(name);
+		return residents.get(name.toLowerCase());
 	}
 	
 	public static Resident getResidentViaUUID(UUID uuid) {
@@ -851,6 +917,7 @@ public class CivGlobal {
 		if (res == null) {
 			throw new CivException("No resident named "+name);
 		}
+		
 		Player player = Bukkit.getPlayer(res.getUUID());
 		if (player == null)
 			throw new CivException("No player named "+name);
@@ -1031,11 +1098,7 @@ public class CivGlobal {
 	public static ProtectedBlock getProtectedBlock(BlockCoord coord) {
 		return protectedBlocks.get(coord);
 	}
-	
-	public static ProtectedBlock removeProtectedBlock(BlockCoord coord) {
-		return protectedBlocks.remove(coord);
-	}
-	
+
 	public static SessionDatabase getSessionDB() {
 		return sdb;
 	}
@@ -1144,14 +1207,7 @@ public class CivGlobal {
 	}
 	
 	public static void removeProtectedItemFrame(UUID id) {
-		CivLog.debug("Remove ID: "+id);
-			if (id == null) {
-				return;
-			}
-			ItemFrameStorage store = getProtectedItemFrame(id);
-			if (store == null) {
-				return;
-			}
+		ItemFrameStorage store = getProtectedItemFrame(id);
 		ItemFrameStorage.attachedBlockMap.remove(store.getAttachedBlock());
 		protectedItemFrames.remove(id);
 	}
@@ -1415,6 +1471,11 @@ public class CivGlobal {
 		}
 		out += otherCiv.getName();
 		CivMessage.global(out);
+		CivGlobal.updateTagsBetween(civ, otherCiv);
+	}
+	
+	private static void updateTagsBetween(Civilization civ, Civilization otherCiv) {
+		TaskMaster.asyncTask(new UpdateTagBetweenCivsTask(civ, otherCiv), 0);
 	}
 
 	public static void requestRelation(Civilization fromCiv, Civilization toCiv, String question, 
@@ -1913,6 +1974,18 @@ public class CivGlobal {
 
 	public static void setFarmGrowQueue(Queue<FarmChunk> farmGrowQueue) {
 		CivGlobal.farmGrowQueue = farmGrowQueue;
+	}
+	
+	public static void addRoadBlock(RoadBlock rb) {
+		roadBlocks.put(rb.getCoord(), rb);
+	}
+	
+	public static void removeRoadBlock(RoadBlock rb) {
+		roadBlocks.remove(rb.getCoord());
+	}
+	
+	public static RoadBlock getRoadBlock(BlockCoord coord) {
+		return roadBlocks.get(coord);
 	}
 
 	public static Collection<Civilization> getAdminCivs() {

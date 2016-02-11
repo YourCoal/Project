@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.structure;
 
 import java.sql.ResultSet;
@@ -5,21 +23,21 @@ import java.sql.SQLException;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-//import org.bukkit.block.BlockFace;
-//import org.bukkit.block.Sign;
-//import org.bukkit.entity.Entity;
-//import org.bukkit.entity.ItemFrame;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 
 import com.avrgaming.civcraft.exception.CivException;
-//import com.avrgaming.civcraft.main.CivData;
+import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
-//import com.avrgaming.civcraft.object.StructureBlock;
+import com.avrgaming.civcraft.object.StructureBlock;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TradeGood;
-//import com.avrgaming.civcraft.util.BlockCoord;
-//import com.avrgaming.civcraft.util.ItemFrameStorage;
-//import com.avrgaming.civcraft.util.ItemManager;
+import com.avrgaming.civcraft.util.BlockCoord;
+import com.avrgaming.civcraft.util.ItemFrameStorage;
+import com.avrgaming.civcraft.util.ItemManager;
 
 public class FishingBoat extends TradeOutpost {
 
@@ -69,59 +87,59 @@ public class FishingBoat extends TradeOutpost {
 		this.setGood(good);
 	}
 	
-//	@Override
-//	public void build_trade_outpost_tower() throws CivException {
-//		/* Add trade good to town. */
-//		
-//		/* this.good is set by the good's load function or by the onBuild function. */
-//		TradeGood good = this.good;
-//		if (good == null) {
-//			throw new CivException("Couldn't find trade good at location:"+good);
-//		}
-//		
-//		/* Build the 'trade good tower' */
-//		/* This is always set on post build using the post build sync task. */
-//		if (tradeOutpostTower == null) {
-//			throw new CivException("Couldn't find trade outpost tower.");
-//		}
-//		
-//		Location centerLoc = tradeOutpostTower.getLocation();
-//		
-//		/* Build the bedrock tower. */
-//		for (int i = 0; i < 3; i++) {
-//			Block b = centerLoc.getBlock().getRelative(0, i, 0);
-//			ItemManager.setTypeId(b, CivData.BEDROCK); ItemManager.setData(b, 0);
-//			
-//			StructureBlock sb = new StructureBlock(new BlockCoord(b), this);
-//			this.addStructureBlock(sb.getCoord(), false);
-//			//CivGlobal.addStructureBlock(sb.getCoord(), this);
-//		}
-//		
-//		/* Place the sign. */
-//		Block b = centerLoc.getBlock().getRelative(1, 2, 0);
-//		ItemManager.setTypeId(b, CivData.WALL_SIGN); 
-//		ItemManager.setData(b, CivData.DATA_SIGN_EAST);
-//		Sign s = (Sign)b.getState();
-//		s.setLine(0, good.getInfo().name);
-//		s.update();
-//		StructureBlock sb = new StructureBlock(new BlockCoord(b), this);
-//		//CivGlobal.addStructureBlock(sb.getCoord(), this);
-//		this.addStructureBlock(sb.getCoord(), false);
-//		
-//		/* Place the itemframe. */
-//		b = centerLoc.getBlock().getRelative(1,1,0);
-//		this.addStructureBlock(new BlockCoord(b), false);
-//		Block b2 = b.getRelative(0, 0, 0);
-//		Entity entity = CivGlobal.getEntityAtLocation(b2.getLocation());
-//		
-//		if (entity == null || (!(entity instanceof ItemFrame))) {
-//			this.frameStore = new ItemFrameStorage(b.getLocation(), BlockFace.EAST);	
-//		} else {
-//			this.frameStore = new ItemFrameStorage((ItemFrame)entity, b.getLocation());
-//		}
-//		
-//		this.frameStore.setBuildable(this);
-//	}
+	@Override
+	public void build_trade_outpost_tower() throws CivException {
+		/* Add trade good to town. */
+		
+		/* this.good is set by the good's load function or by the onBuild function. */
+		TradeGood good = this.good;
+		if (good == null) {
+			throw new CivException("Couldn't find trade good at location:"+good);
+		}
+		
+		/* Build the 'trade good tower' */
+		/* This is always set on post build using the post build sync task. */
+		if (tradeOutpostTower == null) {
+			throw new CivException("Couldn't find trade outpost tower.");
+		}
+		
+		Location centerLoc = tradeOutpostTower.getLocation();
+		
+		/* Build the bedrock tower. */
+		for (int i = 0; i < 3; i++) {
+			Block b = centerLoc.getBlock().getRelative(0, i, 0);
+			ItemManager.setTypeId(b, CivData.BEDROCK); ItemManager.setData(b, 0);
+			
+			StructureBlock sb = new StructureBlock(new BlockCoord(b), this);
+			this.addStructureBlock(sb.getCoord(), false);
+			//CivGlobal.addStructureBlock(sb.getCoord(), this);
+		}
+		
+		/* Place the sign. */
+		Block b = centerLoc.getBlock().getRelative(1, 2, 0);
+		ItemManager.setTypeId(b, CivData.WALL_SIGN); 
+		ItemManager.setData(b, CivData.DATA_SIGN_EAST);
+		Sign s = (Sign)b.getState();
+		s.setLine(0, good.getInfo().name);
+		s.update();
+		StructureBlock sb = new StructureBlock(new BlockCoord(b), this);
+		//CivGlobal.addStructureBlock(sb.getCoord(), this);
+		this.addStructureBlock(sb.getCoord(), false);
+		
+		/* Place the itemframe. */
+		b = centerLoc.getBlock().getRelative(0,1,0);
+		this.addStructureBlock(new BlockCoord(b), false);
+		Block b2 = b.getRelative(1, 0, 0);
+		Entity entity = CivGlobal.getEntityAtLocation(b2.getLocation());
+		
+		if (entity == null || (!(entity instanceof ItemFrame))) {
+			this.frameStore = new ItemFrameStorage(b.getLocation(), BlockFace.EAST);	
+		} else {
+			this.frameStore = new ItemFrameStorage((ItemFrame)entity, b.getLocation());
+		}
+		
+		this.frameStore.setBuildable(this);
+	}
 	
 	
 	@Override

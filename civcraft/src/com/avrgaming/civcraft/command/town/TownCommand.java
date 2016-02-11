@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.command.town;
 
 
@@ -78,21 +96,6 @@ public class TownCommand extends CommandBase {
 		commands.put("claimmayor", "claim yourself as mayor of this town. All current mayors must be inactive.");
 		commands.put("movestructure", "[coord] [town] moves the structure specified by the coord to the specfied town.");
 		commands.put("enablestructure", "[coord] attempts to enable the specified structure if its currently disabled.");
-	}
-	
-	public void location_cmd() throws CivException {
-		Town town = getSelectedTown();
-		Resident resident = getResident();
-		if (resident.getTown() == town) {
-			TownHall townhall = town.getTownHall();
-			if (townhall == null) {
-				CivMessage.send(sender, CivColor.LightPurple+CivColor.BOLD+town.getName()+" Location:");
-				CivMessage.send(sender, CivColor.Rose+CivColor.BOLD+"NO TOWN HALL");
-			} else {
-				CivMessage.send(sender, CivColor.LightPurple+CivColor.BOLD+town.getName()+" Location:");
-				CivMessage.send(sender, CivColor.LightGreen+townhall.getCorner());
-			}
-		}
 	}
 	
 	public void enablestructure_cmd() throws CivException {

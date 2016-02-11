@@ -1,3 +1,22 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
+
 package com.avrgaming.civcraft.items.components;
 
 import gpl.AttributeUtil;
@@ -30,18 +49,22 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 	}
 	
 	public void foundCiv(Player player) throws CivException {
+		
 		Resident resident = CivGlobal.getResident(player);
 		if (resident == null) {
 			throw new CivException("You must be a registered resident to found a civ. This shouldn't happen. Contact an admin.");
 		}
 			
-		/* Build a preview for the Capitol structure. */
+		/*
+		 * Build a preview for the Capitol structure.
+		 */
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Checking structure position...Please wait.");
 		ConfigBuildableInfo info = CivSettings.structures.get("s_capitol");
-		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);
+		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);	
 	}
 	
 	public void onInteract(PlayerInteractEvent event) {
+		
 		event.setCancelled(true);
 		if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) &&
 				!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {

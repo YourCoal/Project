@@ -1,6 +1,23 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.object;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -10,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
@@ -45,16 +61,17 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
+import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.structure.Buildable;
-import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.structure.TradeOutpost;
 import com.avrgaming.civcraft.structure.Wall;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.template.Template;
+import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.sync.SyncUpdateTags;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
-import com.avrgaming.civcraft.threading.tasks.BuildUndoTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -121,7 +138,6 @@ public class Town extends SQLObject {
 	private boolean pvp = false;
 	
 	public ArrayList<BuildAsyncTask> build_tasks = new ArrayList<BuildAsyncTask>();
-	public ArrayList<BuildUndoTask> undo_tasks = new ArrayList<BuildUndoTask>();
 	public Buildable lastBuildableBuilt = null;
 
 	public boolean leaderWantsToDisband = false;
@@ -135,10 +151,6 @@ public class Town extends SQLObject {
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
 	public int saved_bank_level = 1;
 	public double saved_bank_interest_amount = 0;
-	public int saved_trommel_level = 1;
-	public int saved_quarry_level = 1;
-	public int saved_fishery_level = 1;
-	public int saved_tradeship_upgrade_levels = 1;
 	
 	/* Happiness Stuff */
 	private double baseHappy = 0.0;
@@ -316,6 +328,7 @@ public class Town extends SQLObject {
 	
 	@Override
 	public void delete() throws SQLException {
+		
 		/* Remove all our Groups */
 		for (PermissionGroup grp : this.groups.values()) {
 			grp.delete();
@@ -332,7 +345,7 @@ public class Town extends SQLObject {
 		/* Remove all structures in the town. */
 		if (this.structures != null) {
 			for (Structure struct : this.structures.values()) {
-				struct.deleteSkipUndo();;
+				struct.delete();
 			}
 		}
 		
@@ -346,12 +359,7 @@ public class Town extends SQLObject {
 		if (this.wonders != null) {
 			for (Wonder wonder : wonders.values()) {
 				wonder.unbindStructureBlocks();
-				try {
-					wonder.undoFromTemplate();
-				} catch (IOException | CivException e) {
-					e.printStackTrace();
-					wonder.fancyDestroyStructureBlocks();
-				}
+				wonder.fancyDestroyStructureBlocks();
 				wonder.delete();
 			}
 		}
@@ -461,15 +469,15 @@ public class Town extends SQLObject {
 	}
 	
 	public boolean hasResident(String name) {
-		return residents.containsKey(name);
+		return residents.containsKey(name.toLowerCase());
 	}
 	
 	public boolean hasResident(Resident res) {
-		return hasResident(res.getUUID().toString());
+		return hasResident(res.getName());
 	}
 	
 	public void addResident(Resident res) throws AlreadyRegisteredException {
-		String key = res.getUUID().toString();
+		String key = res.getName().toLowerCase();
 		
 		if (residents.containsKey(key)) {
 			throw new AlreadyRegisteredException(res.getName()+" already a member of town "+this.getName());
@@ -682,17 +690,6 @@ public class Town extends SQLObject {
 		rates.put("Random Events", newRate - rate);
 		rate = newRate;
 		
-		//XXX To Test, if gov gives techRate
-		if (this.getCiv().hasTechnology("tech_admin")) {
-			double techRate;
-			try {
-				techRate = CivSettings.getDouble(CivSettings.techsConfig, "hammer_tech_buff");
-				rate *= techRate;
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
-		
 		/* Captured Town Penalty */
 		if (this.motherCiv != null) {
 			try {
@@ -734,14 +731,9 @@ public class Town extends SQLObject {
 		sources.put("Culture Biomes", cultureHammers);
 		total += cultureHammers; 
 		
-		/* Grab hammers generated from structures with components. */
+		/* Grab happiness generated from structures with components. */
 		double structures = 0;
-		double mines = 0;
 		for (Structure struct : this.structures.values()) {
-			if (struct instanceof Mine) {
-				Mine mine = (Mine)struct;
-				mines += mine.getBonusHammers();
-			}
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
 					AttributeBase as = (AttributeBase)comp;
@@ -751,11 +743,10 @@ public class Town extends SQLObject {
 				}
 			}
 		}
-		
-		sources.put("Mines", mines);
-		
+
 		total += structures;
 		sources.put("Structures", structures);
+		
 		
 		sources.put("Base Hammers", this.baseHammers);
 		total += this.baseHammers;
@@ -1421,7 +1412,6 @@ public class Town extends SQLObject {
 			out += "<h3><b>"+this.getName()+"</b> (<i>"+this.getCiv().getName()+"</i>)</h3>";		
 			out += "<b>Mayors: "+this.getMayorGroup().getMembersString()+"</b>";
 		} catch (Exception e) {
-			CivLog.debug("Town: "+this.getName());
 			e.printStackTrace();
 		}
 		
@@ -1740,8 +1730,9 @@ public class Town extends SQLObject {
 			throw new CivException("Cannot undo, cannot find the last thing built.");
 		}
 		
-		if (!(this.lastBuildableBuilt instanceof Wall)) {
-			throw new CivException("Only wall structures can be used with build undo.");
+		if (!(this.lastBuildableBuilt instanceof Wall) &&
+			 !(this.lastBuildableBuilt instanceof Road)) {
+			throw new CivException("Only wall and road structures can be use build undo.");
 		}
 		
 		this.lastBuildableBuilt.processUndo();
@@ -1801,17 +1792,6 @@ public class Town extends SQLObject {
 		double newRate = rate * getGovernment().growth_rate;
 		rates.put("Government", newRate - rate);
 		rate = newRate;
-		
-		//XXX To Test, if gov gives techRate
-		if (this.getCiv().hasTechnology("tech_admin")) {
-			double techRate;
-			try {
-				techRate = CivSettings.getDouble(CivSettings.techsConfig, "growth_tech_buff");
-				rate *= techRate;
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
 		
 		/* Wonders and Goodies. */
 		double additional = this.getBuffManager().getEffectiveDouble(Buff.GROWTH_RATE);
@@ -2369,32 +2349,28 @@ public class Town extends SQLObject {
 		//return outpost_upkeep*outposts.size();
 		return 0;
 	}
-	
-	public boolean isOutlaw(Resident res) {
-		return this.outlaws.contains(res.getUUIDString());
-	}
 
 	public boolean isOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		return this.outlaws.contains(res.getUUIDString());
+		return this.outlaws.contains(name);
 	}
 	
 	public void addOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.add(res.getUUIDString());
+		this.outlaws.add(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void removeOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.remove(res.getUUIDString());
+		this.outlaws.remove(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void changeCiv(Civilization newCiv) {
+		
 		/* Remove this town from its old civ. */
 		Civilization oldCiv = this.civ;
 		oldCiv.removeTown(this);
 		oldCiv.save();
-		
+			
 		/* Add this town to the new civ. */
 		newCiv.addTown(this);
 		newCiv.save();
@@ -2402,11 +2378,9 @@ public class Town extends SQLObject {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			if (outlaw.length() >= 2){
-				Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
-				if (newCiv.hasResident(resident)) {
+			Resident resident = CivGlobal.getResident(outlaw);
+			if (newCiv.hasResident(resident)) {
 				removeUs.add(outlaw);
-				}
 			}
 		}
 		
@@ -2599,18 +2573,7 @@ public class Town extends SQLObject {
 		newRate = rate*getGovernment().beaker_rate;
 		rates.put("Government", newRate - rate);
 		rate = newRate;
-		
-		//XXX To Test, if gov gives techRate
-		if (this.getCiv().hasTechnology("tech_admin")) {
-			double techRate;
-			try {
-				techRate = CivSettings.getDouble(CivSettings.techsConfig, "beaker_tech_buff");
-				rate *= techRate;
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
-		
+	
 		/* Additional rate increases from buffs. */
 		/* Great Library buff is made to not stack with Science_Rate */
 		double additional = rate*getBuffManager().getEffectiveDouble(Buff.SCIENCE_RATE);
@@ -2801,24 +2764,9 @@ public class Town extends SQLObject {
 			e.printStackTrace();
 			return null;
 		}
-		HashSet<Resident> UnResidents = new HashSet<Resident>();
-		HashSet<Resident> NonResidents = new HashSet<Resident>();
-		for (PermissionGroup group : this.getGroups()) {
-			for (Resident res : group.getMemberList()) {
-				if (res.getCiv() != null) {
-				if (res.getCiv() != this.getCiv()) {
-					NonResidents.add(res);
-					}
-				} else {
-					UnResidents.add(res);
-				}
-			}
-		}
 		double happy_resident = per_resident * this.getResidents().size();
-		double happy_Nonresident = (per_resident*0.25) * NonResidents.size();
-		double happy_Unresident = per_resident * UnResidents.size();
-		sources.put("Residents", (happy_resident+happy_Nonresident+happy_Unresident));
-		total += happy_resident+happy_Nonresident+happy_Unresident;
+		sources.put("Residents", happy_resident);
+		total += happy_resident;
 		
 		/* Try to reduce war unhappiness via the component. */
 		if (sources.containsKey("War")) {
@@ -3004,9 +2952,8 @@ public class Town extends SQLObject {
 		for (Perk perk : resident.getPersonalTemplatePerks(info)) {
 			perks.add(perk);
 		}
-		for (Perk perk : resident.getUnboundTemplatePerks(perks, info)) {
-			perks.add(perk);
-		} return perks;
+		
+		return perks;
 	}
 
 	public RandomEvent getActiveEvent() {

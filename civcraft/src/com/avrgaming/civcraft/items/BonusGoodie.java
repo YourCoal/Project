@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.items;
 
 import java.sql.Connection;
@@ -200,7 +218,7 @@ public class BonusGoodie extends LoreItem {
 		// if in an item frame
 		if (this.frameStore != null) {
 			try {
-				if (frameStore.isEmpty()) {
+				if (frameStore.isEmpty() || !isItemStackOurs(frameStore.getItem())) {
 					CivLog.warning("Found frame, but item was wrong, trying to recover by spawning item.");
 					
 					ItemStack stack = ItemManager.createItemStack(this.config.material, 1, (short) this.config.material_data);
@@ -560,7 +578,7 @@ public class BonusGoodie extends LoreItem {
 			this.item = null;
 			
 			try {
-				if (frameStore.isEmpty()) {
+				if (frameStore.isEmpty() || !isItemStackOurs(frameStore.getItem())) {
 					//Couldn't find good, deleting...
 					CivLog.warning("Found frame, but item was wrong:"+frameUID);
 					deleteAndReset();
@@ -586,7 +604,6 @@ public class BonusGoodie extends LoreItem {
 			holderStore = null;
 			
 			if (!this.isItemStackOurs(this.item.getItemStack())) {
-				CivLog.warning("ITEM STOLEN...deleting goodie");
 				deleteAndReset();
 				return;
 			}

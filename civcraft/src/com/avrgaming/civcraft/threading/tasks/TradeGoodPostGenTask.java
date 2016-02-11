@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.threading.tasks;
 
 import java.sql.Connection;
@@ -16,7 +34,7 @@ import com.avrgaming.civcraft.config.ConfigTradeGood;
 import com.avrgaming.civcraft.database.SQL;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
-import com.avrgaming.civcraft.main.CivLog;
+import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.populators.TradeGoodPick;
 import com.avrgaming.civcraft.populators.TradeGoodPopulator;
@@ -70,8 +88,8 @@ public class TradeGoodPostGenTask implements Runnable {
 	
 	@Override
 	public void run() {
-		CivLog.info("Generating/Clearing Trade goods...");
-		CivLog.info("|- Organizing trade picks into a Queue.");
+		CivMessage.console(playerName, "Generating/Clearing Trade goods...");
+		CivMessage.console(playerName, "|- Organizing trade picks into a Queue.");
 		
 		deleteAllTradeGoodiesFromDB();
 		
@@ -85,7 +103,8 @@ public class TradeGoodPostGenTask implements Runnable {
 		int amount = 20;
 		int totalSize = picksQueue.size();
 		while (picksQueue.peek() != null) {
-			CivLog.info("|- Placing/Picking Goods:"+count+"/"+totalSize+" current size:"+picksQueue.size());
+			CivMessage.console(playerName, "|- Placing/Picking Goods:"+count+"/"+totalSize+" current size:"+picksQueue.size());
+			
 			Queue<TradeGoodPick> processQueue = new LinkedList<TradeGoodPick>();
 			for (int i = 0; i < amount; i++) {
 				TradeGoodPick pick = picksQueue.poll();
@@ -107,7 +126,9 @@ public class TradeGoodPostGenTask implements Runnable {
 				return;
 			}
 		}
-		CivLog.info("Finished!");
+		
+		
+		CivMessage.console(playerName, "Finished!");
 	}
 
 	class SyncTradeGenTask implements Runnable {

@@ -1,6 +1,22 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.command.town;
-
-import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -9,7 +25,6 @@ import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.threading.TaskMaster;
@@ -26,40 +41,11 @@ public class TownOutlawCommand extends CommandBase {
 		commands.put("add", "[name] - Adds this player to the outlaw list.");
 		commands.put("remove", "[name] - Removes this player from the outlaw list.");
 		commands.put("list", "Lists all of the town's current outlaws.");
-		commands.put("addalltown", "[town] - Adds entire town to the outlaw list.");
-		commands.put("removealltown", "[town] - Removes entire town from the outlaw list.");
-		commands.put("addallciv", "[civ] - Adds entire town to the outlaw list.");
-		commands.put("removeallciv", "[civ] - Removes entire town from the outlaw list.");
+		commands.put("addall", "[town] - Adds entire town to the outlaw list.");
+		commands.put("removeall", "[town] - Removes entire town from the outlaw list.");
 	}
 	
-	public void addallciv_cmd() throws CivException {
-	Town town = getSelectedTown();
-	Civilization targetCiv = getNamedCiv(1);
-	for (Town targetTown : targetCiv.getTowns()) {	
-		for (Resident resident : targetTown.getResidents()) {
-			try {
-				Player player = CivGlobal.getPlayer(args[1]);
-				CivMessage.send(player, CivColor.Yellow+ChatColor.BOLD+"You're going to be declared an outlaw in "+town.getName()+"! You have one minute to get out ...");
-			} catch (CivException e) {
-			}
-			TaskMaster.asyncTask(new TownAddOutlawTask(resident.getName(), town), 1000);
-		}
-		}
-	CivMessage.sendSuccess(sender, args[1]+" will be an outlaw in 60 seconds.");
-	}
-
-	public void removeallciv_cmd() throws CivException {
-		Town town = getSelectedTown();
-		Civilization targetCiv = getNamedCiv(1);
-		for (Town targetTown : targetCiv.getTowns()) {	
-			for (Resident resident : targetTown.getResidents()) {
-				town.removeOutlaw(resident.getName());
-			}
-		}
-		town.save();
-	}
-	
-	public void addalltown_cmd() throws CivException {
+	public void addall_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Town targetTown = getNamedTown(1);
 	
@@ -76,7 +62,7 @@ public class TownOutlawCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, args[1]+" will be an outlaw in 60 seconds.");
 	}
 	
-	public void removealltown_cmd() throws CivException {
+	public void removeall_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Town targetTown = getNamedTown(1);
 		
@@ -128,12 +114,11 @@ public class TownOutlawCommand extends CommandBase {
 		
 		String out = "";
 		for (String outlaw : town.outlaws) {
-			if (outlaw.length() >= 2){
-				Resident res = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
-				out += res.getName() + ",";
-			}
+			out += outlaw + ",";
 		}
+		
 		CivMessage.send(sender, out);
+		
 	}
 	
 	@Override

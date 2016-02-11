@@ -182,7 +182,7 @@ public class Cannon extends Buildable {
 			throw new CivException("Can only build Cannons during war time.");
 		}
 		
-		if (player.getLocation().getY() >= 160) {
+		if (player.getLocation().getY() >= 200) {
 			throw new CivException("You're too high to build cannons.");
 		}
 		
@@ -226,6 +226,10 @@ public class Cannon extends Buildable {
 					
 					yTotal += b.getWorld().getHighestBlockYAt(centerBlock.getX()+x, centerBlock.getZ()+z);
 					yCount++;
+					
+					if (CivGlobal.getRoadBlock(coord) != null) {
+						throw new CivException("Cannot build a cannon on top of an existing road block.");
+					}
 				}
 			}
 		}

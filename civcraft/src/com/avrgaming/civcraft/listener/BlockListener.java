@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.listener;
 
 import gpl.HorseModifier;
@@ -5,7 +23,7 @@ import gpl.HorseModifier;
 import java.util.HashSet;
 import java.util.Random;
 
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_7_R4.NBTTagCompound;
 
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -15,12 +33,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
@@ -47,8 +64,6 @@ import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityCreatePortalEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityInteractEvent;
@@ -59,7 +74,6 @@ import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
@@ -74,7 +88,6 @@ import com.avrgaming.civcraft.camp.CampBlock;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigTempleSacrifice;
 import com.avrgaming.civcraft.exception.CivException;
-import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
@@ -87,6 +100,8 @@ import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PlotPermissions;
+import com.avrgaming.civcraft.road.Road;
+import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.BuildableLayer;
 import com.avrgaming.civcraft.structure.Farm;
@@ -106,6 +121,8 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
 import com.avrgaming.moblib.MobLib;
+
+
 
 public class BlockListener implements Listener {
 
@@ -129,7 +146,13 @@ public class BlockListener implements Listener {
 						}
 						return;
 					}
-					
+
+					RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
+					if (rb != null) {
+						event.setCancelled(true);
+						return;
+					}
+
 					CampBlock cb = CivGlobal.getCampBlock(bcoord);
 					if (cb != null) {
 						event.setCancelled(true);
@@ -175,6 +198,12 @@ public class BlockListener implements Listener {
 			return;
 		}
 
+		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
+		if (rb != null) {
+			event.setCancelled(true);
+			return;
+		}
+
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
 			event.setCancelled(true);
@@ -190,6 +219,12 @@ public class BlockListener implements Listener {
 
 		StructureBlock sb = CivGlobal.getStructureBlock(bcoord);
 		if (sb != null) {
+			event.setCancelled(true);
+			return;
+		}
+
+		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
+		if (rb != null) {
 			event.setCancelled(true);
 			return;
 		}
@@ -236,21 +271,7 @@ public class BlockListener implements Listener {
 			}
 		}
 	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onEntityDamageByEntityEvent(LightningStrikeEvent event) {
-//		CivLog.debug("LightningStrike: "+event.getLightning().getUniqueId());
-//		event.setCancelled(true);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onEntityDamageEvent(EntityDamageEvent event) {
-		if (event.getCause().equals(DamageCause.LIGHTNING)) {
-//		CivLog.debug("onEntityDamageEvent LightningStrike: "+event.getEntity().getUniqueId());
-//		event.setCancelled(true);
-		}
-	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
 		/* Protect the Protected Item Frames! */
@@ -261,29 +282,21 @@ public class BlockListener implements Listener {
 				return;
 			}
 		}
-		
+
 		if (!(event.getEntity() instanceof Player)) {			
 			return;
-		}
-		
-		if (event.getDamager() instanceof LightningStrike) {
-//			CivLog.debug("onEntityDamageByEntityEvent LightningStrike: "+event.getDamager().getUniqueId());
-			try {
-				event.setDamage(CivSettings.getInteger(CivSettings.warConfig, "tesla_tower.damage"));
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
-		
+		}	
+
 		Player defender = (Player)event.getEntity();
 		/* Only protect agaisnt players and entities that players can throw. */
 		if (!CivSettings.playerEntityWeapons.contains(event.getDamager().getType())) {
 			return;
 		}
-		
+
 		if (event.getDamager() instanceof Arrow) {
+
 		}
-		
+
 		if (event.getDamager() instanceof Fireball) {
 			CannonFiredCache cfc = CivCache.cannonBallsFired.get(event.getDamager().getUniqueId());
 			if (cfc != null) {
@@ -422,6 +435,12 @@ public class BlockListener implements Listener {
 			bcoord.setFromLocation(block.getLocation());
 			StructureBlock sb = CivGlobal.getStructureBlock(bcoord);
 			if (sb != null) {
+				event.setCancelled(true);
+				return;
+			}
+
+			RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
+			if (rb != null) {
 				event.setCancelled(true);
 				return;
 			}
@@ -620,6 +639,18 @@ public class BlockListener implements Listener {
 			return;
 		}
 
+		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
+		if (rb != null) {
+			if (rb.isAboveRoadBlock()) {
+				if (resident.getCiv() != rb.getRoad().getCiv()) {
+					event.setCancelled(true);
+					CivMessage.sendError(event.getPlayer(), 
+							"Cannot place blocks "+(Road.HEIGHT-1)+" blocks above a road that does not belong to your civ.");
+				}
+			}
+			return;
+		}
+
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null && !cb.canBreak(event.getPlayer().getName())) {
 			event.setCancelled(true);
@@ -682,9 +713,10 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnBlockBreakEvent(BlockBreakEvent event) {
 		Resident resident = CivGlobal.getResident(event.getPlayer());
+
 		if (resident == null) {
 			event.setCancelled(true);
 			return;
@@ -701,6 +733,20 @@ public class BlockListener implements Listener {
 			event.setCancelled(true);
 			TaskMaster.syncTask(new StructureBlockHitEvent(event.getPlayer().getName(), bcoord, sb, event.getBlock().getWorld()), 0);
 			return;
+		}
+
+		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
+		if (rb != null && !rb.isAboveRoadBlock()) {
+			if (War.isWarTime()) {
+				/* Allow blocks to be 'destroyed' during war time. */
+				WarRegen.destroyThisBlock(event.getBlock(), rb.getTown());
+				event.setCancelled(true);
+				return;
+			} else {
+				event.setCancelled(true);
+				rb.onHit(event.getPlayer());
+				return;
+			}
 		}
 
 		ProtectedBlock pb = CivGlobal.getProtectedBlock(bcoord);
@@ -1066,19 +1112,8 @@ public class BlockListener implements Listener {
 				if(tc.getTown().getCiv().getDiplomacyManager().atWarWith(resident.getTown().getCiv())) {
 
 					switch (event.getClickedBlock().getType()) {
-					case IRON_DOOR:
-					case BIRCH_DOOR:
 					case WOODEN_DOOR:
-					case SPRUCE_DOOR:
-					case JUNGLE_DOOR:
-					case ACACIA_DOOR:
-					case DARK_OAK_DOOR:
-                    case FENCE_GATE:
-                    case BIRCH_FENCE_GATE:
-                    case SPRUCE_FENCE_GATE:
-                    case JUNGLE_FENCE_GATE:
-					case ACACIA_FENCE_GATE:
-                    case DARK_OAK_FENCE_GATE:
+					case IRON_DOOR:
 						return;
 					default:
 						break;
@@ -1183,13 +1218,6 @@ public class BlockListener implements Listener {
 					if (inHand.getType().equals(Material.SEEDS) ||
 						inHand.getType().equals(Material.MELON_SEEDS) ||
 						inHand.getType().equals(Material.PUMPKIN_SEEDS)) {
-						denyBreeding = true;
-					}
-					break;
-				case RABBIT:
-					if (inHand.getType().equals(Material.CARROT) ||
-						inHand.getType().equals(Material.GOLDEN_CARROT) ||
-						inHand.getType().equals(Material.YELLOW_FLOWER)) {
 						denyBreeding = true;
 					}
 					break;
@@ -1476,6 +1504,11 @@ public class BlockListener implements Listener {
 			return false;
 		}
 
+		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
+		if (rb != null) {
+			return false;
+		}
+
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
 			return false;
@@ -1570,7 +1603,6 @@ public class BlockListener implements Listener {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST) 
 	public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
 		if (!allowPistonAction(event.getRetractLocation())) {
@@ -1652,12 +1684,8 @@ public class BlockListener implements Listener {
 
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
-			if (ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR ||
-					ItemManager.getId(event.getBlock()) == CivData.BIRCH_DOOR||
-					ItemManager.getId(event.getBlock()) == CivData.SPRUCE_DOOR||
-					ItemManager.getId(event.getBlock()) == CivData.JUNGLE_DOOR||
-					ItemManager.getId(event.getBlock()) == CivData.ACACIA_DOOR||
-					ItemManager.getId(event.getBlock()) == CivData.DARK_OAK_DOOR) {
+			if (ItemManager.getId(event.getBlock()) == CivData.WOOD_DOOR ||
+					ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR) {
 				event.setNewCurrent(0);
 				return;
 			}

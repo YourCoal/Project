@@ -29,14 +29,11 @@ public class ConfigMaterial {
 	public boolean craftable = false;
 	public String required_tech = null;
 	public boolean shaped = false;
-	public boolean shiny = false;
-	public boolean tradeable = false;
 	public HashMap<String, ConfigIngredient> ingredients;
 	public String[] shape;
 	public List<HashMap<String, String>> components = new LinkedList<HashMap<String, String>>();
 	public boolean vanilla = false;
 	public int amount = 1;
-	public double tradeValue = 0;
 	
 	@SuppressWarnings("unchecked")
 	public static void loadConfig(FileConfiguration cfg, Map<String, ConfigMaterial> materials){
@@ -68,6 +65,7 @@ public class ConfigMaterial {
 				} else {
 					mat.tier = 0;
 				}
+				
 			}
 			
 			/* Optional Lore */
@@ -83,38 +81,32 @@ public class ConfigMaterial {
 					}
 				}
 			}
+			
 			Boolean craftable = (Boolean)b.get("craftable");
 			if (craftable != null) {
 				mat.craftable = craftable;
 			}
+			
 			Boolean shaped = (Boolean)b.get("shaped");
 			if (shaped != null) {
 				mat.shaped = shaped;
 			}
-			Boolean isShiny = (Boolean)b.get("shiny");
-			if (isShiny != null) {
-				mat.shiny = isShiny;
-			}
-			Boolean isTradeable = (Boolean)b.get("tradeable");
-			if (isTradeable != null) {
-				mat.tradeable = isTradeable;
-			}
-			Double tValue = (Double)b.get("tradeValue");
-			if (tValue != null) {
-				mat.tradeValue = tValue;
-			}
+			
 			Boolean vanilla = (Boolean)b.get("vanilla");
 			if (vanilla != null) {
 				mat.vanilla = vanilla;
 			}
+			
 			Integer amount = (Integer)b.get("amount");
 			if (amount != null) {
 				mat.amount = amount;
 			}
+			
 			String required_tech = (String)b.get("required_techs");
 			if (required_tech != null) {
 				mat.required_tech = required_tech;
 			}
+			
 			List<Map<?,?>> comps = (List<Map<?,?>>)b.get("components");
 			if (comps != null) {
 				for (Map<?, ?> compObj : comps) {

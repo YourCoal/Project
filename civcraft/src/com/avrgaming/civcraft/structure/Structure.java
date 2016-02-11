@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.structure;
 
 import java.io.IOException;
@@ -20,8 +38,8 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
-import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
+import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -33,19 +51,6 @@ public class Structure extends Buildable {
 		
 		this.info = CivSettings.structures.get(id);
 		this.setTown(town);
-		this.setCorner(new BlockCoord(center));
-		this.hitpoints = info.max_hitpoints;
-
-		// Disallow duplicate structures with the same hash.
-		Structure struct = CivGlobal.getStructure(this.getCorner());
-		if (struct != null) {
-			throw new CivException("There is a structure already here.");
-		}
-	}
-	
-	public Structure(Location center, String id) throws CivException {
-		
-		this.info = CivSettings.structures.get(id);
 		this.setCorner(new BlockCoord(center));
 		this.hitpoints = info.max_hitpoints;
 
@@ -82,34 +87,7 @@ public class Structure extends Buildable {
 				struct = (Structure) new Bank(rs);
 			}
 			break;
-		case "s_nuclearplant":
-			if (rs == null) {
-				struct = (Structure) new NuclearPlant(center, id, town);
-			} else {
-				struct = (Structure) new NuclearPlant(rs);
-			}
-			break;
-		case "s_teslatower":
-			if (rs == null) {
-				struct = (Structure) new TeslaTower(center, id, town);
-			} else {
-				struct = (Structure) new TeslaTower(rs);
-			}
-			break;
-		case "ti_fishery":
-			if (rs == null) {
-				struct = (Structure) new Fishery(center, id, town);
-			} else {
-				struct = (Structure) new Fishery(rs);
-			}
-			break;
-		case "ti_quarry":
-			if (rs == null) {
-				struct = (Structure) new Quarry(center, id, town);
-			} else {
-				struct = (Structure) new Quarry(rs);
-			}
-			break;
+		
 		case "s_trommel":
 			if (rs == null) {
 				struct = (Structure) new Trommel(center, id, town);
@@ -244,9 +222,9 @@ public class Structure extends Buildable {
 			break;
 		case "s_shipyard":
 			if (rs == null) {
-				struct = (Structure) new Shipyard(center, id, town);
+				struct = (Structure) new WaterStructure(center, id, town);
 			} else {
-				struct = (Structure) new Shipyard(rs);
+				struct = (Structure) new WaterStructure(rs);
 			}
 			break;
 		case "ti_wall":
@@ -254,6 +232,13 @@ public class Structure extends Buildable {
 				struct = (Structure) new Wall(center, id, town);
 			} else {
 				struct = (Structure) new Wall(rs);
+			}
+			break;
+		case "ti_road":
+			if (rs == null) {
+				struct = (Structure) new Road(center, id, town);
+			} else {
+				struct = (Structure) new Road(rs);
 			}
 			break;
 		case "s_barracks":
@@ -342,6 +327,7 @@ public class Structure extends Buildable {
 		}
 	}
 	
+	
 	public static void init() throws SQLException {
 		if (!SQL.hasTable(TABLE_NAME)) {
 			String table_create = "CREATE TABLE " + SQL.tb_prefix + TABLE_NAME+" (" + 
@@ -423,56 +409,6 @@ public class Structure extends Buildable {
 		hashmap.put("template_y", this.getTemplateY());
 		hashmap.put("template_z", this.getTemplateZ());
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);
-	}
-	
-	public void deleteSkipUndo() throws SQLException {
-		super.delete();
-		if (this.getTown() != null) {
-			/* Release trade goods if we are a trade outpost. */
-			if (this instanceof TradeOutpost) {
-				TradeOutpost outpost = (TradeOutpost)this;
-				if (outpost.getGood() != null) {
-					outpost.getGood().setStruct(null);
-					outpost.getGood().setTown(null);
-					outpost.getGood().setCiv(null);
-					outpost.getGood().save();
-				}
-			}
-			if (this instanceof FishingBoat) {
-				FishingBoat outpost1 = (FishingBoat)this;
-				if (outpost1.getGood() != null) {
-					outpost1.getGood().setStruct(null);
-					outpost1.getGood().setTown(null);
-					outpost1.getGood().setCiv(null);
-					outpost1.getGood().save();
-				}
-			}
-			if (!(this instanceof Wall)) {
-				for (StructureSign sign : this.getSigns()) {
-					sign.delete();
-				} try {
-					this.undoFromTemplate();	
-				} catch (IOException | CivException e1) {
-					e1.printStackTrace();
-					this.fancyDestroyStructureBlocks();
-				}
-				CivGlobal.removeStructure(this);
-				this.getTown().removeStructure(this);
-				this.unbindStructureBlocks();
-			} else {
-				CivGlobal.removeStructure(this);
-				this.getTown().removeStructure(this);
-				this.unbindStructureBlocks();
-				if (this instanceof Wall) {
-					Wall wall = (Wall)this;
-					wall.deleteOnDisband();
-				}
-			}
-			CivGlobal.removeStructure(this);
-			this.getTown().removeStructure(this);
-			this.unbindStructureBlocks();
-		}
-		SQL.deleteNamedObject(this, TABLE_NAME);
 	}
 	
 	@Override

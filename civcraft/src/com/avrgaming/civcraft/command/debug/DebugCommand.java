@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any. The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.command.debug;
 
 import gpl.AttributeUtil;
@@ -68,6 +86,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.populators.TradeGoodPopulator;
+import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.siege.Cannon;
 import com.avrgaming.civcraft.structure.ArrowTower;
 import com.avrgaming.civcraft.structure.Buildable;
@@ -83,6 +102,7 @@ import com.avrgaming.civcraft.threading.tasks.ChunkGenerateTask;
 import com.avrgaming.civcraft.threading.tasks.CultureProcessAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
 import com.avrgaming.civcraft.threading.tasks.TradeGoodPostGenTask;
+import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
 import com.avrgaming.civcraft.threading.timers.DailyTimer;
 import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.AsciiMap;
@@ -148,6 +168,7 @@ public class DebugCommand extends CommandBase {
 		commands.put("listconquered", "shows a list of conquered civilizations.");
 		commands.put("camp", "Debugs camps.");
 		commands.put("blockinfo", "[x] [y] [z] shows block info for this block.");
+		commands.put("trommel", "[name] - turn on this town's trommel debugging.");
 		commands.put("fakeresidents", "[town] [count] - Adds this many fake residents to a town.");
 		commands.put("clearresidents", "[town] - clears this town of it's random residents.");
 		commands.put("biomehere", "- shows you biome info where you're standing.");
@@ -164,6 +185,7 @@ public class DebugCommand extends CommandBase {
 		commands.put("setdura", "sets the durability of an item");
 		commands.put("togglebookcheck", "Toggles checking for enchanted books on and off.");
 		commands.put("setexposure", "[int] sets your exposure to this ammount.");
+		commands.put("circle", "[int] - draws a circle at your location, with this radius.");
 		commands.put("loadperks", "loads perks for yourself");
 		commands.put("colorme", "[hex] adds nbt color value to item held.");
 		commands.put("preview", "show a single block preview at your feet.");
@@ -183,24 +205,19 @@ public class DebugCommand extends CommandBase {
 		commands.put("cannon", "builds a war cannon.");
 		commands.put("saveinv", "save an inventory");
 		commands.put("restoreinv", "restore your inventory.");
-		commands.put("regenunclaimedchunk", "regens every unclaimed chunk that has a trade good in it");
-		commands.put("structures", "Show structures debug options");
+		commands.put("arenainfo", "Shows arena info for this player.");
 	}
 	
-	public void structures_cmd() {
-		DebugStructuresCommand cmd = new DebugStructuresCommand();	
-		cmd.onCommand(sender, null, "structures", this.stripArgs(args, 1));
-	}
-	
-	public void regenunclaimedchunk_cmd() {
-		World world = Bukkit.getWorld("World");
-		for(ChunkCoord coord : CivGlobal.preGenerator.goodPicks.keySet()) {
-			TownChunk tc = CivGlobal.getTownChunk(coord);
-			if (tc == null) {
-			world.regenerateChunk(coord.getX(), coord.getZ());
-			CivMessage.send(sender, "Regened:"+coord);
-			}
+	public void arenainfo_cmd() throws CivException {
+		Resident resident = getResident();
+		String arenaName = "";
+		
+		if (resident.getTeam() != null && resident.getTeam().getCurrentArena() != null) {
+			arenaName = resident.getTeam().getCurrentArena().getInstanceName();
 		}
+		
+		
+		CivMessage.send(sender, "InsideArena:"+resident.isInsideArena()+" Team Active arena:"+arenaName);
 	}
 	
 	public void saveinv_cmd() throws CivException {
@@ -610,6 +627,25 @@ public class DebugCommand extends CommandBase {
 		CivMessage.sendSuccess(player, "Set color.");
 	}
 	
+	public void circle_cmd() throws CivException {
+		Player player = getPlayer();
+		int radius = getNamedInteger(1);
+		
+		HashMap<String, SimpleBlock> simpleBlocks = new HashMap<String, SimpleBlock>();
+		Road.getCircle(player.getLocation().getBlockX(), 
+				player.getLocation().getBlockY()-1, 
+				player.getLocation().getBlockZ(), 
+				player.getLocation().getWorld().getName(), 
+				radius, simpleBlocks);
+		
+		for (SimpleBlock sb : simpleBlocks.values()) {
+			Block block = player.getWorld().getBlockAt(sb.x, sb.y, sb.z);
+			ItemManager.setTypeId(block, sb.getType());
+		}
+		
+		CivMessage.sendSuccess(player, "Built a circle at your feet.");
+	}
+	
 	public void setexposure_cmd() throws CivException {
 		Resident resident = getResident();
 		Player player = getPlayer();
@@ -779,6 +815,18 @@ public class DebugCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, "Added "+count+" residents.");
 	}
 	
+	public void trommel_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		
+		if (TrommelAsyncTask.debugTowns.contains(town.getName())) {
+			TrommelAsyncTask.debugTowns.remove(town.getName());
+		} else {
+			TrommelAsyncTask.debugTowns.add(town.getName());
+		}
+		
+		CivMessage.send(sender, "Trommel toggled.");
+	}
+	
 	public void blockinfo_cmd() throws CivException {
 		int x = getNamedInteger(1);
 		int y = getNamedInteger(2);
@@ -822,7 +870,6 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(sender, out);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void refreshchunk_cmd() throws CivException {
 		Player you = getPlayer();
 		ChunkCoord coord = new ChunkCoord(you.getLocation());

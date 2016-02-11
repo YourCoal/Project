@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.main;
 
 import java.util.ArrayList;
@@ -11,14 +29,14 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.avrgaming.civcraft.arena.Arena;
+import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
-import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.CivColor;
-import com.connorlinfoot.titleapi.TitleAPI;
 
 public class CivMessage {
 
@@ -34,12 +52,15 @@ public class CivMessage {
 	public static void sendErrorNoRepeat(Object sender, String line) {
 		if (sender instanceof Player) {
 			Player player = (Player)sender;
+			
 			Integer hashcode = lastMessageHashCode.get(player.getName());
 			if (hashcode != null && hashcode == line.hashCode()) {
 				return;
 			}
+			
 			lastMessageHashCode.put(player.getName(), line.hashCode());
 		}
+		
 		send(sender, CivColor.Rose+line);
 	}
 	
@@ -47,7 +68,9 @@ public class CivMessage {
 		send(sender, CivColor.Rose+line);
 	}
 	
-	/* Sends message to playerName(if online) AND console.  */
+	/*
+	 * Sends message to playerName(if online) AND console. 
+	 */
 	public static void console(String playerName, String line) {
 		try {
 			Player player = CivGlobal.getPlayer(playerName);
@@ -57,49 +80,20 @@ public class CivMessage {
 		CivLog.info(line);	
 	}
 	
-	public static void sendTitle(Object sender, int fadeIn, int show, int fadeOut, String title, String subTitle) {
-		if (CivSettings.hasTitleAPI) {
-			Player player = null;
-			Resident resident = null;
-			if ((sender instanceof Player)) {
-				player = (Player) sender;
-				resident = CivGlobal.getResident(player);
-			} else if (sender instanceof Resident) {
-				try {
-					resident = (Resident)sender;
-					player = CivGlobal.getPlayer(resident);
-				} catch (CivException e) { // No player online
-				}
-			}
-			if (player != null && resident != null && resident.isTitleAPI()) {
-				TitleAPI.sendTitle(player, fadeIn, show, fadeOut, title, subTitle);
-				return;
-			}
-		} else {
-			send(sender, title);
-		if (subTitle != "") {
-				send(sender, subTitle);
-			}
-		}
-	}
-	
-	public static void sendTitle(Object sender, String title, String subTitle) {
-		sendTitle(sender, 15, 60, 15, title, subTitle);
-	}
-	
 	public static void send(Object sender, String line) {
 		if ((sender instanceof Player)) {
 			((Player) sender).sendMessage(line);
 		} else if (sender instanceof CommandSender) {
 			((CommandSender) sender).sendMessage(line);
-		} else if (sender instanceof Resident) {
+		}
+		else if (sender instanceof Resident) {
 			try {
 				CivGlobal.getPlayer(((Resident) sender)).sendMessage(line);
 			} catch (CivException e) {
+				// No player online
 			}
 		}
 	}
-	
 	public static void send(Object sender, String[] lines) {
 		boolean isPlayer = false;
 		if (sender instanceof Player)
@@ -165,19 +159,7 @@ public class CivMessage {
 	public static void sendSuccess(CommandSender sender, String message) {
 		send(sender, CivColor.LightGreen+message);
 	}
-	
-	public static void globalTitle(String title, String subTitle) {
-		CivLog.info("[GlobalTitle] "+title+" - "+subTitle);
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			Resident resident = CivGlobal.getResident(player);
-			if (CivSettings.hasTitleAPI && resident.isTitleAPI()) {
-				CivMessage.sendTitle(player, 15, 60, 15, title, subTitle);
-			} 
-			send(player, buildTitle(title));
-			send(player, subTitle);
-		}
-	}
-	
+
 	public static void global(String string) {
 		CivLog.info("[Global] "+string);
 		for (Player player : Bukkit.getOnlinePlayers()) {
@@ -488,4 +470,26 @@ public class CivMessage {
 			return;
 		}
 	}
+
+	public static void sendTeam(ArenaTeam team, String message) {
+		for (Resident resident : team.teamMembers) {
+			CivMessage.send(resident, CivColor.Blue+"[Team ("+team.getName()+")] "+CivColor.RESET+message);
+		}
+	}
+	
+	public static void sendTeamHeading(ArenaTeam team, String message) {
+		for (Resident resident : team.teamMembers) {
+			CivMessage.sendHeading(resident, message);
+		}
+	}
+	
+	public static void sendArena(Arena arena, String message) {
+		CivLog.info("[Arena] "+message);
+		for (ArenaTeam team : arena.getTeams()) {
+			for (Resident resident : team.teamMembers) {
+				CivMessage.send(resident, CivColor.LightBlue+"[Arena] "+CivColor.RESET+message);
+			}
+		}
+	}
+	
 }

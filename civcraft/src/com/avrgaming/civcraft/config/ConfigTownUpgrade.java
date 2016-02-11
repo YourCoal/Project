@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.config;
 
 import java.text.DecimalFormat;
@@ -15,13 +33,10 @@ import com.avrgaming.civcraft.object.LibraryEnchantment;
 import com.avrgaming.civcraft.object.StoreMaterial;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Bank;
-import com.avrgaming.civcraft.structure.Fishery;
 import com.avrgaming.civcraft.structure.Grocer;
 import com.avrgaming.civcraft.structure.Library;
-import com.avrgaming.civcraft.structure.Quarry;
 import com.avrgaming.civcraft.structure.Store;
 import com.avrgaming.civcraft.structure.Structure;
-import com.avrgaming.civcraft.structure.Trommel;
 
 public class ConfigTownUpgrade {
 	public String id;
@@ -74,7 +89,9 @@ public class ConfigTownUpgrade {
 			if (town.getLevel() < Integer.valueOf(args[1].trim())) {
 				town.setLevel(Integer.valueOf(args[1].trim()));
 				CivMessage.global(town.getName()+" is now a "+town.getLevelTitle()+"!");
-			} break;
+			}
+			break;
+		
 		case "set_bank_level":
 			struct = town.getStructureByType("s_bank");
 			if (struct != null && (struct instanceof Bank)) {
@@ -85,7 +102,8 @@ public class ConfigTownUpgrade {
 					town.saved_bank_level = bank.getLevel();
 					CivMessage.sendTown(town, "The bank is now level "+bank.getLevel());
 				}
-			} break;
+			}
+			break;
 		case "set_bank_interest":
 			struct = town.getStructureByType("s_bank");
 			if (struct != null && (struct instanceof Bank)) {
@@ -96,7 +114,8 @@ public class ConfigTownUpgrade {
 					DecimalFormat df = new DecimalFormat();
 					CivMessage.sendTown(town, "The bank is now provides a "+df.format(bank.getInterestRate()*100)+"% interest rate.");
 				}
-			} break;
+			}
+			break;
 		case "set_store_level":
 			struct = town.getStructureByType("s_store");
 			if (struct != null && (struct instanceof Store)) {
@@ -106,7 +125,8 @@ public class ConfigTownUpgrade {
 					store.updateSignText();
 					CivMessage.sendTown(town, "The store is now level "+store.getLevel());
 				}
-			} break;
+			}
+			break;
 		case "set_store_material":
 			struct = town.getStructureByType("s_store");
 			if (struct != null && (struct instanceof Store)) {
@@ -114,7 +134,8 @@ public class ConfigTownUpgrade {
 				StoreMaterial mat = new StoreMaterial(args[1].trim(), args[2].trim(), args[3].trim(), args[4].trim());
 				store.addStoreMaterial(mat);
 				store.updateSignText();
-			} break;
+			}
+			break;
 		case "set_library_level":
 			struct = town.getStructureByType("s_library");
 			if (struct != null && (struct instanceof Library)) {
@@ -124,7 +145,8 @@ public class ConfigTownUpgrade {
 					library.updateSignText();
 					CivMessage.sendTown(town, "The library is now level "+library.getLevel());
 				}
-			} break;
+			}
+			break;
 		case "enable_library_enchantment":
 			struct = town.getStructureByType("s_library");
 			if (struct != null && (struct instanceof Library)) {
@@ -133,7 +155,8 @@ public class ConfigTownUpgrade {
 				library.addEnchant(enchant);
 				library.updateSignText();
 				CivMessage.sendTown(town, "The library now offers the "+args[1].trim()+" enchantment at level "+args[2]+"!");
-			} break;
+			}
+			break;
 		case "set_grocer_level":
 			struct = town.getStructureByType("s_grocer");
 			if (struct != null && (struct instanceof Grocer)) {
@@ -143,68 +166,11 @@ public class ConfigTownUpgrade {
 					grocer.updateSignText();
 					CivMessage.sendTown(town, "The grocer is now level "+grocer.getLevel());
 				}
-			} break;
-		case "set_trommel_level":
-			boolean didUpgrade = false;
-			int trommelLevel = 1;
-			for (Structure structure : town.getStructures()) {
-				if (structure.getConfigId().equalsIgnoreCase("s_trommel")) {
-					if (structure != null && (structure instanceof Trommel)) {
-						Trommel trommel = (Trommel)structure;
-						if (trommel.getLevel() < Integer.valueOf(args[1].trim())) {
-							didUpgrade = true;
-							trommel.setLevel(Integer.valueOf(args[1].trim()));
-							town.saved_trommel_level = trommel.getLevel();
-							trommelLevel = trommel.getLevel();
-						}
-					}
-				}
 			}
-			if (didUpgrade) {
-				CivMessage.sendTown(town, "Our trommels are now level "+trommelLevel);
-			} break;
-		case "set_quarry_level":
-			boolean didUpgradeQuarry = false;
-			int quarryLevel = 1;
-			for (Structure structure : town.getStructures()) {
-				if (structure.getConfigId().equalsIgnoreCase("ti_quarry")) {
-					if (structure != null && (structure instanceof Quarry)) {
-						Quarry quarry = (Quarry)structure;
-						if (quarry.getLevel() < Integer.valueOf(args[1].trim())) {
-							didUpgradeQuarry = true;
-							quarry.setLevel(Integer.valueOf(args[1].trim()));
-							town.saved_quarry_level = quarry.getLevel();
-							quarryLevel = quarry.getLevel();
-						}
-					}
-				}
-			}
-			if (didUpgradeQuarry) {
-				CivMessage.sendTown(town, "Our quarries are now level "+quarryLevel);
-			} break;
-		case "set_fish_hatchery_level":
-			boolean didUpgradeFishery = false;
-			int fisheryLevel = 1;
-			for (Structure structure : town.getStructures()) {
-				if (structure.getConfigId().equalsIgnoreCase("ti_fishery")) {
-					if (structure != null && (structure instanceof Fishery)) {
-						Fishery fishery = (Fishery)structure;
-						if (fishery.getLevel() < Integer.valueOf(args[1].trim())) {
-							didUpgradeFishery = true;
-							fishery.setLevel(Integer.valueOf(args[1].trim()));
-							fishery.updateSignText();
-							town.saved_fishery_level = fishery.getLevel();
-							fisheryLevel = fishery.getLevel();
-						}
-					}
-				}
-			}
-			if (didUpgradeFishery) {
-				CivMessage.sendTown(town, "Our Fisheries are now level "+fisheryLevel);
-			} break;
+			break;
 		}
 	}
-	
+
 	public boolean isAvailable(Town town) {
 		if (CivGlobal.testFileFlag("debug-norequire")) {
 			CivMessage.global("Ignoring requirements! debug-norequire found.");

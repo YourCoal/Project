@@ -1,4 +1,23 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.threading.tasks;
+
 
 import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
@@ -56,8 +75,10 @@ public class BuildPreviewAsyncTask extends CivAsyncTask {
 			
 	@Override
 	public void run() {
+		
 		try {
 			int count = 0;
+			
 			for (int y = 0; y < tpl.size_y; y++) {
 				for (int x = 0; x < tpl.size_x; x++) {
 					for (int z = 0; z < tpl.size_z; z++) {
@@ -74,7 +95,8 @@ public class BuildPreviewAsyncTask extends CivAsyncTask {
 							}
 							
 							ItemManager.sendBlockChange(getPlayer(), b.getLocation(), ItemManager.getId(Material.GLASS), 5);
-							resident.previewUndo.put(new BlockCoord(b.getLocation()), new SimpleBlock(ItemManager.getId(b), ItemManager.getData(b)));
+							resident.previewUndo.put(new BlockCoord(b.getLocation()), 
+									new SimpleBlock(ItemManager.getId(b), ItemManager.getData(b)));
 							count++;			
 						} finally {
 							lock.unlock();
