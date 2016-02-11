@@ -17,16 +17,19 @@ import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.TimeTools;
 
 public class SLSManager implements Runnable {
-
+	
 	public static String serverName;
+	public static String serverNameURL;
+	public static String serverNameURLDescription;
 	public static String serverDescription;
 	public static String serverAddress;
+	public static String serverAddressURL;
+	public static String serverAddressURLDescription;
 	public static String serverTimezone;
 	public static String gen_id;
 	
 	public static void init() throws CivException, InvalidConfiguration {
 		String useListing = CivSettings.getStringBase("use_server_listing_service");
-		
 		if (useListing == null) {
 			return;
 		}
@@ -40,6 +43,16 @@ public class SLSManager implements Runnable {
 			throw new CivException("Cannot have a server name with a ';' in it.");
 		}
 		
+		serverNameURL = CivSettings.getStringBase("server_name_url");
+		if (serverNameURL.contains(";")) {
+			throw new CivException("Cannot have a server url with a ';' in it.");
+		}
+		
+		serverNameURLDescription = CivSettings.getStringBase("server_name_url_description");
+		if (serverNameURLDescription.contains(";")) {
+			throw new CivException("Cannot have a server url description with a ';' in it.");
+		}
+		
 		serverDescription = CivSettings.getStringBase("server_description");
 		if (serverDescription.contains(";")) {
 			throw new CivException("Cannot have a server description with a ';' in it.");
@@ -50,11 +63,20 @@ public class SLSManager implements Runnable {
 			throw new CivException("Cannot have a server address with a ';' in it.");
 		}
 		
+		serverAddressURL = CivSettings.getStringBase("server_address_url");
+		if (serverAddressURL.contains(";")) {
+			throw new CivException("Cannot have a server url with a ';' in it.");
+		}
+		
+		serverAddressURLDescription = CivSettings.getStringBase("server_address_url_description");
+		if (serverAddressURLDescription.contains(";")) {
+			throw new CivException("Cannot have a server url description with a ';' in it.");
+		}
+		
 		serverTimezone = CivSettings.getStringBase("server_timezone");
 		if (serverTimezone.contains(";")) {
 			throw new CivException("Cannot have a server timezone with a ';' in it.");
 		}
-		
 		
 		gen_id = CivSettings.getGenID();
 		if (gen_id == null) {
@@ -62,9 +84,7 @@ public class SLSManager implements Runnable {
 			gen_id = uid.toString();
 			CivSettings.saveGenID(gen_id);
 		}
-		
-	
-		TaskMaster.asyncTimer("SLS", new SLSManager(), TimeTools.toTicks(60));
+		TaskMaster.asyncTimer("SLS", new SLSManager(), TimeTools.toTicks(5));
 	}
 	
 	public static String getParsedVersion() {
@@ -76,8 +96,17 @@ public class SLSManager implements Runnable {
 	public static void sendHeartbeat() {
 		try {
 			InetAddress address = InetAddress.getByName("atlas.civcraft.net");
-			String message = gen_id+";"+serverName+";"+serverDescription+";"+serverTimezone+";"+serverAddress+";"+
-					Bukkit.getOnlinePlayers().size()+";"+Bukkit.getMaxPlayers()+";"+getParsedVersion();
+			String message = gen_id+";"
+				
+				+ "<a href=\""+serverNameURL+"\" title=\""+serverNameURLDescription+"\" target=\"_blank\" style=\"color:red\"><strong>"+serverName+"</strong></a>;"
+				
+				+ "<strong>"+serverDescription+"</strong>;"
+				
+				+ "<strong>"+serverTimezone+"</strong>;"
+				
+				+ "<a href=\""+serverAddressURL+"\" title=\""+serverAddressURLDescription+"\" target=\"_blank\" style=\"color:navy\"><strong>"+serverAddress+"</strong></a>;"
+				
+				+ Bukkit.getOnlinePlayers().size()+";"+Bukkit.getMaxPlayers()+";"+getParsedVersion();
 			
 			try {
 				if (CivSettings.getStringBase("debug_heartbeat").equalsIgnoreCase("true")) {
@@ -97,14 +126,11 @@ public class SLSManager implements Runnable {
 			
 		} catch (UnknownHostException e) {
 			CivLog.error("Couldn't IP address to SLS service. If you're on a LAN with no internet access, disable SLS in the CivCraft config.");
-			//e.printStackTrace();
 		}
 	}
-
-
+	
 	@Override
 	public void run() {
 		SLSManager.sendHeartbeat();
 	}
-	
 }

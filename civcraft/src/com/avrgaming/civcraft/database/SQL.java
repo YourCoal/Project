@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigMarketItem;
@@ -51,7 +50,6 @@ import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.object.WallBlock;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.sessiondb.SessionDatabase;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
@@ -60,7 +58,6 @@ import com.avrgaming.civcraft.util.BiomeCache;
 import com.avrgaming.global.perks.PerkManager;
 import com.avrgaming.global.perks.PerkManagerSimple;
 import com.avrgaming.global.perks.PlatinumManager;
-import com.avrgaming.global.reports.ReportManager;
 import com.avrgaming.global.scores.ScoreManager;
 import com.jolbox.bonecp.Statistics;
 
@@ -167,7 +164,6 @@ public class SQL {
 		Structure.init();
 		Wonder.init();
 		WallBlock.init();
-		RoadBlock.init();
 		PermissionGroup.init();
 		TradeGood.init();
 		ProtectedBlock.init();
@@ -177,10 +173,8 @@ public class SQL {
 		Camp.init();
 		ConfigMarketItem.init();
 		RandomEvent.init();
-		ArenaTeam.init();
 					
 		CivLog.heading("Building Global Tables!!");
-		ReportManager.init();
 		ScoreManager.init();
 		
 		CivLog.info("----- Done Building Tables ----");
