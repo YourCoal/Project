@@ -226,6 +226,10 @@ public class Cannon extends Buildable {
 					
 					yTotal += b.getWorld().getHighestBlockYAt(centerBlock.getX()+x, centerBlock.getZ()+z);
 					yCount++;
+					
+					if (CivGlobal.getRoadBlock(coord) != null) {
+						throw new CivException("Cannot build a cannon on top of an existing road block.");
+					}
 				}
 			}
 		}

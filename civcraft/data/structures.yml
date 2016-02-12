@@ -269,6 +269,22 @@ stable_horses:
       health: 20.0
       mule: true
       variant: 'BLACK'
+################# Road Settings ######################
+road:
+    # Speed multiplier for players
+    player_speed: 1.5
+
+    # Speed multiplier for players on horses
+    horse_speed: 1.1
+
+    # Raid time in hours
+    raid_length: 2
+
+    # Maximum number of blocks a single road can take.
+    max_segment: 50 
+
+    # Cost of road per segment
+    cost_per_segment: 300.0
 ######################################################################
 #               CIVCRAFT Structure config
 ######################################################################
@@ -710,7 +726,26 @@ structures:
     max_hitpoints: 1000
     ignore_floating: true
     has_template: false
-
+ 
+  - id: ti_road
+    template: notused
+    template_y_shift: 0 
+    displayName: Road
+    require_upgrade:
+    require_tech: 'tech_masonry' 
+    effect_event:
+    check_event:
+    update_event:
+    onBuild_event:
+    limit: 0
+    cost: 300.0
+    upkeep: 50.0
+    hammer_cost: 500.0
+    points: 200
+    max_hitpoints: 1000
+    ignore_floating: true
+    has_template: false
+ 
   - id: s_arrowtower
     template: arrow_tower
     template_y_shift: 0

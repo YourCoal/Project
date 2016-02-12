@@ -2,17 +2,17 @@ package com.avrgaming.civcraft.mobs;
 
 import java.util.LinkedList;
 
-import net.minecraft.server.v1_8_R3.DamageSource;
-import net.minecraft.server.v1_8_R3.Entity;
-import net.minecraft.server.v1_8_R3.EntityCreature;
-import net.minecraft.server.v1_8_R3.EntityDamageSource;
-import net.minecraft.server.v1_8_R3.EntityHuman;
-import net.minecraft.server.v1_8_R3.EntityInsentient;
-import net.minecraft.server.v1_8_R3.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_8_R3.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_8_R3.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
+import net.minecraft.server.v1_7_R4.DamageSource;
+import net.minecraft.server.v1_7_R4.Entity;
+import net.minecraft.server.v1_7_R4.EntityCreature;
+import net.minecraft.server.v1_7_R4.EntityDamageSource;
+import net.minecraft.server.v1_7_R4.EntityHuman;
+import net.minecraft.server.v1_7_R4.EntityInsentient;
+import net.minecraft.server.v1_7_R4.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_7_R4.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_7_R4.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_7_R4.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
 
 import org.bukkit.block.Biome;
 import org.bukkit.event.entity.EntityTargetEvent;

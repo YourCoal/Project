@@ -70,6 +70,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.PlayerChunkNotifyAsyncTask;
@@ -160,13 +161,21 @@ public class PlayerListener implements Listener {
 			speed *= CivSettings.T4_metal_speed;
 		}
 		
-		if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
-			Vector vec = player.getVehicle().getVelocity();
-			double yComp = vec.getY();
-			vec.setY(yComp); /* Do not multiply y velocity. */
-			player.getVehicle().setVelocity(vec);
-		} else {
+		Resident resident = CivGlobal.getResident(player);
+		if (resident != null && resident.isOnRoad()) {	
+			if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
+				Vector vec = player.getVehicle().getVelocity();
+				double yComp = vec.getY();
+				
+				vec.multiply(Road.ROAD_HORSE_SPEED);
+				vec.setY(yComp); /* Do not multiply y velocity. */
+				
+				player.getVehicle().setVelocity(vec);
+			} else {
+				speed *= Road.ROAD_PLAYER_SPEED;
+			}
 		}
+		
 		player.setWalkSpeed((float) Math.min(1.0f, speed));
 	}
 	
@@ -207,17 +216,20 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		if (resident.getTown().getCiv().getDiplomacyManager().isAtWar() && War.isWarTime()) {
-			//TownHall townhall = resident.getTown().getTownHall();
-			Capitol capitol = resident.getCiv().getCapitolStructure();
-			if (capitol != null) {
-				BlockCoord respawn = capitol.getRandomRespawnPoint();
-				if (respawn != null) {
-					//PlayerReviveTask reviveTask = new PlayerReviveTask(player, townhall.getRespawnTime(), townhall, event.getRespawnLocation());
-					resident.setLastKilledTime(new Date());
-					event.setRespawnLocation(respawn.getCenteredLocation());
-					CivMessage.send(player, CivColor.LightGray+"You've respawned in the War Room since it's WarTime and you're at war.");
-					//TaskMaster.asyncTask("", reviveTask, 0);
+		if (War.isWarTime() && !resident.isInsideArena()) {
+			if (resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
+				//TownHall townhall = resident.getTown().getTownHall();
+				Capitol capitol = resident.getCiv().getCapitolStructure();
+				if (capitol != null) {
+					BlockCoord respawn = capitol.getRandomRespawnPoint();
+					if (respawn != null) {
+						//PlayerReviveTask reviveTask = new PlayerReviveTask(player, townhall.getRespawnTime(), townhall, event.getRespawnLocation());
+						resident.setLastKilledTime(new Date());
+						event.setRespawnLocation(respawn.getCenteredLocation());
+						CivMessage.send(player, CivColor.LightGray+"You've respawned in the War Room since it's WarTime and you're at war.");
+						
+						//TaskMaster.asyncTask("", reviveTask, 0);
+					}
 				}
 			}
 		}
