@@ -79,7 +79,6 @@ import com.avrgaming.civcraft.pvplogger.PvPLogger;
 import com.avrgaming.civcraft.randomevents.RandomEventSweeper;
 import com.avrgaming.civcraft.sessiondb.SessionDBAsyncTimer;
 import com.avrgaming.civcraft.siege.CannonListener;
-import com.avrgaming.civcraft.structure.Farm;
 import com.avrgaming.civcraft.structure.farm.FarmGrowthSyncTask;
 import com.avrgaming.civcraft.structure.farm.FarmPreCachePopulateTimer;
 import com.avrgaming.civcraft.structurevalidation.StructureValidationChecker;
@@ -170,7 +169,7 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.syncTimer("FarmCropCache", new FarmPreCachePopulateTimer(), TimeTools.toTicks(30));
 	
 		TaskMaster.asyncTimer("FarmGrowthTimer",
-				new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
+				new FarmGrowthSyncTask(), TimeTools.toTicks(10));
 
 		TaskMaster.asyncTimer("announcer", new AnnouncementTimer("tips.txt"), 0, TimeTools.toTicks(60*60));
 		

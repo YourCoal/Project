@@ -139,10 +139,6 @@ public class CultureChunk {
 		return getCultureBiomeInfo().hammers+getAdditionalAttributes(Attribute.TypeKeys.HAMMERS.name());
 	}
 	
-	public double getGrowth() {
-		return getCultureBiomeInfo().growth+getAdditionalAttributes(Attribute.TypeKeys.GROWTH.name());
-	}
-	
 	public double getBeakers() {		
 		return getCultureBiomeInfo().beakers+getAdditionalAttributes(Attribute.TypeKeys.BEAKERS.name());
 	}
@@ -190,15 +186,13 @@ public class CultureChunk {
 			CivMessage.send(player, CivColor.LightPurple+biome.name()+
 					CivColor.Green+" Coins: "+CivColor.LightGreen+info.coins+
 					CivColor.Green+" Happiness:"+CivColor.LightGreen+info.happiness+
-					CivColor.Green+" Hammers:"+CivColor.LightGreen+info.hammers+
-					CivColor.Green+" Growth:"+CivColor.LightGreen+info.growth+				
+					CivColor.Green+" Hammers:"+CivColor.LightGreen+info.hammers+			
 					CivColor.Green+" Beakers:"+CivColor.LightGreen+info.beakers);
 		} else {
 			CivMessage.send(player, CivColor.LightPurple+biome.name()+
 					CivColor.Green+" Coins: "+CivColor.LightGreen+cc.getCoins()+
 					CivColor.Green+" Happiness:"+CivColor.LightGreen+cc.getHappiness()+
-					CivColor.Green+" Hammers:"+CivColor.LightGreen+cc.getHammers()+
-					CivColor.Green+" Growth:"+CivColor.LightGreen+cc.getGrowth()+				
+					CivColor.Green+" Hammers:"+CivColor.LightGreen+cc.getHammers()+			
 					CivColor.Green+" Beakers:"+CivColor.LightGreen+cc.getBeakers());
 		}
 

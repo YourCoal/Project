@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.command.plot;
 
-import java.text.SimpleDateFormat;
-
 import org.bukkit.entity.Player;
 
 import com.avrgaming.civcraft.command.CommandBase;
@@ -30,7 +28,6 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.structure.farm.FarmChunk;
-import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 
@@ -69,33 +66,9 @@ public class PlotCommand extends CommandBase {
 		}
 		
 		String dateString = "Never";
-		
-		if (fc.getLastGrowDate() != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat("M/d/y k:m:s z");
-			dateString = sdf.format(fc.getLastGrowDate());
-		}
-		
 		CivMessage.sendHeading(sender, "Farm Plot Info");
 		CivMessage.send(sender, CivColor.Green+"Last Grow Time: "+CivColor.LightGreen+dateString);
-		CivMessage.send(sender, CivColor.Green+"Last Grow Amount: "+CivColor.LightGreen+fc.getLastGrowTickCount());
-		CivMessage.send(sender, CivColor.Green+"Growth Ticks While Unloaded: "+CivColor.LightGreen+fc.getMissedGrowthTicksStat());
 		CivMessage.send(sender, CivColor.Green+"Last Effective Growth Rate: "+CivColor.LightGreen+df.format(fc.getFarm().getLastEffectiveGrowthRate()*100)+"%");
-		
-		String success = "no";
-		if (fc.getLastRandomInt() < fc.getLastChanceForLast()) {
-			success = "yes";
-		}
-		
-		CivMessage.send(sender, CivColor.Green+"Last Extra Grow Chance: "+CivColor.LightGreen+fc.getLastChanceForLast()+" vs "+CivColor.LightGreen+fc.getLastRandomInt()+" success? "+CivColor.LightGreen+success);
-		
-		String out = "";
-		for (BlockCoord bcoord : fc.getLastGrownCrops()) {
-			out += bcoord.toString()+", ";
-		}
-		
-		CivMessage.send(sender, CivColor.Green+"Crops Grown: "+CivColor.LightGreen+out);
-		
-		
 	}
 	
 	public void setowner_cmd() throws CivException {

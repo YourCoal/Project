@@ -139,14 +139,6 @@ mine_levels:
       hammers: 300.00
       amount: 30
       count: 144
-##################### Farm Settings ##########################
-farm:
-    # Number of crops that will grow per 100% of growth rate.
-    grows_per_tick: 6
-
-    # Number of seconds it takes for a growth tick to fire, cannot be less than 1.
-    grow_tick_rate: 60
-
 ##################### Windmill Settings #####################
 windmill:
     # Max number of crops to plant per hour

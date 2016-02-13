@@ -258,7 +258,6 @@ public class TownCommand extends CommandBase {
 		
 	//	double coins = 0.0;
 		double hammers = 0.0;
-		double growth = 0.0;
 		double happiness = 0.0;
 		double beakers = 0.0;
 		DecimalFormat df = new DecimalFormat();
@@ -278,7 +277,6 @@ public class TownCommand extends CommandBase {
 			
 		//	coins += info.coins;
 			hammers += info.hammers;
-			growth += info.growth;
 			happiness += info.happiness;
 			beakers += info.beakers;
 		}
@@ -297,7 +295,6 @@ public class TownCommand extends CommandBase {
 		outList.add(CivColor.LightBlue+"Totals");
 		outList.add(CivColor.Green+" Happiness:"+CivColor.LightGreen+df.format(happiness)+
 				CivColor.Green+" Hammers:"+CivColor.LightGreen+df.format(hammers)+
-				CivColor.Green+" Growth:"+CivColor.LightGreen+df.format(growth)+
 				CivColor.Green+" Beakers:"+CivColor.LightGreen+df.format(beakers));
 		return outList;
 	}
