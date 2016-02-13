@@ -49,7 +49,5 @@ commands:
         aliases:
     kill:
         aliases:
-    team:
-        aliases:
     sb:
         aliases:

@@ -51,8 +51,6 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import com.avrgaming.civcraft.arena.Arena;
-import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
@@ -72,7 +70,6 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.TownHall;
@@ -164,7 +161,6 @@ public class Resident extends SQLObject {
 	private boolean showInfo = false;
 	private String itemMode = "all";
 	private String savedInventory = null;
-	private boolean insideArena = false;
 	private boolean isProtected = false;
 	
 	public ConcurrentHashMap<BlockCoord, SimpleBlock> previewUndo = null;
@@ -173,7 +169,6 @@ public class Resident extends SQLObject {
 	private String lastIP = "";
 	private UUID uid;
 	
-	private boolean onRoad = false;
 	public String debugTown;
 	
 	public Resident(UUID uid, String name) throws InvalidNameException {
@@ -214,7 +209,6 @@ public class Resident extends SQLObject {
 					"`banned` bool NOT NULL DEFAULT '0'," +
 					"`bannedMessage` mediumtext DEFAULT NULL,"+
 					"`savedInventory` mediumtext DEFAULT NULL,"+
-					"`insideArena` bool NOT NULL DEFAULT '0',"+
 					"`isProtected` bool NOT NULL DEFAULT '0',"+
 					"`flags` mediumtext DEFAULT NULL,"+
 					"`last_ip` mediumtext DEFAULT NULL,"+
@@ -275,7 +269,6 @@ public class Resident extends SQLObject {
 			
 			SQL.makeCol("flags", "mediumtext", TABLE_NAME);
 			SQL.makeCol("savedInventory", "mediumtext", TABLE_NAME);
-			SQL.makeCol("insideArena", "bool NOT NULL DEFAULT '0'", TABLE_NAME);
 			SQL.makeCol("isProtected", "bool NOT NULL DEFAULT '0'", TABLE_NAME);
 		}		
 	}
@@ -301,7 +294,6 @@ public class Resident extends SQLObject {
 		this.setTimezone(rs.getString("timezone"));
 		this.loadFlagSaveString(rs.getString("flags"));
 		this.savedInventory = rs.getString("savedInventory");
-		this.insideArena = rs.getBoolean("insideArena");
 		this.isProtected = rs.getBoolean("isProtected");
 		
 		if (this.getTimezone() == null) {
@@ -468,7 +460,6 @@ public class Resident extends SQLObject {
 		hashmap.put("flags", this.getFlagSaveString());
 		hashmap.put("last_ip", this.getLastIP());
 		hashmap.put("savedInventory", this.savedInventory);
-		hashmap.put("insideArena", this.insideArena);
 		hashmap.put("isProtected", this.isProtected);
 		
 		if (this.getTown() != null) {
@@ -1090,34 +1081,27 @@ public class Resident extends SQLObject {
 		this.performingMission = performingMission;
 	}
 
-	public void onRoadTest(BlockCoord coord, Player player) {
-		/* Test the block beneath us for a road, if so, set the road flag. */
-		BlockCoord feet = new BlockCoord(coord);
-		feet.setY(feet.getY() - 1);
-		RoadBlock rb = CivGlobal.getRoadBlock(feet);
-		
-		if (rb == null) {
-			onRoad = false;
+	//XXX Disabled but left for future stuff.
+//	public void onRoadTest(BlockCoord coord, Player player) {
+//		/* Test the block beneath us for a road, if so, set the road flag. */
+//		BlockCoord feet = new BlockCoord(coord);
+//		feet.setY(feet.getY() - 1);
+//		RoadBlock rb = CivGlobal.getRoadBlock(feet);
+//		
+//		if (rb == null) {
+//			onRoad = false;
 //			if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 //				player.removePotionEffect(PotionEffectType.SPEED);
 //			}
-		} else {
-			onRoad = true;
-			
+//		} else {
+//			onRoad = true;
+//			
 //			if (!player.hasPotionEffect(PotionEffectType.SPEED)) {
 //				CivLog.debug("setting effect.");
 //				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5, 5));
 //			}
-		}
-	}
-
-	public boolean isOnRoad() {
-		return onRoad;
-	}
-
-	public void setOnRoad(boolean onRoad) {
-		this.onRoad = onRoad;
-	}
+//		}
+//	}
 
 	public void giveAllFreePerks() {
 		int perkCount;
@@ -1423,10 +1407,6 @@ public class Resident extends SQLObject {
 	}
 	
 	public boolean hasTechForItem(ItemStack stack) {
-		if (this.isInsideArena()) {
-			return true;
-		}
-		
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 		if (craftMat == null) {
 			return true;
@@ -1540,35 +1520,6 @@ public class Resident extends SQLObject {
 		this.usesAntiCheat = usesAntiCheat;
 	}
 	
-	public boolean hasTeam() {
-		ArenaTeam team = ArenaTeam.getTeamForResident(this);
-		if (team == null) {
-			return false;
-		}
-		return true;
-	}
-	
-	public ArenaTeam getTeam() {
-		ArenaTeam team = ArenaTeam.getTeamForResident(this);
-		if (team == null) {
-			return null;
-		}
-		return team;
-	}
-
-	public boolean isTeamLeader() {
-		ArenaTeam team = ArenaTeam.getTeamForResident(this);
-		if (team == null) {
-			return false;
-		}
-		
-		if (team.getLeader() == this) {
-			return true;
-		}
-		
-		return false;		
-	}
-	
 	public void saveInventory() {
 		try {
 			Player player = CivGlobal.getPlayer(this);			
@@ -1613,40 +1564,6 @@ public class Resident extends SQLObject {
 
 	public void setSavedInventory(String savedInventory) {
 		this.savedInventory = savedInventory;
-	}
-
-	public Arena getCurrentArena() {
-		if (this.getTeam() == null) {
-			return null;
-		}
-		
-		return this.getTeam().getCurrentArena();
-	}
-	
-	public boolean isInsideArena() {
-		
-		if (!hasTeam()) {
-			this.insideArena = false;
-			return false;
-		}
-		
-		try {
-			Player player = CivGlobal.getPlayer(this);
-			
-			if (player.getWorld().getName().equals("world")) {
-				this.insideArena = false;
-				return false;
-			}
-			
-		} catch (CivException e) {
-			return false;
-		}
-		
-		return this.insideArena;
-	}
-	
-	public void setInsideArena(boolean inside) {
-		this.insideArena = inside;
 	}
 	
 	public boolean isProtected() {

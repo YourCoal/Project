@@ -100,8 +100,6 @@ import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PlotPermissions;
-import com.avrgaming.civcraft.road.Road;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.BuildableLayer;
 import com.avrgaming.civcraft.structure.Farm;
@@ -142,12 +140,6 @@ public class BlockListener implements Listener {
 						if (b.getType().isBurnable()) {
 							event.setCancelled(true);
 						}
-						return;
-					}
-
-					RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-					if (rb != null) {
-						event.setCancelled(true);
 						return;
 					}
 
@@ -196,12 +188,6 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null) {
-			event.setCancelled(true);
-			return;
-		}
-
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
 			event.setCancelled(true);
@@ -217,12 +203,6 @@ public class BlockListener implements Listener {
 
 		StructureBlock sb = CivGlobal.getStructureBlock(bcoord);
 		if (sb != null) {
-			event.setCancelled(true);
-			return;
-		}
-
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null) {
 			event.setCancelled(true);
 			return;
 		}
@@ -437,12 +417,6 @@ public class BlockListener implements Listener {
 				return;
 			}
 
-			RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-			if (rb != null) {
-				event.setCancelled(true);
-				return;
-			}
-
 			CampBlock cb = CivGlobal.getCampBlock(bcoord);
 			if (cb != null) {
 				event.setCancelled(true);
@@ -637,18 +611,6 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null) {
-			if (rb.isAboveRoadBlock()) {
-				if (resident.getCiv() != rb.getRoad().getCiv()) {
-					event.setCancelled(true);
-					CivMessage.sendError(event.getPlayer(), 
-							"Cannot place blocks "+(Road.HEIGHT-1)+" blocks above a road that does not belong to your civ.");
-				}
-			}
-			return;
-		}
-
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null && !cb.canBreak(event.getPlayer().getName())) {
 			event.setCancelled(true);
@@ -731,20 +693,6 @@ public class BlockListener implements Listener {
 			event.setCancelled(true);
 			TaskMaster.syncTask(new StructureBlockHitEvent(event.getPlayer().getName(), bcoord, sb, event.getBlock().getWorld()), 0);
 			return;
-		}
-
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null && !rb.isAboveRoadBlock()) {
-			if (War.isWarTime()) {
-				/* Allow blocks to be 'destroyed' during war time. */
-				WarRegen.destroyThisBlock(event.getBlock(), rb.getTown());
-				event.setCancelled(true);
-				return;
-			} else {
-				event.setCancelled(true);
-				rb.onHit(event.getPlayer());
-				return;
-			}
 		}
 
 		ProtectedBlock pb = CivGlobal.getProtectedBlock(bcoord);
@@ -1499,11 +1447,6 @@ public class BlockListener implements Listener {
 		bcoord.setFromLocation(loc);
 		StructureBlock sb = CivGlobal.getStructureBlock(bcoord);
 		if (sb != null) {
-			return false;
-		}
-
-		RoadBlock rb = CivGlobal.getRoadBlock(bcoord);
-		if (rb != null) {
 			return false;
 		}
 

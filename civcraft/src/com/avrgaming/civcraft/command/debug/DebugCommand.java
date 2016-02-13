@@ -86,7 +86,6 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.populators.TradeGoodPopulator;
-import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.siege.Cannon;
 import com.avrgaming.civcraft.structure.ArrowTower;
 import com.avrgaming.civcraft.structure.Buildable;
@@ -185,7 +184,6 @@ public class DebugCommand extends CommandBase {
 		commands.put("setdura", "sets the durability of an item");
 		commands.put("togglebookcheck", "Toggles checking for enchanted books on and off.");
 		commands.put("setexposure", "[int] sets your exposure to this ammount.");
-		commands.put("circle", "[int] - draws a circle at your location, with this radius.");
 		commands.put("loadperks", "loads perks for yourself");
 		commands.put("colorme", "[hex] adds nbt color value to item held.");
 		commands.put("preview", "show a single block preview at your feet.");
@@ -205,19 +203,6 @@ public class DebugCommand extends CommandBase {
 		commands.put("cannon", "builds a war cannon.");
 		commands.put("saveinv", "save an inventory");
 		commands.put("restoreinv", "restore your inventory.");
-		commands.put("arenainfo", "Shows arena info for this player.");
-	}
-	
-	public void arenainfo_cmd() throws CivException {
-		Resident resident = getResident();
-		String arenaName = "";
-		
-		if (resident.getTeam() != null && resident.getTeam().getCurrentArena() != null) {
-			arenaName = resident.getTeam().getCurrentArena().getInstanceName();
-		}
-		
-		
-		CivMessage.send(sender, "InsideArena:"+resident.isInsideArena()+" Team Active arena:"+arenaName);
 	}
 	
 	public void saveinv_cmd() throws CivException {
@@ -625,34 +610,6 @@ public class DebugCommand extends CommandBase {
 		attrs.setColor(value);		
 		player.setItemInHand(attrs.getStack());
 		CivMessage.sendSuccess(player, "Set color.");
-	}
-	
-	public void circle_cmd() throws CivException {
-		Player player = getPlayer();
-		int radius = getNamedInteger(1);
-		
-		HashMap<String, SimpleBlock> simpleBlocks = new HashMap<String, SimpleBlock>();
-		Road.getCircle(player.getLocation().getBlockX(), 
-				player.getLocation().getBlockY()-1, 
-				player.getLocation().getBlockZ(), 
-				player.getLocation().getWorld().getName(), 
-				radius, simpleBlocks);
-		
-		for (SimpleBlock sb : simpleBlocks.values()) {
-			Block block = player.getWorld().getBlockAt(sb.x, sb.y, sb.z);
-			ItemManager.setTypeId(block, sb.getType());
-		}
-		
-		CivMessage.sendSuccess(player, "Built a circle at your feet.");
-	}
-	
-	public void setexposure_cmd() throws CivException {
-		Resident resident = getResident();
-		Player player = getPlayer();
-		Double exp = getNamedDouble(1);
-		resident.setSpyExposure(exp);
-		
-		CivMessage.sendSuccess(player, "Set Exposure.");
 	}	
 	
 	public void togglebookcheck_cmd() {
