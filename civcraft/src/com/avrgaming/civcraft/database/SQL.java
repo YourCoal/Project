@@ -58,7 +58,6 @@ import com.avrgaming.civcraft.util.BiomeCache;
 import com.avrgaming.global.perks.PerkManager;
 import com.avrgaming.global.perks.PerkManagerSimple;
 import com.avrgaming.global.perks.PlatinumManager;
-import com.avrgaming.global.reports.ReportManager;
 import com.avrgaming.global.scores.ScoreManager;
 import com.jolbox.bonecp.Statistics;
 
@@ -176,7 +175,6 @@ public class SQL {
 		RandomEvent.init();
 					
 		CivLog.heading("Building Global Tables!!");
-		ReportManager.init();
 		ScoreManager.init();
 		
 		CivLog.info("----- Done Building Tables ----");

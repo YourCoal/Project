@@ -37,7 +37,6 @@ import com.avrgaming.civcraft.command.EconCommand;
 import com.avrgaming.civcraft.command.HereCommand;
 import com.avrgaming.civcraft.command.KillCommand;
 import com.avrgaming.civcraft.command.PayCommand;
-import com.avrgaming.civcraft.command.ReportCommand;
 import com.avrgaming.civcraft.command.SelectCommand;
 import com.avrgaming.civcraft.command.TradeCommand;
 import com.avrgaming.civcraft.command.VoteCommand;
@@ -282,7 +281,6 @@ public final class CivCraft extends JavaPlugin {
 		getCommand("select").setExecutor(new SelectCommand());
 		getCommand("here").setExecutor(new HereCommand());
 		getCommand("camp").setExecutor(new CampCommand());
-		getCommand("report").setExecutor(new ReportCommand());
 		getCommand("vote").setExecutor(new VoteCommand());
 		getCommand("trade").setExecutor(new TradeCommand());
 		getCommand("kill").setExecutor(new KillCommand());
