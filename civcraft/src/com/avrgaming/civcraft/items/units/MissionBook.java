@@ -544,7 +544,6 @@ public class MissionBook extends UnitItemMaterial {
 			out += ("Treasury: "+tc.getTown().getTreasury().getBalance()+"\n");
 			out += ("Hammers: "+tc.getTown().getHammers().total+"\n");
 			out += ("Culture: "+tc.getTown().getCulture().total+"\n");
-			out += ("Growth: "+tc.getTown().getGrowth().total+"\n");
 			out += ("Beakers(civ): "+tc.getTown().getBeakers().total+"\n");
 			if (tc.getTown().getCiv().getResearchTech() != null) {
 				out += ("Researching: "+tc.getTown().getCiv().getResearchTech().name+"\n");

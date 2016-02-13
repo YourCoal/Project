@@ -107,7 +107,6 @@ import com.avrgaming.civcraft.structure.Pasture;
 import com.avrgaming.civcraft.structure.Temple;
 import com.avrgaming.civcraft.structure.Wall;
 import com.avrgaming.civcraft.structure.farm.FarmChunk;
-import com.avrgaming.civcraft.threading.CivAsyncTask;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.FireWorkTask;
 import com.avrgaming.civcraft.threading.tasks.StructureBlockHitEvent;
@@ -1310,25 +1309,6 @@ public class BlockListener implements Listener {
 				ent.remove();
 			}
 		}
-
-		class AsyncTask extends CivAsyncTask {
-
-			FarmChunk fc;
-			public AsyncTask(FarmChunk fc) {
-				this.fc = fc;
-			}
-
-			@Override
-			public void run() {
-				if (fc.getMissedGrowthTicks() > 0) {
-					fc.processMissedGrowths(false, this);
-					fc.getFarm().saveMissedGrowths();
-				}
-			}
-
-		}
-
-		TaskMaster.syncTask(new AsyncTask(fc), 500);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
