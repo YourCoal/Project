@@ -7,8 +7,8 @@ import org.bukkit.Location;
 
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.util.CivColor;
-import com.avrgaming.mob.ICustomMob;
-import com.avrgaming.moblib.MobLib;
+import com.moblib.mob.ICustomMob;
+import com.moblib.moblib.MobLib;
 
 public class MobSpawner {
 

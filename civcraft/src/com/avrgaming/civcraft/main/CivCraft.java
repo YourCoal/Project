@@ -69,7 +69,6 @@ import com.avrgaming.civcraft.listener.ChatListener;
 import com.avrgaming.civcraft.listener.CustomItemManager;
 import com.avrgaming.civcraft.listener.DebugListener;
 import com.avrgaming.civcraft.listener.DisableXPListener;
-import com.avrgaming.civcraft.listener.HeroChatListener;
 import com.avrgaming.civcraft.listener.MarkerPlacementManager;
 import com.avrgaming.civcraft.listener.PlayerListener;
 import com.avrgaming.civcraft.listener.TagAPIListener;
@@ -117,7 +116,7 @@ import com.avrgaming.civcraft.util.TimeTools;
 import com.avrgaming.civcraft.war.WarListener;
 import com.avrgaming.global.perks.PlatinumManager;
 import com.avrgaming.global.scores.CalculateScoreTimer;
-import com.avrgaming.moblib.MobLib;
+import com.moblib.moblib.MobLib;
 import com.avrgaming.sls.SLSManager;
 
 public final class CivCraft extends JavaPlugin {
@@ -232,10 +231,6 @@ public final class CivCraft extends JavaPlugin {
 		if (hasPlugin("TagAPI")) {
 			pluginManager.registerEvents(new TagAPIListener(), this);
 		}
-		
-		if (hasPlugin("HeroChat")) {
-			pluginManager.registerEvents(new HeroChatListener(), this);
-		}
 	}
 	
 	private void registerNPCHooks() {
@@ -288,7 +283,6 @@ public final class CivCraft extends JavaPlugin {
 		getCommand("civ").setExecutor(new CivCommand());
 		getCommand("tc").setExecutor(new TownChatCommand());
 		getCommand("cc").setExecutor(new CivChatCommand());
-		//getCommand("gc").setExecutor(new GlobalChatCommand());
 		getCommand("ad").setExecutor(new AdminCommand());
 		getCommand("econ").setExecutor(new EconCommand());
 		getCommand("pay").setExecutor(new PayCommand());
@@ -345,8 +339,4 @@ public final class CivCraft extends JavaPlugin {
 	public static void setPlugin(JavaPlugin plugin) {
 		CivCraft.plugin = plugin;
 	}
-
-
-	
-	
 }
