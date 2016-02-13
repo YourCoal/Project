@@ -70,6 +70,7 @@ public class TownInfoCommand extends CommandBase {
 		commands.put("hammers", "Shows town hammer information.");
 		commands.put("goodies", "Shows which goodies are being used by the town.");
 		commands.put("rates", "Shows the culture,growth,trade and cottage rates of this town.");
+		commands.put("growth", "Shows growth info about the town.");
 		commands.put("buffs", "Show all special buffs awarded to this town.");
 		commands.put("online", "Shows a list of town members that are currently online.");
 		commands.put("happiness", "Shows information about this town's happiness.");
@@ -108,6 +109,7 @@ public class TownInfoCommand extends CommandBase {
 		HashMap<String, Integer> biomes = new HashMap<String, Integer>();
 		
 		double hammers = 0.0;
+		double growth = 0.0;
 		double happiness = 0.0;
 		double beakers = 0.0;
 		DecimalFormat df = new DecimalFormat();
@@ -122,6 +124,7 @@ public class TownInfoCommand extends CommandBase {
 			}
 			
 			hammers += cc.getHammers();
+			growth += cc.getGrowth();
 			happiness += cc.getHappiness();
 			beakers += cc.getBeakers();
 		}
@@ -141,6 +144,7 @@ public class TownInfoCommand extends CommandBase {
 		CivMessage.send(sender, CivColor.LightBlue+"Totals");
 		CivMessage.send(sender, CivColor.Green+" Happiness:"+CivColor.LightGreen+df.format(happiness)+
 				CivColor.Green+" Hammers:"+CivColor.LightGreen+df.format(hammers)+
+				CivColor.Green+" Growth:"+CivColor.LightGreen+df.format(growth)+
 				CivColor.Green+" Beakers:"+CivColor.LightGreen+df.format(beakers));
 		
 	}
@@ -215,6 +219,16 @@ public class TownInfoCommand extends CommandBase {
 		CivMessage.send(sender, out);
 	}
 	
+	public void growth_cmd() throws CivException {
+		Town town = getSelectedTown();
+		AttrSource growthSources = town.getGrowth();
+		
+		CivMessage.sendHeading(sender, town.getName()+" Growth");
+		CivMessage.send(sender, growthSources.getSourceDisplayString(CivColor.Green, CivColor.LightGreen));
+		CivMessage.send(sender, growthSources.getRateDisplayString(CivColor.Green, CivColor.LightGreen));
+		CivMessage.send(sender, growthSources.getTotalDisplayString(CivColor.Green, CivColor.LightGreen));
+	}
+	
 	public void goodies_cmd() throws CivException {
 		Town town = getSelectedTown();
 		CivMessage.sendHeading(sender, town.getName()+" Goodies");
@@ -261,7 +275,8 @@ public class TownInfoCommand extends CommandBase {
 		
 		CivMessage.sendHeading(sender, town.getName()+" Rates Summary");
 		
-		CivMessage.send(sender,
+		CivMessage.send(sender, 
+				CivColor.Green+"Growth: "+CivColor.LightGreen+(town.getGrowthRate().total*100)+
 				CivColor.Green+" Culture: "+CivColor.LightGreen+(town.getCulture().total*100)+
 				CivColor.Green+" Cottage: "+CivColor.LightGreen+(town.getCottageRate()*100)+
 				CivColor.Green+" Trade: "+CivColor.LightGreen+(town.getTradeRate()*100)+		
@@ -536,7 +551,8 @@ public class TownInfoCommand extends CommandBase {
 			
 			
 			//CivMessage.send(sender, CivColor.Green+"Outposts: "+CivColor.LightGreen+town.getOutpostChunks().size()+" "+
-			CivMessage.send(sender, CivColor.Green+"Hammers: "+CivColor.LightGreen+df.format(town.getHammers().total)+" "+
+			CivMessage.send(sender, CivColor.Green+"Growth: "+CivColor.LightGreen+df.format(town.getGrowth().total)+" " +
+									CivColor.Green+"Hammers: "+CivColor.LightGreen+df.format(town.getHammers().total)+" "+
 									CivColor.Green+"Beakers: "+CivColor.LightGreen+df.format(town.getBeakers().total));
 			
 			

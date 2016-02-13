@@ -33,6 +33,9 @@ town:
     # Base hammer rate, usually 100, set higher to make building faster
     base_hammer_rate: 1.0
 
+    # Base growth rate for towns.
+    base_growth_rate: 1.0
+
     # Maximum number of blocks a town chunk can "protrude" from the main mass.
     max_town_chunk_protrude: 3
 

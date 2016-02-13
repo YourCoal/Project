@@ -26,6 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
+import com.avrgaming.civcraft.structure.Farm;
 import com.avrgaming.civcraft.structure.farm.FarmChunk;
 import com.avrgaming.civcraft.structure.farm.GrowBlock;
 import com.avrgaming.civcraft.threading.sync.request.GrowRequest;
@@ -98,6 +99,15 @@ public class SyncGrowTask implements Runnable {
 					request.finished = true;
 					request.condition.signalAll();
 				}
+				
+				// increment any farms that were not loaded.
+				for (FarmChunk fc : unloadedFarms) {
+					fc.incrementMissedGrowthTicks();
+					Farm farm = (Farm)fc.getStruct();
+					farm.saveMissedGrowths();
+				}
+				
+				
 			} finally {
 				lock.unlock();
 			}

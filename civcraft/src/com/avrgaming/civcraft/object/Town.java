@@ -172,6 +172,8 @@ public class Town extends SQLObject {
 	}
 	public HashMap<String, AttrCache> attributeCache = new HashMap<String, AttrCache>();
 	
+	private double baseGrowth = 0.0;
+	
 	public static final String TABLE_NAME = "TOWNS";
 	public static void init() throws SQLException {
 		if (!SQL.hasTable(TABLE_NAME)) {
@@ -404,6 +406,7 @@ public class Town extends SQLObject {
 	public void loadSettings() {
 		try {
 			this.baseHammers = CivSettings.getDouble(CivSettings.townConfig, "town.base_hammer_rate");
+			this.setBaseGrowth(CivSettings.getDouble(CivSettings.townConfig, "town.base_growth_rate"));
 			
 //			this.happyCoinRate = new AttributeComponent();
 //			this.happyCoinRate.setSource("Happiness");
@@ -1784,6 +1787,92 @@ public class Town extends SQLObject {
 		return false;
 	}
 	
+	public AttrSource getGrowthRate() {
+		double rate = 1.0;
+		HashMap<String, Double> rates = new HashMap<String, Double>();
+		
+		double newRate = rate * getGovernment().growth_rate;
+		rates.put("Government", newRate - rate);
+		rate = newRate;
+		
+		/* Wonders and Goodies. */
+		double additional = this.getBuffManager().getEffectiveDouble(Buff.GROWTH_RATE);
+		additional += this.getBuffManager().getEffectiveDouble("buff_hanging_gardens_growth");
+		
+		double additionalGrapes = this.getBuffManager().getEffectiveDouble("buff_hanging_gardens_additional_growth");
+		int grapeCount = 0;
+		for (BonusGoodie goodie : this.getBonusGoodies()) {
+			if (goodie.getDisplayName().equalsIgnoreCase("grapes")) {
+				grapeCount++;
+			}
+		}
+		
+		additional += (additionalGrapes*grapeCount);
+		rates.put("Wonders/Goodies", additional);
+		rate += additional;
+	
+		return new AttrSource(rates, rate, null);
+	}
+	
+	public AttrSource getGrowth() {
+		AttrCache cache = this.attributeCache.get("GROWTH");
+		if (cache == null) {
+			cache = new AttrCache();
+			cache.lastUpdate = new Date();
+		} else {
+			Date now = new Date();
+			if (now.getTime() > (cache.lastUpdate.getTime() + ATTR_TIMEOUT_SECONDS*1000)) {
+				cache.lastUpdate = now;
+			} else {
+				return cache.sources;
+			}
+		}
+		
+		double total = 0;
+		HashMap<String, Double> sources = new HashMap<String, Double>();
+		
+		/* Grab any growth from culture. */
+		double cultureSource = 0;
+		for (CultureChunk cc : this.cultureChunks.values()) {
+			cultureSource += cc.getGrowth();
+		}
+		sources.put("Culture Biomes", cultureSource);
+		total += cultureSource;
+		
+		/* Grab any growth from structures. */
+		double structures = 0;
+		for (Structure struct : this.structures.values()) {
+			for (Component comp : struct.attachedComponents) {
+				if (comp instanceof AttributeBase) {
+					AttributeBase as = (AttributeBase)comp;
+					if (as.getString("attribute").equalsIgnoreCase("GROWTH")) {
+						double h = as.getGenerated();
+						structures += h;
+					}
+				}
+			}
+		}
+
+		
+		total += structures;
+		sources.put("Structures", structures);
+		
+		sources.put("Base Growth", baseGrowth);
+		total += baseGrowth;
+		
+		AttrSource rate = this.getGrowthRate();
+		total *= rate.total;
+		
+		if (total < 0) {
+			total = 0;
+		}
+		
+		AttrSource as = new AttrSource(sources, total, rate);
+		cache.sources = as;
+		this.attributeCache.put("GROWTH", cache);
+		return as;	
+	}
+	
 	public double getCottageRate() {
 		double rate = getGovernment().cottage_rate;
 
@@ -2781,6 +2870,14 @@ public class Town extends SQLObject {
 	
 	public void setBaseUnhappy(double happy) {
 		this.baseUnhappy = happy;
+	}
+
+	public double getBaseGrowth() {
+		return baseGrowth;
+	}
+
+	public void setBaseGrowth(double baseGrowth) {
+		this.baseGrowth = baseGrowth;
 	}
 
 	public Buildable getCurrentStructureInProgress() {

@@ -18,6 +18,7 @@
  */
 package com.avrgaming.civcraft.command.debug;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.entity.Player;
 
@@ -39,12 +40,39 @@ public class DebugFarmCommand extends CommandBase {
 		command = "/dbg farm ";
 		displayName = "Farm Commands";
 		
+		commands.put("showgrowth", "Highlight the crops that grew last tick.");
 		commands.put("grow", "[x] grows ALL farm chunks x many times.");
 		commands.put("cropcache", "show the crop cache for this plot.");
 		commands.put("unloadchunk", "[x] [z] unloads this farm chunk");
 		commands.put("cache", "Runs the crop cache task.");
 
 	}
+
+	public void unloadchunk_cmd() throws CivException {
+		
+		int x = getNamedInteger(1);
+		int z = getNamedInteger(2);
+		
+		Bukkit.getWorld("world").unloadChunk(x, z);
+		CivMessage.sendSuccess(sender, "Chunk "+x+","+z+" unloaded");
+	}
+	
+	public void showgrowth_cmd() throws CivException {
+		Player player = getPlayer();
+	
+		ChunkCoord coord = new ChunkCoord(player.getLocation());
+		FarmChunk fc = CivGlobal.getFarmChunk(coord);
+		if (fc == null) {
+			throw new CivException("This is not a farm.");
+		}
+		
+		for(BlockCoord bcoord : fc.getLastGrownCrops()) {
+			bcoord.getBlock().getWorld().playEffect(bcoord.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+		}
+		
+		CivMessage.sendSuccess(player, "Flashed last grown crops");
+	}
+	
 	
 	public void cropcache_cmd() throws CivException {
 		Player player = getPlayer();
