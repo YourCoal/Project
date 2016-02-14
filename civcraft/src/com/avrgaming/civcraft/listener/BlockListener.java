@@ -1306,7 +1306,14 @@ public class BlockListener implements Listener {
 		}
 
 		for (org.bukkit.entity.Entity ent : event.getChunk().getEntities()) {
-			if (ent.getType().equals(EntityType.ZOMBIE)) {
+			if (ent.getType().equals(EntityType.ZOMBIE) || ent.getType().equals(EntityType.SKELETON) ||
+					ent.getType().equals(EntityType.CREEPER) || ent.getType().equals(EntityType.SPIDER) ||
+					ent.getType().equals(EntityType.CAVE_SPIDER) || ent.getType().equals(EntityType.ENDERMAN) ||
+					ent.getType().equals(EntityType.WITCH) || ent.getType().equals(EntityType.BLAZE) ||
+					ent.getType().equals(EntityType.SILVERFISH) || ent.getType().equals(EntityType.ENDERMITE) ||
+					ent.getType().equals(EntityType.GHAST) || ent.getType().equals(EntityType.MAGMA_CUBE) ||
+					ent.getType().equals(EntityType.SLIME) || ent.getType().equals(EntityType.IRON_GOLEM) ||
+					ent.getType().equals(EntityType.BAT) || ent.getType().equals(EntityType.PIG_ZOMBIE)) {
 				ent.remove();
 			}
 		}
@@ -1393,7 +1400,7 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCreatureSpawnEvent(CreatureSpawnEvent event) {
 		if (War.isWarTime()) {
-			if (!event.getSpawnReason().equals(SpawnReason.BREEDING)){
+			if (!event.getSpawnReason().equals(SpawnReason.BREEDING)) {
 				event.setCancelled(true);
 				return;
 			}
@@ -1410,33 +1417,51 @@ public class BlockListener implements Listener {
 				return;			
 			}
 		}
-
-		if (event.getEntity().getType().equals(EntityType.IRON_GOLEM) &&
-			event.getSpawnReason().equals(SpawnReason.BUILD_IRONGOLEM)) {
+		
+		if (event.getEntity().getType().equals(EntityType.IRON_GOLEM)) {
+			if (event.getSpawnReason().equals(SpawnReason.BUILD_IRONGOLEM)) {
 				event.setCancelled(true);
 				return;
+			}
 		}
-
+		
+		if (event.getEntity().getType().equals(EntityType.SILVERFISH)) {
+			if (event.getSpawnReason().equals(SpawnReason.SILVERFISH_BLOCK)) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+		
+		if (event.getEntity().getType().equals(EntityType.PIG_ZOMBIE)) {
+			if (event.getSpawnReason().equals(SpawnReason.NETHER_PORTAL)) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+		
 		if (MobLib.isMobLibEntity(event.getEntity())) {
 			return;
 		}
-
-		if (event.getEntity().getType().equals(EntityType.ZOMBIE) ||
-			event.getEntity().getType().equals(EntityType.SKELETON) ||
-			event.getEntity().getType().equals(EntityType.BAT) ||
-			event.getEntity().getType().equals(EntityType.CAVE_SPIDER) ||
-			event.getEntity().getType().equals(EntityType.SPIDER) ||
-			event.getEntity().getType().equals(EntityType.CREEPER) ||
+		
+		if (event.getEntity().getType().equals(EntityType.BAT) ||
 			event.getEntity().getType().equals(EntityType.WOLF) ||
-			event.getEntity().getType().equals(EntityType.SILVERFISH) ||
 			event.getEntity().getType().equals(EntityType.OCELOT) ||
+			event.getEntity().getType().equals(EntityType.ZOMBIE) ||
+			event.getEntity().getType().equals(EntityType.SKELETON) ||
+			event.getEntity().getType().equals(EntityType.CREEPER) ||
+			event.getEntity().getType().equals(EntityType.SPIDER) ||
+			event.getEntity().getType().equals(EntityType.CAVE_SPIDER) ||
+			event.getEntity().getType().equals(EntityType.ENDERMAN) ||
 			event.getEntity().getType().equals(EntityType.WITCH) ||
-			event.getEntity().getType().equals(EntityType.ENDERMAN)) {
-
+			event.getEntity().getType().equals(EntityType.BLAZE) ||
+			event.getEntity().getType().equals(EntityType.GHAST) ||
+			event.getEntity().getType().equals(EntityType.MAGMA_CUBE) ||
+			event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) ||
+			event.getEntity().getType().equals(EntityType.ENDERMITE)) {
 			event.setCancelled(true);
 			return;
 		}
-
+		
 		if (event.getSpawnReason().equals(SpawnReason.SPAWNER)) {
 			event.setCancelled(true);
 			return;

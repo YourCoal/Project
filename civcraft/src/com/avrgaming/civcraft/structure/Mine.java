@@ -137,9 +137,16 @@ public class Mine extends Structure {
 			break;
 		}
 	}
-
+	
 	public int getLevel() {
 		return this.getConsumeComponent().getLevel();
+	}
+	
+	public double getBonusHammers() {
+		int level = getLevel();
+		
+		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
+		return lvl.hammers;
 	}
 	
 	public double getHammersPerTile() {
@@ -150,20 +157,18 @@ public class Mine extends Structure {
 		rate += this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
 		return (rate*base);
 	}
-
+	
 	public int getCount() {
 		return this.getConsumeComponent().getCount();
 	}
-
+	
 	public int getMaxCount() {
 		int level = getLevel();
-		
 		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
 		return lvl.count;	
 	}
-
+	
 	public Result getLastResult() {
 		return this.getConsumeComponent().getLastResult();
 	}
-
 }

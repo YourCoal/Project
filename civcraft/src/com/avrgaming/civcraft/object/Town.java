@@ -62,6 +62,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
 import com.avrgaming.civcraft.structure.Buildable;
+import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.structure.TradeOutpost;
@@ -704,8 +705,6 @@ public class Town extends SQLObject {
 	}
 	
 	public AttrSource getHammers() {
-		double total = 0;
-		
 		AttrCache cache = this.attributeCache.get("HAMMERS");
 		if (cache == null) {
 			cache = new AttrCache();
@@ -718,46 +717,68 @@ public class Town extends SQLObject {
 				return cache.sources;
 			}
 		}
-	
+		
+		double hammers = 0;
 		HashMap<String, Double> sources = new HashMap<String, Double>();
-				
-		/* Wonders and Goodies. */
-		double wonderGoodies = this.getBuffManager().getEffectiveInt(Buff.CONSTRUCTION);
-		sources.put("Wonders/Goodies", wonderGoodies);
-		total += wonderGoodies;
+		/* Grab beakers generated from culture. */
+		double fromCulture = 0;
+		for (CultureChunk cc : this.cultureChunks.values()) {
+			fromCulture += cc.getHammers();
+		}
+		sources.put("Culture Biomes", fromCulture);
+		hammers += Math.floor(fromCulture);
 		
-		double cultureHammers = this.getHammersFromCulture();
-		sources.put("Culture Biomes", cultureHammers);
-		total += cultureHammers; 
-		
-		/* Grab happiness generated from structures with components. */
-		double structures = 0;
+		/* Grab beakers generated from structures with components. */
+		double mines = 0;
+		double fromStructures = 0;
 		for (Structure struct : this.structures.values()) {
+			if (struct instanceof Mine) {
+				Mine mine = (Mine)struct;
+				mines += mine.getBonusHammers()/4;
+			}
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
 					AttributeBase as = (AttributeBase)comp;
 					if (as.getString("attribute").equalsIgnoreCase("HAMMERS")) {
-						structures += as.getGenerated();
+						fromStructures += as.getGenerated();
 					}
 				}
 			}
 		}
-
-		total += structures;
-		sources.put("Structures", structures);
 		
+		sources.put("Mines", mines*4);
+		hammers += Math.floor(mines);
+		
+		sources.put("Structures", fromStructures);
+		hammers += Math.floor(fromStructures);
+		
+		/* Wonders and Goodies. */
+		double wondersTrade = 0;
+		wondersTrade += this.getBuffManager().getEffectiveInt(Buff.CONSTRUCTION);
+		sources.put("Goodies/Wonders", wondersTrade);
+		hammers += Math.floor(wondersTrade);
 		
 		sources.put("Base Hammers", this.baseHammers);
-		total += this.baseHammers;
+		hammers += Math.floor(this.baseHammers);
 		
-		AttrSource rate = getHammerRate();
-		total *= rate.total;
-		
-		if (total < this.baseHammers) {
-			total = this.baseHammers;
+		/* Make sure we never give out negative hammers. */
+		hammers = Math.max(hammers, 0);
+		AttrSource rates = getHammerRate();
+		//XXX Changed 1.0.3 to round to whole #
+		hammers = Math.floor(hammers*rates.total);
+//		
+//		AttrSource rate = getHammerRate();
+//		hammers *= Math.floor(hammers*rate.total);
+//		
+		if (hammers < this.baseHammers) {
+//			hammers = this.baseHammers;
 		}
 		
-		AttrSource as = new AttrSource(sources, total, rate);
+		if (hammers < 0) {
+			hammers = 0;
+		}
+		
+		AttrSource as = new AttrSource(sources, hammers, null);
 		cache.sources = as;
 		this.attributeCache.put("HAMMERS", cache);
 		return as;
@@ -1119,7 +1140,7 @@ public class Town extends SQLObject {
 	}
 	
 	public double getBalance() {
-		return this.treasury.getBalance();
+		return Math.floor(this.treasury.getBalance());
 	}
 	
 	public boolean hasEnough(double amount) {
@@ -1920,7 +1941,7 @@ public class Town extends SQLObject {
 	}
 
 	public double getTotalUpkeep() throws InvalidConfiguration {
-		return this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep() + this.getOutpostUpkeep();
+		return Math.floor(this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep() + this.getOutpostUpkeep());
 	}
 
 	public double getTradeRate() {
@@ -2609,7 +2630,7 @@ public class Town extends SQLObject {
 			fromCulture += cc.getBeakers();
 		}
 		sources.put("Culture Biomes", fromCulture);
-		beakers += fromCulture;
+		beakers += Math.floor(fromCulture);
 		
 		/* Grab beakers generated from structures with components. */
 		double fromStructures = 0;
@@ -2623,22 +2644,23 @@ public class Town extends SQLObject {
 				}
 			}
 		}
-
-		beakers += fromStructures;
+		
 		sources.put("Structures", fromStructures);
+		beakers += Math.floor(fromStructures);
 		
 		/* Grab any extra beakers from buffs. */
 		double wondersTrade = 0;
 		
 		//No more flat bonuses here, leaving it in case of new buffs
 		
-		beakers += wondersTrade;
 		sources.put("Goodies/Wonders", wondersTrade);
-
+		beakers += Math.floor(wondersTrade);
+		
 		/* Make sure we never give out negative beakers. */
 		beakers = Math.max(beakers, 0);
 		AttrSource rates = getBeakerRate();
-		beakers = beakers*rates.total;
+		//XXX Changed 1.0.3 to round to whole #
+		beakers = Math.floor(beakers*rates.total);
 		
 		if (beakers < 0) {
 			beakers = 0;
@@ -2647,7 +2669,8 @@ public class Town extends SQLObject {
 		AttrSource as = new AttrSource(sources, beakers, null);
 		cache.sources = as;
 		this.attributeCache.put("BEAKERS", cache);
-		return as;	}
+		return as;
+	}
 	
 	/* 
 	 * Gets the basic amount of happiness for a town.

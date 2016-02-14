@@ -112,31 +112,31 @@ temple:
     sacrifices:
         - entities:
               - 'sheep'
-          reward: 50
+          reward: 5
 ############################### Mine Settings #################
 mine_levels:
     - level: 1
-      hammers: 100.00
+      hammers: 20.0
       amount: 10
       count: 24
    
     - level: 2
-      hammers: 150.00
+      hammers: 40.0
       amount: 15
       count: 48
     
     - level: 3
-      hammers: 200.00
+      hammers: 60.0
       amount: 20
       count: 96
     
     - level: 4
-      hammers: 250.00
+      hammers: 80.0
       amount: 25
       count: 120
     
     - level: 5
-      hammers: 300.00
+      hammers: 100.0
       amount: 30
       count: 144
 ##################### Farm Settings ##########################
@@ -458,11 +458,11 @@ structures:
         - name: 'AttributeStatic'
           type: 'direct'
           attribute: 'HAMMERS'
-          value: '50.0'
+          value: '25.0'
         - name: 'AttributeTradeGood'
           type: 'direct'
           attribute: 'HAMMERS'
-          value: '100.0'
+          value: '50.0'
           goods: 'good_copper,good_oil,good_silver'
   
   - id: s_granary
@@ -579,7 +579,7 @@ structures:
         - name: 'AttributeBiome'
           biomes: 'OCEAN'
           attribute: 'HAMMERS'
-          value: '0.02'
+          value: '0.01'
         - name: 'AttributeBiome'
           biomes: 'OCEAN'
           attribute: 'GROWTH'
@@ -606,7 +606,7 @@ structures:
         - name: 'AttributeBiomeRadiusPerLevel'
           attribute: 'HAMMERS'
           biomes: 'EXTREME_HILLS:3,SMALL_MOUNTAINS:3,ICE_MOUNTAINS:3,DESERT_HILLS:1,FOREST_HILLS:1,TAGIA_HILLS:1,JUNGLE_HILLS:1'
-          base_value: '7.0'
+          base_value: '2.0'
         - name: 'ConsumeLevelComponent'
 
   - id: ti_trade_outpost
@@ -853,5 +853,4 @@ structures:
         - name: 'AttributeStatic'
           type: 'direct'
           attribute: 'HAMMERS'
-          value: '50.0'
-  
+          value: '25.0'
