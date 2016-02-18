@@ -133,7 +133,7 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 						e.printStackTrace();
 						throw new CivException("Internal IO Error.");
 					}
-					Thread.sleep(5000);
+					//Thread.sleep(5000);
 					CivMessage.sendHeading(player, "Pre-Generating your new capitol...");
 					Thread.sleep(10000);
 					CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new Civilization be called?");

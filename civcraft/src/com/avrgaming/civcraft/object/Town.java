@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
@@ -2377,20 +2376,17 @@ public class Town extends SQLObject {
 	}
 
 	public boolean isOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		return this.outlaws.contains(res.getUUIDString());
+		return this.outlaws.contains(name);
 	}
 	
 	public void addOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.add(res.getUUIDString());
-		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
+		this.outlaws.add(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void removeOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.remove(res.getUUIDString());
-		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
+		this.outlaws.remove(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void changeCiv(Civilization newCiv) {
@@ -2407,7 +2403,7 @@ public class Town extends SQLObject {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
+			Resident resident = CivGlobal.getResident(outlaw);
 			if (newCiv.hasResident(resident)) {
 				removeUs.add(outlaw);
 			}
