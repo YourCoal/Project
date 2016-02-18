@@ -31,7 +31,7 @@ public class ConfigTownLevel {
 	public double upkeep;
 	public int plots;
 	public double plot_cost;
-	public int tile_improvements;
+	public int tiles;
 	
 	
 	public static void loadConfig(FileConfiguration cfg, Map<Integer, ConfigTownLevel> levels) {
@@ -44,7 +44,7 @@ public class ConfigTownLevel {
 			town_level.upkeep = (Double)level.get("upkeep");
 			town_level.plots = (Integer)level.get("plots");
 			town_level.plot_cost = (Double)level.get("plot_cost");
-			town_level.tile_improvements = (Integer)level.get("tile_improvements");
+			town_level.tiles = (Integer)level.get("tiles");
 			
 			levels.put(town_level.level, town_level);
 		}

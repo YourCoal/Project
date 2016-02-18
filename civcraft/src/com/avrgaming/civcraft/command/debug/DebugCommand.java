@@ -408,7 +408,7 @@ public class DebugCommand extends CommandBase {
 						
 						Player player = (Player)sender;
 						ConfigBuildableInfo info = new ConfigBuildableInfo();
-						info.tile_improvement = false;
+						info.tile = false;
 						info.templateYShift = 0;
 						Location center = Buildable.repositionCenterStatic(player.getLocation(), info, 
 								Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);

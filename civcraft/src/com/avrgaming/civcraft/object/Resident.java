@@ -1102,7 +1102,61 @@ public class Resident extends SQLObject {
 //			}
 //		}
 //	}
-
+	
+	public void giveAllArcticPerks() {
+		int perkCount;
+		try {
+			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+			return;
+		}
+		for (ConfigPerk p : CivSettings.perks.values()) {
+			Perk perk = new Perk(p);
+			if (perk.getIdent().startsWith("tpl_arctic")) {
+				perk.count = perkCount;
+				this.perks.put(perk.getIdent(), perk);
+			}
+		}
+		CivMessage.send(this, CivColor.LightGreen+"You have the Arctic Templates! Use /resident perks to apply them.");
+	}
+	
+	public void giveAllDesertPerks() {
+		int perkCount;
+		try {
+			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+			return;
+		}
+		for (ConfigPerk p : CivSettings.perks.values()) {
+			Perk perk = new Perk(p);
+			if (perk.getIdent().startsWith("tpl_desert")) {
+				perk.count = perkCount;
+				this.perks.put(perk.getIdent(), perk);
+			}
+		}
+		CivMessage.send(this, CivColor.LightGreen+"You have the Desert Templates! Use /resident perks to apply them.");
+	}
+	
+	public void giveAllHellPerks() {
+		int perkCount;
+		try {
+			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+			return;
+		}
+		for (ConfigPerk p : CivSettings.perks.values()) {
+			Perk perk = new Perk(p);
+			if (perk.getIdent().startsWith("tpl_hell")) {
+				perk.count = perkCount;
+				this.perks.put(perk.getIdent(), perk);
+			}
+		}
+		CivMessage.send(this, CivColor.LightGreen+"You have the Hell Templates! Use /resident perks to apply them.");
+	}
+	
 	public void giveAllFreePerks() {
 		int perkCount;
 		try {

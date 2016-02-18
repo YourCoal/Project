@@ -196,6 +196,11 @@ public class CivSettings {
 	public static HashSet<Material> restrictedUndoBlocks = new HashSet<Material>();
 	public static boolean hasVanishNoPacket = false;
 	
+	//XXX Perk Permissions
+	public static final String ARCTIC_PERKS = "civ.arctic_templates";
+	public static final String DESERT_PERKS = "civ.desert_templates";
+	public static final String HELL_PERKS = "civ.hell_templates";
+	//XXX Other Permissions
 	public static final String MINI_ADMIN = "civ.admin";
 	public static final String MODERATOR = "civ.moderator";
 	public static final String FREE_PERKS = "civ.freeperks";

@@ -51,7 +51,7 @@ public class ConfigBuildableInfo {
 	public Boolean allow_outside_town = false;
 	public Boolean isWonder = false;
 	public Integer regenRate = 0;
-	public Boolean tile_improvement = false;
+	public Boolean tile = false;
 	public Integer points = 0;
 	public boolean allow_demolish = false;
 	public boolean strategic = false;
@@ -126,11 +126,11 @@ public class ConfigBuildableInfo {
 				}
 			
 			
-			Boolean tileImprovement = (Boolean)obj.get("tile_improvement");
+			Boolean tileImprovement = (Boolean)obj.get("tile");
 			if (tileImprovement != null && tileImprovement == true) {
-				sinfo.tile_improvement = true;
+				sinfo.tile = true;
 			} else {
-				sinfo.tile_improvement = false;
+				sinfo.tile = false;
 			}
 			
 			Boolean allowDemolish = (Boolean)obj.get("allow_demolish");

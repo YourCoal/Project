@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
@@ -149,6 +150,8 @@ public class Town extends SQLObject {
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
+	public int saved_trommel_block_level = 1;
+	public int saved_trommel_bonus_level = 1;
 	public int saved_bank_level = 1;
 	public double saved_bank_interest_amount = 0;
 	
@@ -881,13 +884,13 @@ public class Town extends SQLObject {
 				throw new CivException("Internal configuration exception.");
 			}		
 			
-			
-			if (!free) {
-				ConfigUnit unit = Unit.getPlayerUnit(player);
-				if (unit == null || !unit.id.equals("u_settler")) {			
-					throw new CivException("You must be a settler in order to found a town.");
-				}
-			}
+			//XXX Disabled 1.0.4 for FoundTown.java to work
+//			if (!free) {
+//				ConfigUnit unit = Unit.getPlayerUnit(player);
+//				if (unit == null || !unit.id.equals("u_settler")) {			
+//					throw new CivException("You must be a settler in order to found a town.");
+//				}
+//			}
 			newTown.saveNow();
 		
 			CivGlobal.addTown(newTown);
@@ -1694,9 +1697,9 @@ public class Town extends SQLObject {
 	public boolean isStructureAddable(Structure struct) {
 		int count = this.getStructureTypeCount(struct.getConfigId());
 
-		if (struct.isTileImprovement()) {
+		if (struct.isTile()) {
 			ConfigTownLevel level = CivSettings.townLevels.get(this.getLevel());
-			if (this.getTileImprovementCount() > level.tile_improvements) {
+			if (this.getTileCount() > level.tiles) {
 				return false;
 			}
 		} else if ((struct.getLimit() != 0) && (count > struct.getLimit())) {
@@ -1970,10 +1973,10 @@ public class Town extends SQLObject {
 		return rate;
 	}
 
-	public int getTileImprovementCount() {
+	public int getTileCount() {
 		int count = 0;
 		for (Structure struct : getStructures()) {
-			if (struct.isTileImprovement()) {
+			if (struct.isTile()) {
 				count++;
 			}
 		}
@@ -2374,17 +2377,20 @@ public class Town extends SQLObject {
 	}
 
 	public boolean isOutlaw(String name) {
-		return this.outlaws.contains(name);
+		Resident res = CivGlobal.getResident(name);
+		return this.outlaws.contains(res.getUUIDString());
 	}
 	
 	public void addOutlaw(String name) {
-		this.outlaws.add(name);
-		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
+		Resident res = CivGlobal.getResident(name);
+		this.outlaws.add(res.getUUIDString());
+		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
 	}
 	
 	public void removeOutlaw(String name) {
-		this.outlaws.remove(name);
-		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
+		Resident res = CivGlobal.getResident(name);
+		this.outlaws.remove(res.getUUIDString());
+		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
 	}
 	
 	public void changeCiv(Civilization newCiv) {
@@ -2401,7 +2407,7 @@ public class Town extends SQLObject {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			Resident resident = CivGlobal.getResident(outlaw);
+			Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
 			if (newCiv.hasResident(resident)) {
 				removeUs.add(outlaw);
 			}

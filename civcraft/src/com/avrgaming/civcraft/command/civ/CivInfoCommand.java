@@ -213,7 +213,7 @@ public class CivInfoCommand extends CommandBase {
 		
 	    
 		if (resident == null || civ.getLeaderGroup().hasMember(resident) || civ.getAdviserGroup().hasMember(resident) || isOP) {
-			CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+df.format(Math.floor(civ.getTreasury().getBalance()))+" Coins");
+			CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+df.format(Math.floor(civ.getTreasury().getBalance()))+" Coins, "+CivColor.Yellow+"0 Tokens");
 		}
 		
 		

@@ -149,7 +149,7 @@ public class FishingBoat extends TradeOutpost {
 				center.getYaw(), center.getPitch());
 		
 		// Reposition tile improvements
-		if (this.isTileImprovement()) {
+		if (this.isTile()) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 			//loc = center.getChunk().getBlock(arg0, arg1, arg2)

@@ -65,7 +65,13 @@ public class PlayerLoginAsyncTask implements Runnable {
 	public void run() {
 		try {
 			CivLog.info("Running PlayerLoginAsyncTask for "+getPlayer().getName()+" UUID("+playerUUID+")");
-			Resident resident = CivGlobal.getResident(getPlayer().getName());
+			Resident resident = CivGlobal.getResidentViaUUID(playerUUID);
+			if (resident != null && !resident.getName().toLowerCase().equals(getPlayer().getName().toLowerCase())) {
+				CivGlobal.removeResident(resident);
+				resident.setName(getPlayer().getName());
+				resident.save();
+				CivGlobal.addResident(resident);
+			}
 			
 			/* 
 			 * Test to see if player has changed their name. If they have, these residents
@@ -184,6 +190,15 @@ public class PlayerLoginAsyncTask implements Runnable {
 						resident.giveAllFreePerks();
 					}
 				}
+				if (getPlayer().hasPermission(CivSettings.ARCTIC_PERKS)) {
+					resident.giveAllArcticPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.DESERT_PERKS)) {
+					resident.giveAllDesertPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.HELL_PERKS)) {
+					resident.giveAllHellPerks();
+				}
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
@@ -253,7 +268,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 			if (EndConditionDiplomacy.canPeopleVote()) {
 				CivMessage.send(resident, CivColor.LightGreen+"The Council of Eight is built! Use /vote to vote for your favorite Civilization!");
 			}
-		} catch (CivException playerNotFound) {
+		} catch (CivException | InvalidNameException playerNotFound) {
 			// Player logged out while async task was running.
 			CivLog.warning("Couldn't complete PlayerLoginAsyncTask. Player may have been kicked while async task was running.");
 		}

@@ -29,6 +29,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
+import com.avrgaming.civcraft.util.CivColor;
 
 public class EconCommand extends CommandBase {
 
@@ -319,8 +320,7 @@ public class EconCommand extends CommandBase {
 			return;
 		}
 		
-		CivMessage.sendSuccess(player, resident.getTreasury().getBalance()+" coins.");
-		
+		CivMessage.sendSuccess(player, resident.getTreasury().getBalance()+" coins, "+CivColor.Yellow+"0 tokens.");
 	}
 
 	@Override
