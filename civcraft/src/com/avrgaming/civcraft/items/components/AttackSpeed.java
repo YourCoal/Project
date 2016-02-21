@@ -16,8 +16,21 @@
  * is strictly forbidden unless prior written permission is obtained
  * from AVRGAMING LLC.
  */
-package com.avrgaming.civcraft.object;
+package com.avrgaming.civcraft.items.components;
 
-public class Government {
-//is this needed?
+import gpl.AttributeUtil;
+import gpl.AttributeUtil.Attribute;
+import gpl.AttributeUtil.AttributeType;
+
+public class AttackSpeed extends ItemComponent {
+	
+	//XXX 1.9
+	@Override
+	public void onPrepareCreate(AttributeUtil attrs) {
+		attrs.add(Attribute.newBuilder().name("AttackSpeed").
+				type(AttributeType.GENERIC_ATTACK_SPEED).
+				amount(this.getDouble("value")).
+				build());
+	}
+
 }

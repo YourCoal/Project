@@ -66,6 +66,9 @@ public class AttributeUtil {
         public static final AttributeType GENERIC_ATTACK_DAMAGE = new AttributeType("generic.attackDamage").register();
         public static final AttributeType GENERIC_MOVEMENT_SPEED = new AttributeType("generic.movementSpeed").register();
         public static final AttributeType GENERIC_KNOCKBACK_RESISTANCE = new AttributeType("generic.knockbackResistance").register();
+        //XXX 1.9
+        public static final AttributeType GENERIC_ARMOR = new AttributeType("generic.armor").register();
+        public static final AttributeType GENERIC_ATTACK_SPEED = new AttributeType("generic.attackSpeed").register();
         
         private final String minecraftId;
         

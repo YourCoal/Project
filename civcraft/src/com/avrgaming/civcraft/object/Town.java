@@ -149,10 +149,19 @@ public class Town extends SQLObject {
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
+	//XXX Quarry Levels:
+	public int saved_quarry_tool_level = 1;
+	public int saved_quarry_bonus_level = 1;
+	//XXX Trommel Levels:
 	public int saved_trommel_block_level = 1;
 	public int saved_trommel_bonus_level = 1;
+	//XXX Trade Outpost Levels:
+	public int saved_tradepost_item_level = 1;
+	//XXX Fishing Boat Levels:
+	public int saved_fishboat_item_level = 1;
+	//XXX Bank Levels:
 	public int saved_bank_level = 1;
-	public double saved_bank_interest_amount = 0;
+	public double saved_bank_interest = 0;
 	
 	/* Happiness Stuff */
 	private double baseHappy = 0.0;
