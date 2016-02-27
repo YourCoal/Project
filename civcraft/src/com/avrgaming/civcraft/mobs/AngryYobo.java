@@ -27,7 +27,7 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 	    getGoalSelector().a(8, new PathfinderGoalLookAtPlayer((EntityInsentient) entity, EntityHuman.class, 8.0F));
 	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget<EntityHuman>((EntityCreature) entity, EntityHuman.class, 0, true, false, null));
 	    this.setName(this.getLevel().getName()+" "+this.getType().getName());
-	    MobBaseZombie zombie = ((MobBaseZombie)this.entity);
+	    MobBaseZombie zombie = ((MobBaseZombie)CommonCustomMob.entity);
 	    zombie.setBaby(true);
 	}
 
@@ -42,7 +42,6 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 	}
 
 	public void onDamage(EntityCreature e, DamageSource damagesource, PathfinderGoalSelector goalSelector, PathfinderGoalSelector targetSelector) {
-
 		
 	}
 	
@@ -126,10 +125,10 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 	@Override
 	public void onTarget(EntityTargetEvent event) {
 		super.onTarget(event);
-		
 		if (event.getReason().equals(TargetReason.FORGOT_TARGET) ||
 		    event.getReason().equals(TargetReason.TARGET_DIED)) {
-			event.getEntity().remove();
+			CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
+			entity.getBukkitEntity().remove();
 		}
 		
 	}

@@ -34,7 +34,7 @@ public class YoboBoss extends CommonCustomMob implements ICustomMob {
 	}
 	
 	public void onCreateAttributes() {
-		MobBaseZombieGiant zombie = (MobBaseZombieGiant)this.entity;
+		MobBaseZombieGiant zombie = (MobBaseZombieGiant)CommonCustomMob.entity;
 		zombie.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).setValue(200.0D);
 		zombie.getAttributeInstance(GenericAttributes.maxHealth).setValue(5000.0D);
 		zombie.getAttributeInstance(GenericAttributes.c).setValue(1.0D);

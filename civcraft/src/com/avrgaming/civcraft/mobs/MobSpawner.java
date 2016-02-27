@@ -63,8 +63,9 @@ public class MobSpawner {
 	}
 	
 	public static void despawnAll() {
-		for (CommonCustomMob mob : CommonCustomMob.customMobs.values()) {
-			mob.entity.getBukkitEntity().remove();
+		for (@SuppressWarnings("unused") CommonCustomMob mob : CommonCustomMob.customMobs.values()) {
+			CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
+			CommonCustomMob.entity.getBukkitEntity().remove();
 		}
 	}
 	
@@ -82,7 +83,7 @@ public class MobSpawner {
 		custom.onCreateAttributes();
 		
 		CommonCustomMob common = (CommonCustomMob)custom;
-		CommonCustomMob.customMobs.put(common.entity.getUniqueID(), common);
+		CommonCustomMob.customMobs.put(CommonCustomMob.entity.getUniqueID(), common);
 		return common;
 	}
 

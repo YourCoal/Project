@@ -609,7 +609,7 @@ public class TownInfoCommand extends CommandBase {
 				civ.getLeaderGroup().hasMember(resident) || civ.getAdviserGroup().hasMember(resident) || isAdmin) {
 			try {
 				CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+df.format(Math.floor(town.getBalance()))+" Coins, "+CivColor.Yellow+"0 Tokens "+
-								CivColor.Green+" Upkeep: "+CivColor.LightGreen+df.format(Math.floor(town.getTotalUpkeep()*town.getGovernment().upkeep_rate))+" Coins, "+CivColor.Yellow+"0 Tokens");
+								CivColor.Green+" Upkeep: "+CivColor.LightGreen+df.format(Math.floor(town.getTotalUpkeep()*town.getGovernment().upkeep_rate))+" Coins");
 				
 				
 				Structure bank = town.getStructureByType("s_bank");

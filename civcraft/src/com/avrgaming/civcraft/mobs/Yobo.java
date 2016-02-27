@@ -150,7 +150,8 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			goalSelector.a(2, new PathfinderGoalMeleeAttack(e, EntityHuman.class, 1.0D, false));
 			for (int i = 0; i < 4; i++) {
 				try {
-					this.minions.add(MobSpawner.spawnCustomMob(MobSpawner.CustomMobType.ANGRYYOBO, this.getLevel(), getLocation(e)).entity);
+					MobSpawner.spawnCustomMob(MobSpawner.CustomMobType.ANGRYYOBO, this.getLevel(), getLocation(e));
+					this.minions.add(CommonCustomMob.entity);
 				} catch (CivException e1) {
 					e1.printStackTrace();
 				}

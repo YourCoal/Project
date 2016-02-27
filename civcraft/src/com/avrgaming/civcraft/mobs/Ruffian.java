@@ -282,7 +282,7 @@ public class Ruffian extends CommonCustomMob implements ICustomMob {
 		
 		SyncFollow follow = new SyncFollow();
 		RuffianProjectile proj = new RuffianProjectile(getLocation((EntityCreature) entity), 
-				getLocation((EntityPlayer)target), this.entity.getBukkitEntity(), damage);
+				getLocation((EntityPlayer)target), CommonCustomMob.entity.getBukkitEntity(), damage);
 		follow.proj = proj;
 		TaskMaster.syncTask(follow);		
 	}

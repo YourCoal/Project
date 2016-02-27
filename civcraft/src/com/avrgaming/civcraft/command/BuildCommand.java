@@ -20,12 +20,15 @@ package com.avrgaming.civcraft.command;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
 import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
@@ -55,6 +58,36 @@ public class BuildCommand extends CommandBase {
 		commands.put("refreshnearest", "Refreshes the nearest structure's blocks. Requires confirmation.");
 		commands.put("validatenearest", "Validates the nearest structure. Removing any validation penalties if it's ok.");
 		//commands.put("preview", "shows a preview of this structure at this location.");
+		commands.put("book", "Gives you a structure info book, if you don't already have one.");
+	}
+	
+	public void book_cmd() throws CivException {
+		Player player = getPlayer();
+		
+		/* Determine if he already has the book. */
+		for (ItemStack stack : player.getInventory().getContents()) {
+			if (stack == null) {
+				continue;
+			}
+			
+			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
+			if (craftMat == null) {
+				continue;
+			}
+			
+			if (craftMat.getConfigId().equals("civ:struc_book")) {
+				throw new CivException("You already have a structure book.");
+			}
+		}
+		
+		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId("civ:struc_book");
+		ItemStack helpBook = LoreCraftableMaterial.spawn(craftMat);
+		
+		HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(helpBook);
+		if (leftovers != null && leftovers.size() >= 1) {
+			throw new CivException("You cannot hold anything else. Get some space open in your inventory first.");
+		}
+		CivMessage.sendSuccess(player, "Added a structure book to your inventory!");
 	}
 	
 	public void validatenearest_cmd() throws CivException {

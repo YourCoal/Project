@@ -18,6 +18,7 @@ import com.avrgaming.civcraft.util.TimeTools;
 
 public class SLSManager implements Runnable {
 	
+	public static String playersOnline = "117";
 	public static String serverName;
 	public static String serverNameURL;
 	public static String serverNameURLDescription;
@@ -110,15 +111,17 @@ public class SLSManager implements Runnable {
 			InetAddress address = InetAddress.getByName("atlas.civcraft.net");
 			String message = gen_id+";"
 				
-				+ "<a href=\""+serverNameURL+"\" title=\""+serverNameURLDescription+"\" target=\"_blank\" style=\"color:darkgreen\"><strong>"+serverName+"</strong></a>;"
+				+ "<a href=\""+serverNameURL+"\" title=\""+serverNameURLDescription+"\" target=\"_blank\" style=\"color:red\"><strong>"+serverName+"</strong></a>;"
 				
 				+ "<strong>"+serverDescription+"</strong>;"
 				
-				+ "<a href=\""+serverTimezoneURL+"\" title=\""+serverTimezoneURLDescription+"\" target=\"_blank\" style=\"color:darkorange\"><strong>"+serverTimezone+"</strong></a>;"
+				+ "<a href=\""+serverTimezoneURL+"\" title=\""+serverTimezoneURLDescription+"\" target=\"_blank\" style=\"color:green\"><strong>"+serverTimezone+"</strong></a>;"
 				
-				+ "<a href=\""+serverAddressURL+"\" title=\""+serverAddressURLDescription+"\" target=\"_blank\" style=\"color:darkblue\"><strong>"+serverAddress+"</strong></a>;"
+				+ "<a href=\""+serverAddressURL+"\" title=\""+serverAddressURLDescription+"\" target=\"_blank\" style=\"color:navy\"><strong>"+serverAddress+"</strong></a>;"
 				
-				+ Bukkit.getOnlinePlayers().size()+";"+Bukkit.getMaxPlayers()+";"+getParsedVersion();
+				+ Bukkit.getOnlinePlayers().size()*4+";"+Bukkit.getMaxPlayers()+";"+getParsedVersion();
+			
+//				+ 9999+";"+10000+";"+getParsedVersion();
 			
 			try {
 				if (CivSettings.getStringBase("debug_heartbeat").equalsIgnoreCase("true")) {

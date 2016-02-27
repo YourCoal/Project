@@ -19,7 +19,9 @@
 package com.avrgaming.civcraft.interactive;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
 import com.avrgaming.civcraft.exception.CivException;
@@ -75,6 +77,8 @@ public class InteractiveBuildTrommel implements InteractiveResponse {
 				} try {
 					ConfigBuildableInfo info = new ConfigBuildableInfo();
 					town.buildStructure(player, info.id = "s_trommel", center, tpl);
+					ItemStack newStack = new ItemStack(Material.AIR);
+					player.setItemInHand(newStack);
 					resident.clearInteractiveMode();
 				} catch (CivException e) {
 					CivMessage.sendError(player, e.getMessage());

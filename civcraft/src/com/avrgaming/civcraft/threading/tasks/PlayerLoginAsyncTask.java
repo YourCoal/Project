@@ -77,38 +77,60 @@ public class PlayerLoginAsyncTask implements Runnable {
 						"If you changed your name, please change it back or contact an admin to request a name change."));
 				return;
 			}
-	
+			
 			if (resident == null) {
-				CivLog.info("No resident found. Creating for "+getPlayer().getName());
-				try {
-					resident = new Resident(getPlayer().getUniqueId(), getPlayer().getName());
-				} catch (InvalidNameException e) {
-					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "You have an invalid name. Sorry."));
-					return;
-				}
-				
-				CivGlobal.addResident(resident);
-				CivLog.info("Added resident:"+resident.getName());
-				resident.setRegistered(System.currentTimeMillis());
-				CivTutorial.showTutorialInventory(getPlayer());
-				resident.setisProtected(true);
-				int mins;
-				try {
-					mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
-				} catch (InvalidConfiguration e1) {
-					e1.printStackTrace();
-					return;
-				}
-				CivMessage.send(resident, CivColor.LightGray+"You have a PvP timer enabled for "+mins+" mins. You cannot attack or be attacked until it expires.");
-				CivMessage.send(resident, CivColor.LightGray+"To remove it, type /resident pvptimer");
-	
+				new Thread(new Runnable() {
+		            public void run() {
+		                try {
+		                	Resident resident = CivGlobal.getResident(getPlayer().getName());
+		    				CivLog.info("No resident found. Creating for "+getPlayer().getName());
+		    				CivLog.info("No resident found. Creating for "+getPlayer().getName());
+		    				try {
+		    					resident = new Resident(getPlayer().getUniqueId(), getPlayer().getName());
+		    				} catch (InvalidNameException e) {
+			    				CivLog.info("Resident has invalid name:"+resident.getName());
+			    				CivLog.info("Resident has invalid name:"+resident.getName());
+		    					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "You have an invalid name. Sorry."));
+		    					return;
+		    				}
+		    				resident.setisProtected(true);
+		    				CivGlobal.addResident(resident);
+		    				CivLog.info("Added resident:"+resident.getName());
+		    				CivLog.info("Added resident:"+resident.getName());
+		    				CivMessage.send(resident, CivColor.LightGray+"Adding player to database...");
+		    				Thread.sleep(4000);
+		    				resident.setisProtected(true);
+		    				CivMessage.send(resident, CivColor.LightGray+"Player added to database.");
+		    				CivMessage.send(resident, CivColor.LightGray+"Adding PvP timer to player...");
+		    				Thread.sleep(4000);
+		    				resident.setisProtected(true);
+		    				CivMessage.send(resident, CivColor.LightGray+"PvP timer enabled.");
+		    				CivMessage.send(resident, CivColor.LightGray+"Preparing to display tutorial screen...");
+		    				Thread.sleep(4000);
+		    				resident.setisProtected(true);
+		    				CivTutorial.showTutorialInventory(getPlayer());
+		    				CivMessage.send(resident, CivColor.LightGray+"Displaying tutorial screen.");
+		    				Thread.sleep(8000);
+		    				resident.setRegistered(System.currentTimeMillis());
+		    				resident.setisProtected(true);
+		    				int mins;
+		    				try {
+		    					mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
+		    				} catch (InvalidConfiguration e1) {
+		    					e1.printStackTrace();
+		    					return;
+		    				}
+		    				CivMessage.send(resident, CivColor.LightGray+"You now have a PvP Timer for "+mins+" minutes.");
+						} catch (InterruptedException | CivException e) {
+							e.printStackTrace();
+						}
+		            }
+		        }).start();
 			} 
 			
-			/* 
-			 * Resident is present. Lets check the UUID against the stored UUID.
+			/* Resident is present. Lets check the UUID against the stored UUID.
 			 * We are not going to allow residents to change names without admin permission.
-			 * If someone logs in with a name that does not match the stored UUID, we'll kick them.
-			 */
+			 * If someone logs in with a name that does not match the stored UUID, we'll kick them. */
 			if (resident.getUUID() == null) {
 				/* This resident does not yet have a UUID stored. Free lunch. */
 				resident.setUUID(getPlayer().getUniqueId());

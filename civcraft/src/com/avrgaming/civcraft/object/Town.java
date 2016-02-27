@@ -85,10 +85,8 @@ import com.avrgaming.global.perks.components.CustomTemplate;
 public class Town extends SQLObject {
 
 	private ConcurrentHashMap<String, Resident> residents = new ConcurrentHashMap<String, Resident>();
-	private ConcurrentHashMap<String, Resident> fakeResidents = new ConcurrentHashMap<String, Resident>();
 
 	private ConcurrentHashMap<ChunkCoord, TownChunk> townChunks = new ConcurrentHashMap<ChunkCoord, TownChunk>();
-	private ConcurrentHashMap<ChunkCoord, TownChunk> outposts = new ConcurrentHashMap<ChunkCoord, TownChunk>();
 	private ConcurrentHashMap<ChunkCoord, CultureChunk> cultureChunks = new ConcurrentHashMap<ChunkCoord, CultureChunk>();
 	
 	private ConcurrentHashMap<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
@@ -149,10 +147,13 @@ public class Town extends SQLObject {
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
+	//XXX Granary Levels:
+	public int saved_granary_hammer_level = 1;
 	//XXX Quarry Levels:
 	public int saved_quarry_tool_level = 1;
 	public int saved_quarry_bonus_level = 1;
 	//XXX Trommel Levels:
+	public int saved_trommel_level = 1;
 	public int saved_trommel_block_level = 1;
 	public int saved_trommel_bonus_level = 1;
 	//XXX Trade Outpost Levels:
@@ -466,6 +467,13 @@ public class Town extends SQLObject {
 	
 	public boolean isMayor(Resident res) {
 		if (this.getMayorGroup().hasMember(res)) {
+			return true;
+		}
+		return false;		
+	}
+	
+	public boolean isAssistant(Resident res) {
+		if (this.getAssistantGroup().hasMember(res)) {
 			return true;
 		}
 		return false;		
@@ -1334,7 +1342,6 @@ public class Town extends SQLObject {
 		upkeep += this.getBaseUpkeep();
 		//upkeep += this.getSpreadUpkeep();
 		upkeep += this.getStructureUpkeep();
-		upkeep += this.getOutpostUpkeep();
 		
 		upkeep *= getGovernment().upkeep_rate;
 		
@@ -1931,10 +1938,6 @@ public class Town extends SQLObject {
 		ChunkCoord townHallChunk = new ChunkCoord(townHall.getCorner().getLocation());
 		
 		for (TownChunk tc : this.getTownChunks()) {
-			if (tc.isOutpost()) {
-				continue;
-			}
-			
 			if (tc.getChunkCoord().equals(townHallChunk))
 				continue;
 			
@@ -1952,7 +1955,7 @@ public class Town extends SQLObject {
 	}
 
 	public double getTotalUpkeep() throws InvalidConfiguration {
-		return Math.floor(this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep() + this.getOutpostUpkeep());
+		return Math.floor(this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep());
 	}
 
 	public double getTradeRate() {
@@ -1992,11 +1995,7 @@ public class Town extends SQLObject {
 	}
 
 	public void removeTownChunk(TownChunk tc) {
-		if (tc.isOutpost()) {
-			this.outposts.remove(tc.getChunkCoord());
-		} else {
-			this.townChunks.remove(tc.getChunkCoord());
-		}
+		this.townChunks.remove(tc.getChunkCoord());
 	}
 
 	public Double getHammersFromCulture() {
@@ -2361,29 +2360,6 @@ public class Town extends SQLObject {
 		return points;
 	}
 
-	public void addOutpostChunk(TownChunk tc) throws AlreadyRegisteredException {
-		if (outposts.containsKey(tc.getChunkCoord())) {
-			throw new AlreadyRegisteredException("Outpost at "+tc.getChunkCoord()+" already registered to town "+this.getName());
-		}
-		outposts.put(tc.getChunkCoord(), tc);	
-	}
-
-	public Collection<TownChunk> getOutpostChunks() {
-		return outposts.values();
-	}
-
-	public double getOutpostUpkeep() {
-//		double outpost_upkeep;
-//		try {
-//			outpost_upkeep = CivSettings.getDouble(CivSettings.townConfig, "town.outpost_upkeep");
-//		} catch (InvalidConfiguration e) {
-//			e.printStackTrace();
-//			return 0.0;
-//		}
-		//return outpost_upkeep*outposts.size();
-		return 0;
-	}
-
 	public boolean isOutlaw(String name) {
 		return this.outlaws.contains(name);
 	}
@@ -2556,11 +2532,6 @@ public class Town extends SQLObject {
 				//player offline
 			}
 		}
-		
-		for (Resident resident : this.fakeResidents.values()) {
-			residents.add(resident);
-		}
-		
 		return residents;
 	}
 
@@ -2928,10 +2899,6 @@ public class Town extends SQLObject {
 
 	public void setCurrentWonderInProgress(Buildable currentWonderInProgress) {
 		this.currentWonderInProgress = currentWonderInProgress;
-	}
-
-	public void addFakeResident(Resident fake) {
-		this.fakeResidents.put(fake.getName(), fake);
 	}
 
 	private static String lastMessage = null;

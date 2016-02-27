@@ -29,6 +29,7 @@ import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
 import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.GranaryAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 
@@ -62,11 +63,17 @@ public class UpdateEventTimer extends CivAsyncTask {
 							if (!CivGlobal.trommelsEnabled) {
 								continue;
 							}
-							
 							TaskMaster.asyncTask("trommel-"+struct.getCorner().toString(), new TrommelAsyncTask(struct), 0);
 						}
 					}
-					
+					if (struct.getUpdateEvent() != null && !struct.getUpdateEvent().equals("")) {
+						if (struct.getUpdateEvent().equals("granary_process")) {
+							if (!CivGlobal.granariesEnabled) {
+								continue;
+							}
+							TaskMaster.asyncTask("granary-"+struct.getCorner().toString(), new GranaryAsyncTask(struct), 0);
+						}
+					}
 					struct.onUpdate();
 				} catch (Exception e) {
 					e.printStackTrace();

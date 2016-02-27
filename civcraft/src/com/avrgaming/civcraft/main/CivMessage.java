@@ -195,7 +195,6 @@ public class CivMessage {
 	
 	public static void sendTown(Town town, String string) {
 		CivLog.info("[Town:"+town.getName()+"] "+string);
-		
 		for (Resident resident : town.getResidents()) {
 			if (!resident.isShowTown()) {
 				continue;

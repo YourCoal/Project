@@ -49,9 +49,9 @@ public class HereCommand implements CommandExecutor {
 			TownChunk tc = CivGlobal.getTownChunk(coord);
 			if (tc != null) {
 				CivMessage.send(sender, CivColor.Green+"You're currently inside the town borders of "+CivColor.LightGreen+tc.getTown().getName());
-				if (tc.isOutpost()) {
-					CivMessage.send(sender, CivColor.Yellow+"This chunk is an outpost.");
-				}
+//				if (tc.isOutpost()) {
+//					CivMessage.send(sender, CivColor.Yellow+"This chunk is an outpost.");
+//				}
 			}
 			
 			if (cc == null && tc == null) {

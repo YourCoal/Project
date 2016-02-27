@@ -40,6 +40,9 @@ public class CivData {
 	public static final byte DATA_BIRCH = 2;
 	public static final byte DATA_JUNGLE = 3;
 	
+	
+	
+	public static final int AIR = 0;
 	public static final int STONE = 1;
 	public static final int GRANITE = 1;
 	public static final int POLISHED_GRANITE = 2;
@@ -47,7 +50,11 @@ public class CivData {
 	public static final int POLISHED_DIORITE = 4;
 	public static final int ANDESITE = 5;
 	public static final int POLISHED_ANDESITE = 6;
+	public static final int GRASS = 2;
 	public static final int DIRT = 3;
+	public static final int COBBLESTONE = 4;
+	public static final int BEDROCK = 7;
+	
 	
 	public static final int GOLD_ORE = 14;
 	public static final int IRON_ORE = 15;
@@ -56,15 +63,12 @@ public class CivData {
 	public static final int WATER = 9;
 	public static final int WATER_RUNNING = 8;
 	public static final int FENCE = 85;
-	public static final int BEDROCK = 7;
 	public static final int RAILROAD = 66;
 	public static final int LAVA = 11;
 	public static final int LAVA_RUNNING = 10;
-	public static final int COBBLESTONE = 4;
 	public static final int EMERALD = 388;
 	public static final int DIAMOND = 264;
 	public static final int GRAVEL = 13;
-	public static final int AIR = 0;
 	public static final int DISPENSER = 23;
 	public static final int REDSTONE_DUST = 331;
 	public static final int WHEAT = 59;

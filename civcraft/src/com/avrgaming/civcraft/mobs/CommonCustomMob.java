@@ -52,7 +52,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 	
 	private CustomMobType type;
 	private CustomMobLevel level;
-	public EntityLiving entity;
+	public static EntityLiving entity;
 	
 	public HashMap<String, String> dataMap = new HashMap<String, String>();
 	public HashMap<String, MobComponent> components = new HashMap<String, MobComponent>();
@@ -171,13 +171,14 @@ public abstract class CommonCustomMob implements ICustomMob {
 	}
 
 	public void onDamage(EntityCreature e, DamageSource damagesource, PathfinderGoalSelector goalSelector, PathfinderGoalSelector targetSelector) {
-
 		
 	}
 
 	@Override
 	public void onDeath(EntityCreature arg0) {
 		dropItems();
+		CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
+		CommonCustomMob.entity.getBukkitEntity().remove();
 	}
 
 	public void onRangedAttack(Entity arg1) {
@@ -206,17 +207,20 @@ public abstract class CommonCustomMob implements ICustomMob {
 		Location loc = getLocation(entity);
 		TownChunk tc = CivGlobal.getTownChunk(loc);
 		if (tc != null) {
+			CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
 			entity.getBukkitEntity().remove();
 		}
 		
 		Camp camp = CivGlobal.getCampFromChunk(new ChunkCoord(loc));
 		if (camp != null) {
+			CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
 			entity.getBukkitEntity().remove();
 		}
 	}
 	
 	private void checkForisWarTime() {
 		if (War.isWarTime()) {
+			CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
 			entity.getBukkitEntity().remove();
 		}
 	}
@@ -248,7 +252,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 
 	@Override
 	public void setEntity(EntityLiving e) {
-		this.entity = e;
+		CommonCustomMob.entity = e;
 	}
 
 	public Collection<MobComponent> getMobComponents() {
@@ -336,7 +340,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 		String[] split = str.split(":");
 		this.setData("type", split[0]);
 		this.setData("level", split[1]);
-		if (this.entity == null) {
+		if (CommonCustomMob.entity == null) {
 			return;
 		}
 		

@@ -186,11 +186,6 @@ public class PlotCommand extends CommandBase {
 	public void buy_cmd() throws CivException {
 		TownChunk tc = this.getStandingTownChunk();
 		Resident resident = getResident();
-		
-		if (tc.isOutpost()) {
-			throw new CivException("Cannot buy outposts.");
-		}
-		
 		if (resident.getTown() != tc.getTown()) {
 			throw new CivException("You cannot buy this plot, you are not a member of this town.");
 		}
@@ -206,11 +201,6 @@ public class PlotCommand extends CommandBase {
 	public void fs_cmd() throws CivException {
 		TownChunk tc = this.getStandingTownChunk();
 		this.validPlotOwner();
-		
-		if (tc.isOutpost()) {
-			throw new CivException("Cannot sell outposts.");
-		}
-		
 		if (args.length < 2) {
 			throw new CivException("You must specify a price.");
 		}

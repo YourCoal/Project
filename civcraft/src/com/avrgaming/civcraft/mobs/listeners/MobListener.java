@@ -21,7 +21,6 @@ public class MobListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onChunkLoad(ChunkLoadEvent event) {
-		
 		for (Entity e : event.getChunk().getEntities()) {
 			if (e instanceof Monster) {
 				e.remove();

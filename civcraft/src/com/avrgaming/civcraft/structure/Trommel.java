@@ -33,6 +33,16 @@ import com.avrgaming.civcraft.util.SimpleBlock;
 
 public class Trommel extends Structure {
 	
+	//XXX For All Levels
+	private static final double DIRT_GRAVEL = CivSettings.getDoubleStructure("trommel.dirtgravel");
+	//XXX Level 1
+	public static final int BONUS1_MAX = CivSettings.getIntegerStructure("trommel_bonus1.max"); //100%
+	private static final double BONUS1_IRON = CivSettings.getDoubleStructure("trommel_bonus1.iron");
+	private static final double BONUS1_GOLD = CivSettings.getDoubleStructure("trommel_bonus1.gold");
+	private static final double BONUS1_DIAMOND = CivSettings.getDoubleStructure("trommel_bonus1.diamond");
+	private static final double BONUS1_EMERALD = CivSettings.getDoubleStructure("trommel_bonus1.emerald");
+	private static final double BONUS1_HAMMERS = CivSettings.getDoubleStructure("trommel_bonus1.hammers");
+	
 	public static final int GRAVEL_MAX_CHANCE = CivSettings.getIntegerStructure("trommel_gravel.max"); //100%
 	private static final double GRAVEL_REDSTONE_CHANCE = CivSettings.getDoubleStructure("trommel_gravel.redstone_chance"); //3%
 	private static final double GRAVEL_IRON_CHANCE = CivSettings.getDoubleStructure("trommel_gravel.iron_chance"); //4%
@@ -86,8 +96,7 @@ public class Trommel extends Structure {
 	private static final double ANDESITE_REFINED_TUNGSTEN_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.refined_tungsten_chance");
 	private static final double ANDESITE_CRYSTAL_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.crystal_chance");
 	
-	private int block_level = 1;
-	private int bonus_level = 1;
+	private int level = 1;
 	public int skippedCounter = 0;
 	public ReentrantLock lock = new ReentrantLock();
 	
@@ -97,31 +106,33 @@ public class Trommel extends Structure {
 		REFINED_CHROMIUM,
 		CRYSTAL_FRAGMENT,
 		CHROMIUM,
+		TUNGSTEN,
+		POLISHED,
+		DIRT,
+		
+		
+		HAMMERS,
 		EMERALD,
 		DIAMOND,
-		TUNGSTEN,
-		GOLD,
 		REDSTONE,
+		GOLD,
 		IRON,
-		POLISHED,
-		DIRT
+		DIRTGRAVEL
 	}
 	
 	protected Trommel(Location center, String id, Town town) throws CivException {
 		super(center, id, town);	
-		setBlockLevel(town.saved_trommel_block_level);
-		setBonusLevel(town.saved_trommel_bonus_level);
+		setLevel(town.saved_trommel_level);
 	}
 	
 	public Trommel(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
-	
+
 	@Override
 	public String getDynmapDescription() {
 		String out = "<u><b>"+this.getDisplayName()+"</u></b><br/>";
-		out += "Block Level: "+this.block_level;
-		out += "Bonus Level: "+this.bonus_level;
+		out += "Level: "+this.level;
 		return out;
 	}
 	
@@ -130,26 +141,70 @@ public class Trommel extends Structure {
 		return "minecart";
 	}
 	
+	public double getLvl1Bonus(Mineral mineral) {
+		double chance = 0;
+		switch (mineral) {
+		case HAMMERS:
+			chance = BONUS1_HAMMERS;
+			break;
+		case EMERALD:
+			chance = BONUS1_EMERALD;
+			break;
+		case DIAMOND:
+			chance = BONUS1_DIAMOND;
+			break;
+		case GOLD:
+			chance = BONUS1_GOLD;
+			break;
+		case IRON:
+			chance = BONUS1_IRON;
+			break;
+		case DIRTGRAVEL:
+			chance = DIRT_GRAVEL;
+			break;
+		default:
+			break;
+		}
+		return this.modifyChance(chance);
+	}
+	
 	public double getGravelChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
-		case EMERALD:
-			chance = GRAVEL_EMERALD_CHANCE;
-			break;
-		case DIAMOND:
-			chance = GRAVEL_DIAMOND_CHANCE;
+		case IRON:
+			chance = GRAVEL_IRON_CHANCE;
 			break;
 		case GOLD:
 			chance = GRAVEL_GOLD_CHANCE;
 			break;
-		case IRON:
-			chance = GRAVEL_IRON_CHANCE;
-			break;
 		case REDSTONE:
 			chance = GRAVEL_REDSTONE_CHANCE;
 			break;
+		case DIAMOND:
+			chance = GRAVEL_DIAMOND_CHANCE;
+			break;
+		case EMERALD:
+			chance = GRAVEL_EMERALD_CHANCE;
+			break;
 		case CHROMIUM:
 			chance = GRAVEL_CHROMIUM_CHANCE;
+			break;
+		case CRYSTAL:
+			break;
+		case CRYSTAL_FRAGMENT:
+			break;
+		case DIRT:
+			break;
+		case HAMMERS:
+			break;
+		case POLISHED:
+			break;
+		case REFINED_CHROMIUM:
+			break;
+		case REFINED_TUNGSTEN:
+			break;
+		case TUNGSTEN:
+			break;
 		default:
 			break;
 		}
@@ -198,6 +253,10 @@ public class Trommel extends Structure {
 		case DIRT:
 			chance = GRANITE_DIRT_RATE;
 			break;
+		case HAMMERS:
+			break;
+		default:
+			break;
 		}
 		return this.modifyChance(chance);
 	}
@@ -244,9 +303,14 @@ public class Trommel extends Structure {
 		case DIRT:
 			chance = DIORITE_DIRT_RATE;
 			break;
+		case HAMMERS:
+			break;
+		default:
+			break;
 		}
 		return this.modifyChance(chance);
 	}
+
 	
 	public double getAndesiteChance(Mineral mineral) {
 		double chance = 0;
@@ -290,6 +354,10 @@ public class Trommel extends Structure {
 		case DIRT:
 			chance = ANDESITE_DIRT_RATE;
 			break;
+		case HAMMERS:
+			break;
+		default:
+			break;
 		}
 		return this.modifyChance(chance);
 	}
@@ -297,28 +365,30 @@ public class Trommel extends Structure {
 	private double modifyChance(Double chance) {
 		double increase = chance*this.getTown().getBuffManager().getEffectiveDouble(Buff.EXTRACTION);
 		chance += increase;
+		
+//		try {
+//			if (this.getTown().getGovernment().id.equals("gov_despotism")) {
+//				chance *= CivSettings.getDouble(CivSettings.structureConfig, "trommel.despotism_rate");
+//			} else if (this.getTown().getGovernment().id.equals("gov_theocracy") || this.getTown().getGovernment().id.equals("gov_monarchy")){
+//				chance *= CivSettings.getDouble(CivSettings.structureConfig, "trommel.penalty_rate");
+//			}
+//		} catch (InvalidConfiguration e) {
+//			e.printStackTrace();
+//		}
 		return chance;
 	}
 	
 	@Override
 	public void onPostBuild(BlockCoord absCoord, SimpleBlock commandBlock) {
-		this.block_level = getTown().saved_trommel_block_level;
-		this.bonus_level = getTown().saved_trommel_bonus_level;
+		this.level = getTown().saved_trommel_level;
 	}
-	
-	public int getBlockLevel() {
-		return block_level;
+
+	public int getLevel() {
+		return level;
 	}
-	
-	public int getBonusLevel() {
-		return bonus_level;
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
-	
-	public void setBlockLevel(int blockLevel) {
-		this.block_level = blockLevel;
-	}
-	
-	public void setBonusLevel(int bonusLevel) {
-		this.block_level = bonusLevel;
-	}
+
 }

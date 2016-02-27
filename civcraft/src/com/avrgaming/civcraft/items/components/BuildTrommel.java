@@ -84,7 +84,7 @@ public class BuildTrommel extends ItemComponent implements CallbackInterface {
 		info.hammer_cost = 800;
 		info.max_hitpoints = 200;
 		info.points = 1500;
-		//XXX Optional, not normal
+//		//XXX Optional, not normal
 		info.destroyable = false;
 		info.allow_outside_town = false;
 		info.isWonder = false;
@@ -145,12 +145,11 @@ public class BuildTrommel extends ItemComponent implements CallbackInterface {
             public void run() {
                 try {
             		CivMessage.sendHeading(player, "Building a Trommel!");
-					Thread.sleep(500);
 					CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"Do you want to build a trommel here?");
-					Thread.sleep(3000);
 					CivMessage.send(player, CivColor.LightGray+ChatColor.ITALIC+"We are preparing to put a preview of the structure here.");
-					CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
+					CivMessage.send(player, CivColor.LightGray+"(You will be able to cancel this in a few seconds.)");
 					Thread.sleep(5000);
+					CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
 					resident.setInteractiveMode(new InteractiveBuildTrommel(resident.getTown(), player.getLocation(), null));
 					ConfigBuildableInfo info = new ConfigBuildableInfo();
 					Structure struct = Structure.newStructure(player.getLocation(), info.id = "s_trommel", resident.getTown());

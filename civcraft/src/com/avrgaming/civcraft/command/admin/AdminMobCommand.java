@@ -42,11 +42,9 @@ public class AdminMobCommand extends CommandBase {
 		}
 		
 		int count = 0;
-		for (CommonCustomMob mob : removeUs) {
-			CommonCustomMob.customMobs.remove(mob.entity.getUniqueID());
-			mob.entity.getBukkitEntity().remove();
+			CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
+			CommonCustomMob.entity.getBukkitEntity().remove();
 			count++;
-		}
 		
 		CivMessage.sendSuccess(player, "Removed "+count+ " mobs of type "+name);
 	}

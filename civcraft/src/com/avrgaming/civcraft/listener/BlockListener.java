@@ -92,6 +92,7 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.mobs.CommonCustomMob;
 import com.avrgaming.civcraft.object.ControlPoint;
 import com.avrgaming.civcraft.object.ProtectedBlock;
 import com.avrgaming.civcraft.object.Resident;
@@ -1285,18 +1286,33 @@ public class BlockListener implements Listener {
 				CivMessage.sendErrorNoRepeat(player, "You do not have permission to destroy here.");
 			}
 		}
-
-
 	}
-
+	
+	//XXX Added mobs to despawn in 1.1.0
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onChunkUnloadEvent(ChunkUnloadEvent event) {
 		Boolean persist = CivGlobal.isPersistChunk(event.getChunk());		
 		if (persist != null && persist == true) {
 			event.setCancelled(true);
 		}
+		
+		for (org.bukkit.entity.Entity ent : event.getChunk().getEntities()) {
+			if (ent.getType().equals(EntityType.ZOMBIE) || ent.getType().equals(EntityType.SKELETON) ||
+					ent.getType().equals(EntityType.CREEPER) || ent.getType().equals(EntityType.SPIDER) ||
+					ent.getType().equals(EntityType.CAVE_SPIDER) || ent.getType().equals(EntityType.ENDERMAN) ||
+					ent.getType().equals(EntityType.WITCH) || ent.getType().equals(EntityType.BLAZE) ||
+					ent.getType().equals(EntityType.SILVERFISH) || ent.getType().equals(EntityType.ENDERMITE) ||
+					ent.getType().equals(EntityType.GHAST) || ent.getType().equals(EntityType.MAGMA_CUBE) ||
+					ent.getType().equals(EntityType.SLIME) || ent.getType().equals(EntityType.IRON_GOLEM) ||
+					ent.getType().equals(EntityType.BAT) || ent.getType().equals(EntityType.PIG_ZOMBIE)) {
+				ent.remove();
+			}
+		}
+//		CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
+//		CommonCustomMob.entity.getBukkitEntity().remove();
 	}
-
+	
+	//XXX Added mobs to despawn in 1.1.0
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onChunkLoadEvent(ChunkLoadEvent event) {
 		ChunkCoord coord = new ChunkCoord(event.getChunk());
@@ -1317,7 +1333,9 @@ public class BlockListener implements Listener {
 				ent.remove();
 			}
 		}
-
+		CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
+		CommonCustomMob.entity.getBukkitEntity().remove();
+		
 		class AsyncTask extends CivAsyncTask {
 
 			FarmChunk fc;
@@ -1334,13 +1352,11 @@ public class BlockListener implements Listener {
 			}
 
 		}
-
 		TaskMaster.syncTask(new AsyncTask(fc), 500);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event) {
-
 		Pasture pasture = Pasture.pastureEntities.get(event.getEntity().getUniqueId());
 		if (pasture != null) {
 			pasture.onEntityDeath(event.getEntity());

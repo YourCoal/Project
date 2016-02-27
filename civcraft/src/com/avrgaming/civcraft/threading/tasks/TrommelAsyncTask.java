@@ -40,9 +40,9 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.MultiInventory;
 
 public class TrommelAsyncTask extends CivAsyncTask {
-
+	
 	Trommel trommel;
-	private static final int GRAVEL_RATE = 1; //0.10%
+	private static final int GRAVEL_RATE = 1;
 	
 	public static HashSet<String> debugTowns = new HashSet<String>();
 
@@ -64,8 +64,8 @@ public class TrommelAsyncTask extends CivAsyncTask {
 		
 		debug(trommel, "Processing trommel...");
 		// Grab each CivChest object we'll require.
-		ArrayList<StructureChest> sources = trommel.getAllChestsById(0);
-		ArrayList<StructureChest> destinations = trommel.getAllChestsById(1);
+		ArrayList<StructureChest> sources = trommel.getAllChestsById(1);
+		ArrayList<StructureChest> destinations = trommel.getAllChestsById(2);
 		
 		if (sources.size() != 2 || destinations.size() != 2) {
 			CivLog.error("Bad chests for trommel in town:"+trommel.getTown().getName()+" sources:"+sources.size()+" dests:"+destinations.size());
@@ -75,7 +75,7 @@ public class TrommelAsyncTask extends CivAsyncTask {
 		// Make sure the chunk is loaded before continuing. Also, add get chest and add it to inventory.
 		MultiInventory source_inv = new MultiInventory();
 		MultiInventory dest_inv = new MultiInventory();
-
+		
 		try {
 			for (StructureChest src : sources) {
 				//this.syncLoadChunk(src.getCoord().getWorldname(), src.getCoord().getX(), src.getCoord().getZ());				
@@ -137,7 +137,7 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					continue;
 				}
 				
-				if (this.trommel.getBlockLevel() == 1 && this.trommel.getBonusLevel() == 1 && ItemManager.getId(stack) == CivData.COBBLESTONE) {
+				if (ItemManager.getId(stack) == CivData.COBBLESTONE) {
 					try {
 						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.COBBLESTONE, 1));
 					} catch (InterruptedException e) {
@@ -149,31 +149,37 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					int randMax = Trommel.GRAVEL_MAX_CHANCE;
 					int rand1 = rand.nextInt(randMax);
 					ItemStack newItem;
-									
-					if (rand1 < ((int)((trommel.getGravelChance(Mineral.CHROMIUM))*randMax))) {
-						newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_chromium_ore"));
-					} else if (rand1 < ((int)((trommel.getGravelChance(Mineral.EMERALD))*randMax))) {
+					if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.HAMMERS))*randMax))) {
+						int rand2 = rand.nextInt(randMax);
+						if (rand2 < (randMax/24)) {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
+						} else if (rand2 < (randMax/10)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 10);
+						} else if (rand2 < (randMax/5)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 7);
+						} else if (rand2 < (randMax/2)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
+						}
+					} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
-					}
-					else if (rand1 < ((int)((trommel.getGravelChance(Mineral.DIAMOND))*randMax))) {
+					} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.DIAMOND))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.DIAMOND, 1);
-	
-					}
-					else if (rand1 < ((int)((trommel.getGravelChance(Mineral.GOLD))*randMax))) {
+					} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.GOLD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.GOLD_INGOT, 1);
-	
-					}
-					else if (rand1 < ((int)((trommel.getGravelChance(Mineral.REDSTONE))*randMax))) {
-						newItem = ItemManager.createItemStack(CivData.REDSTONE_DUST, 1);
-	
-					}
-					else if (rand1 < ((int)((trommel.getGravelChance(Mineral.IRON))*randMax))) {
+					} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.IRON))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
-	
+					} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.DIRTGRAVEL))*randMax))) {
+						int rand3 = rand.nextInt(randMax);
+						if (rand3 < (randMax/2)) {
+							newItem = ItemManager.createItemStack(CivData.DIRT, 1);
+						} else {
+							newItem = ItemManager.createItemStack(CivData.GRAVEL, 1);
+						}
 					}  else {
-						newItem = ItemManager.createItemStack(CivData.GRAVEL, (Integer)GRAVEL_RATE);
+						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					}
-					
 					//Try to add the new item to the dest chest, if we cant, oh well.
 					try {
 						debug(trommel, "Updating inventory:"+newItem);
@@ -184,9 +190,8 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					break;
 				}
 				
-/*				if (ItemManager.getId(stack) == CivData.STONE) {
-					if (this.trommel.getLevel() >= 2 && ItemManager.getData(stack) == 
-							ItemManager.getData(ItemManager.getMaterialData(CivData.STONE, CivData.GRANITE))) {
+				if (ItemManager.getId(stack) == CivData.STONE) {
+					if (this.trommel.getLevel() >= 2 && ItemManager.getData(stack) == ItemManager.getData(ItemManager.getMaterialData(CivData.STONE, CivData.GRANITE))) {
 						try {
 							this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.STONE, 1, (short) CivData.GRANITE));
 						} catch (InterruptedException e) {
@@ -414,7 +419,7 @@ public class TrommelAsyncTask extends CivAsyncTask {
 						}
 						break;
 					}
-				}*/
+				}
 			}	
 		}
 		trommel.skippedCounter = 0;
@@ -427,15 +432,17 @@ public class TrommelAsyncTask extends CivAsyncTask {
 		if (this.trommel.lock.tryLock()) {
 			try {
 				try {
-					if (this.trommel.getTown().getGovernment().id.equals("gov_theocracy") || this.trommel.getTown().getGovernment().id.equals("gov_monarchy")) {
+					if (this.trommel.getTown().getGovernment().id.equals("gov_theocracy") || this.trommel.getTown().getGovernment().id.equals("gov_monarchy")){
 						Random rand = new Random();
 						int randMax = 100;
 						int rand1 = rand.nextInt(randMax);
 						Double chance = CivSettings.getDouble(CivSettings.structureConfig, "trommel.penalty_rate") * 100;
-						if (rand1 < chance) {
+						if (rand1 < chance)
+						{
 							processTrommelUpdate();
 							debug(this.trommel, "Not penalized");
 						} else {
+
 							debug(this.trommel, "Skip Due to Penalty");
 						}
 					} else {
@@ -444,7 +451,7 @@ public class TrommelAsyncTask extends CivAsyncTask {
 							debug(this.trommel, "Doing Bonus");
 							processTrommelUpdate();
 						}
-					}
+					}					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -455,4 +462,5 @@ public class TrommelAsyncTask extends CivAsyncTask {
 			debug(this.trommel, "Failed to get lock while trying to start task, aborting.");
 		}
 	}
+
 }

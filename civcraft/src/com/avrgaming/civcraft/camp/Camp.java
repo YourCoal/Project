@@ -61,6 +61,7 @@ import com.avrgaming.civcraft.exception.InvalidNameException;
 import com.avrgaming.civcraft.exception.InvalidObjectException;
 import com.avrgaming.civcraft.items.components.Tagged;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
+import com.avrgaming.civcraft.lorestorage.LoreMaterial;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
@@ -90,7 +91,7 @@ public class Camp extends Buildable {
 	private String ownerName;
 	private int hitpoints;
 	private int firepoints;
-	private BlockCoord corner;	
+	private BlockCoord corner;
 	
 	private HashMap<String, Resident> members = new HashMap<String, Resident>();
 	public static final double SHIFT_OUT = 2;
@@ -99,7 +100,7 @@ public class Camp extends Buildable {
 
 	/* Locations that exhibit vanilla growth */
 	public HashSet<BlockCoord> growthLocations = new HashSet<BlockCoord>();
-	private boolean gardenEnabled = false;
+	static boolean gardenEnabled = false;
 	
 	/* Camp blocks on this structure. */
 	public HashMap<BlockCoord, CampBlock> campBlocks = new HashMap<BlockCoord, CampBlock>();
@@ -210,17 +211,26 @@ public class Camp extends Buildable {
 		try {
 			coal_per_firepoint = CivSettings.getInteger(CivSettings.campConfig, "camp.coal_per_firepoint");
 			maxFirePoints = CivSettings.getInteger(CivSettings.campConfig, "camp.firepoints");
-			
-			// Setup sifter
-			double gold_nugget_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_gold_nugget_chance");
-			double iron_ignot_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_iron_ingot_chance");
-			
 			raidLength = CivSettings.getInteger(CivSettings.campConfig, "camp.raid_length");
 			
-			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_nugget_chance, ItemManager.getId(Material.GOLD_NUGGET), (short)0, 1);
-			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, iron_ignot_chance, ItemManager.getId(Material.IRON_INGOT), (short)0, 1);
+			// Setup sifter configuration
+			double hammer = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_hammer");
+			double hammer2 = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_hammer2");
+			double diamond = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_diamond");
+			double gold_ingot = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_gold_ingot");
+			double gold_nugget = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_gold_nugget");
+			double iron_ignot = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_iron_ingot");
+			//Setup sifter spawning
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, hammer2, ItemManager.getId(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:double_hammer"))), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, hammer, ItemManager.getId(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"))), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, diamond, ItemManager.getId(Material.DIAMOND_ORE), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_ingot, ItemManager.getId(Material.GOLD_INGOT), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_nugget, ItemManager.getId(Material.GOLD_NUGGET), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, iron_ignot, ItemManager.getId(Material.IRON_INGOT), (short)0, 1);
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, 1.0, ItemManager.getId(Material.GRAVEL), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, 1.0, ItemManager.getId(Material.DIRT), (short)0, 1);
 			
+			//Setup longhouse
 			consumeComponent = new ConsumeLevelComponent();
 			consumeComponent.setBuildable(this);
 			for (ConfigCampLonghouseLevel lvl : CivSettings.longhouseLevels.values()) {
@@ -228,9 +238,7 @@ public class Camp extends Buildable {
 				consumeComponent.setConsumes(lvl.level, lvl.consumes);
 			}
 			this.consumeComponent.onLoad();
-
 		} catch (InvalidConfiguration e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -451,9 +459,8 @@ public class Camp extends Buildable {
 		
 		this.addMember(resident);
 		resident.save();
-		
 	}
-
+	
 	public void reprocessCommandSigns() {		
 		/* Load in the template. */
 		//Template tpl = new Template();
@@ -469,6 +476,7 @@ public class Camp extends Buildable {
 		processCommandSigns(tpl, corner);
 	}
 	
+	//XXX Command Signs
 	private void processCommandSigns(Template tpl, BlockCoord corner) {
 		for (BlockCoord relativeCoord : tpl.commandBlockRelativeLocations) {
 			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
@@ -476,7 +484,7 @@ public class Camp extends Buildable {
 
 			switch (sb.command) {
 			case "/gardensign":
-				if (!this.gardenEnabled) {
+				if (!Camp.gardenEnabled) {
 					ItemManager.setTypeId(absCoord.getBlock(), ItemManager.getId(Material.SIGN_POST));
 					ItemManager.setData(absCoord.getBlock(), sb.getData());
 					
@@ -493,7 +501,7 @@ public class Camp extends Buildable {
 				}
 				break;
 			case "/growth":
-				if (this.gardenEnabled) {
+				if (Camp.gardenEnabled) {
 					this.growthLocations.add(absCoord);
 					CivGlobal.vanillaGrowthLocations.add(absCoord);
 					
@@ -583,16 +591,13 @@ public class Camp extends Buildable {
 				Block doorBlock = absCoord.getBlock();
 				Block doorBlock2 = absCoord.getBlock().getRelative(0, 1, 0);
 				
-
 				byte topData = 0x8;
 				byte bottomData = 0x0;
 				byte doorDirection = CivData.convertSignDataToDoorDirectionData((byte)sb.getData());
 				bottomData |= doorDirection;
 				
-				
 				ItemManager.setTypeIdAndData(doorBlock, ItemManager.getId(Material.WOODEN_DOOR), bottomData, false);
 				ItemManager.setTypeIdAndData(doorBlock2, ItemManager.getId(Material.WOODEN_DOOR), topData, false);
-
 				this.addCampBlock(new BlockCoord(doorBlock));
 				this.addCampBlock(new BlockCoord(doorBlock2));
 				break;
@@ -603,7 +608,6 @@ public class Camp extends Buildable {
 				/* Unrecognized command... treat as a literal sign. */
 				ItemManager.setTypeId(absCoord.getBlock(), ItemManager.getId(Material.WALL_SIGN));
 				ItemManager.setData(absCoord.getBlock(), sb.getData());
-				
 				Sign sign = (Sign)absCoord.getBlock().getState();
 				sign.setLine(0, sb.message[0]);
 				sign.setLine(1, sb.message[1]);
@@ -613,7 +617,6 @@ public class Camp extends Buildable {
 				break;
 			}
 		}
-		
 		updateFirepit();
 	}
 	
@@ -743,7 +746,7 @@ public class Camp extends Buildable {
 			
 			Tagged tag = (Tagged) craftMat.getComponent("Tagged");
 			token = tag.addTag(token, this.getOwnerName());
-	
+			
 			AttributeUtil attrs = new AttributeUtil(token);
 			attrs.addLore(CivColor.LightGray+this.getOwnerName());
 			token = attrs.getStack();
@@ -765,7 +768,6 @@ public class Camp extends Buildable {
 		default:
 			break;
 		}
-		
 		CivMessage.sendCamp(this, CivColor.LightGreen+"Your camp's longhouse "+stateMessage+" and generated "+total_coins+" coins. Coins were given to the camp's owner.");
 	}
 	
@@ -1349,11 +1351,11 @@ public class Camp extends Buildable {
 		this.longhouseEnabled = longhouseEnabled;
 	}
 
-	public boolean isGardenEnabled() {
+	public static boolean isGardenEnabled() {
 		return gardenEnabled;
 	}
 
 	public void setGardenEnabled(boolean gardenEnabled) {
-		this.gardenEnabled = gardenEnabled;
+		Camp.gardenEnabled = gardenEnabled;
 	}
 }

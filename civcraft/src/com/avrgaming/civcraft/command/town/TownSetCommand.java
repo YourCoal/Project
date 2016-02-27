@@ -57,16 +57,14 @@ public class TownSetCommand extends CommandBase {
 	public void stablefee_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
-		
 		Structure struct = town.findStructureByConfigId("s_stable");
 		if (struct == null) {
 			throw new CivException("Your town does not own a Stable.");
 		}
 		
 		Stable stable = (Stable)struct;
-		
-		if (feeInt < Stable.FEE_MIN || feeInt > Stable.FEE_MAX) {
-			throw new CivException("Must be a number between 5% and 100%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 	
 		stable.setNonResidentFee(((double)feeInt/100));
@@ -78,7 +76,6 @@ public class TownSetCommand extends CommandBase {
 	public void scoutrate_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Integer rate = getNamedInteger(1);
-		
 		if (rate != 10 && rate != 30 && rate != 60) {
 			throw new CivException("Reporting rate must be 10,30, or 60 seconds.");
 		}
@@ -95,9 +92,8 @@ public class TownSetCommand extends CommandBase {
 	public void blacksmithfee_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
-		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_blacksmith");
@@ -115,9 +111,8 @@ public class TownSetCommand extends CommandBase {
 	public void libraryfee_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
-		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_library");
@@ -134,9 +129,8 @@ public class TownSetCommand extends CommandBase {
 	public void grocerfee_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
-		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_grocer");
@@ -154,9 +148,8 @@ public class TownSetCommand extends CommandBase {
 	public void storefee_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
-		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_store");
@@ -174,9 +167,8 @@ public class TownSetCommand extends CommandBase {
 	public void bankfee_cmd() throws CivException {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
-		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_bank");
@@ -193,15 +185,19 @@ public class TownSetCommand extends CommandBase {
 	
 	public void taxrate_cmd() throws CivException {
 		Town town = getSelectedTown();
-		
-		if (args.length < 2) {
-			throw new CivException("Please specify a tax rate.");
+		Integer feeInt = getNamedInteger(1);
+		if (feeInt < 0 || feeInt > 50) {
+			throw new CivException("Must be a number between 0% and 50%");
 		}
 		
+//		if (args.length < 2) {
+//			throw new CivException("Please specify a tax rate.");
+//		}
+		
 		try { 
-			town.setTaxRate(Double.valueOf(args[1])/100);
+			town.setTaxRate(Double.valueOf(feeInt)/100);
 		} catch (NumberFormatException e) {
-			throw new CivException(args[1]+" is not a number.");
+			throw new CivException(feeInt+" is not a number.");
 		}
 		
 		town.quicksave();
@@ -210,18 +206,23 @@ public class TownSetCommand extends CommandBase {
 
 	public void flattax_cmd() throws CivException {
 		Town town = getSelectedTown();	
-		if (args.length < 2) {
-			throw new CivException("Please specify a tax rate.");
+		Integer feeInt = getNamedInteger(1);
+		if (feeInt < 0 || feeInt > 1000) {
+			throw new CivException("Must be a number between 0 and 1,000");
 		}
+		
+//		if (args.length < 2) {
+//			throw new CivException("Please specify a flat tax.");
+//		}
 				
 		try { 
-			town.setFlatTax(Integer.valueOf(args[1]));
+			town.setFlatTax(Integer.valueOf(feeInt));
 		} catch (NumberFormatException e) {
-			throw new CivException(args[1]+" is not a number.");
+			throw new CivException(feeInt+" is not a number.");
 		}
 		
 		town.quicksave();
-		CivMessage.send(town, "Town changed flat tax to "+args[1]);
+		CivMessage.sendTown(town, "Town changed flat tax to "+feeInt);
 	}
 	
 	@Override
@@ -243,5 +244,4 @@ public class TownSetCommand extends CommandBase {
 			throw new CivException("Only mayors and assistants can use this command.");
 		}		
 	}
-
 }

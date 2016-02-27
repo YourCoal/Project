@@ -69,6 +69,126 @@
 #
 #
 materials:
+#>====================================================<#
+#>================== [ Resources } ===================<#
+#>====================================================<#
+        - id: 'civ:hammer_part'
+          item_id: 77
+          item_data: 0
+          name: 'Hammer Part'
+          components:
+              - name: 'Soulbound'
+          craftable: false
+          shaped: false
+          category: '<lightgreen>Resources'
+#
+        - id: 'civ:hammer'
+          item_id: 139
+          item_data: 0
+          name: 'Hammers'
+          components:
+              - name: 'Soulbound'
+          craftable: true
+          shaped: false
+          category: '<lightgreen>Resources'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:hammer_part'
+                data: 0
+                count: 9
+#
+        - id: 'civ:double_hammer'
+          item_id: 139
+          item_data: 1
+          name: 'Double Hammers'
+          components:
+              - name: 'Soulbound'
+          craftable: true
+          shaped: false
+          category: '<lightgreen>Resources'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:hammer'
+                data: 0
+                count: 9
+#
+        - id: 'civ:triple_hammer'
+          item_id: 44
+          item_data: 5
+          name: 'Triple Hammers'
+          components:
+              - name: 'Soulbound'
+          craftable: true
+          shaped: false
+          category: '<lightgreen>Resources'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:double_hammer'
+                data: 0
+                count: 9
+#
+        - id: 'civ:quadruple_hammer'
+          item_id: 109
+          item_data: 0
+          name: 'Quadruple Hammers'
+          components:
+              - name: 'Soulbound'
+          craftable: true
+          shaped: false
+          category: '<lightgreen>Resources'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:triple_hammer'
+                data: 0
+                count: 9
+#
+        - id: 'civ:quintuple_hammer'
+          item_id: 98
+          item_data: 0
+          name: 'Quintuple Hammers'
+          components:
+              - name: 'Soulbound'
+          craftable: true
+          shaped: false
+          category: '<lightgreen>Resources'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:quadruple_hammer'
+                data: 0
+                count: 9
+#
+        - id: 'civ:sextuple_hammer'
+          item_id: 98
+          item_data: 2
+          name: 'Sextuple Hammers'
+          components:
+              - name: 'Soulbound'
+          craftable: true
+          shaped: false
+          category: '<lightgreen>Resources'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:quintuple_hammer'
+                data: 0
+                count: 9
+#
+        - id: 'civ:septuple_hammer'
+          item_id: 98
+          item_data: 3
+          name: 'Septuple Hammers'
+          components:
+              - name: 'Soulbound'
+          craftable: true
+          shaped: false
+          category: '<lightgreen>Resources'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:sextuple_hammer'
+                data: 0
+                count: 9
+#>====================================================<#
+#>=============== [ Tier 1 Materials } ===============<#
+#>====================================================<#
         - id: 'mat_test0001a'
           item_id: 7
           item_data: 0
@@ -3080,6 +3200,15 @@ materials:
 
 #  Special Item Recipes -------------------------------------------------
         
+        - id: 'civ:struc_book'
+          item_id: 340
+          item_data: 0
+          name: 'Structure Info'
+          craftable: false
+          shaped: false
+          components:
+              - name: 'StructureBook'
+
         - id: 'mat_tutorial_book'
           item_id: 340
           item_data: 0
