@@ -67,6 +67,7 @@ public class InteractiveBuildTrommel implements InteractiveResponse {
 				this.resident = resident;
 			}
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
 				Player player;

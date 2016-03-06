@@ -240,7 +240,7 @@ public class Structure extends Buildable {
 				struct = (Structure) new Barracks(rs);
 			}
 			break;
-		case "ti_windmill":
+		case "s_windmill":
 			if (rs == null) {
 				struct = (Structure) new Windmill(center, id, town);
 			} else {

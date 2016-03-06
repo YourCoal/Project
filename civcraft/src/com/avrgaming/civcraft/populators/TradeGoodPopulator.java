@@ -161,7 +161,7 @@ public class TradeGoodPopulator extends BlockPopulator {
 			
 			// Determine if we should be a water good.
 			ConfigTradeGood good;
-			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER || 
+			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_STILL || 
 				ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
 				good = pick.waterPick;
 			}  else {

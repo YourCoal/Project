@@ -14,6 +14,7 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.structure.Granary;
+import com.avrgaming.civcraft.structure.Granary.BrHam;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
 import com.avrgaming.civcraft.threading.sync.request.UpdateInventoryRequest.Action;
@@ -111,8 +112,30 @@ public class GranaryAsyncTask extends CivAsyncTask {
 						return;
 					}
 					
+					// Attempt to get special resources
+					Random rand = new Random();
+					int randMax = 10000;
+					int rand1 = rand.nextInt(randMax);
 					ItemStack newItem;
-					newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"));
+					if (rand1 < ((int)((granary.getLevel1(BrHam.HAMMER1_ADD))*randMax))) {
+						int rand2 = rand.nextInt(randMax);
+						if (rand2 < (randMax/10)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
+						} else if (rand2 < (randMax/8)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
+						} else if (rand2 < (randMax/6)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 12);
+						} else if (rand2 < (randMax/4)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
+						} else if (rand2 < (randMax/2)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 6);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						}
+					}  else {
+						newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+					}
+					//Try to add the new item to the dest chest, if we cant, oh well.
 					 try {
 						debug(granary, "Updating inventory:"+newItem);
 						this.updateInventory(Action.ADD, dest_inv, newItem);

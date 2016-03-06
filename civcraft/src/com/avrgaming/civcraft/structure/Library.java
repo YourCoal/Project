@@ -59,9 +59,6 @@ public class Library extends Structure {
 		if (name.equalsIgnoreCase("fire_protection")) {
 			return Enchantment.PROTECTION_FIRE;
 		}
-		if (name.equalsIgnoreCase("feather_falling")) {
-			return Enchantment.PROTECTION_FALL;
-		}
 		if (name.equalsIgnoreCase("blast_protection")) {
 			return Enchantment.PROTECTION_EXPLOSIONS;
 		}
@@ -73,6 +70,12 @@ public class Library extends Structure {
 		}
 		if (name.equalsIgnoreCase("aqua_affinity")) {
 			return Enchantment.WATER_WORKER;
+		}
+		if (name.equalsIgnoreCase("feather_falling")) {
+			return Enchantment.PROTECTION_FALL;
+		}
+		if (name.equalsIgnoreCase("frost_walker")) {
+			return Enchantment.FROST_WALKER;
 		}
 		
 		// Sword Enchantments
@@ -107,6 +110,9 @@ public class Library extends Structure {
 		}
 		if (name.equalsIgnoreCase("fortune")) {
 			return Enchantment.LOOT_BONUS_BLOCKS;
+		}
+		if (name.equalsIgnoreCase("mending")) {
+			return Enchantment.MENDING;
 		}
 		
 		// Bow Enchantments
@@ -234,6 +240,7 @@ public class Library extends Structure {
 		return item;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void add_enchantment_to_tool(Player player, StructureSign sign, PlayerInteractEvent event) throws CivException {
 		int special_id = Integer.valueOf(sign.getAction());
 

@@ -662,7 +662,13 @@ public abstract class CommandBase implements CommandExecutor {
 			CivMessage.send(sender, CivColor.LightBlue+ChatColor.ITALIC+out);
 			throw new CivException("More than one camp matches, please clarify.");
 		}
-		
 		return potentialMatches.get(0);
+	}
+	
+	protected String getAdminMessage(int index) throws CivException {
+		if (args.length < (index+1)) {
+			throw new CivException("Please supply a reason.");
+		}
+		return command;
 	}
 }

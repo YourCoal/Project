@@ -192,6 +192,7 @@ public class Bank extends Structure {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void processSignAction(Player player, StructureSign sign, PlayerInteractEvent event) {
 		//int special_id = Integer.valueOf(sign.getAction());

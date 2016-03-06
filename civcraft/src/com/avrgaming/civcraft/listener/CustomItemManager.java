@@ -73,12 +73,10 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.components.MobComponent;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
-import com.moblib.moblib.MobLib;
 
 public class CustomItemManager implements Listener {
 	
@@ -96,6 +94,7 @@ public class CustomItemManager implements Listener {
 	//	this.onItemDurabilityChange(event.getPlayer(), event.getPlayer().getItemInHand());
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreakSpawnItems(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
@@ -136,6 +135,7 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOWEST) 
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack stack = event.getPlayer().getItemInHand();
@@ -151,9 +151,9 @@ public class CustomItemManager implements Listener {
 		craftMat.onBlockPlaced(event);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
-	
 		ItemStack stack = event.getPlayer().getItemInHand();
 		if (stack == null) {
 			return;
@@ -165,6 +165,7 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW) 
 	public void onInteractEntity(PlayerInteractEntityEvent event) {
 		if (event.isCancelled()) {
@@ -183,6 +184,7 @@ public class CustomItemManager implements Listener {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onItemHeld(PlayerItemHeldEvent event) {
 		if (event.isCancelled()) {
@@ -253,6 +255,7 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerDefenseAndAttack(EntityDamageByEntityEvent event) {
 		if (event.isCancelled()) {
@@ -306,9 +309,6 @@ public class CustomItemManager implements Listener {
 		
 		if (defendingPlayer == null) {
 			if (event.getEntity() instanceof LivingEntity) {
-				if (MobLib.isMobLibEntity((LivingEntity) event.getEntity())) {
-					MobComponent.onDefense(event.getEntity(), event);
-				}	
 			}
 			return;
 		} else {
@@ -711,6 +711,7 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerInteractEntityEvent (PlayerInteractEntityEvent event) {
 			
@@ -722,6 +723,7 @@ public class CustomItemManager implements Listener {
 		craftMat.onPlayerInteractEntityEvent(event);
 	}
 	
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerLeashEvent(PlayerLeashEntityEvent event) {
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getItemInHand());

@@ -94,6 +94,7 @@ public class Resident extends SQLObject {
 
 	private Town town = null;
 	private Camp camp = null;
+	private boolean campChat = false;
 	private boolean townChat = false;
 	private boolean civChat = false;
 	private boolean adminChat = false;
@@ -104,6 +105,7 @@ public class Resident extends SQLObject {
 	public static HashSet<String> allchatters = new HashSet<String>();
 	
 	/* Town or civ to chat in besides your own. */
+	private Camp campChatOverride = null;
 	private Town townChatOverride = null;
 	private Civilization civChatOverride = null;
 	private boolean permOverride = false;
@@ -678,7 +680,15 @@ public class Resident extends SQLObject {
 			//player offline.
 		}
 	}
+	
+	public boolean isCampChat() {
+		return campChat;
+	}
 
+	public void setCampChat(boolean campChat) {
+		this.campChat = campChat;
+	}
+	
 	public boolean isTownChat() {
 		return townChat;
 	}
@@ -702,7 +712,16 @@ public class Resident extends SQLObject {
 	public void setAdminChat(boolean adminChat) {
 		this.adminChat = adminChat;
 	}
+	
+	public Camp getCampChatOverride() {
+		return campChatOverride;
+	}
 
+	public void setCampChatOverride(Camp campChatOverride) {
+		this.campChatOverride = campChatOverride;
+	}
+
+	
 	public Town getTownChatOverride() {
 		return townChatOverride;
 	}

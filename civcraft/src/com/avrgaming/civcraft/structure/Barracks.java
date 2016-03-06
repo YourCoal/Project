@@ -186,6 +186,7 @@ public class Barracks extends Structure {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void repairItem(Player player, Resident resident, PlayerInteractEvent event) {
 		try {
 			ItemStack inHand = player.getItemInHand();
@@ -237,6 +238,7 @@ public class Barracks extends Structure {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void repairItemInHand(double cost, String playerName, LoreCraftableMaterial craftMat) {
 		Player player;
 		

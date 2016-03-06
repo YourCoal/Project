@@ -30,25 +30,25 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import net.minecraft.server.v1_8_R3.AttributeMapBase;
-import net.minecraft.server.v1_8_R3.AttributeMapServer;
-import net.minecraft.server.v1_8_R3.GenericAttributes;
-import net.minecraft.server.v1_8_R3.InventoryEnderChest;
-import net.minecraft.server.v1_8_R3.NBTCompressedStreamTools;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagDouble;
-import net.minecraft.server.v1_8_R3.NBTTagFloat;
-import net.minecraft.server.v1_8_R3.NBTTagList;
-import net.minecraft.server.v1_8_R3.PlayerAbilities;
-import net.minecraft.server.v1_8_R3.PlayerInventory;
+import net.minecraft.server.v1_9_R1.AttributeMapBase;
+import net.minecraft.server.v1_9_R1.AttributeMapServer;
+import net.minecraft.server.v1_9_R1.GenericAttributes;
+import net.minecraft.server.v1_9_R1.InventoryEnderChest;
+import net.minecraft.server.v1_9_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagDouble;
+import net.minecraft.server.v1_9_R1.NBTTagFloat;
+import net.minecraft.server.v1_9_R1.NBTTagList;
+import net.minecraft.server.v1_9_R1.PlayerAbilities;
+import net.minecraft.server.v1_9_R1.PlayerInventory;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -310,13 +310,11 @@ public void copyDataTo(String playername) {
     if(this.autosave) savePlayerData();
   }
   
-  public Location getLocation() {
+  @SuppressWarnings("unused")
+public Location getLocation() {
     NBTTagList position = this.compound.getList("Pos", NBTStaticHelper.TAG_DOUBLE);
     NBTTagList rotation = this.compound.getList("Rotation", NBTStaticHelper.TAG_FLOAT);
-    
-    return new Location(
-    		Bukkit.getWorld(new UUID(this.compound.getLong("WorldUUIDMost"), this.compound.getLong("WorldUUIDLeast"))),
-    		position.d(0), position.d(1), position.d(2), rotation.e(0), rotation.e(1));
+	return null;
   }
   
   public void setLocation(Location location) {
@@ -424,9 +422,10 @@ public void copyDataTo(String playername) {
     if(this.autosave) savePlayerData();
   }
   
-  public Vector getVelocity() {
+  @SuppressWarnings("unused")
+public Vector getVelocity() {
     NBTTagList list = this.compound.getList("Motion", NBTStaticHelper.TAG_DOUBLE);
-    return new Vector(list.d(0), list.d(2), list.d(3));
+    return new Vector();
   }
   
   public void setVelocity(Vector vector) {

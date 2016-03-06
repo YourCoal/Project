@@ -19,7 +19,7 @@
 package com.avrgaming.civcraft.threading.tasks;
 
 import gpl.AttributeUtil;
-import net.minecraft.server.v1_8_R3.Material;
+import net.minecraft.server.v1_9_R1.Material;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -52,6 +52,7 @@ public class StructureBlockHitEvent implements Runnable {
 		this.world = world;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {
 		

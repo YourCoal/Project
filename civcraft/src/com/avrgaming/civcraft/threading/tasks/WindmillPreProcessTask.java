@@ -85,6 +85,7 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 		int breadCount = 0;
 		int carrotCount = 0;
 		int potatoCount = 0;
+		int beetrootCount = 0;
 		for (ItemStack stack : source_inv.getContents()) {
 			if (stack == null) {
 				continue;
@@ -99,6 +100,9 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 				break;
 			case CivData.POTATO_ITEM:
 				potatoCount += stack.getAmount();
+				break;
+			case CivData.BEETROOT_SEEDS:
+				beetrootCount += stack.getAmount();
 				break;
 			default:
 				continue;
@@ -151,7 +155,7 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 				
 		// Fire off a sync task to complete the operation.
 		TaskMaster.syncTask(new WindmillPostProcessSyncTask(windmill, plantBlocks,
-				breadCount, carrotCount, potatoCount, source_inv));
+				breadCount, carrotCount, potatoCount, beetrootCount, source_inv));
 
 	}
 

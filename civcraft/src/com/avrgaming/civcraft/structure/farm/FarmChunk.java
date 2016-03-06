@@ -163,6 +163,11 @@ public class FarmChunk {
 				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}
 			break;
+		case CivData.BEETROOT_CROP:
+			if (bs.getData() < 0x3) {
+				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+			}
+			break;
 		case CivData.NETHERWART:
 			if (bs.getData() < 0x3) {
 				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);

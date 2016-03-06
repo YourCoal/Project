@@ -31,8 +31,6 @@ public class CivData {
 	public static final int WALL_SIGN = 68;
 	public static final int SIGN = 63;
 	public static final int CHEST = 54;
-	public static final int WOOD = 17;
-	public static final int LEAF = 18;
 	
 	
 	public static final byte DATA_OAK = 0;
@@ -40,36 +38,76 @@ public class CivData {
 	public static final byte DATA_BIRCH = 2;
 	public static final byte DATA_JUNGLE = 3;
 	
-	
+	//XXX Common Wood Types
+	public static final int DATA_1 = 1;
+	public static final int DATA_2 = 2;
+	public static final int DATA_3 = 3;
+	public static final int DATA_4 = 4;
+	public static final int DATA_5 = 5;
+	public static final int DATA_6 = 6;
 	
 	public static final int AIR = 0;
 	public static final int STONE = 1;
-	public static final int GRANITE = 1;
-	public static final int POLISHED_GRANITE = 2;
-	public static final int DIORITE = 3;
-	public static final int POLISHED_DIORITE = 4;
-	public static final int ANDESITE = 5;
-	public static final int POLISHED_ANDESITE = 6;
 	public static final int GRASS = 2;
 	public static final int DIRT = 3;
 	public static final int COBBLESTONE = 4;
+	public static final int PLANK = 5;
+	public static final int SAPLING = 6;
 	public static final int BEDROCK = 7;
-	
-	
+	public static final int WATER_RUNNING = 8;
+	public static final int WATER_STILL = 9;
+	public static final int LAVA_RUNNING = 10;
+	public static final int LAVA_STILL = 11;
+	public static final int SAND = 12;
+	public static final int GRAVEL = 13;
 	public static final int GOLD_ORE = 14;
 	public static final int IRON_ORE = 15;
+	public static final int COAL_ORE = 16;
+	public static final int TREE_LOG = 17;
+	public static final int TREE_LEAF = 18;
+	public static final int SPONGE = 19;
+	public static final int GLASS = 20;
+	public static final int LAPIS_ORE = 21;
+	public static final int LAPIS_BLOCK = 22;
+	public static final int DISPENSER = 23;
+	public static final int SANDSTONE = 24;
+	public static final int NOTE_BLOCK = 25;
+	public static final int BED_BLOCK = 26;
+	public static final int POWER_RAIL = 27;
+	public static final int DETECTOR_RAIL = 28;
+	public static final int STICKY_PISTION = 29;
+	public static final int COBWEB = 30;
+	public static final int TALL_GRASS = 31;
+	public static final int DEAD_SHRUB = 32;
+	public static final int PISTON = 33;
+	public static final int PISTION_HEAD = 34;
+	public static final int WOOL = 35;
+	public static final int PISTION_MOVING = 36;
+	public static final int DANDELION = 37;
+	public static final int FLOWER = 38;
+	public static final int BROWN_MUSHROOM = 39;
+	public static final int RED_MUSHROOM = 40;
+	public static final int GOLD_BLOCK = 41;
+	public static final int IRON_BLOCK = 42;
+	public static final int DOUBLE_SLAB = 43;
+	public static final int SLAB = 44;
+	public static final int BRICK = 45;
+	public static final int TNT = 46;
+	public static final int BOOKSHELF = 47;
+	public static final int MOSSY_COBBLESTONE = 48;
+	public static final int OBSIDIAN = 49;
+	public static final int TORCH = 50;
+	
+	public static final int BEETROOT_CROP = 207;
+	
+	public static final int BEETROOT_SEEDS = 435;
+	
 	public static final int IRON_INGOT = 265;
 	public static final int GOLD_INGOT = 266;
-	public static final int WATER = 9;
-	public static final int WATER_RUNNING = 8;
 	public static final int FENCE = 85;
 	public static final int RAILROAD = 66;
-	public static final int LAVA = 11;
-	public static final int LAVA_RUNNING = 10;
 	public static final int EMERALD = 388;
 	public static final int DIAMOND = 264;
-	public static final int GRAVEL = 13;
-	public static final int DISPENSER = 23;
 	public static final int REDSTONE_DUST = 331;
 	public static final int WHEAT = 59;
 	public static final int SUGARCANE = 83;
@@ -86,7 +124,6 @@ public class CivData {
 	public static final int PUMPKIN = 86;
 	public static final int PUBLISHED_BOOK = 387;
 	public static final int ROTTEN_FLESH = 367;
-	public static final int TORCH = 50;
 	public static final int WATER_BUCKET = 326;
 	public static final int EMPTY_BUCKET = 325;
 	public static final int ENDER_PEARL = 368;
@@ -102,10 +139,8 @@ public class CivData {
 	
 	public static final int ITEMFRAME = 389;
 	public static final int EMERALD_BLOCK = 133;
-	public static final int WOOL = 35;
 	public static final byte DATA_WOOL_BLACK = 0xF;
 	public static final int COOKED_FISH = 350;
-	public static final int OBSIDIAN = 49;
 	public static final int FIRE = 51;
 	public static final int FISH_RAW = 349;
 	public static final int BREAD = 297;
@@ -171,8 +206,6 @@ public class CivData {
 	public static final int NETHERRACK = 87;
 	public static final int BOW = 261;
 	public static final int ANVIL = 145;
-	public static final int IRON_BLOCK = 42;
-	public static final int COBWEB = 30;
 	public static final short MUNDANE_POTION_DATA = 8192;
 	public static final short MUNDANE_POTION_EXT_DATA = 64;
 	public static final short THICK_POTION_DATA = 32;
@@ -181,10 +214,8 @@ public class CivData {
 	public static final int CLOWNFISH = 2;
 	public static final int PUFFERFISH = 3;
 	public static final int GOLDEN_APPLE = 322;
-	public static final int TNT = 46;
 	
 	public static String getDisplayName(int id) {
-		
 		if (id == GOLD_ORE)
 			return "Gold Ore";
 		if (id == IRON_ORE)
@@ -197,7 +228,6 @@ public class CivData {
 		return "Unknown_Id";
 	}
 	
-	
 	public static boolean canGrowFromStem(BlockSnapshot bs) {
 		int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
 		boolean hasAir = false;
@@ -206,16 +236,13 @@ public class CivData {
 			try {
 				nextBs = bs.getRelative(offset[i][0], 0, offset[i][1]);
 			} catch (InvalidBlockLocation e) {
-				/* 
-				 * The block is on the edge of this farm plot. 
-				 * it _could_ grow but lets not say it can to be safe.
-				 */
+				/* The block is on the edge of this farm plot. 
+				 * it _could_ grow but lets not say it can to be safe. */
 				return false;
 			}
+			
 			//Block nextBlock = blockState.getBlock().getRelative(offset[i][0], 0, offset[i][1]);
 			//int nextType = snapshot.getBlockData(arg0, arg1, arg2)
-			
-			
 			if (nextBs.getTypeId() == CivData.AIR) {
 				hasAir = true;
 			}
@@ -229,9 +256,9 @@ public class CivData {
 		}
 		return hasAir;
 	}
-
+	
 	public static boolean canGrowMushroom(BlockState blockState) {
-		int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+		int[][] offset = {{ -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 }};
 		boolean hasAir = false;
 		for (int i = 0; i < 4; i++) {
 			Block nextBlock = blockState.getBlock().getRelative(offset[i][0], 0, offset[i][1]);
@@ -295,9 +322,15 @@ public class CivData {
 	public static boolean canGrow(BlockSnapshot bs) {
 		switch (bs.getTypeId()) {
 		case WHEAT:
-		case CARROTS:		
-		case POTATOES:		
+		case CARROTS:
+		case POTATOES:
 			if (bs.getData() == 0x7) {
+				return false;
+			}
+			return true;
+			
+		case BEETROOT_CROP:
+			if (bs.getData() == 0x3) {
 				return false;
 			}
 			return true;
@@ -319,10 +352,9 @@ public class CivData {
 		//case BROWNMUSHROOM:
 		//	return canGrowMushroom(blockState);
 			
-		//case SUGARCANE:	
-	//		return canGrowSugarcane(bs);
+		//case SUGARCANE:
+		//	return canGrowSugarcane(bs);
 		}
-		
 		return false;
 	}
 

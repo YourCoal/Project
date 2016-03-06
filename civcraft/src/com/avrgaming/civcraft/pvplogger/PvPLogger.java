@@ -123,7 +123,7 @@ public class PvPLogger implements Listener, Runnable {
 					/* Make a NPC. */
 					
 					//RemoteEntity entity = CivGlobal.entityManager.createNamedEntity(RemoteEntityType.Zombie, event.getPlayer().getLocation(), event.getPlayer().getName(), false);
-					MobLibEntity entity = MobLib.createNamedEntity("com.avrgaming.civcraft.mobs.LoboZombie", event.getPlayer().getLocation(), event.getPlayer().getName());
+					MobLibEntity entity = MobLib.createNamedEntity("com.avrgaming.civcraft.pvplogger.LoboZombie", event.getPlayer().getLocation(), event.getPlayer().getName());
 					//entity.setStationary(true);
 					zombiePlayers.put(event.getPlayer().getName(), new ZombiePlayer(new Date(), entity.getUid(), event.getPlayer().getName()));
 				} else {
@@ -163,18 +163,15 @@ public class PvPLogger implements Listener, Runnable {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDeath(EntityDeathEvent event) {
-		
 		if (MobLib.isMobLibEntity(event.getEntity())) {
-			/*
-			 * Search for tagged players and their expired time, if the NPC is not expired
-			 * wipe the offline player's inventory.
-			 */
+			/* Search for tagged players and their expired time, if the NPC is not expired
+			 * wipe the offline player's inventory. */
 			String playerName = event.getEntity().getCustomName();
 			ZombiePlayer zombiePlayer = zombiePlayers.get(playerName);
 			if (zombiePlayer == null) {
 				return;
 			}
-						
+			
 			Date spawnTime = zombiePlayer.spawnTime;
 			if (spawnTime == null) {
 				/* No spawn time found, expired zombie?? */
@@ -203,6 +200,7 @@ public class PvPLogger implements Listener, Runnable {
 				try {
 					CivGlobal.getPlayer(event.getEntity().getCustomName());
 					/* Player is already online! This shouldn't happen. invalid zombie. */
+//					event.getEntity().setHealth(0);
 					event.getEntity().remove();
 					zombiePlayers.remove(playerName);
 					taggedPlayers.remove(playerName);

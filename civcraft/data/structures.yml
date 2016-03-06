@@ -8,7 +8,7 @@
 #
 ################# Granary Settings #############
 granary:
-    max: 50000
+    max: 10000
     lvl_1_add: 0.5
     lvl_1_sub: 0.25
 #====================================================#
@@ -21,71 +21,84 @@ trommel:
 #
 trommel_bonus1:
     max: 10000
-    iron: 0.2
+    iron: 0.1
+    gold: 0.05
+    diamond: 0.03
+    emerald: 0.015
+    hammers: 0.0075
+#
+trommel_bonus2:
+    max: 10000
+    iron: 0.15
     gold: 0.1
-    diamond: 0.04
+    diamond: 0.035
     emerald: 0.02
+    hammers: 0.008
+#
+trommel_bonus3:
+    max: 10000
+    iron: 0.2
+    gold: 0.15
+    diamond: 0.04
+    emerald: 0.025
+    hammers: 0.0085
+#
+trommel_bonus4:
+    max: 10000
+    iron: 0.25
+    gold: 0.2
+    diamond: 0.045
+    emerald: 0.03
+    hammers: 0.009
+#
+trommel_bonus5:
+    max: 10000
+    iron: 0.3
+    gold: 0.25
+    diamond: 0.05
+    emerald: 0.035
+    hammers: 0.0095
+#
+trommel_bonus6:
+    max: 10000
+    iron: 0.35
+    gold: 0.3
+    diamond: 0.055
+    emerald: 0.04
     hammers: 0.01
 #
-trommel_gravel:
+trommel_bonus7:
     max: 10000
-    iron_chance: 0.06
-    redstone_chance: 0.04
-    gold_chance: 0.02
-    diamond_chance: 0.0050
-    emerald_chance: 0.0020
-    chromium_chance: 0.0008
-
-trommel_granite:
-    max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
-    redstone_chance: 0.04
-    gold_chance: 0.02
-    tungsten_chance: 0.0075
-    diamond_chance: 0.0050
-    emerald_chance: 0.0020
-    chromium_chance: 0.0008
-    crystal_fragment_chance: 0.0002
-    refined_chromium_chance: 0.00008
-    refined_tungsten_chance: 0.00004
-    crystal_chance: 0.00002
-
-trommel_diorite:
-    max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
-    redstone_chance: 0.045
-    gold_chance: 0.025
-    tungsten_chance: 0.00080
-    diamond_chance: 0.0055
-    emerald_chance: 0.0025
-    chromium_chance: 0.00085
-    crystal_fragment_chance: 0.00025
-    refined_chromium_chance: 0.00012
-    refined_tungsten_chance: 0.00008
-    crystal_chance: 0.00004
-
-trommel_andesite:
-    max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
-    redstone_chance: 0.05
-    gold_chance: 0.03
-    tungsten_chance: 0.0085
-    diamond_chance: 0.0060
-    emerald_chance: 0.0030
-    chromium_chance: 0.0009
-    crystal_fragment_chance: 0.0003
-    refined_chromium_chance: 0.00015
-    refined_tungsten_chance: 0.00010
-    crystal_chance: 0.00005
+    iron: 0.4
+    gold: 0.35
+    diamond: 0.06
+    emerald: 0.045
+    hammers: 0.015
+#
+trommel_bonus8:
+    max: 10000
+    iron: 0.45
+    gold: 0.4
+    diamond: 0.065
+    emerald: 0.05
+    hammers: 0.02
+#
+trommel_bonus9:
+    max: 10000
+    iron: 0.5
+    gold: 0.45
+    diamond: 0.07
+    emerald: 0.055
+    hammers: 0.025
+#
+trommel_bonus10:
+    max: 10000
+    iron: 0.55
+    gold: 0.5
+    diamond: 0.075
+    emerald: 0.06
+    hammers: 0.03
+#
 ################ Grocer Settings ###############
 grocer_levels:
     - level: 1

@@ -153,7 +153,6 @@ public class Town extends SQLObject {
 	public int saved_quarry_tool_level = 1;
 	public int saved_quarry_bonus_level = 1;
 	//XXX Trommel Levels:
-	public int saved_trommel_level = 1;
 	public int saved_trommel_block_level = 1;
 	public int saved_trommel_bonus_level = 1;
 	//XXX Trade Outpost Levels:
@@ -807,6 +806,7 @@ public class Town extends SQLObject {
 		this.baseHammers = hammerRate;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static Town newTown(Resident resident, String name, Civilization civ, boolean free, boolean capitol, 
 			Location loc) throws CivException {
 		try {

@@ -287,6 +287,7 @@ public class BonusGoodieManager implements Listener {
 	/* 
 	 * Track the location of the goodie if a player places it in an item frame.
 	 */
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW) 
 	public void OnPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
 		
@@ -420,6 +421,7 @@ public class BonusGoodieManager implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void onPlayerProtectedFrameInteract(Player player, ItemFrameStorage clickedFrame,
 			BonusGoodie goodie, Cancellable event) {
 		
@@ -483,6 +485,7 @@ public class BonusGoodieManager implements Listener {
 	/*
 	 * Prevent the player from using items that are actually trade goodies.
 	 */
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerInteractEvent(PlayerInteractEvent event) {
 		

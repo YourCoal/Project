@@ -18,6 +18,7 @@
  */
 package com.avrgaming.civcraft.command.admin;
 
+import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivGlobal;
@@ -34,11 +35,13 @@ public class AdminChatCommand extends CommandBase {
 		displayName = "Admin Chat";
 		
 		commands.put("tc", "[town] - joins this town's chat channel.");
-		commands.put("cc", "[civ] - join's this civ's chat channel.");
-		commands.put("cclisten", "[name] toggles listening in on this civ's chat channel.");
+		commands.put("cic", "[civ] - join's this civ's chat channel.");
+		commands.put("cac", "[camp] - join's this camp's chat channel.");
+		commands.put("caclisten", "[name] toggles listening in on this camp's chat channel.");
+		commands.put("ciclisten", "[name] toggles listening in on this civ's chat channel.");
 		commands.put("tclisten", "[name] toggles listening in on this town's chat channel.");
 		commands.put("listenoff", "removes you from all chat channels.");
-		commands.put("cclistenall", "adds listening to every civ's chat channel.");
+		commands.put("ciclistenall", "adds listening to every civ's chat channel.");
 		commands.put("tclistenall", "adds listening to every town's chat channel.");	
 		commands.put("banwordon", "Turns on banning from words.");
 		commands.put("banwordoff", "Turns off banning from words.");
@@ -50,27 +53,30 @@ public class AdminChatCommand extends CommandBase {
 
 	public void tclistenall_cmd() throws CivException {
 		Resident resident = getResident();
-		
 		for (Town t : CivGlobal.getTowns()) {
 			CivMessage.addExtraTownChatListener(t, resident.getName());
 		}
-		
 		CivMessage.sendSuccess(sender, "Added you from all town chat channels.");
 	}
 	
-	public void cclistenall_cmd() throws CivException {
+	public void ciclistenall_cmd() throws CivException {
 		Resident resident = getResident();
-		
 		for (Civilization civ : CivGlobal.getCivs()) {
 			CivMessage.addExtraCivChatListener(civ, resident.getName());
 		}
-		
+		CivMessage.sendSuccess(sender, "Added you from all civ chat channels.");
+	}
+	
+	public void caclistenall_cmd() throws CivException {
+		Resident resident = getResident();
+		for (Camp camp : CivGlobal.getCamps()) {
+			CivMessage.addExtraCampChatListener(camp, resident.getName());
+		}
 		CivMessage.sendSuccess(sender, "Added you from all civ chat channels.");
 	}
 	
 	public void listenoff_cmd() throws CivException {
 		Resident resident = getResident();
-		
 		for (Town t : CivGlobal.getTowns()) {
 			CivMessage.removeExtraTownChatListener(t, resident.getName());
 		}
@@ -78,19 +84,16 @@ public class AdminChatCommand extends CommandBase {
 		for (Civilization civ : CivGlobal.getCivs()) {
 			CivMessage.removeExtraCivChatListener(civ, resident.getName());
 		}
-		
 		CivMessage.sendSuccess(sender, "Removed you from all chat channels.");
 	}
 	
-	public void cclisten_cmd() throws CivException {
+	public void ciclisten_cmd() throws CivException {
 		if (args.length < 2) {
 			throw new CivException("Please enter a civ name.");
 		}
 		
 		Resident resident = getResident();
-		
 		Civilization civ = getNamedCiv(1);
-		
 		for (String str : CivMessage.getExtraCivChatListeners(civ)) {
 			if (str.equalsIgnoreCase(resident.getName())) {
 				CivMessage.removeExtraCivChatListener(civ, str);
@@ -98,9 +101,26 @@ public class AdminChatCommand extends CommandBase {
 				return;
 			}
 		}
-		
 		CivMessage.addExtraCivChatListener(civ, resident.getName());
 		CivMessage.sendSuccess(sender, "Listening to civ "+civ.getName());
+	}
+	
+	public void caclisten_cmd() throws CivException {
+		if (args.length < 2) {
+			throw new CivException("Please enter a camp name.");
+		}
+		
+		Resident resident = getResident();
+		Camp camp = getNamedCamp(1);
+		for (String str : CivMessage.getExtraCampChatListeners(camp)) {
+			if (str.equalsIgnoreCase(resident.getName())) {
+				CivMessage.removeExtraCampChatListener(camp, str);
+				CivMessage.sendSuccess(sender, "No longer listening to camp "+camp.getName());
+				return;
+			}
+		}
+		CivMessage.addExtraCampChatListener(camp, resident.getName());
+		CivMessage.sendSuccess(sender, "Listening to camp "+camp.getName());
 	}
 	
 	public void tclisten_cmd() throws CivException {
@@ -109,9 +129,7 @@ public class AdminChatCommand extends CommandBase {
 		}
 		
 		Resident resident = getResident();
-		
 		Town town = getNamedTown(1);
-		
 		for (String str : CivMessage.getExtraTownChatListeners(town)) {
 			if (str.equalsIgnoreCase(resident.getName())) {
 				CivMessage.removeExtraTownChatListener(town, str);
@@ -119,7 +137,6 @@ public class AdminChatCommand extends CommandBase {
 				return;
 			}
 		}
-		
 		CivMessage.addExtraTownChatListener(town, resident.getName());
 		CivMessage.sendSuccess(sender, "Listening to town "+town.getName());
 	}
@@ -140,20 +157,32 @@ public class AdminChatCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, "Now chatting in town chat:"+town.getName());
 	}
 	
-	public void cc_cmd() throws CivException {
+	public void cic_cmd() throws CivException {
 		Resident resident = getResident();
 		if (args.length < 2) {
 			resident.setCivChat(false);
 			resident.setCivChatOverride(null);
-			CivMessage.sendSuccess(sender, "Toggled cc off.");
+			CivMessage.sendSuccess(sender, "Toggled cic off.");
 			return;
 		}
-		
 		Civilization civ = getNamedCiv(1);
-		
 		resident.setCivChat(true);
 		resident.setCivChatOverride(civ);
 		CivMessage.sendSuccess(sender, "Now chatting in civ chat:"+civ.getName());
+	}
+	
+	public void cac_cmd() throws CivException {
+		Resident resident = getResident();
+		if (args.length < 2) {
+			resident.setCampChat(false);
+			resident.setCampChatOverride(null);
+			CivMessage.sendSuccess(sender, "Toggled cac off.");
+			return;
+		}
+		Camp camp = getNamedCamp(1);
+		resident.setCampChat(true);
+		resident.setCampChatOverride(camp);
+		CivMessage.sendSuccess(sender, "Now chatting in camp chat:"+camp.getName());
 	}
 	
 	public void banwordon_cmd() {

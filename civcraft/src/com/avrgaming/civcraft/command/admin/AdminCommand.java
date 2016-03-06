@@ -87,14 +87,14 @@ public class AdminCommand extends CommandBase {
 		commands.put("clearendgame", "[key] [civ] - clears this end game condition for this civ.");
 		commands.put("endworld", "Starts the Apocalypse.");
 		commands.put("perk", "Admin perk management.");
-		commands.put("mob", "Mob management commands");
+		commands.put("sql", "Admin SQL");
 	}
 	
-	public void mob_cmd() {
-		AdminMobCommand cmd = new AdminMobCommand();	
-		cmd.onCommand(sender, null, "mob", this.stripArgs(args, 1));
+	public void sql_cmd() {
+		AdminSQLCommand cmd = new AdminSQLCommand();	
+		cmd.onCommand(sender, null, "sql", this.stripArgs(args, 1));
 	}
-	
+			
 	public void perk_cmd() {
 		AdminPerkCommand cmd = new AdminPerkCommand();	
 		cmd.onCommand(sender, null, "perk", this.stripArgs(args, 1));

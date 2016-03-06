@@ -10,14 +10,14 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.server.v1_8_R3.NBTBase;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagInt;
-import net.minecraft.server.v1_8_R3.NBTTagList;
-import net.minecraft.server.v1_8_R3.NBTTagString;
+import net.minecraft.server.v1_9_R1.NBTBase;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagInt;
+import net.minecraft.server.v1_9_R1.NBTTagList;
+import net.minecraft.server.v1_9_R1.NBTTagString;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
@@ -63,12 +63,13 @@ public class AttributeUtil {
         private static ConcurrentMap<String, AttributeType> LOOKUP = Maps.newConcurrentMap();
         public static final AttributeType GENERIC_MAX_HEALTH = new AttributeType("generic.maxHealth").register();
         public static final AttributeType GENERIC_FOLLOW_RANGE = new AttributeType("generic.followRange").register();
-        public static final AttributeType GENERIC_ATTACK_DAMAGE = new AttributeType("generic.attackDamage").register();
-        public static final AttributeType GENERIC_MOVEMENT_SPEED = new AttributeType("generic.movementSpeed").register();
         public static final AttributeType GENERIC_KNOCKBACK_RESISTANCE = new AttributeType("generic.knockbackResistance").register();
+        public static final AttributeType GENERIC_MOVEMENT_SPEED = new AttributeType("generic.movementSpeed").register();
+        public static final AttributeType GENERIC_ATTACK_DAMAGE = new AttributeType("generic.attackDamage").register();
         //XXX 1.9
-        public static final AttributeType GENERIC_ARMOR = new AttributeType("generic.armor").register();
         public static final AttributeType GENERIC_ATTACK_SPEED = new AttributeType("generic.attackSpeed").register();
+        public static final AttributeType GENERIC_ARMOR = new AttributeType("generic.armor").register();
+//        public static final AttributeType GENERIC_LUCK = new AttributeType("generic.luck").register();
         
         private final String minecraftId;
         
@@ -225,7 +226,7 @@ public class AttributeUtil {
     }
     
     // This may be modified
-    public net.minecraft.server.v1_8_R3.ItemStack nmsStack;
+    public net.minecraft.server.v1_9_R1.ItemStack nmsStack;
     
     private NBTTagCompound parent;
     private NBTTagList attributes;

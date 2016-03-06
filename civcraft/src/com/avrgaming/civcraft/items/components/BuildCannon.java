@@ -17,6 +17,7 @@ import com.avrgaming.civcraft.war.War;
 
 public class BuildCannon extends ItemComponent {
 
+	@SuppressWarnings("deprecation")
 	public void onInteract(PlayerInteractEvent event) {
 		try {
 			

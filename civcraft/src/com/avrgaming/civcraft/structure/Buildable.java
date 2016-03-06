@@ -92,8 +92,6 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.SimpleBlock.Type;
 import com.avrgaming.global.perks.Perk;
-import com.wimbli.WorldBorder.BorderData;
-import com.wimbli.WorldBorder.Config;
 
 public abstract class Buildable extends SQLObject {
 	
@@ -739,7 +737,7 @@ public abstract class Buildable extends SQLObject {
 		
 		if (this.getConfigId().equals("s_shipyard")) {
 			if (!centerBlock.getBiome().equals(Biome.OCEAN) && 
-				!centerBlock.getBiome().equals(Biome.BEACH) &&
+//				!centerBlock.getBiome().equals(Biome.BEACH) &&
 				!centerBlock.getBiome().equals(Biome.DEEP_OCEAN) &&
 				!centerBlock.getBiome().equals(Biome.RIVER) &&
 				!centerBlock.getBiome().equals(Biome.FROZEN_OCEAN) &&
@@ -869,13 +867,6 @@ public abstract class Buildable extends SQLObject {
 					
 					if (CivGlobal.getBuildablesAt(coord) != null) {
 						throw new CivException("Cannot build here, there is already a structure here.");
-					}
-				
-					BorderData border = Config.Border(b.getWorld().getName());
-					if (border != null) {
-						if(!border.insideBorder(b.getLocation().getX(), b.getLocation().getZ(), Config.ShapeRound())) {
-							throw new CivException("Cannot build here. Part of the structure would sit beyond the world border.");
-						}
 					}
 				}
 			}
@@ -1141,7 +1132,7 @@ public abstract class Buildable extends SQLObject {
 			
 		this.damage(amount);
 		
-		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
+		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
 		world.playEffect(hit.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		if ((hit.getOwner().getDamagePercentage() % 10) == 0 && !wasTenPercent) {
@@ -1466,9 +1457,9 @@ public abstract class Buildable extends SQLObject {
 	
 	public static int getReinforcementValue(int typeId) {
 		switch (typeId) {
-		case CivData.WATER:
+		case CivData.WATER_STILL:
 		case CivData.WATER_RUNNING:
-		case CivData.LAVA:
+		case CivData.LAVA_STILL:
 		case CivData.LAVA_RUNNING:
 		case CivData.AIR:
 		case CivData.COBWEB:

@@ -23,7 +23,7 @@ import gpl.HorseModifier;
 import java.util.HashSet;
 import java.util.Random;
 
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
 
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -33,7 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -92,7 +92,6 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.CommonCustomMob;
 import com.avrgaming.civcraft.object.ControlPoint;
 import com.avrgaming.civcraft.object.ProtectedBlock;
 import com.avrgaming.civcraft.object.Resident;
@@ -119,7 +118,6 @@ import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
-import com.moblib.moblib.MobLib;
 
 public class BlockListener implements Listener {
 
@@ -471,8 +469,8 @@ public class BlockListener implements Listener {
 
     public BlockCoord generatesCobble(int id, Block b)
     {
-        int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
-        int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER);
+        int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER_STILL ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
+        int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER_STILL ? CivData.LAVA_STILL : CivData.WATER_STILL);
         for(BlockFace face : faces)
         {
             Block r = b.getRelative(face, 1);
@@ -514,8 +512,7 @@ public class BlockListener implements Listener {
 	public void OnBlockFromToEvent(BlockFromToEvent event) {
 		/* Disable cobblestone generators. */
 		int id = ItemManager.getId(event.getBlock());
-	    if(id >= CivData.WATER && id <= CivData.LAVA)
-	    {
+	    if(id >= CivData.WATER_STILL && id <= CivData.LAVA_STILL) {
 	        Block b = event.getToBlock();
 	        bcoord.setFromLocation(b.getLocation());
 
@@ -880,6 +877,7 @@ public class BlockListener implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnPlayerInteractEvent(PlayerInteractEvent event) {
 		Resident resident = CivGlobal.getResident(event.getPlayer());
@@ -916,7 +914,8 @@ public class BlockListener implements Listener {
 				Block clickedBlock = event.getClickedBlock();
 				if (ItemManager.getId(clickedBlock) == CivData.WHEAT || 
 					ItemManager.getId(clickedBlock) == CivData.CARROTS || 
-					ItemManager.getId(clickedBlock) == CivData.POTATOES) {
+					ItemManager.getId(clickedBlock) == CivData.POTATOES ||
+					ItemManager.getId(clickedBlock) == CivData.BEETROOT_CROP) {
 					event.setCancelled(true);
 					CivMessage.sendError(event.getPlayer(), "You cannot use bone meal on carrots, wheat, or potatoes.");
 					return;
@@ -1124,6 +1123,7 @@ public class BlockListener implements Listener {
 	/*
 	 * Handles rotating of itemframes
 	 */
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
 
@@ -1333,8 +1333,6 @@ public class BlockListener implements Listener {
 				ent.remove();
 			}
 		}
-		CommonCustomMob.customMobs.remove(CommonCustomMob.entity.getUniqueID());
-		CommonCustomMob.entity.getBukkitEntity().remove();
 		
 		class AsyncTask extends CivAsyncTask {
 
@@ -1455,24 +1453,14 @@ public class BlockListener implements Listener {
 			}
 		}
 		
-		if (MobLib.isMobLibEntity(event.getEntity())) {
-			return;
-		}
-		
 		if (event.getEntity().getType().equals(EntityType.BAT) ||
 			event.getEntity().getType().equals(EntityType.WOLF) ||
 			event.getEntity().getType().equals(EntityType.OCELOT) ||
-			event.getEntity().getType().equals(EntityType.ZOMBIE) ||
-			event.getEntity().getType().equals(EntityType.SKELETON) ||
 			event.getEntity().getType().equals(EntityType.CREEPER) ||
 			event.getEntity().getType().equals(EntityType.SPIDER) ||
 			event.getEntity().getType().equals(EntityType.CAVE_SPIDER) ||
 			event.getEntity().getType().equals(EntityType.ENDERMAN) ||
 			event.getEntity().getType().equals(EntityType.WITCH) ||
-			event.getEntity().getType().equals(EntityType.BLAZE) ||
-			event.getEntity().getType().equals(EntityType.GHAST) ||
-			event.getEntity().getType().equals(EntityType.MAGMA_CUBE) ||
-			event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) ||
 			event.getEntity().getType().equals(EntityType.ENDERMITE)) {
 			event.setCancelled(true);
 			return;

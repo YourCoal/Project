@@ -41,9 +41,10 @@ public class CivMessage {
 	/* Stores the player name and the hash code of the last message sent to prevent error spamming the player. */
 	private static HashMap<String, Integer> lastMessageHashCode = new HashMap<String, Integer>();
 	
+	/* Indexed off of camp names, contains a list of extra people who listen to camp chats. (mostly for admins to list to camps) */
+	private static Map<String, ArrayList<String>> extraCampChatListeners = new ConcurrentHashMap<String, ArrayList<String>>();
 	/* Indexed off of town names, contains a list of extra people who listen to town chats.(mostly for admins to listen to towns) */
 	private static Map<String, ArrayList<String>> extraTownChatListeners = new ConcurrentHashMap<String, ArrayList<String>>();
-	
 	/* Indexed off of civ names, contains a list of extra people who listen to civ chats. (mostly for admins to list to civs) */
 	private static Map<String, ArrayList<String>> extraCivChatListeners = new ConcurrentHashMap<String, ArrayList<String>>();
 	
@@ -238,8 +239,41 @@ public class CivMessage {
 			send(sender, str);
 		}
 	}
+	
+	public static void sendCampChat(Camp camp, Resident resident, String format, String message) {
+		if (camp == null) {
+			try {
+				Player player = CivGlobal.getPlayer(resident);
+				player.sendMessage(CivColor.Rose+"You are not part of a camp, nobody hears you. Type /cac to chat normally.");
 
-
+			} catch (CivException e) {
+			}
+			return;
+		}
+		
+		CivLog.info("[CaC:"+camp.getName()+"] "+resident.getName()+": "+message);
+		
+		for (Resident r : camp.getMembers()) {
+			try {
+				Player player = CivGlobal.getPlayer(r);
+				String msg = CivColor.Yellow+"[Camp]"+CivColor.White+String.format(format, resident.getName(), message);
+				player.sendMessage(msg);
+			} catch (CivException e) {
+				continue; /* player not online. */
+			}
+		}
+		
+		for (String name : getExtraCampChatListeners(camp)) {
+			try {
+				Player player = CivGlobal.getPlayer(name);
+				String msg = CivColor.Yellow+"[CaC:"+camp.getName()+"]"+CivColor.White+String.format(format, resident.getName(), message);
+				player.sendMessage(msg);
+			} catch (CivException e) {
+				/* player not online. */
+			}
+		}
+	}
+	
 	public static void sendTownChat(Town town, Resident resident, String format, String message) {
 		if (town == null) {
 			try {
@@ -273,8 +307,7 @@ public class CivMessage {
 			}
 		}
 	}
-
-
+	
 	public static void sendCivChat(Civilization civ, Resident resident, String format, String message) {
 		if (civ == null) {
 			try {
@@ -325,8 +358,45 @@ public class CivMessage {
 		}
 	}
 	
-	public static void addExtraTownChatListener(Town town, String name) {
+	public static void addExtraCampChatListener(Camp camp, String name) {
+		ArrayList<String> names = extraCampChatListeners.get(camp.getName().toLowerCase());
+		if (names == null) {
+			names = new ArrayList<String>();
+		}
 		
+		for (String str : names) {
+			if (str.equals(name)) {
+				return;
+			}
+		}
+		names.add(name);		
+		extraCampChatListeners.put(camp.getName().toLowerCase(), names);
+	}
+	
+	public static void removeExtraCampChatListener(Camp camp, String name) {
+		ArrayList<String> names = extraCampChatListeners.get(camp.getName().toLowerCase());
+		if (names == null) {
+			return;
+		}
+		
+		for (String str : names) {
+			if (str.equals(name)) {
+				names.remove(str);
+				break;
+			}
+		}
+		extraCampChatListeners.put(camp.getName().toLowerCase(), names);
+	}
+	
+	public static ArrayList<String> getExtraCampChatListeners(Camp camp) {
+		ArrayList<String> names = extraCampChatListeners.get(camp.getName().toLowerCase());
+		if (names == null) {
+			return new ArrayList<String>();
+		}
+		return names;
+	}
+	
+	public static void addExtraTownChatListener(Town town, String name) {
 		ArrayList<String> names = extraTownChatListeners.get(town.getName().toLowerCase());
 		if (names == null) {
 			names = new ArrayList<String>();
@@ -337,7 +407,6 @@ public class CivMessage {
 				return;
 			}
 		}
-		
 		names.add(name);		
 		extraTownChatListeners.put(town.getName().toLowerCase(), names);
 	}
@@ -354,7 +423,6 @@ public class CivMessage {
 				break;
 			}
 		}
-		
 		extraTownChatListeners.put(town.getName().toLowerCase(), names);
 	}
 	
@@ -367,7 +435,6 @@ public class CivMessage {
 	}
 	
 	public static void addExtraCivChatListener(Civilization civ, String name) {
-		
 		ArrayList<String> names = extraCivChatListeners.get(civ.getName().toLowerCase());
 		if (names == null) {
 			names = new ArrayList<String>();
@@ -378,9 +445,7 @@ public class CivMessage {
 				return;
 			}
 		}
-		
 		names.add(name);
-		
 		extraCivChatListeners.put(civ.getName().toLowerCase(), names);
 	}
 	
@@ -396,7 +461,6 @@ public class CivMessage {
 				break;
 			}
 		}
-		
 		extraCivChatListeners.put(civ.getName().toLowerCase(), names);
 	}
 	

@@ -147,6 +147,7 @@ public class Camp extends Buildable {
 				this.player = player;
 			}
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
 				try {					
@@ -223,7 +224,7 @@ public class Camp extends Buildable {
 			//Setup sifter spawning
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, hammer2, ItemManager.getId(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:double_hammer"))), (short)0, 1);
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, hammer, ItemManager.getId(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"))), (short)0, 1);
-			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, diamond, ItemManager.getId(Material.DIAMOND_ORE), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, diamond, ItemManager.getId(Material.DIAMOND), (short)0, 1);
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_ingot, ItemManager.getId(Material.GOLD_INGOT), (short)0, 1);
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_nugget, ItemManager.getId(Material.GOLD_NUGGET), (short)0, 1);
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, iron_ignot, ItemManager.getId(Material.IRON_INGOT), (short)0, 1);
@@ -1221,7 +1222,7 @@ public class Camp extends Buildable {
 	}
 
 	public void onControlBlockHit(ControlPoint cp, World world, Player player) {
-		world.playSound(cp.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
+		world.playSound(cp.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
 		world.playEffect(cp.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		CivMessage.send(player, CivColor.LightGray+"Damaged Control Block ("+cp.getHitpoints()+" / "+cp.getMaxHitpoints()+")");
@@ -1231,8 +1232,8 @@ public class Camp extends Buildable {
 	
 	public void onControlBlockDestroy(ControlPoint cp, World world, Player player) {		
 		ItemManager.setTypeId(cp.getCoord().getLocation().getBlock(), CivData.AIR);
-		world.playSound(cp.getCoord().getLocation(), Sound.ANVIL_BREAK, 1.0f, -1.0f);
-		world.playSound(cp.getCoord().getLocation(), Sound.EXPLODE, 1.0f, 1.0f);
+		world.playSound(cp.getCoord().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1.0f, -1.0f);
+		world.playSound(cp.getCoord().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 		
 		FireworkEffect effect = FireworkEffect.builder().with(org.bukkit.FireworkEffect.Type.BURST).withColor(Color.YELLOW).withColor(Color.RED).withTrail().withFlicker().build();
 		FireworkEffectPlayer fePlayer = new FireworkEffectPlayer();

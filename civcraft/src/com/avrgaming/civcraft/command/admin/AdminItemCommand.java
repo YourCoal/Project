@@ -2,6 +2,7 @@ package com.avrgaming.civcraft.command.admin;
 
 import java.util.HashMap;
 
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,8 +54,9 @@ public class AdminItemCommand extends CommandBase {
 		CivMessage.sendSuccess(player, "Gave item.");
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void enhance_cmd() throws CivException {
-		Player player = getPlayer();
+		HumanEntity player = getPlayer();
 		HashMap<String, LoreEnhancement> enhancements = new HashMap<String, LoreEnhancement>();
 		ItemStack inHand = getPlayer().getItemInHand();
 		

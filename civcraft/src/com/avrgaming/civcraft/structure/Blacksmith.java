@@ -104,6 +104,7 @@ public class Blacksmith extends Structure {
 		return "factory";
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void processSignAction(Player player, StructureSign sign, PlayerInteractEvent event) throws CivException {
 		int special_id = Integer.valueOf(sign.getAction());
@@ -213,6 +214,7 @@ public class Blacksmith extends Structure {
 	 * and deposit its information into the sessionDB. It will store the 
 	 * item's id, data, and damage.
 	 */
+	@SuppressWarnings("deprecation")
 	public void deposit_forge(Player player) throws CivException {
 		
 		ItemStack item = player.getItemInHand();
@@ -262,6 +264,7 @@ public class Blacksmith extends Structure {
 	 * if this player is worthy of a higher level pick. If successful it will
 	 * give the player the newly created pick.
 	 */
+	@SuppressWarnings("deprecation")
 	public void perform_forge(Player player, double cost) throws CivException {
 
 		/* Try and retrieve any catalyst in the forge. */
@@ -288,7 +291,7 @@ public class Blacksmith extends Structure {
 			
 			catalyst = (Catalyst)craftMat.getComponent("Catalyst");
 			if (catalyst == null) {
-				throw new CivException("Error getting catalyst from blacksmith. Please file a bug report.");
+				throw new CivException("Error getting catalyst from blacksmith. File a bug report!");
 			}
 		} else {
 			String[] split = freeStr.split(":");

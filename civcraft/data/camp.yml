@@ -8,12 +8,12 @@ camp:
     # Template path to the camp from the templates directory.
     template: 'camp'
     # Sifter Settings
-    sifter_hammer2: 0.001
-    sifter_hammer: 0.05
-    sifter_diamond: 0.05
-    sifter_gold_ingot: 0.2
-    sifter_gold_nugget: 0.6
-    sifter_iron_ingot: 0.075
+    sifter_hammer2: 0.0025
+    sifter_hammer: 0.03
+    sifter_diamond: 0.0075
+    sifter_gold_ingot: 0.02
+    sifter_gold_nugget: 0.05
+    sifter_iron_ingot: 0.07
     # number of hours camps are raidable
     raid_length: 1
 #

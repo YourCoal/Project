@@ -131,11 +131,11 @@ public class AdminResCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, "Gave "+resident.getName()+" "+plat+" platinum");
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void enchant_cmd() throws CivException {
 		Player player = getPlayer();
 		String enchant = getNamedString(1, "Enchant name");
 		int level = getNamedInteger(2);
-		
 		
 		ItemStack stack = player.getItemInHand();
 		Enchantment ench = Enchantment.getByName(enchant);

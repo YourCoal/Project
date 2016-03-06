@@ -485,9 +485,9 @@ public class Civilization extends SQLObject {
 	public String getIncomeTaxRateString() {
 		return (this.incomeTaxRate*100)+"%";
 	}
-
-	public static void newCiv(String name, String capitolName, Resident resident,
-			Player player, Location loc) throws CivException {
+	
+	@SuppressWarnings("deprecation")
+	public static void newCiv(String name, String capitolName, Resident resident, Player player, Location loc) throws CivException {
 		
 		ItemStack stack = player.getItemInHand();
 		/*
@@ -565,7 +565,6 @@ public class Civilization extends SQLObject {
 			ItemStack newStack = new ItemStack(Material.AIR);
 			player.setItemInHand(newStack);
 			CivMessage.global("The Civilization of "+civ.getName()+" has been founded! "+civ.getCapitolName()+" is it's capitol!");
-			
 		} catch (InvalidNameException e) {
 			throw new CivException("The name of "+name+" is invalid, please choose another.");
 		} catch (SQLException e) {

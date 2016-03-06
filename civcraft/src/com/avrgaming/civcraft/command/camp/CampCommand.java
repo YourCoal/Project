@@ -91,6 +91,10 @@ public class CampCommand extends CommandBase {
 			throw new CivException("Cannot remove the owner of the camp from his own camp!");
 		}
 		
+		if (resident.isCampChat()) {
+			resident.setCampChat(false);
+			CivMessage.send(sender, CivColor.LightGray+"You've been removed from camp chat since you were removed from the camp.");		
+		}
 		camp.removeMember(resident);
 		CivMessage.sendSuccess(sender, "Removed "+resident.getName()+" from this camp.");
 	}
@@ -149,6 +153,11 @@ public class CampCommand extends CommandBase {
 		Camp camp = resident.getCamp();
 		if (camp.getOwner() == resident) {
 			throw new CivException("The owner of the camp cannot leave it. Try /camp setowner to give it to someone else or use /camp disband to abondon the camp.");
+		}
+		
+		if (resident.isCampChat()) {
+			resident.setCampChat(false);
+			CivMessage.send(sender, CivColor.LightGray+"You've been removed from camp chat since you've left the camp.");		
 		}
 		
 		camp.removeMember(resident);

@@ -72,9 +72,6 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.MobSpawner;
-import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobLevel;
-import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobType;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
@@ -271,25 +268,6 @@ public class DebugCommand extends CommandBase {
 		player.setHealth(player.getMaxHealth());
 		player.setFoodLevel(50);
 		CivMessage.send(player, "Healed....");
-	}
-	
-	public void spawn_cmd() throws CivException {
-		Player player = getPlayer();		
-		String mob = getNamedString(1, "name");
-		String lvl = getNamedString(2, "level");
-		
-		MobSpawner.CustomMobType type = CustomMobType.valueOf(mob.toUpperCase());
-		MobSpawner.CustomMobLevel level = CustomMobLevel.valueOf(lvl.toUpperCase());
-		
-		if (type == null) {
-			throw new CivException("no mob named:"+mob);
-		}
-		
-		if (level == null) {
-			throw new CivException("no level named:"+lvl);
-		}
-		
-		MobSpawner.spawnCustomMob(type, level, player.getLocation());
 	}
 	
 	public void datebypass_cmd() {
@@ -592,6 +570,7 @@ public class DebugCommand extends CommandBase {
 //		//CivMessage.sendSuccess(player, "Changed block");
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void colorme_cmd() throws CivException {
 		Player player = getPlayer();
 		String hex = getNamedString(1, "color code");
@@ -613,6 +592,7 @@ public class DebugCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, "Check for books is:"+CivGlobal.checkForBooks);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void setcivnbt_cmd() throws CivException {
 		Player player = getPlayer();
 		String key = getNamedString(1, "key");
@@ -630,6 +610,7 @@ public class DebugCommand extends CommandBase {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void getcivnbt_cmd() throws CivException {
 		Player player = getPlayer();
 		String key = getNamedString(1, "key");
@@ -644,6 +625,7 @@ public class DebugCommand extends CommandBase {
 		CivMessage.sendSuccess(player, "got property:"+value);
 		
 	}
+	@SuppressWarnings("deprecation")
 	public void getdura_cmd() throws CivException {
 		Player player = getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -652,6 +634,7 @@ public class DebugCommand extends CommandBase {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void setdura_cmd() throws CivException {
 		Player player = getPlayer();
 		Integer dura = getNamedInteger(1);
@@ -664,6 +647,7 @@ public class DebugCommand extends CommandBase {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void getmid_cmd() throws CivException {
 		Player player = getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -674,6 +658,7 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(player, "MID:"+LoreMaterial.getMID(inHand));
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void setspecial_cmd() throws CivException {
 		Player player = getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -688,6 +673,7 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(player, "Set it.");
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void getspecial_cmd() throws CivException {
 		Player player = getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -831,6 +817,7 @@ public class DebugCommand extends CommandBase {
 		cmd.onCommand(sender, null, "farm", this.stripArgs(args, 1));
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void giveold_cmd() throws CivException {
 		Player player = getPlayer();
 		
@@ -864,6 +851,7 @@ public class DebugCommand extends CommandBase {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void loretest_cmd() throws CivException {
 		Player player = getPlayer();
 		
@@ -879,6 +867,7 @@ public class DebugCommand extends CommandBase {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void loreset_cmd() throws CivException {
 		Player player = getPlayer();
 		
@@ -1237,6 +1226,7 @@ public class DebugCommand extends CommandBase {
 	}
 	
 	
+	@SuppressWarnings("deprecation")
 	public void dupe_cmd() throws CivException {
 		Player player = getPlayer();
 		

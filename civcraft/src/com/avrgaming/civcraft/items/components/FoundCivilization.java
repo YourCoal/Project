@@ -111,30 +111,16 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
                 try {
                 	resident.desiredTownLocation = player.getLocation();
                 	CivMessage.sendHeading(player, "Founding A Civilization!");
-					Thread.sleep(500);
 					CivMessage.send(player, CivColor.LightGreen+"You and your possible friends have finally chosen to settle.");
-					Thread.sleep(3500);
+					Thread.sleep(2500);
 					CivMessage.send(player, CivColor.LightGreen+"While you may be alone, or have few members, will your new Empire spread?");
-					Thread.sleep(3500);
+					Thread.sleep(2500);
 					CivMessage.send(player, CivColor.LightGreen+"Will you expand to new frontiers, dominating your region?");
-					Thread.sleep(3500);
+					Thread.sleep(2500);
 					CivMessage.send(player, CivColor.LightGreen+"Can your civilization withstand the test of time, of war, debt, and raids?");
-					//Thread.sleep(3500);
-					//CivMessage.send(player, CivColor.LightGray+ChatColor.ITALIC+"We are preparing to put a preview of the structure here.");
 					CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
-					//Thread.sleep(5000);
-					//ConfigBuildableInfo info = new ConfigBuildableInfo();
-					//Structure struct = Structure.newStructure(player.getLocation(), info.id = "s_capitol", resident.getTown());
-					//try {
-					//	struct.buildPlayerPreview(player, player.getLocation());
-					//} catch (IOException e) {
-					//	e.printStackTrace();
-					//	throw new CivException("Internal IO Error.");
-					//}
-					//Thread.sleep(5000);
 					CivMessage.sendHeading(player, "Pre-Generating your new capitol...");
-					//Thread.sleep(10000);
-					Thread.sleep(5000);
+					Thread.sleep(4000);
 					CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new Civilization be called?");
 					resident.setInteractiveMode(new InteractiveCivName());
 				} catch (InterruptedException e) {

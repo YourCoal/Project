@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.command.admin;
 
-import java.sql.SQLException;
-
 import org.bukkit.ChatColor;
 
 import com.avrgaming.civcraft.command.CommandBase;
@@ -45,8 +43,6 @@ public class AdminCivCommand extends CommandBase {
 	public void init() {
 		command = "/ad civ";
 		displayName = "Admin civ";
-		
-		commands.put("disband", "[civ] - disbands this civilization");
 		commands.put("addleader", "[civ] [player] - adds this player to the leaders group.");
 		commands.put("addadviser", "[civ] [player] - adds this player to the advisers group.");
 		commands.put("rmleader", "[civ] [player] - removes this player from the leaders group.");
@@ -338,19 +334,6 @@ public class AdminCivCommand extends CommandBase {
 		civ.save();
 		
 		CivMessage.sendSuccess(sender, "Added "+resident.getName()+" to leaders group in "+civ.getName());
-	}
-	
-	public void disband_cmd() throws CivException {
-		Civilization civ = getNamedCiv(1);
-		
-		CivMessage.sendCiv(civ, "Your civ is has disbanded by an admin!");
-		try {
-			civ.delete();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		CivMessage.sendSuccess(sender, "Civ disbanded");
 	}
 	
 	@Override
