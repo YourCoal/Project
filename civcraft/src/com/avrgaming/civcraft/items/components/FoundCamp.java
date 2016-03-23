@@ -65,6 +65,7 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 		info.ignore_floating = false;
 		info.template_base_name = "camp";
 		info.tile = false;
+		info.outpost = false;
 		info.templateYShift = -1;
 		
 		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);

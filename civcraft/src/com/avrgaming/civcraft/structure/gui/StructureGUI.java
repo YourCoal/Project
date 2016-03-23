@@ -13,15 +13,42 @@ import com.avrgaming.civcraft.util.ItemManager;
 
 public class StructureGUI {
 	
+	public static Inventory bank = null;
 	public static Inventory trommel = null;
 	public static Inventory granary = null;
 	public static Inventory guiInventory = null;
 	public static final int MAX_CHEST_SIZE = 6;
 	
+	public static void viewBank(Player player) {
+		if (bank == null) {
+			bank = Bukkit.getServer().createInventory(player, 9*2, "Bank Information");
+			bank.setItem(3, LoreGuiItem.build(CivColor.LightBlue+CivColor.BOLD+"Function", ItemManager.getId(Material.FURNACE), 0, 
+				CivColor.RESET+"The bank is a structure that allows players to sell all their",
+				CivColor.RESET+"ores they obtain at any point throughout the game to get",
+				CivColor.RESET+"coins. Non-residents have to pay a tax rate that is set by",
+				CivColor.RESET+"the mayor of the town the bank is in."
+			));
+			
+			bank.setItem(10, LoreGuiItem.build(CivColor.LightBlue+CivColor.BOLD+"Sellable Ores", ItemManager.getId(Material.COAL_ORE), 0, 
+				CivColor.RESET+"The bank can be leveled to have ores be sold for more",
+				CivColor.RESET+"money than when first built. Here are a list of each of",
+				CivColor.RESET+"the ores you can sell in the bank:",
+				CivColor.RESET+"Iron Ingots",
+				CivColor.RESET+"Gold Ingots",
+				CivColor.RESET+"Diamond Ingots",
+				CivColor.RESET+"Emerald Ingots"
+			));
+		LoreGuiItemListener.guiInventories.put(bank.getName(), bank);
+		}
+		
+		if (player != null && player.isOnline() && player.isValid()) {
+			player.openInventory(bank);	
+		}
+	}
+	
 	public static void viewTrommel(Player player) {
 		if (trommel == null) {
 			trommel = Bukkit.getServer().createInventory(player, 9*2, "Trommel Information");
-			
 			trommel.setItem(3, LoreGuiItem.build(CivColor.LightBlue+CivColor.BOLD+"Function", ItemManager.getId(Material.FURNACE), 0, 
 				CivColor.RESET+"The trommel is a structure that allows players to deposit stones",
 				CivColor.RESET+"and other blocks to get an outcome of ingots and other special",
@@ -30,28 +57,27 @@ public class StructureGUI {
 			));
 			
 			trommel.setItem(10, LoreGuiItem.build(CivColor.LightBlue+CivColor.BOLD+"Block Level", ItemManager.getId(Material.STONE), 0, 
-					CivColor.RESET+"The trommel's block level is what can be upgraded to allow for",
-					CivColor.RESET+"more types of blocks to become ingots and more useless blocks.",
-					CivColor.RESET+"Level 1: Cobblestone And Regular Stone",
-					CivColor.RESET+"Level 2: Stone Brick (Reg, Moss, Cracked, Chiseled)",
-					CivColor.RESET+"Level 3: Regular Granite, Diorite, Andesite",
-					CivColor.RESET+"Level 4: Polished Granite, Diorite, Andesite",
-					CivColor.RESET+"Level 5: Dirt, Grass, and Gravel",
-					CivColor.RESET+"Level 6: Netherrack and End Stone",
-					CivColor.RESET+"Level 7: Iron Block",
-					CivColor.RESET+"Level 8: Gold Block", 
-					CivColor.RESET+"Level 9: Diamond Block",
-					CivColor.RESET+"Level 10: Emerald Block"
-				));
+				CivColor.RESET+"The trommel's block level is what can be upgraded to allow for",
+				CivColor.RESET+"more types of blocks to become ingots and more useless blocks.",
+				CivColor.RESET+"Level 1: Cobblestone And Regular Stone",
+				CivColor.RESET+"Level 2: Stone Brick (Reg, Moss, Cracked, Chiseled)",
+				CivColor.RESET+"Level 3: Regular Granite, Diorite, Andesite",
+				CivColor.RESET+"Level 4: Polished Granite, Diorite, Andesite",
+				CivColor.RESET+"Level 5: Dirt, Grass, and Gravel",
+				CivColor.RESET+"Level 6: Netherrack and End Stone",
+				CivColor.RESET+"Level 7: Iron Block",
+				CivColor.RESET+"Level 8: Gold Block", 
+				CivColor.RESET+"Level 9: Diamond Block",
+				CivColor.RESET+"Level 10: Emerald Block"
+			));
 			
 			trommel.setItem(11, LoreGuiItem.build(CivColor.LightBlue+CivColor.BOLD+"Bonus Level", ItemManager.getId(Material.BEACON), 0, 
-					CivColor.RESET+"The trommel's bonus level is what can be upgraded to allow for",
-					CivColor.RESET+"the ourput of valuables to have an increased chance. Level 1",
-					CivColor.RESET+"(default) has rates at 100% (unless you have buffs or government",
-					CivColor.RESET+"penalty/buff), and each level higher adds 5% more chance for",
-					CivColor.RESET+"each all ingots and hammers, excluding dirt and gravel."
-				));
-			
+				CivColor.RESET+"The trommel's bonus level is what can be upgraded to allow for",
+				CivColor.RESET+"the ourput of valuables to have an increased chance. Level 1",
+				CivColor.RESET+"(default) has rates at 100% (unless you have buffs or government",
+				CivColor.RESET+"penalty/buff), and each level higher adds 5% more chance for",
+				CivColor.RESET+"each all ingots and hammers, excluding dirt and gravel."
+			));
 			LoreGuiItemListener.guiInventories.put(trommel.getName(), trommel);
 		}
 		

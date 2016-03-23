@@ -51,16 +51,21 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.PlayerKickBan;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
 public class AdminCommand extends CommandBase {
-
+	
+	private static boolean lockdown = false;
+	
 	@Override
 	public void init() {
 		command = "/ad";
 		displayName = "Admin";
+		
+		commands.put("lockdown", "Toggles if the server is joinable to players or admins only.");
 		
 		commands.put("perm", "toggles your permission overrides, if on, ignores all plot permissions.");
 		commands.put("sbperm", "Allows breaking of structure blocks");
@@ -88,6 +93,46 @@ public class AdminCommand extends CommandBase {
 		commands.put("endworld", "Starts the Apocalypse.");
 		commands.put("perk", "Admin perk management.");
 		commands.put("sql", "Admin SQL");
+	}
+	
+	public void lockdown_cmd() {
+		new Thread(new Runnable() {
+            public void run() {
+                try {
+            		AdminCommand.setLockdown(!AdminCommand.isLockdown());
+            		if (AdminCommand.isLockdown()) {
+            			CivMessage.global("A STAFF MEMBER HAS BEGUN A LOCKDOWN! PREPARE TO BE KICKED!");
+	    				Thread.sleep(2000);
+            			CivMessage.global("Kicking all players in 3");
+        				Thread.sleep(1000);
+            			CivMessage.global("Kicking all players in 2");
+        				Thread.sleep(1000);
+            			CivMessage.global("Kicking all players in 1");
+        				Thread.sleep(1000);
+            			CivMessage.global("All non-staff have been kicked.");
+            			for (Player player : Bukkit.getOnlinePlayers()) {
+            				if (player.isOp() || player.hasPermission(CivSettings.MINI_ADMIN)) {
+            					CivMessage.send(sender, "Skipping "+player.getName()+" since they are OP or admin.");
+            					continue;
+            				}
+            				TaskMaster.syncTask(new PlayerKickBan(player.getName(), true, false, "Kicked: The server is currently on lockdown Try again in a few minutes."));
+            			}
+            		} else {
+            			CivMessage.global("All players are now allowed to join again.");
+            		}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+            }
+        }).start();
+	}
+	
+	public static boolean isLockdown() {
+		return lockdown;
+	}
+
+	public static void setLockdown(boolean ld) {
+		AdminCommand.lockdown = ld;
 	}
 	
 	public void sql_cmd() {
@@ -359,9 +404,6 @@ public class AdminCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, "Structure Permission override on.");
 	}
 	
-	
-
-	
 	@Override
 	public void doDefaultAction() throws CivException {
 		showHelp();
@@ -374,13 +416,11 @@ public class AdminCommand extends CommandBase {
 
 	@Override
 	public void permissionCheck() throws CivException {
-		
 		if (sender instanceof Player) {
 			if (((Player)sender).hasPermission(CivSettings.MINI_ADMIN)) {
 				return;
 			}
 		}
-		
 		
 		if (sender.isOp() == false) {
 			throw new CivException("Only admins can use this command.");			

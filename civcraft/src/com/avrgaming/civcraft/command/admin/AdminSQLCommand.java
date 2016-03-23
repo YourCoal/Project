@@ -28,7 +28,7 @@ public class AdminSQLCommand extends CommandBase {
 		Resident res = getNamedResident(1);
 		this.message = getAdminMessage(2);
 		CivMessage.send(res, "Your civcraft player data has been reset! Relog to become a real human again.");
-		CivMessage.global("The resident "+res+" has been reset by an admin! Reason: "+message);
+		CivMessage.global("The resident "+res.getName()+" has been reset by an admin! Reason: "+message);
 		try {
 			res.delete();
 		} catch (SQLException e) {
@@ -58,7 +58,7 @@ public class AdminSQLCommand extends CommandBase {
 		}
 		
 		CivMessage.sendTown(town, "Your town is has disbanded by an admin!");
-		CivMessage.global("The town of "+town+" in civilization "+town.getCiv().getName()+" has been disbanded by an admin! Reason: "+message);
+		CivMessage.global("The town of "+town.getName()+" in civilization "+town.getCiv().getName()+" has been disbanded by an admin! Reason: "+message);
 		try {
 			town.delete();
 		} catch (SQLException e) {
@@ -71,7 +71,7 @@ public class AdminSQLCommand extends CommandBase {
 		Civilization civ = getNamedCiv(1);
 		this.message = getAdminMessage(2);
 		CivMessage.sendCiv(civ, "Your civ is has disbanded by an admin!");
-		CivMessage.global("The civilization of "+civ+" has been disbanded by an admin! Reason: "+message);
+		CivMessage.global("The civilization of "+civ.getName()+" has been disbanded by an admin! Reason: "+message);
 		try {
 			civ.delete();
 		} catch (SQLException e) {

@@ -44,6 +44,7 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.global.perks.PlatinumManager;
+import com.connorlinfoot.titleapi.TitleAPI;
 
 public class PlayerLoginAsyncTask implements Runnable {
 	
@@ -65,7 +66,13 @@ public class PlayerLoginAsyncTask implements Runnable {
 	public void run() {
 		try {
 			CivLog.info("Running PlayerLoginAsyncTask for "+getPlayer().getName()+" UUID("+playerUUID+")");
-			Resident resident = CivGlobal.getResident(getPlayer().getName());
+			Resident resident = CivGlobal.getResidentViaUUID(playerUUID);
+			if (resident != null && !resident.getName().toLowerCase().equals(getPlayer().getName())) {
+				CivGlobal.removeResident(resident);
+				resident.setName(getPlayer().getName());
+				resident.save();
+				CivGlobal.addResident(resident);
+			}
 			
 			/* 
 			 * Test to see if player has changed their name. If they have, these residents
@@ -79,54 +86,107 @@ public class PlayerLoginAsyncTask implements Runnable {
 			}
 			
 			if (resident == null) {
+				CivLog.info("No resident found. Creating for "+getPlayer().getName());
+				try {
+					resident = new Resident(getPlayer().getUniqueId(), getPlayer().getName());
+				} catch (InvalidNameException e) {
+					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "You have an invalid name. Sorry."));
+					return;
+				}
+				
+				CivGlobal.addResident(resident);
+				CivLog.info("Added resident:"+resident.getName());
+				resident.setisProtected(true);
+				
 				new Thread(new Runnable() {
-		            public void run() {
-		                try {
-		                	Resident resident = CivGlobal.getResident(getPlayer().getName());
-		    				CivLog.info("No resident found. Creating for "+getPlayer().getName());
-		    				CivLog.info("No resident found. Creating for "+getPlayer().getName());
-		    				try {
-		    					resident = new Resident(getPlayer().getUniqueId(), getPlayer().getName());
-		    				} catch (InvalidNameException e) {
-			    				CivLog.info("Resident has invalid name:"+resident.getName());
-			    				CivLog.info("Resident has invalid name:"+resident.getName());
-		    					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "You have an invalid name. Sorry."));
-		    					return;
-		    				}
-		    				resident.setisProtected(true);
-		    				CivGlobal.addResident(resident);
-		    				CivLog.info("Added resident:"+resident.getName());
-		    				CivLog.info("Added resident:"+resident.getName());
-		    				CivMessage.send(resident, CivColor.LightGray+"Adding player to database...");
-		    				Thread.sleep(4000);
-		    				resident.setisProtected(true);
-		    				CivMessage.send(resident, CivColor.LightGray+"Player added to database.");
-		    				CivMessage.send(resident, CivColor.LightGray+"Adding PvP timer to player...");
-		    				Thread.sleep(4000);
-		    				resident.setisProtected(true);
-		    				CivMessage.send(resident, CivColor.LightGray+"PvP timer enabled.");
-		    				CivMessage.send(resident, CivColor.LightGray+"Preparing to display tutorial screen...");
-		    				Thread.sleep(4000);
-		    				resident.setisProtected(true);
-		    				CivTutorial.showTutorialInventory(getPlayer());
-		    				CivMessage.send(resident, CivColor.LightGray+"Displaying tutorial screen.");
-		    				Thread.sleep(8000);
-		    				resident.setRegistered(System.currentTimeMillis());
-		    				resident.setisProtected(true);
-		    				int mins;
-		    				try {
-		    					mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
-		    				} catch (InvalidConfiguration e1) {
-		    					e1.printStackTrace();
-		    					return;
-		    				}
-		    				CivMessage.send(resident, CivColor.LightGray+"You now have a PvP Timer for "+mins+" minutes.");
+					public void run() {
+						try {
+							Resident res = CivGlobal.getResident(getPlayer().getName());
+							for (Player pl : Bukkit.getOnlinePlayers()) {
+								TitleAPI.sendTitle(pl, 20, 5*20, 20, CivColor.LightBlue+CivColor.BOLD+"New CivCrafter!",
+										CivColor.LightGray+CivColor.ITALIC+"Please welcome "+CivColor.BOLD+res.getName()+CivColor.LightGray+CivColor.ITALIC+" to the server!");
+							}
+							CivMessage.send(res, CivColor.LightGray+"Preparing to display tutorial screen...");
+							Thread.sleep(3500);
+							res.setisProtected(true);
+							CivTutorial.showTutorialInventory(getPlayer());
+							CivMessage.send(res, CivColor.LightGray+"Displaying tutorial screen.");
+							Thread.sleep(5000);
+							res.setisProtected(true);
+							res.setRegistered(System.currentTimeMillis());
+							int mins;
+							try {
+								mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
+							} catch (InvalidConfiguration e1) {
+								e1.printStackTrace();
+								return;
+							}
+							CivMessage.send(res, CivColor.LightGray+"You now have a PvP Timer for "+mins+" minutes.");
+							CivMessage.send(res, CivColor.LightGray+"Preparing to give starter kit...");
+							Thread.sleep(2500);
+							CivMessage.send(res, CivColor.LightGray+"Player was given starter kit.");
+							TaskMaster.syncTask(new GivePlayerStartingKit(res.getName()));
 						} catch (InterruptedException | CivException e) {
 							e.printStackTrace();
 						}
-		            }
-		        }).start();
-			} 
+					}
+				}).start();
+			}
+			
+//			if (resident == null) {
+//				new Thread(new Runnable() {
+//					public void run() {
+//						try {
+//							Resident resident = CivGlobal.getResident(getPlayer().getName());
+//							CivLog.info("No resident found. Creating for "+getPlayer().getName());
+//							try {
+//								resident = new Resident(getPlayer().getUniqueId(), getPlayer().getName());
+//							} catch (InvalidNameException e) {
+//								CivLog.info("Resident has invalid name:"+resident.getName());
+//								TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "You have an invalid name. Sorry."));
+//								return;
+//							}
+//							resident.setisProtected(true);
+//							CivGlobal.addResident(resident);
+//							CivLog.info("Added resident:"+resident.getName());
+//							CivMessage.send(resident, CivColor.LightGray+"Adding player to database...");
+//							Thread.sleep(2000);
+//							resident.setisProtected(true);
+//							CivMessage.send(resident, CivColor.LightGray+"Player added to database.");
+//							CivMessage.send(resident, CivColor.LightGray+"Preparing to display tutorial screen...");
+//							Thread.sleep(3000);
+//							resident.setisProtected(true);
+//							CivMessage.send(resident, CivColor.LightGray+"Displaying tutorial screen.");
+//							Thread.sleep(3000);
+//							resident.setisProtected(true);
+//							Thread.sleep(4000);
+//							resident.setisProtected(true);
+//							CivTutorial.showTutorialInventory(getPlayer());
+//							CivMessage.send(resident, CivColor.LightGray+"Adding PvP timer to player...");
+//							Thread.sleep(2000);
+//							resident.setisProtected(true);
+//							CivMessage.send(resident, CivColor.LightGray+"PvP timer enabled.");
+//							Thread.sleep(2000);
+//							resident.setRegistered(System.currentTimeMillis());
+//							resident.setisProtected(true);
+//							int mins;
+//							try {
+//								mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
+//							} catch (InvalidConfiguration e1) {
+//								e1.printStackTrace();
+//								return;
+//							}
+//							CivMessage.send(resident, CivColor.LightGray+"You now have a PvP Timer for "+mins+" minutes.");
+//							CivMessage.send(resident, CivColor.LightGray+"Preparing to give starter kit...");
+//							Thread.sleep(4000);
+//							CivMessage.send(resident, CivColor.LightGray+"Player was given starter kit.");
+//							TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
+//						} catch (InterruptedException | CivException e) {
+//							e.printStackTrace();
+//						}
+//					}
+//				}).start();
+//			} 
 			
 			/* Resident is present. Lets check the UUID against the stored UUID.
 			 * We are not going to allow residents to change names without admin permission.
@@ -141,9 +201,10 @@ public class PlayerLoginAsyncTask implements Runnable {
 				return;
 			}
 			
-			if (!resident.isGivenKit()) {
-				TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
-			}
+//			if (!resident.isGivenKit()) {
+//				TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
+//				CivMessage.sendError(resident, "You did not get your starter kit! Contact an admin.");
+//			}
 					
 			if (War.isWarTime() && War.isOnlyWarriors()) {
 				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
@@ -278,9 +339,8 @@ public class PlayerLoginAsyncTask implements Runnable {
 		} catch (CivException playerNotFound) {
 			// Player logged out while async task was running.
 			CivLog.warning("Couldn't complete PlayerLoginAsyncTask. Player may have been kicked while async task was running.");
+		} catch (InvalidNameException e1) {
+			e1.printStackTrace();
 		}
 	}
-	
-
-
 }

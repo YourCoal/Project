@@ -287,70 +287,80 @@ barracks:
 # Horses are then configured in 'stable_horses'
 stable_items:
     - name: 'Horse'
-      cost: 25000.0
+      cost: 10000.0
       store_id: 0
       item_id: 0
       horse_id: 1
-    
+#
     - name: 'Trusty Steed'
-      cost: 100000.0
+      cost: 75000.0
       store_id: 0
       item_id: 0
       horse_id: 2
-
+#
     - name: 'Thoroughbred'
-      cost: 500000.0
+      cost: 375000.0
       store_id: 0
       item_id: 0
       horse_id: 3
-
-    - name: 'Mule'
-      cost: 2500.0
+#
+    - name: 'Storage Mule'
+      cost: 5000.0
       store_id: 1
       item_id: 0
       horse_id: 4
-
+#
+    - name: 'Travel Mule'
+      cost: 25000.0
+      store_id: 1
+      item_id: 0
+      horse_id: 5
+#
     - name: 'Saddle'
       cost: 3000.0
       store_id: 2
       item_id: 329
       horse_id: 0
-
-    - name: 'Name Tag'
-      cost: 40000.0
-      store_id: 2
-      item_id: 421
-      horse_id: 0
-
+#
+#    - name: 'Name Tag'
+#      cost: 40000.0
+#      store_id: 2
+#      item_id: 421
+#      horse_id: 0
+#
 stable_horses:
-      # Normal Horse
+# Normal Horse
     - id: 1
-      speed: 0.0
-      jump: 0.8
+      speed: 0.15
+      jump: 0.6
       health: 10.0
       variant: 'BROWN'
-
-      # Trusty Steed
+# Trusty Steed
     - id: 2
-      speed: 0.05
-      jump: 0.8
-      health: 15.0
+      speed: 0.2
+      jump: 0.75
+      health: 16.0
       variant: 'BLACK'
-
-      # Thoroughbred
+# Thoroughbred
     - id: 3
-      speed: 0.08
-      jump: 0.8
-      health: 20.0
-      variant: 'WHITE'
-
-     # mule
+      speed: 0.25
+      jump: 1.0
+      health: 22.0
+      variant: 'CREAMY_WHITE'
+# Storage Mule
     - id: 4
-      speed: -0.1
-      jump: 0.8
-      health: 20.0
+      speed: 0.15
+      jump: 0.625
+      health: 16.0
       mule: true
       variant: 'BLACK'
+# Travel Mule
+    - id: 5
+      speed: 0.25
+      jump: 0.75
+      health: 22.0
+      mule: true
+      variant: 'GRAY_BLACK_DOTS'
 ######################################################################
 #               CIVCRAFT Structure config
 ######################################################################
@@ -705,7 +715,7 @@ structures:
     cost: 25000.0
     upkeep: 500.0
     hammer_cost: 2000.0
-    tile: true
+    outpost: true
     points: 3000
     max_hitpoints: 500
     ignore_floating: true
@@ -725,7 +735,7 @@ structures:
     cost: 25000.0
     upkeep: 500.0
     hammer_cost: 2000.0
-    tile: true
+    outpost: true
     points: 3000
     max_hitpoints: 500
     ignore_floating: true

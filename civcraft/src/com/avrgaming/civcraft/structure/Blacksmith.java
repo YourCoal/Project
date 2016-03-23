@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.structure;
 
-import gpl.AttributeUtil;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -38,7 +36,6 @@ import org.bukkit.inventory.ItemStack;
 import com.avrgaming.civcraft.components.NonMemberFeeComponent;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivException;
-import com.avrgaming.civcraft.items.components.Catalyst;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreMaterial;
 import com.avrgaming.civcraft.main.CivData;
@@ -60,7 +57,7 @@ public class Blacksmith extends Structure {
 	
 	private static final long COOLDOWN = 5;
 	//private static final double BASE_CHANCE = 0.8;
-	public static int SMELT_TIME_SECONDS = 3600*3;
+	public static int SMELT_TIME_SECONDS = 3600*2;
 	public static double YIELD_RATE = 1.25;
 	
 	private Date lastUse = new Date();
@@ -167,18 +164,15 @@ public class Blacksmith extends Structure {
 	}
 	
 	public String getkey(Player player, Structure struct, String tag) {
-		return player.getName()+"_"+struct.getConfigId()+"_"+struct.getCorner().toString()+"_"+tag; 
+		return player.getUniqueId().toString()+"_"+struct.getConfigId()+"_"+struct.getCorner().toString()+"_"+tag; 
 	}
 
 	public void saveItem(ItemStack item, String key) {
-		
 		String value = ""+ItemManager.getId(item)+":";
-		
 		for (Enchantment e : item.getEnchantments().keySet()) {
 			value += ItemManager.getId(e)+","+item.getEnchantmentLevel(e);
 			value += ":";
 		}
-		
 		sessionAdd(key, value);
 	}
 	
@@ -264,111 +258,103 @@ public class Blacksmith extends Structure {
 	 * if this player is worthy of a higher level pick. If successful it will
 	 * give the player the newly created pick.
 	 */
-	@SuppressWarnings("deprecation")
+//	@SuppressWarnings("deprecation")
 	public void perform_forge(Player player, double cost) throws CivException {
-
-		/* Try and retrieve any catalyst in the forge. */
-		String key = getkey(player, this, "forge");
-		ArrayList<SessionEntry> sessions = CivGlobal.getSessionDB().lookup(key);
+		CivMessage.sendError(player, "This is currently disabled!");
+//		/* Try and retrieve any catalyst in the forge. */
+//		String key = getkey(player, this, "forge");
+//		ArrayList<SessionEntry> sessions = CivGlobal.getSessionDB().lookup(key);
+//		
+//		/* Search for free catalyst. */
+//		ItemStack stack = player.getItemInHand();
+//		AttributeUtil attrs = new AttributeUtil(stack);
+//		Catalyst catalyst;
+//		
+//		String freeStr = attrs.getCivCraftProperty("freeCatalyst");
+//		if (freeStr == null) {
+//			/* No free enhancements on item, search for catalyst. */
+//			if (sessions == null || sessions.size() == 0) {
+//				throw new CivException("No catalyst in the forge. Deposit one first.");
+//			}
+//			
+//			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(sessions.get(0).value);
+//			if (craftMat == null) {
+//				throw new CivException("Error getting catalyst from blacksmith. File a bug report!");
+//			}
+//			
+//			catalyst = (Catalyst)craftMat.getComponent("Catalyst");
+//			if (catalyst == null) {
+//				throw new CivException("Error getting catalyst from blacksmith. File a bug report!");
+//			}
+//		} else {
+//			String[] split = freeStr.split(":");
+//			Double level = Double.valueOf(split[0]);
+//			String mid = split[1];
+//			
+//			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(mid);
+//			if (craftMat == null) {
+//				throw new CivException("Error getting catalyst from blacksmith. File a bug report!");
+//			}
+//
+//			catalyst = (Catalyst)craftMat.getComponent("Catalyst");
+//			if (catalyst == null) {
+//				throw new CivException("Error getting catalyst from blacksmith. Please file a bug report.");
+//			}
+//			
+//			/* reduce level and reset item. */
+//			level--;
+//			
+//			String lore[] = attrs.getLore();
+//			for (int i = 0; i < lore.length; i++) {
+//				String str = lore[i];
+//				if (str.contains("free enhancements")) {
+//					if (level != 0) {
+//						lore[i] = CivColor.LightBlue+level+" free enhancements! Redeem at blacksmith.";
+//					} else {
+//						lore[i] = "";
+//					}
+//					break;
+//				}
+//			}
 		
-		/* Search for free catalyst. */
-		ItemStack stack = player.getItemInHand();
-		AttributeUtil attrs = new AttributeUtil(stack);
-		Catalyst catalyst;
-		
-		
-		String freeStr = attrs.getCivCraftProperty("freeCatalyst");
-		if (freeStr == null) {
-			/* No free enhancements on item, search for catalyst. */
-			if (sessions == null || sessions.size() == 0) {
-				throw new CivException("No catalyst in the forge. Deposit one first.");
-			}
-			
-			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(sessions.get(0).value);
-			if (craftMat == null) {
-				throw new CivException("Error getting catalyst from blacksmith. File a bug report!");
-			}
-			
-			catalyst = (Catalyst)craftMat.getComponent("Catalyst");
-			if (catalyst == null) {
-				throw new CivException("Error getting catalyst from blacksmith. File a bug report!");
-			}
-		} else {
-			String[] split = freeStr.split(":");
-			Double level = Double.valueOf(split[0]);
-			String mid = split[1];
-			
-			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(mid);
-			if (craftMat == null) {
-				throw new CivException("Error getting catalyst from blacksmith. File a bug report!");
-			}
-
-			catalyst = (Catalyst)craftMat.getComponent("Catalyst");
-			if (catalyst == null) {
-				throw new CivException("Error getting catalyst from blacksmith. Please file a bug report.");
-			}
-			
-			/* reduce level and reset item. */
-			level--;
-			
-			String lore[] = attrs.getLore();
-			for (int i = 0; i < lore.length; i++) {
-				String str = lore[i];
-				if (str.contains("free enhancements")) {
-					if (level != 0) {
-						lore[i] = CivColor.LightBlue+level+" free enhancements! Redeem at blacksmith.";
-					} else {
-						lore[i] = "";
-					}
-					break;
-				}
-			}
-			attrs.setLore(lore);
-			
-			if (level != 0) {
-				attrs.setCivCraftProperty("freeCatalyst", level+":"+mid);
-			} else {
-				attrs.removeCivCraftProperty("freeCatalyst");
-			}
-			
-			player.setItemInHand(attrs.getStack());
-			
-		}
-		
-		stack = player.getItemInHand();
-		ItemStack enhancedItem = catalyst.getEnchantedItem(stack);
-		
-		if (enhancedItem == null) {
-			throw new CivException("You cannot use this catalyst on this item.");
-		}
-		
-		/* Consume the enhancement. */
-		CivGlobal.getSessionDB().delete_all(key);
-		
-		if (!catalyst.enchantSuccess(enhancedItem)) {
-			/* 
-			 * There is a one in third chance that our item will break.
-			 * Sucks, but this is what happened here.
-			 */
-			player.setItemInHand(ItemManager.createItemStack(CivData.AIR, 1));
-			CivMessage.sendError(player, "Enhancement failed. Item has broken.");
-			return;
-		} else {
-			player.setItemInHand(enhancedItem);
-			CivMessage.sendSuccess(player, "Enhancement succeeded!");
-			return;
-		}
+//			attrs.setLore(lore);
+//			if (level != 0) {
+//				attrs.setCivCraftProperty("freeCatalyst", level+":"+mid);
+//			} else {
+//				attrs.removeCivCraftProperty("freeCatalyst");
+//			}
+//			player.setItemInHand(attrs.getStack());
+//		}
+//		
+//		stack = player.getItemInHand();
+//		ItemStack enhancedItem = catalyst.getEnchantedItem(stack);
+//		if (enhancedItem == null) {
+//			throw new CivException("You cannot use this catalyst on this item.");
+//		}
+//		
+//		/* Consume the enhancement. */
+//		CivGlobal.getSessionDB().delete_all(key);
+//		
+//		if (!catalyst.enchantSuccess(enhancedItem)) {
+//			/* There is a one in third chance that our item will break.
+//			 * Sucks, but this is what happened here. */
+//			player.setItemInHand(ItemManager.createItemStack(CivData.AIR, 1));
+//			CivMessage.sendError(player, "Enhancement failed. Item has broken.");
+//			return;
+//		} else {
+//			player.setItemInHand(enhancedItem);
+//			CivMessage.sendSuccess(player, "Enhancement succeeded!");
+//			return;
+//		}
 	}
-	/*
-	 * Take the itemstack in hand and deposit it into
-	 * the session DB.
-	 */
+	
+	/* Take the itemstack in hand and deposit it into the session DB. */
 	@SuppressWarnings("deprecation")
 	public void depositSmelt(Player player, ItemStack itemsInHand) throws CivException {
 		
 		// Make sure that the item is a valid smelt type.
 		if (!Blacksmith.canSmelt(itemsInHand.getTypeId())) {
-			throw new CivException ("Can only smelt gold and iron ore.");
+			throw new CivException ("This item cannot be smelted.");
 		}
 		
 		// Only members can use the smelter
@@ -439,7 +425,7 @@ public class Blacksmith extends Structure {
 			
 			// First determine the time between two events.
 			if (secondsBetween < Blacksmith.SMELT_TIME_SECONDS) {
-				 DecimalFormat df1 = new DecimalFormat("0.##"); 
+				 DecimalFormat df1 = new DecimalFormat("0.#"); 
 				 
 				double timeLeft = ((double)Blacksmith.SMELT_TIME_SECONDS - (double)secondsBetween) / (double)60;
 				//Date finish = new Date(now+(secondsBetween*1000));

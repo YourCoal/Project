@@ -249,6 +249,10 @@ public abstract class Buildable extends SQLObject {
 		return info.tile;
 	}
 	
+	public boolean isOutpost() {
+		return info.outpost;
+	}
+	
 	public boolean isActive() {	
 		return this.isComplete() && !isDestroyed() && isEnabled();
 	}
@@ -548,7 +552,7 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (info.tile) {
+		if (info.tile || info.outpost) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else { 
@@ -645,7 +649,7 @@ public abstract class Buildable extends SQLObject {
 		
 		if (this instanceof Wonder) {
 			this.getTown().setCurrentWonderInProgress(this);
-		} else {
+		} else if (this instanceof Structure) {
 			this.getTown().setCurrentStructureInProgress(this);
 		}
 		
@@ -775,7 +779,26 @@ public abstract class Buildable extends SQLObject {
 					throw new CivException("Cannot build a tile on the same chunk as another tile.");
 				}
 			}
+		}
+		
+		if (this.isOutpost()) {
+			ignoreBorders = true;
+			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
 			
+			if (getTown().getOutpostCount() >= level.outposts) {
+				throw new CivException("Cannot build outpost. Already at outpost limit.");
+			}
+			
+			ChunkCoord coord = new ChunkCoord(centerBlock.getLocation());
+			for (Structure s : getTown().getStructures()) {
+				if (!s.isOutpost()) {
+					continue;
+				}
+				ChunkCoord sCoord = new ChunkCoord(s.getCorner());
+				if (sCoord.equals(coord)) {
+					throw new CivException("Cannot build an outpost on the same chunk as another outpost.");
+				}
+			}
 		}
 		
 		TownChunk centertc = CivGlobal.getTownChunk(origin);

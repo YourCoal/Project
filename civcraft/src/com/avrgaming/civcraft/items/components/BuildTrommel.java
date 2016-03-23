@@ -90,6 +90,7 @@ public class BuildTrommel extends ItemComponent implements CallbackInterface {
 		info.isWonder = false;
 		info.regenRate = 0;
 		info.tile = false;
+		info.outpost = false;
 		info.allow_demolish = true;
 		info.strategic = false;
 		info.ignore_floating = false;

@@ -59,7 +59,6 @@ import org.bukkit.util.Vector;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigTechPotion;
-import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.items.units.UnitItemMaterial;
 import com.avrgaming.civcraft.items.units.UnitMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreMaterial;
@@ -124,40 +123,6 @@ public class PlayerListener implements Listener {
 	private void setModifiedMovementSpeed(Player player) {
 		/* Change move speed based on armor. */
 		double speed = CivSettings.normal_speed;
-		
-		/* Set speed from armor. */
-		if (Unit.isWearingFullComposite(player)) {
-			speed *= CivSettings.T4_leather_speed;
-		}
-		
-		if (Unit.isWearingFullHardened(player)) {
-			speed *= CivSettings.T3_leather_speed;
-		}
-		
-		if (Unit.isWearingFullRefined(player)) {
-			speed *= CivSettings.T2_leather_speed;
-		}
-		
-		if (Unit.isWearingFullBasicLeather(player)) {
-			speed *= CivSettings.T1_leather_speed;
-		}
-		
-		if (Unit.isWearingAnyIron(player)) {
-			speed *= CivSettings.T1_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyChain(player)) {
-			speed *= CivSettings.T2_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyGold(player)) {
-			speed *= CivSettings.T3_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyDiamond(player)) {
-			speed *= CivSettings.T4_metal_speed;
-		}
-		
 		if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
 			Vector vec = player.getVehicle().getVelocity();
 			double yComp = vec.getY();

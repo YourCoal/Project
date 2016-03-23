@@ -562,8 +562,8 @@ public class TownInfoCommand extends CommandBase {
 							//XXX Edit 1.0.3
 							//CivColor.Green+" Tile Improvements: "+CivColor.LightGreen+"("+color+town.getTileImprovementCount()+CivColor.LightGreen+"/"+level.tile_improvements+")");
 							CivColor.Green+" Tiles: "+CivColor.LightGreen+"("+color+town.getTileCount()+CivColor.LightGreen+"/"+level.tiles+") "+
-							//CivColor.Green+" Outposts: "+CivColor.LightGreen+"("+color+town.getOutpostsCount()+CivColor.LightGreen+"/"+level.outposts+")");
-							CivColor.Green+" Outposts: "+CivColor.LightGreen+"(0/2) "+CivColor.Rose+"**Disabled**");
+							CivColor.Green+" Outposts: "+CivColor.LightGreen+"("+color+town.getOutpostCount()+CivColor.LightGreen+"/"+level.outposts+")");
+							//CivColor.Green+" Outposts: "+CivColor.LightGreen+"(0/2) "+CivColor.Rose+"**Disabled**");
 			
 			
 			//XXX Setup in 1.0.3
@@ -608,7 +608,7 @@ public class TownInfoCommand extends CommandBase {
 		if (resident == null || town.isInGroup("mayors", resident) || town.isInGroup("assistants", resident) || 
 				civ.getLeaderGroup().hasMember(resident) || civ.getAdviserGroup().hasMember(resident) || isAdmin) {
 			try {
-				CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+df.format(Math.floor(town.getBalance()))+" Coins, "+CivColor.Yellow+"0 Tokens "+
+				CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+df.format(Math.floor(town.getBalance()))+" Coins "+
 								CivColor.Green+" Upkeep: "+CivColor.LightGreen+df.format(Math.floor(town.getTotalUpkeep()*town.getGovernment().upkeep_rate))+" Coins");
 				
 				

@@ -104,11 +104,9 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 				if (goodie != null) {
 					goodie.replenish();
 				}
-				
 				CivGlobal.removeProtectedItemFrame(framestore.getFrameID());
 			}
 		}
-		
 		super.delete();		
 	}
 	

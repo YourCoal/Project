@@ -21,7 +21,11 @@ package com.avrgaming.civcraft.main;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -70,6 +74,7 @@ import com.avrgaming.civcraft.listener.PlayerListener;
 import com.avrgaming.civcraft.listener.TagAPIListener;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterialListener;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
+import com.avrgaming.civcraft.lorestorage.LoreMaterial;
 import com.avrgaming.civcraft.nocheat.NoCheatPlusSurvialFlyHandler;
 import com.avrgaming.civcraft.populators.TradeGoodPopulator;
 import com.avrgaming.civcraft.pvplogger.PvPLogger;
@@ -147,7 +152,7 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("UpdateEventTimer", new UpdateEventTimer(), TimeTools.toTicks(1));
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
 
-		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
+		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(59));
 		TaskMaster.syncTimer("UnitTrainTimer", new UnitTrainTimer(), TimeTools.toTicks(1));
 		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(5));
 
@@ -165,16 +170,14 @@ public final class CivCraft extends JavaPlugin {
 		// Global Event timers		
 		TaskMaster.syncTimer("FarmCropCache", new FarmPreCachePopulateTimer(), TimeTools.toTicks(30));
 	
-		TaskMaster.asyncTimer("FarmGrowthTimer",
-				new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
+		TaskMaster.asyncTimer("FarmGrowthTimer", new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
 
 		TaskMaster.asyncTimer("announcer", new AnnouncementTimer("tips.txt"), 0, TimeTools.toTicks(60*60));
 		
 		TaskMaster.asyncTimer("ChangeGovernmentTimer", new ChangeGovernmentTimer(), TimeTools.toTicks(60));
 		TaskMaster.asyncTimer("CalculateScoreTimer", new CalculateScoreTimer(), 0, TimeTools.toTicks(60));
 		
-		TaskMaster.asyncTimer(PlayerProximityComponentTimer.class.getName(), 
-				new PlayerProximityComponentTimer(), TimeTools.toTicks(1));
+		TaskMaster.asyncTimer(PlayerProximityComponentTimer.class.getName(), new PlayerProximityComponentTimer(), TimeTools.toTicks(1));
 		
 		TaskMaster.asyncTimer(EventTimerTask.class.getName(), new EventTimerTask(), TimeTools.toTicks(5));
 
@@ -183,7 +186,7 @@ public final class CivCraft extends JavaPlugin {
 		}
 		
 		TaskMaster.syncTimer("PvPLogger", new PvPLogger(), TimeTools.toTicks(5));
-		TaskMaster.syncTimer("WindmillTimer", new WindmillTimer(), TimeTools.toTicks(60));
+		TaskMaster.syncTimer("WindmillTimer", new WindmillTimer(), TimeTools.toTicks(10));
 		TaskMaster.asyncTimer("EndGameNotification", new EndConditionNotificationTask(), TimeTools.toTicks(3600));
 				
 		TaskMaster.asyncTask(new StructureValidationChecker(), TimeTools.toTicks(120));
@@ -281,7 +284,8 @@ public final class CivCraft extends JavaPlugin {
 			CivLog.warning("NoCheatPlus not found, not registering NCP hooks. This is fine if you're not using NCP.");
 		}
 		startTimers();
-				
+		
+		CivCraft.addFurnaceRecipes();
 		//creativeInvPacketManager.init(this);		
 	}
 	
@@ -293,23 +297,32 @@ public final class CivCraft extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+        Bukkit.clearRecipes();
 	}
-
+	
 	public boolean isError() {
 		return isError;
 	}
-
+	
 	public void setError(boolean isError) {
 		this.isError = isError;
 	}
-
-
+	
 	public static JavaPlugin getPlugin() {
 		return plugin;
 	}
-
-
+	
 	public static void setPlugin(JavaPlugin plugin) {
 		CivCraft.plugin = plugin;
+	}
+	
+	
+	//LoreMaterial.materialMap.get("mat_tungsten_chestplate")
+	public static void addFurnaceRecipes() {
+		FurnaceRecipe recipe1 = new FurnaceRecipe(new ItemStack(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"))), Material.CLAY_BALL);
+		Bukkit.addRecipe(recipe1);
+//		RecipesFurnace.registerRecipe(new ItemStack(Material.IRON_ORE), new ItemStack(Material.IRON_INGOT), 0.7F);
+//		getServer().addRecipe(new FurnaceRecipe(new ItemStack(Material.BEACON), Material.DIAMOND_BLOCK, 0));
+//		new FurnaceRecipe(new ItemStack(138), Material.DIAMOND_BLOCK, 4);
 	}
 }

@@ -138,7 +138,7 @@ public class Stable extends Structure {
 				}	
 
 				HorseModifier mod;	
-				if (!horse.mule) {			
+				if (!horse.mule) {	
 					mod = HorseModifier.spawn(horseSpawnCoord.getLocation());
 					mod.setType(HorseType.NORMAL);
 				} else {
@@ -149,16 +149,15 @@ public class Stable extends Structure {
 				mod.setVariant(HorseVariant.valueOf(horse.variant));
 				HorseModifier.setHorseSpeed(mod.getHorse(), horse.speed);
 				((Horse)mod.getHorse()).setJumpStrength(horse.jump);
+				((Horse)mod.getHorse()).setMaxHealth(horse.health);
 				((Horse)mod.getHorse()).setHealth(horse.health);
 				((Horse)mod.getHorse()).setOwner(player);
-				((Horse)mod.getHorse()).setBaby();
-				
+//				((Horse)mod.getHorse()).setBaby();
 				CivMessage.send(player, CivColor.LightGreen+"Paid "+paid+" coins.");
 			}
 		}
 		
 		class buyItemAction implements SignSelectionActionInterface {
-
 			int item_id;
 			double cost;
 			

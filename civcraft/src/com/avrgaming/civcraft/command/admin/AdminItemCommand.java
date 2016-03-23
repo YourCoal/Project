@@ -44,7 +44,6 @@ public class AdminItemCommand extends CommandBase {
 		}
 		
 		ItemStack stack = LoreCraftableMaterial.spawn(craftMat);
-		
 		stack.setAmount(amount);
 		HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(stack);
 		for (ItemStack is : leftovers.values()) {

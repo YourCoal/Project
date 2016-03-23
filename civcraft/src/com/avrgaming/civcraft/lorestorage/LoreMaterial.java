@@ -282,7 +282,7 @@ public abstract class LoreMaterial {
 	public abstract void onItemCraft(CraftItemEvent event);
 	public abstract void onItemPickup(PlayerPickupItemEvent event);
 	public abstract void onItemSpawn(ItemSpawnEvent event);
-	public abstract boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack); /* Called when this item is in inventory. */
+//	public abstract boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack); /* Called when this item is in inventory. */
 	public abstract void onInvItemPickup(InventoryClickEvent event, Inventory fromInv, ItemStack stack);
 	public abstract void onInvItemDrop(InventoryClickEvent event, Inventory toInv, ItemStack stack);
 	public abstract void onInvShiftClick(InventoryClickEvent event, Inventory fromInv, Inventory toInv, ItemStack stack);

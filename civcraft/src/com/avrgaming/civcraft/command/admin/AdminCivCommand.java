@@ -50,7 +50,8 @@ public class AdminCivCommand extends CommandBase {
 		commands.put("givetech", "[civ] [tech_id] - gives this civilization this technology.");
 		commands.put("beakerrate", "[civ] [amount] set this towns's beaker rate to this amount.");
 		commands.put("toggleadminciv", "[civ] - sets/unsets this civilization to an admin civ. Prevents war.");
-		commands.put("alltech", "[civ] - gives this civilization every technology.");
+		commands.put("addalltech", "[civ] - adds every tech to this civilization.");
+		commands.put("removealltech", "[civ] - removes every tech from this civilization.");
 		commands.put("setrelation", "[civ] [otherCiv] [NEUTRAL|HOSTILE|WAR|PEACE|ALLY] sets the relationship between [civ] and [otherCiv].");
 		commands.put("info", "[civ] - Processes /civ info command as if you were a member of this civilization.");
 		commands.put("merge", "[oldciv] [newciv] - Merges oldciv into newciv. oldciv is then destroyed");
@@ -234,17 +235,22 @@ public class AdminCivCommand extends CommandBase {
 		
 	}
 	
-	public void alltech_cmd() throws CivException {
-	
+	public void addalltech_cmd() throws CivException {
 		Civilization civ = getNamedCiv(1);
-		
 		for (ConfigTech tech : CivSettings.techs.values()) {
 			civ.addTech(tech);
 		}
-		
 		civ.save();
-		
 		CivMessage.sendSuccess(sender, "All techs awarded.");
+	}
+	
+	public void removealltech_cmd() throws CivException {
+		Civilization civ = getNamedCiv(1);
+		for (ConfigTech tech : CivSettings.techs.values()) {
+			civ.removeTech(tech);
+		}
+		civ.save();
+		CivMessage.sendSuccess(sender, "All techs removed.");
 	}
 	
 	public void toggleadminciv_cmd() throws CivException {

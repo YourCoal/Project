@@ -1149,22 +1149,53 @@ public class BlockListener implements Listener {
 					}
 					break;
 				case PIG:
-					if (inHand.getType().equals(Material.CARROT_ITEM)) {
+					if (inHand.getType().equals(Material.CARROT_ITEM) ||
+						inHand.getType().equals(Material.POTATO_ITEM) ||
+						inHand.getType().equals(Material.BEETROOT)) {
 						denyBreeding = true;
-					}
-					break;
-				case HORSE:
-					if (inHand.getType().equals(Material.GOLDEN_APPLE) ||
-							inHand.getType().equals(Material.GOLDEN_CARROT)) {
-						CivMessage.sendError(event.getPlayer(), "You cannot breed horses, buy them from the stable.");
-						event.setCancelled(true);
-						return;
 					}
 					break;
 				case CHICKEN:
 					if (inHand.getType().equals(Material.SEEDS) ||
 						inHand.getType().equals(Material.MELON_SEEDS) ||
-						inHand.getType().equals(Material.PUMPKIN_SEEDS)) {
+						inHand.getType().equals(Material.PUMPKIN_SEEDS) ||
+						inHand.getType().equals(Material.BEETROOT_SEEDS)) {
+						denyBreeding = true;
+					}
+					break;
+				case RABBIT:
+					if (inHand.getType().equals(Material.YELLOW_FLOWER) ||
+						inHand.getType().equals(Material.CARROT) ||
+						inHand.getType().equals(Material.GOLDEN_CARROT)) {
+						denyBreeding = true;
+					}
+					break;
+				case HORSE:
+					if (inHand.getType().equals(Material.GOLDEN_APPLE) ||
+						inHand.getType().equals(Material.GOLDEN_CARROT)) {
+						CivMessage.sendError(event.getPlayer(), "You cannot breed horses. Buy them from the stable.");
+						event.setCancelled(true);
+						return;
+					}
+					break;
+				case WOLF:
+					if (inHand.getType().equals(Material.BONE) ||
+						inHand.getType().equals(Material.ROTTEN_FLESH) ||
+						inHand.getType().equals(Material.RAW_BEEF) ||
+						inHand.getType().equals(Material.COOKED_BEEF) ||
+						inHand.getType().equals(Material.RAW_CHICKEN) ||
+						inHand.getType().equals(Material.COOKED_CHICKEN) ||
+						inHand.getType().equals(Material.MUTTON) ||
+						inHand.getType().equals(Material.COOKED_MUTTON) ||
+						inHand.getType().equals(Material.PORK) ||
+						inHand.getType().equals(Material.GRILLED_PORK)) {
+						CivMessage.sendError(event.getPlayer(), "You cannot taim or breed a wolf.");
+						denyBreeding = true;
+					}
+					break;
+				case OCELOT:
+					if (inHand.getType().equals(Material.RAW_FISH)) {
+						CivMessage.sendError(event.getPlayer(), "You cannot taim ocelots.");
 						denyBreeding = true;
 					}
 					break;

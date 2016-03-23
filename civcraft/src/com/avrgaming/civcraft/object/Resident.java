@@ -101,7 +101,6 @@ public class Resident extends SQLObject {
 	private boolean combatInfo = false;
 	
 	private boolean usesAntiCheat = false;
-	
 	public static HashSet<String> allchatters = new HashSet<String>();
 	
 	/* Town or civ to chat in besides your own. */
@@ -115,7 +114,6 @@ public class Resident extends SQLObject {
 	private int campID = 0;
 	private boolean dontSaveTown = false;
 	private String timezone;
-	
 	private boolean banned = false;
 	
 	private long registered;
@@ -143,15 +141,16 @@ public class Resident extends SQLObject {
 	public String desiredTownName;
 	public Location desiredTownLocation = null;
 	public Template desiredTemplate = null;
+	public boolean allchat = false;
 	
-	public boolean allchat = false; 
+	//XXX Admin Essentials
+	private boolean flying = false;
 	
-	/* XXX 
-	 * This buildable is used as place to store which buildable we're working on when interacting 
+	
+	/* XXX This buildable is used as place to store which buildable we're working on when interacting 
 	 * with GUI items. We want to be able to pass the buildable object to the GUI's action function,
 	 * but there isn't a good way to do this ATM. If we had a way to send arbitary objects it would
-	 * be better. Could we store it here on the resident object?
-	 */
+	 * be better. Could we store it here on the resident object? */
 	public Buildable pendingBuildable;
 	public ConfigBuildableInfo pendingBuildableInfo;
 	public CallbackInterface pendingCallback;
@@ -1644,5 +1643,15 @@ public class Resident extends SQLObject {
 	
 	public void setUUID(UUID uid) {
 		this.uid = uid;
+	}
+	
+	
+	//XXX Admin Essentials
+	public boolean isFlying() {
+		return flying;
+	}
+	
+	public void setFlying(boolean f) {
+		flying = f;
 	}
 }

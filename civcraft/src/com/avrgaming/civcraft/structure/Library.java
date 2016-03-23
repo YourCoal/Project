@@ -65,14 +65,20 @@ public class Library extends Structure {
 		if (name.equalsIgnoreCase("projectile_protection")) {
 			return Enchantment.PROTECTION_PROJECTILE;
 		}
+		if (name.equalsIgnoreCase("feather_falling")) {
+			return Enchantment.PROTECTION_FALL;
+		}
 		if (name.equalsIgnoreCase("respiration")) {
 			return Enchantment.OXYGEN;
 		}
 		if (name.equalsIgnoreCase("aqua_affinity")) {
 			return Enchantment.WATER_WORKER;
 		}
-		if (name.equalsIgnoreCase("feather_falling")) {
-			return Enchantment.PROTECTION_FALL;
+		if (name.equalsIgnoreCase("thorns")) {
+			return Enchantment.THORNS;
+		}
+		if (name.equalsIgnoreCase("depth_strider")) {
+			return Enchantment.DEPTH_STRIDER;
 		}
 		if (name.equalsIgnoreCase("frost_walker")) {
 			return Enchantment.FROST_WALKER;
@@ -111,9 +117,6 @@ public class Library extends Structure {
 		if (name.equalsIgnoreCase("fortune")) {
 			return Enchantment.LOOT_BONUS_BLOCKS;
 		}
-		if (name.equalsIgnoreCase("mending")) {
-			return Enchantment.MENDING;
-		}
 		
 		// Bow Enchantments
 		if (name.equalsIgnoreCase("power")) {
@@ -129,8 +132,19 @@ public class Library extends Structure {
 			return Enchantment.ARROW_INFINITE;
 		}
 		
-		return null;
+		// Fishing Rod Enchantments
+		if (name.equalsIgnoreCase("luck_ofthe_sea")) {
+			return Enchantment.LUCK;
+		}
+		if (name.equalsIgnoreCase("lure")) {
+			return Enchantment.LURE;
+		}
 		
+		// Other Enchantments
+		if (name.equalsIgnoreCase("mending")) {
+			return Enchantment.MENDING;
+		}
+		return null;
 	}
 
 	public double getNonResidentFee() {

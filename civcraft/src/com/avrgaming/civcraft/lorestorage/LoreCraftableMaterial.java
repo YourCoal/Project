@@ -435,13 +435,13 @@ public class LoreCraftableMaterial extends LoreMaterial {
 		
 	}
 
-	@Override
-	public boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack) {
-		for (ItemComponent comp : this.components.values()) {
-			comp.onAttack(event, stack);
-		}
-		return false;
-	}
+//	@Override
+//	public boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack) {
+//		for (ItemComponent comp : this.components.values()) {
+//			comp.onAttack(event, stack);
+//		}
+//		return false;
+//	}
 
 	@Override
 	public void onInvItemPickup(InventoryClickEvent event, Inventory fromInv,
@@ -538,13 +538,13 @@ public class LoreCraftableMaterial extends LoreMaterial {
 		this.components.put(itemComp.getName(), itemComp);
 	}
 
-	@Override
-	public void onDefense(EntityDamageByEntityEvent event, ItemStack stack) {
-		/* Search components for defense value. */
-		for (ItemComponent comp : this.components.values()) {
-			comp.onDefense(event, stack);
-		}
-	}
+//	@Override
+//	public void onDefense(EntityDamageByEntityEvent event, ItemStack stack) {
+//		/* Search components for defense value. */
+//		for (ItemComponent comp : this.components.values()) {
+//			comp.onDefense(event, stack);
+//		}
+//	}
 
 	public void onItemDurabilityChange(PlayerItemDamageEvent event) {
 		for (ItemComponent comp : this.components.values()) {
@@ -600,11 +600,11 @@ public class LoreCraftableMaterial extends LoreMaterial {
 	}
 
 
-	public void onRangedAttack(EntityDamageByEntityEvent event, ItemStack inHand) {
-		for (ItemComponent comp : this.components.values()) {
-			comp.onRangedAttack(event, inHand);
-		}
-	}
+//	public void onRangedAttack(EntityDamageByEntityEvent event, ItemStack inHand) {
+//		for (ItemComponent comp : this.components.values()) {
+//			comp.onRangedAttack(event, inHand);
+//		}
+//	}
 
 
 	public ItemChangeResult onDurabilityDeath(PlayerDeathEvent event, ItemStack stack) {

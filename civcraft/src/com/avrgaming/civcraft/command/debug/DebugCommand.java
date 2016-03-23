@@ -383,10 +383,11 @@ public class DebugCommand extends CommandBase {
 						Player player = (Player)sender;
 						ConfigBuildableInfo info = new ConfigBuildableInfo();
 						info.tile = false;
+						info.outpost = false;
 						info.templateYShift = 0;
 						Location center = Buildable.repositionCenterStatic(player.getLocation(), info, 
 								Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
-
+						
 						CivMessage.send(sender, "Building from "+start_x+","+start_y+","+start_z);
 						for (int y = start_y; y < tpl.size_y; y++) {
 							for (int x = start_x; x < tpl.size_x; x++) {

@@ -18,13 +18,10 @@
  */
 package com.avrgaming.civcraft.threading.timers;
 
-import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.avrgaming.civcraft.config.CivSettings;
-import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
@@ -98,11 +95,8 @@ public class EffectEventTimer extends CivAsyncTask {
 			
 		}
 		
-		/*
-		 * Process any hourly attributes for this town.
-		 *  - Culture
-		 *  
-		 */
+		/* Process any hourly attributes for this town.
+		 * - Culture */
 		for (Town town : CivGlobal.getTowns()) {
 			double cultureGenerated;
 			
@@ -114,48 +108,19 @@ public class EffectEventTimer extends CivAsyncTask {
 			}
 							
 			AttrSource cultureSources = town.getCulture();
-			
 			// Get amount generated after culture rate/bonus.
 			cultureGenerated = cultureSources.total;
 			cultureGenerated = Math.round(cultureGenerated);
 			town.addAccumulatedCulture(cultureGenerated);
-			
-			// Get from unused beakers.
-			DecimalFormat df = new DecimalFormat();
-			double unusedBeakers = town.getUnusedBeakers();
-	
-			try {
-				double cultureToBeakerConversion = CivSettings.getDouble(CivSettings.cultureConfig, "beakers_per_culture");
-				if (unusedBeakers > 0) {
-					double cultureFromBeakers = unusedBeakers*cultureToBeakerConversion;
-					cultureFromBeakers = Math.round(cultureFromBeakers);
-					unusedBeakers = Math.round(unusedBeakers);
-					
-					if (cultureFromBeakers > 0) {
-						CivMessage.sendTown(town, CivColor.LightGreen+"Converted "+CivColor.LightPurple+
-								df.format(unusedBeakers)+CivColor.LightGreen+" beakers into "+CivColor.LightPurple+
-								df.format(cultureFromBeakers)+CivColor.LightGreen+" culture since no tech was being researched.");
-						cultureGenerated += cultureFromBeakers;
-						town.addAccumulatedCulture(unusedBeakers);
-						town.setUnusedBeakers(0);
-					}
-				}
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-			
 			cultureGenerated = Math.round(cultureGenerated);
 			CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.LightPurple+cultureGenerated+CivColor.LightGreen+" culture.");
 		}
-		
 		/* Checking for expired vassal states. */
 		CivGlobal.checkForExpiredRelations();
 	}
 	
 	@Override
 	public void run() {
-		
 		if (runningLock.tryLock()) {
 			try {
 				processTick();
@@ -164,10 +129,6 @@ public class EffectEventTimer extends CivAsyncTask {
 			}
 		} else {
 			CivLog.error("COULDN'T GET LOCK FOR HOURLY TICK. LAST TICK STILL IN PROGRESS?");
-		}
-		
-				
+		}	
 	}
-	
-
 }

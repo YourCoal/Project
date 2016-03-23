@@ -30,6 +30,7 @@ public class FoundWarCamp extends ItemComponent implements CallbackInterface {
 		info.ignore_floating = false;
 		info.template_base_name = "warcamp";
 		info.tile = false;
+		info.outpost = false;
 		info.templateYShift = -1;
 		info.max_hitpoints = 100;
 	}

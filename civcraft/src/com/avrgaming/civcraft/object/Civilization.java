@@ -32,6 +32,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -66,6 +67,7 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.DateUtil;
 import com.avrgaming.civcraft.util.ItemManager;
+import com.connorlinfoot.titleapi.TitleAPI;
 
 public class Civilization extends SQLObject {
 
@@ -120,9 +122,8 @@ public class Civilization extends SQLObject {
 	
 	public Civilization(String name, String capitolName, Resident leader) throws InvalidNameException {
 		this.setName(name);
-		this.leaderName = leader.getName();
+		this.leaderName = leader.getUUID().toString();
 		this.setCapitolName(capitolName);
-		
 		this.government = CivSettings.governments.get("gov_tribalism");		
 		this.color = this.pickCivColor();		
 		this.setTreasury(new EconObject(this));
@@ -170,7 +171,7 @@ public class Civilization extends SQLObject {
 					"`adminCiv` boolean DEFAULT false,"+
 					"`conquered` boolean DEFAULT false,"+
 					"`conquered_date` long,"+
-				    "`created_date` long," +
+					"`created_date` long," +
 					"UNIQUE KEY (`name`), " +
 				"PRIMARY KEY (`id`)" + ")";
 			
@@ -188,13 +189,8 @@ public class Civilization extends SQLObject {
 	public void load(ResultSet rs) throws SQLException, InvalidNameException {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));		
-
-		if (CivGlobal.useUUID) {
-			leaderName = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("leaderName"))).getName();
-		} else {
-			leaderName = rs.getString("leaderName");		
-		}
-		
+		String resUUID = rs.getString("leaderName");
+		leaderName = resUUID;
 		capitolName = rs.getString("capitolName");
 		setLeaderGroupName(rs.getString("leaderGroupName"));
 		setAdvisersGroupName(rs.getString("advisersGroupName"));
@@ -244,11 +240,7 @@ public class Civilization extends SQLObject {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-		if (CivGlobal.useUUID) {
-			hashmap.put("leaderName", this.getLeader().getUUIDString());
-		} else {
-			hashmap.put("leaderName", leaderName);			
-		}
+		hashmap.put("leaderName", this.getLeader().getUUIDString());
 		hashmap.put("capitolName", this.capitolName);
 		hashmap.put("leaderGroupName", this.getLeaderGroupName());
 		hashmap.put("advisersGroupName", this.getAdvisersGroupName());
@@ -352,7 +344,7 @@ public class Civilization extends SQLObject {
 		return true;
 	}
 	
-	private boolean hasTech(String configId) {
+	boolean hasTech(String configId) {
 		if (configId == null || configId.equals("")) {
 			return true;
 		}
@@ -404,11 +396,11 @@ public class Civilization extends SQLObject {
 	}
 
 	public Resident getLeader() {
-		return CivGlobal.getResident(leaderName);
+		return CivGlobal.getResidentViaUUID(UUID.fromString(leaderName));
 	}
 
 	public void setLeader(Resident leader) {
-		this.leaderName = leader.getName();
+		this.leaderName = leader.getUUID().toString();
 	}
 
 	@Override
@@ -487,12 +479,9 @@ public class Civilization extends SQLObject {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static void newCiv(String name, String capitolName, Resident resident, Player player, Location loc) throws CivException {
-		
+	public static void newCiv(String name, String capitolName, final Resident resident, Player player, Location loc) throws CivException {
 		ItemStack stack = player.getItemInHand();
-		/*
-		 * Verify we have the correct item somewhere in our inventory.
-		 */
+		/* Verify we have the correct item somewhere in our inventory. */
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 		if (craftMat == null || !craftMat.hasComponent("FoundCivilization")) {
 			throw new CivException("You must be holding an item that can found a Civilization.");
@@ -528,7 +517,7 @@ public class Civilization extends SQLObject {
 		}
 		
 		try {
-			Civilization civ = new Civilization(name, capitolName, resident);
+			final Civilization civ = new Civilization(name, capitolName, resident);
 			try {
 				civ.saveNow();
 			} catch (SQLException e) {
@@ -564,6 +553,27 @@ public class Civilization extends SQLObject {
 			CivGlobal.addCiv(civ);
 			ItemStack newStack = new ItemStack(Material.AIR);
 			player.setItemInHand(newStack);
+			
+			//XXX New 1.1.1 version
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						for (Player pl : Bukkit.getOnlinePlayers()) {
+							TitleAPI.sendTitle(pl, 20, 5*20, 20, CivColor.LightBlue+CivColor.BOLD+"New Civilization!",
+									CivColor.LightGray+CivColor.ITALIC+CivColor.BOLD+resident.getName()+CivColor.LightGray+CivColor.ITALIC+" created a new civilization!");
+							Thread.sleep(5500);
+							TitleAPI.sendTitle(pl, 20, 5*20, 20, CivColor.LightBlue+CivColor.BOLD+"New Civilization!",
+									CivColor.LightGray+CivColor.ITALIC+"Civilization of "+CivColor.BOLD+civ.getName()+CivColor.LightGray+CivColor.ITALIC+" was founded!");
+							Thread.sleep(5500);
+							TitleAPI.sendTitle(pl, 20, 5*20, 20, CivColor.LightBlue+CivColor.BOLD+"New Civilization!",
+									CivColor.LightGray+CivColor.ITALIC+"Capitol name is "+CivColor.BOLD+civ.getCapitolName()+CivColor.LightGray+CivColor.ITALIC+"!");
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+			
 			CivMessage.global("The Civilization of "+civ.getName()+" has been founded! "+civ.getCapitolName()+" is it's capitol!");
 		} catch (InvalidNameException e) {
 			throw new CivException("The name of "+name+" is invalid, please choose another.");
@@ -1668,10 +1678,6 @@ public class Civilization extends SQLObject {
 				((EndConditionScience)scienceVictory).addExtraBeakersToCiv(this, beakerTotal);
 				return;
 			}
-		}
-		
-		for (Town town : this.towns.values()) {
-			town.addUnusedBeakers(town.getBeakers().total / BeakerTimer.BEAKER_PERIOD);
 		}
 	}
 

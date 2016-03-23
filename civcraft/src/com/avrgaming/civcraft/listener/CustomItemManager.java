@@ -26,8 +26,6 @@ import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,7 +33,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -56,14 +53,11 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.avrgaming.civcraft.cache.ArrowFiredCache;
-import com.avrgaming.civcraft.cache.CivCache;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigRemovedRecipes;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.items.ItemDurabilityEntry;
-import com.avrgaming.civcraft.items.components.Catalyst;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.lorestorage.ItemChangeResult;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
@@ -73,7 +67,6 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
@@ -103,12 +96,9 @@ public class CustomItemManager implements Listener {
 			}
 			
 			event.setCancelled(true);
-			
 			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-			
 			try {
 				Random rand = new Random();
-
 				int min = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_min_drop");
 				int max;
 				if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
@@ -127,7 +117,72 @@ public class CustomItemManager implements Listener {
 					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_tungsten_ore"));
 					event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 				}
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onBlockBreakSpawnHammers(BlockBreakEvent event) {
+		if (event.getBlock().getType().equals(Material.COAL_ORE)) {
+//			if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+//				return;
+//			}
+			
+//			event.setCancelled(true);
+			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
+			try {
+				Random rand = new Random();
+//				int min = CivSettings.getInteger(CivSettings.materialsConfig, "hammers_min_drop");
+				int min = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_min_drop");
+				int max;
+				if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+//					max = CivSettings.getInteger(CivSettings.materialsConfig, "hammers_max_drop_fortune");
+					max = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_max_drop_with_fortune");
+				} else if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+					max = 0;
+				} else {
+//					max = CivSettings.getInteger(CivSettings.materialsConfig, "hammers_max_drop");
+					max = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_max_drop");
+				}
 				
+				int randAmount = rand.nextInt(min + max);
+				randAmount -= min;
+				if (randAmount <= 0) {
+					randAmount = 1;
+				}
+				
+				for (int i = 0; i < randAmount; i++) {
+					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"));
+					ItemStack stack2 = ItemManager.createItemStack(CivData.COAL, max/2);
+//					event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
+					
+					HashMap<Integer, ItemStack> leftovers1 = event.getPlayer().getInventory().addItem(stack1);
+					if (leftovers1 != null && leftovers1.size() >= 1) {
+						CivMessage.send(event.getPlayer(), CivColor.LightGray+CivColor.ITALIC+"Inventory full! Dropped "+stack1.getAmount()+" hammers on the ground.");
+						event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack1);
+					} else {
+						@SuppressWarnings("unused")
+						HashMap<Integer, ItemStack> inv1 = event.getPlayer().getInventory().addItem(stack1);
+					}
+					
+					HashMap<Integer, ItemStack> leftovers2 = event.getPlayer().getInventory().addItem(stack2);
+					if (leftovers2 != null && leftovers2.size() >= 1) {
+						CivMessage.send(event.getPlayer(), CivColor.LightGray+CivColor.ITALIC+"Inventory full! Dropped "+stack2.getAmount()+" coal on the ground.");
+						event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack2);
+					} else {
+						@SuppressWarnings("unused")
+						HashMap<Integer, ItemStack> inv2 = event.getPlayer().getInventory().addItem(stack2);
+					}
+					
+//					@SuppressWarnings("unused")
+//					HashMap<Integer, ItemStack> inv1 = event.getPlayer().getInventory().addItem(stack1);
+//					@SuppressWarnings("unused")
+//					HashMap<Integer, ItemStack> inv2 = event.getPlayer().getInventory().addItem(stack2);
+				}
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				return;
@@ -221,10 +276,15 @@ public class CustomItemManager implements Listener {
 	public void OnCraftItemEvent(CraftItemEvent event) {	
 		for (ItemStack stack : event.getInventory().getMatrix()) {
 			if (stack != null) {
-
 				if (LoreMaterial.isCustom(stack)) {
 					LoreMaterial.getMaterial(stack).onItemCraft(event);
 				}
+				
+//				if (event.getInventory().getItem(276) != null) {
+//					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId("civ:hammer");
+//					ItemStack stk = LoreCraftableMaterial.spawn(craftMat);
+//					stk.setAmount(1);
+//				}
 			}
 		}
 	}
@@ -255,72 +315,6 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerDefenseAndAttack(EntityDamageByEntityEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
-		
-		Player defendingPlayer = null;
-		if (event.getEntity() instanceof Player) {
-			defendingPlayer = (Player)event.getEntity();
-		}
-		
-		if (event.getDamager() instanceof Arrow) {
-			LivingEntity shooter = (LivingEntity) ((Arrow)event.getDamager()).getShooter();
-			
-			if (shooter instanceof Player) {
-				ItemStack inHand = ((Player)shooter).getItemInHand();
-				if (LoreMaterial.isCustom(inHand)) {
-					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(inHand);
-					craftMat.onRangedAttack(event, inHand);
-				}
-			} else {
-				ArrowFiredCache afc = CivCache.arrowsFired.get(event.getDamager().getUniqueId());
-				if (afc != null) {
-					/* Arrow was fired by a tower. */
-					afc.setHit(true);
-					afc.destroy(event.getDamager());
-					
-					Resident defenderResident = CivGlobal.getResident(defendingPlayer);
-					if (defenderResident != null && defenderResident.hasTown() && 
-							defenderResident.getTown().getCiv() == afc.getFromTower().getTown().getCiv()) {
-						/* Prevent friendly fire from arrow towers. */
-						event.setCancelled(true);
-						return;
-					}
-					
-					/* Return after arrow tower does damage, do not apply armor defense. */
-					event.setDamage((double)afc.getFromTower().getDamage());
-					return;
-				}
-			}
-		} else if (event.getDamager() instanceof Player) {
-			ItemStack inHand = ((Player)event.getDamager()).getItemInHand();
-			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(inHand);
-			if (craftMat != null) {
-				craftMat.onAttack(event, inHand);
-			} else {
-				/* Non-civcraft items only do 0.5 damage. */
-				event.setDamage(0.5);
-			}
-		}
-		
-		if (defendingPlayer == null) {
-			if (event.getEntity() instanceof LivingEntity) {
-			}
-			return;
-		} else {
-			/* Search equipt items for defense event. */
-			for (ItemStack stack : defendingPlayer.getEquipment().getArmorContents()) {
-				if (LoreMaterial.isCustom(stack)) {
-					LoreMaterial.getMaterial(stack).onDefense(event, stack);
-				}
-			}
-		}
-	}
-		
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnInventoryClose(InventoryCloseEvent event) {
 		for (ItemStack stack : event.getInventory().getContents()) {
@@ -947,36 +941,6 @@ public class CustomItemManager implements Listener {
 		//	removeUnwantedVanillaItems((Player)event.getWhoClicked(), event.getView().getBottomInventory());			
 		//}
 	}
-		
-	public LoreCraftableMaterial getCompatibleCatalyst(LoreCraftableMaterial craftMat) {
-		/* Setup list of catalysts to refund. */
-		LinkedList<LoreMaterial> cataList = new LinkedList<LoreMaterial>();
-		cataList.add(LoreMaterial.materialMap.get("mat_common_attack_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_common_defense_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_uncommon_attack_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_uncommon_defense_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_rare_attack_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_rare_defense_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_legendary_attack_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_legendary_defense_catalyst"));
-		
-		for (LoreMaterial mat : cataList) {
-			LoreCraftableMaterial cMat = (LoreCraftableMaterial)mat;
-			
-			Catalyst cat = (Catalyst)cMat.getComponent("Catalyst");
-			String allowedMats = cat.getString("allowed_materials");
-			String[] matSplit = allowedMats.split(",");
-			
-			for (String mid : matSplit) {
-				if (mid.trim().equalsIgnoreCase(craftMat.getId())) {
-					return cMat;
-				}
-			}
-			
-		}
-		return null;
-	}
-	
 	
 //	/*
 //	 * Checks a players inventory and inventories that are opened for items.

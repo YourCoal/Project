@@ -169,10 +169,10 @@ public class UnitItemMaterial extends LoreMaterial {
 		this.socketSlot = socketSlot;
 	}
 
-	@Override
-	public boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack) {
-		return false;
-	}
+//	@Override
+//	public boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack) {
+//		return false;
+//	}
 
 	@Override
 	public void onPlayerDeath(EntityDeathEvent event, ItemStack stack) {		

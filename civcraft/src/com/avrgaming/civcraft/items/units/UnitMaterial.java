@@ -444,10 +444,10 @@ public class UnitMaterial extends LoreMaterial {
 		
 	}
 
-	@Override
-	public boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack) {
-		return false;
-	}
+//	@Override
+//	public boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack) {
+//		return false;
+//	}
 
 	@Override
 	public void onPlayerDeath(EntityDeathEvent event, ItemStack stack) {

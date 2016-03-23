@@ -52,6 +52,7 @@ public class ConfigBuildableInfo {
 	public Boolean isWonder = false;
 	public Integer regenRate = 0;
 	public Boolean tile = false;
+	public Boolean outpost = false;
 	public Integer points = 0;
 	public boolean allow_demolish = false;
 	public boolean strategic = false;
@@ -126,11 +127,18 @@ public class ConfigBuildableInfo {
 				}
 			
 			
-			Boolean tileImprovement = (Boolean)obj.get("tile");
-			if (tileImprovement != null && tileImprovement == true) {
+			Boolean tile = (Boolean)obj.get("tile");
+			if (tile != null && tile == true) {
 				sinfo.tile = true;
 			} else {
 				sinfo.tile = false;
+			}
+			
+			Boolean outpost = (Boolean)obj.get("outpost");
+			if (outpost != null && outpost == true) {
+				sinfo.outpost = true;
+			} else {
+				sinfo.outpost = false;
 			}
 			
 			Boolean allowDemolish = (Boolean)obj.get("allow_demolish");
