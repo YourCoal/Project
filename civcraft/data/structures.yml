@@ -881,7 +881,7 @@ structures:
         - name: 'AttributeWarUnhappiness'
           value: '-3.0'
   
-  - id: ti_windmill
+  - id: s_windmill
     template: windmill
     template_y_shift: 0
     displayName: Windmill

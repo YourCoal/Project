@@ -36,11 +36,8 @@ public class AnnouncementTimer implements Runnable {
 	
 	
 	public AnnouncementTimer(String filename) {
-		
 		File file = new File(filename);
-		
 		announcements = new ArrayList<String>();
-		
 		if (!file.exists()) {
 			CivLog.warning("No "+filename+" to run announcements on.");
 			return;
@@ -48,33 +45,26 @@ public class AnnouncementTimer implements Runnable {
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
-			
 			String line;
 			try {
 				while ((line = br.readLine()) != null) {
 					announcements.add(line);
 				}
-		
 				br.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 				return;
 			}
-			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return;
 		}
-		
 	}
-	
 	
 	@Override
 	public void run() {		
-		
 		for (String str : announcements) {
 			CivMessage.sendAll(CivColor.Gold+"Tip: "+CivColor.White+str);
-			
 			try {
 				Thread.sleep(60*5*1000); //sleep for 5 mins
 			} catch (InterruptedException e) {
@@ -83,5 +73,4 @@ public class AnnouncementTimer implements Runnable {
 			} 
 		}
 	}
-
 }

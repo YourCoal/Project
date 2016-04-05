@@ -240,7 +240,8 @@ public class DiplomacyManager {
 		}
 		switch (relation.getStatus()) {
 		case WAR:
-		case HOSTILE:
+//		case HOSTILE:
+		case WAR_HOSTILE:
 			return true;
 		default:
 			return false;

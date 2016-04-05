@@ -37,7 +37,7 @@ import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
 
-public class FoundCivilization extends ItemComponent implements CallbackInterface{
+public class FoundCivilization extends ItemComponent implements CallbackInterface {
 	
 	@Override
 	public void onPrepareCreate(AttributeUtil attrUtil) {

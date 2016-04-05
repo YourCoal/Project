@@ -14,6 +14,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.SimpleBlock;
 
+@SuppressWarnings("unused")
 public class Quarry extends Structure {
 	
 	//XXX Level 1
@@ -95,6 +96,7 @@ public class Quarry extends Structure {
 		return "minecart";
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	public double getChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {

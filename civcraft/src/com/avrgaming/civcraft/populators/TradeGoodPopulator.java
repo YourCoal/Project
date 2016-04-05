@@ -177,10 +177,16 @@ public class TradeGoodPopulator extends BlockPopulator {
 			
 			// Determine if we should be a water good.
 			ConfigTradeGood good;
+			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.TREE_LEAF ||
+					ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.TREE_LEAF2)  {
+				CivLog.warning("Canceled TradeGoodPopulator.java Task. Reason: Tried spawning illegally.");
+				good = pick.none;
+			}
+			
 			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_STILL || 
 				ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
 				good = pick.waterPick;
-			}  else {
+			} else {
 				good = pick.landPick;
 			}
 			
@@ -193,7 +199,5 @@ public class TradeGoodPopulator extends BlockPopulator {
 			// Create a copy and save it in the global hash table.
 			buildTradeGoodie(good, coord, world, false);
     	}
- 	
     }
-
 }

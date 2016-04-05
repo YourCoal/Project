@@ -461,7 +461,7 @@ public class TownCommand extends CommandBase {
 		synchronized(CivGlobal.townScores) {
 			int i = 1;
 			for (Integer score : CivGlobal.townScores.descendingKeySet()) {
-				CivMessage.send(sender, i+") "+CivColor.Gold+CivGlobal.townScores.get(score).getName()+CivColor.White+" - "+score+" points");
+				CivMessage.send(sender, i+") "+CivColor.Gold+CivGlobal.townScores.get(score).getName()+CivColor.White+" - "+score+" Points");
 				i++;
 				if (i > 5) {
 					break;

@@ -69,7 +69,6 @@ public class Market extends Structure {
 	
 	public static void globalSignUpdate(int id) {
 		for (Market market : CivGlobal.getMarkets()) {
-			
 			LinkedList<StructureSign> signs = market.signIndex.get(id);
 			if (signs == null) {
 				continue;
@@ -259,11 +258,4 @@ public class Market extends Structure {
 			break;
 		}
 	}
-
-	
-
-	
-	
-
-	
 }

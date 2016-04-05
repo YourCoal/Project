@@ -38,7 +38,8 @@ public class CivData {
 	public static final byte DATA_BIRCH = 2;
 	public static final byte DATA_JUNGLE = 3;
 	
-	//XXX Common Wood Types
+	//XXX Common Data Types
+	public static final int DATA_0 = 0;
 	public static final int DATA_1 = 1;
 	public static final int DATA_2 = 2;
 	public static final int DATA_3 = 3;
@@ -98,6 +99,10 @@ public class CivData {
 	public static final int OBSIDIAN = 49;
 	public static final int TORCH = 50;
 	
+	public static final int STONE_BRICK = 98;
+	
+	public static final int TREE_LEAF2 = 161;
+	
 	public static final int BEETROOT_CROP = 207;
 	
 	public static final int BEETROOT_SEEDS = 435;
@@ -147,7 +152,6 @@ public class CivData {
 	public static final int GLOWSTONE = 89;
 	public static final int DYE = 351;
 	public static final int REDSTONE_TORCH_OFF = 75;
-	public static final int STONE_BRICK = 98;
 
 	
 	public static final byte CHEST_NORTH = 0x2;

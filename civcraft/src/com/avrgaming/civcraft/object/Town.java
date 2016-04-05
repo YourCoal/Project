@@ -340,7 +340,6 @@ public class Town extends SQLObject {
 	
 	@Override
 	public void delete() throws SQLException {
-		
 		/* Remove all our Groups */
 		for (PermissionGroup grp : this.groups.values()) {
 			grp.delete();
@@ -2356,7 +2355,6 @@ public class Town extends SQLObject {
 
 	public void incrementDaysInDebt() {
 		daysInDebt++;
-
 		if (daysInDebt >= CivSettings.TOWN_DEBT_GRACE_DAYS) {
 			if (daysInDebt >= CivSettings.TOWN_DEBT_SELL_DAYS) {
 				this.disband();
@@ -2364,12 +2362,10 @@ public class Town extends SQLObject {
 				return;
 			}
 		}
-		
 		CivMessage.global("Town of "+this.getName()+" is in debt! "+getDaysLeftWarning());
 	}
 	
 	public String getDaysLeftWarning() {
-		
 		if (daysInDebt < CivSettings.TOWN_DEBT_GRACE_DAYS) {
 			return ""+(CivSettings.TOWN_DEBT_GRACE_DAYS-daysInDebt)+" days until town goes up for sale.";
 		}
@@ -2377,7 +2373,6 @@ public class Town extends SQLObject {
 		if (daysInDebt < CivSettings.TOWN_DEBT_SELL_DAYS) {
 			return this.getName()+" is up for sale, "+(CivSettings.TOWN_DEBT_SELL_DAYS-daysInDebt)+" days until the town is deleted!";
 		}
-		
 		return "";
 	}
 

@@ -281,14 +281,13 @@ public class CivCommand extends CommandBase {
 		synchronized(CivGlobal.civilizationScores) {
 			int i = 1;
 			for (Integer score : CivGlobal.civilizationScores.descendingKeySet()) {
-				CivMessage.send(sender, i+") "+CivColor.Gold+CivGlobal.civilizationScores.get(score).getName()+CivColor.White+" - "+score+" points");
+				CivMessage.send(sender, i+") "+CivColor.Gold+CivGlobal.civilizationScores.get(score).getName()+CivColor.White+" - "+score+" Points");
 				i++;
 				if (i > 5) {
 					break;
 				}
 			}
 		}
-		
 	}
 	
 	public void dip_cmd() {

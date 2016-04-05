@@ -107,14 +107,12 @@ public class Blacksmith extends Structure {
 		int special_id = Integer.valueOf(sign.getAction());
 		
 		Date now = new Date();
-		
-		long diff = now.getTime() - lastUse.getTime();
+		long diff = now.getTime()-lastUse.getTime();
 		diff /= 1000;
 		
 		if (diff < Blacksmith.COOLDOWN) {
 			throw new CivException("Blacksmith is on cooldown. Please wait another "+(Blacksmith.COOLDOWN - diff)+" seconds.");
 		}
-		
 		lastUse = now;
 		
 		switch (special_id) {

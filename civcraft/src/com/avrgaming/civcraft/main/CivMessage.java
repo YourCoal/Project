@@ -194,6 +194,13 @@ public class CivMessage {
 		}
 	}
 	
+	public static void globalPerk(String string) {
+		CivLog.info("[GlobalPerk] "+string);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			player.sendMessage(CivColor.LightBlue+"[Global "+CivColor.LightPurple+"Perk"+CivColor.LightBlue+"] "+CivColor.White+string);
+		}
+	}
+	
 	public static void sendTown(Town town, String string) {
 		CivLog.info("[Town:"+town.getName()+"] "+string);
 		for (Resident resident : town.getResidents()) {
@@ -472,20 +479,6 @@ public class CivMessage {
 		return names;
 	}
 
-	public static void sendTownSound(Town town, Sound sound, float f, float g) {
-		for (Resident resident : town.getResidents()) {
-			Player player;
-			try {
-				player = CivGlobal.getPlayer(resident);
-				
-				player.playSound(player.getLocation(), sound, f, g);
-			} catch (CivException e) {
-				//player not online.
-			}
-		}
-		
-	}
-
 	public static void sendAll(String str) {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			player.sendMessage(str);
@@ -505,6 +498,16 @@ public class CivMessage {
 		}
 	}
 
+	public static void sendSuccess(Resident resident, String message) {
+		try {
+			Player player = CivGlobal.getPlayer(resident);
+			sendSuccess(player, message);
+		} catch (CivException e) {
+			return;
+		}
+	}
+	
+	//XXX Towns
 	public static void sendTownHeading(Town town, String string) {
 		CivLog.info("[Town:"+town.getName()+"] "+string);
 		for (Resident resident : town.getResidents()) {
@@ -522,13 +525,29 @@ public class CivMessage {
 			}
 		}
 	}
-
-	public static void sendSuccess(Resident resident, String message) {
-		try {
-			Player player = CivGlobal.getPlayer(resident);
-			sendSuccess(player, message);
-		} catch (CivException e) {
-			return;
+	
+	public static void sendTownSound(Town town, Sound sound, float f, float g) {
+		for (Resident resident : town.getResidents()) {
+			Player player;
+			try {
+				player = CivGlobal.getPlayer(resident);
+				player.playSound(player.getLocation(), sound, f, g);
+			} catch (CivException e) {
+			}
+		}
+	}
+	
+	//XXX Civs
+	public static void sendCivSound(Civilization civ, Sound sound, float f, float g) {
+		for (Town t : civ.getTowns()) {
+			for (Resident resident : t.getResidents()) {
+				Player player;
+				try {
+					player = CivGlobal.getPlayer(resident);
+					player.playSound(player.getLocation(), sound, f, g);
+				} catch (CivException e) {
+				}
+			}
 		}
 	}
 }

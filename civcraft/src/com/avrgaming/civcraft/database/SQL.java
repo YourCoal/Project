@@ -177,7 +177,7 @@ public class SQL {
 		CivLog.heading("Building Global Tables!!");
 		ScoreManager.init();
 		
-		CivLog.info("----- Done Building Tables ----");
+		CivLog.info("-------- Done Building Tables --------");
 		
 	}
 	

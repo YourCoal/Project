@@ -455,9 +455,8 @@ public abstract class Buildable extends SQLObject {
 		this.setCorner(new BlockCoord(centerLoc));
 		
 		CivMessage.sendHeading(player, "Building a Structure");
-		CivMessage.send(player, CivColor.Yellow+ChatColor.BOLD+"We've placed a bedrock outline, only visible to you which outlines "+
-				" the structure's location.");
-		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"If this location looks good, type 'yes'. Otherwise, type anything else to cancel building.");
+		CivMessage.send(player, CivColor.Yellow+ChatColor.BOLD+"We've placed a bedrock outline, which outlines the structure's location.");
+		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"If this looks good, type 'yes'. Otherwise, type anything else to cancel.");
 		Resident resident = CivGlobal.getResident(player);
 		resident.startPreviewTask(tpl, centerLoc.getBlock(), player.getUniqueId());
 		

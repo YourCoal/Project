@@ -49,7 +49,7 @@ public class CivLog {
 	}
 	
 	public static void heading(String title) {
-		plugin.getLogger().info("========= "+title+" =========");
+		plugin.getLogger().info("======== "+title+" ========");
 	}
 	
 	public static void info(String message) {

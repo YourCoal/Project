@@ -14,7 +14,6 @@ public class PvPTimer implements Runnable {
 
 	@Override
 	public void run() {
-		
 		for (Resident resident : CivGlobal.getResidents()) {
 			if (!resident.isProtected()) {
 				continue;

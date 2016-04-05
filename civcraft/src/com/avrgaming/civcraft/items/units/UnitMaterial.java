@@ -291,9 +291,7 @@ public class UnitMaterial extends LoreMaterial {
 	}
 
 	@Override
-	public void onInvItemPickup(InventoryClickEvent event,
-			Inventory fromInv, ItemStack stack) {
-
+	public void onInvItemPickup(InventoryClickEvent event, Inventory fromInv, ItemStack stack) {
 		if (fromInv.getHolder() instanceof Player) {
 			Player player = (Player)fromInv.getHolder();			
 			onItemFromPlayer(player, stack);
@@ -429,6 +427,7 @@ public class UnitMaterial extends LoreMaterial {
 	/*
 	 * Called when a unit material is added to a player.
 	 */
+	
 	public void onItemToPlayer(Player player, ItemStack stack) {
 	}
 

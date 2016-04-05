@@ -453,7 +453,7 @@ public class PlayerListener implements Listener {
 			Resident defenderResident = CivGlobal.getResident(defender);
 			if (defenderResident.isCombatInfo()) {	
 				if (attacker != null) {
-					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+
+					CivMessage.send(defender, CivColor.LightGray+"  [Combat] Took "+CivColor.Rose+damage+
 							" damage "+CivColor.LightGray+" from "+CivColor.LightPurple+attacker.getName());				
 				} else {
 					String entityName = null;
@@ -466,7 +466,7 @@ public class PlayerListener implements Listener {
 						entityName = event.getDamager().getType().toString();
 					}
 					
-					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+
+					CivMessage.send(defender, CivColor.LightGray+"  [Combat] Took "+CivColor.Rose+damage+
 							" damage "+CivColor.LightGray+" from a "+entityName);
 				}
 			}
@@ -476,7 +476,7 @@ public class PlayerListener implements Listener {
 			Resident attackerResident = CivGlobal.getResident(attacker);
 			if (attackerResident.isCombatInfo()) {
 				if (defender != null) {
-					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to "+CivColor.LightPurple+defender.getName());
+					CivMessage.send(attacker, CivColor.LightGray+"  [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to "+CivColor.LightPurple+defender.getName());
 				} else {
 					String entityName = null;
 					
@@ -488,13 +488,9 @@ public class PlayerListener implements Listener {
 						entityName = event.getDamager().getType().toString();
 					}
 					
-					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to a "+entityName);
+					CivMessage.send(attacker, CivColor.LightGray+"  [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to a "+entityName);
 				}
 			}
 		}
-		
-		
-		
-		
 	}
 }

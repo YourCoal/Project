@@ -91,7 +91,12 @@ import com.avrgaming.global.perks.components.CustomPersonalTemplate;
 import com.avrgaming.global.perks.components.CustomTemplate;
 
 public class Resident extends SQLObject {
-
+	
+	//XXX ADDING THIS NOW
+//	private int resident_level = 0; //This may not be needed
+	@SuppressWarnings("unused")
+	private int resident_xp = 0;
+	
 	private Town town = null;
 	private Camp camp = null;
 	private boolean campChat = false;
@@ -203,6 +208,8 @@ public class Resident extends SQLObject {
 					"`friends` mediumtext," + 
 					"`debt` double DEFAULT 0," +
 					"`coins` double DEFAULT 0," +
+					//XXX Attempting XP system
+					"`xp` int(11)," +
 					"`daysTilEvict` mediumint DEFAULT NULL," +
 					"`givenKit` bool NOT NULL DEFAULT '0'," +
 					"`camp_id` int(11)," +
@@ -217,7 +224,6 @@ public class Resident extends SQLObject {
 					"`debug_civ` mediumtext DEFAULT NuLL,"+
 					"UNIQUE KEY (`name`), " +
 					"PRIMARY KEY (`id`)" + ")";
-			
 			SQL.makeTable(table_create);
 			CivLog.info("Created "+TABLE_NAME+" table");
 		} else {
@@ -291,6 +297,8 @@ public class Resident extends SQLObject {
 		
 		this.treasury = new EconObject(this);
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
+		//XXX Enable this when made
+//		this.getXP().setXP(rs.getInt("xp"), false);
 		this.setGivenKit(rs.getBoolean("givenKit"));
 		this.setTimezone(rs.getString("timezone"));
 		this.loadFlagSaveString(rs.getString("flags"));
@@ -344,7 +352,6 @@ public class Resident extends SQLObject {
 		this.setDaysTilEvict(rs.getInt("daysTilEvict"));
 		this.getTreasury().setDebt(rs.getDouble("debt"));
 		this.loadFriendsFromSaveString(rs.getString("friends"));
-		
 	}
 
 	private void setTimezoneToServerDefault() {
@@ -431,9 +438,7 @@ public class Resident extends SQLObject {
 	
 	@Override
 	public void saveNow() throws SQLException {
-		
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
-		
 		hashmap.put("name", this.getName());
 		hashmap.put("uuid", this.getUUIDString());
 		if (this.getTown() != null) {
@@ -457,6 +462,8 @@ public class Resident extends SQLObject {
 		hashmap.put("friends", this.getFriendsSaveString());
 		hashmap.put("givenKit", this.isGivenKit());
 		hashmap.put("coins", this.getTreasury().getBalance());
+		//XXX Enable when I can
+//		hashmap.put("xp", this.getXP());
 		hashmap.put("timezone", this.getTimezone());
 		hashmap.put("flags", this.getFlagSaveString());
 		hashmap.put("last_ip", this.getLastIP());
@@ -470,7 +477,6 @@ public class Resident extends SQLObject {
 				hashmap.put("debug_civ", this.getCiv().getName());
 			}
 		}
-		
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);
 	}
 	
@@ -512,6 +518,7 @@ public class Resident extends SQLObject {
 	@Override
 	public void delete() throws SQLException {	
 		SQL.deleteByName(this.getName(), TABLE_NAME);
+		CivGlobal.removeResident(this);
 	}
 
 	public EconObject getTreasury() {

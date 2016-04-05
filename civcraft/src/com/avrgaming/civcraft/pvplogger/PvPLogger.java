@@ -121,16 +121,14 @@ public class PvPLogger implements Listener, Runnable {
 				
 				if (now.before(expire)) {
 					/* Make a NPC. */
-					
 					//RemoteEntity entity = CivGlobal.entityManager.createNamedEntity(RemoteEntityType.Zombie, event.getPlayer().getLocation(), event.getPlayer().getName(), false);
-					MobLibEntity entity = MobLib.createNamedEntity("com.avrgaming.civcraft.pvplogger.LoboZombie", event.getPlayer().getLocation(), event.getPlayer().getName());
+					MobLibEntity entity = MobLib.createNamedEntity("com.moblib.mob.MobBaseZombie", event.getPlayer().getLocation(), event.getPlayer().getName());
 					//entity.setStationary(true);
 					zombiePlayers.put(event.getPlayer().getName(), new ZombiePlayer(new Date(), entity.getUid(), event.getPlayer().getName()));
 				} else {
 					/* Must be expired, remove key. */
 					taggedPlayers.remove(event.getPlayer().getName());
 				}
-				
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				return;

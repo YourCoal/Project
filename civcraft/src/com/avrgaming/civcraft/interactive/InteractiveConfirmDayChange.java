@@ -7,12 +7,12 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.CivColor;
-import com.avrgaming.global.perks.components.ChangeWeather;
+import com.avrgaming.global.perks.components.ChangeDay;
 
-public class InteractiveConfirmWeatherChange implements InteractiveResponse {
+public class InteractiveConfirmDayChange implements InteractiveResponse {
 	
-	ChangeWeather perk;
-	public InteractiveConfirmWeatherChange(ChangeWeather perk) {
+	ChangeDay perk;
+	public InteractiveConfirmDayChange(ChangeDay perk) {
 		this.perk = perk;
 	}
 	
@@ -23,15 +23,13 @@ public class InteractiveConfirmWeatherChange implements InteractiveResponse {
 			Player player;
 			try {
 				player = CivGlobal.getPlayer(resident);
-				player.getWorld().setStorm(false);
-				player.getWorld().setThundering(false);
-//				player.getWorld().setWeatherDuration((int) TimeTools.toTicks(20*60));
-				CivMessage.globalPerk(resident.getName()+" has used a "+CivColor.Yellow+CivColor.BOLD+"Weather Change"+CivColor.RESET+" token to change the weather to sunny!");
+				player.getWorld().setTime(0);
+				CivMessage.globalPerk(resident.getName()+" has used a "+CivColor.Yellow+CivColor.BOLD+"Day Change"+CivColor.RESET+" token to make it day!");
 				perk.markAsUsed(resident);
 			} catch (CivException e) {
 			}
 		} else {
-			CivMessage.send(resident, "Weather Change cancelled.");
+			CivMessage.send(resident, "Day Change cancelled.");
 		}
 	}
 }

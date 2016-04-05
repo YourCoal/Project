@@ -61,8 +61,14 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 				color = CivColor.Yellow;
 			}
 			break;
-		case HOSTILE:
-			color = CivColor.Yellow;
+//		case HOSTILE:
+//			color = CivColor.Yellow;
+//			break;
+		case WAR_HOSTILE:
+			color = CivColor.Rose+CivColor.ITALIC;
+			break;
+		case PEACE_HOSTILE:
+			color = CivColor.LightBlue+CivColor.ITALIC;
 			break;
 		case WAR:
 			color = CivColor.Rose;
@@ -214,19 +220,16 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			return;
 		}
 		lastMessageTime = now;
-
 		cultureEnterTimes.put(borderSpamKey, lastMessageTime);
 		CivMessage.sendCiv(toCc.getCiv(), color+player.getDisplayName()+"("+relationName+") has entered our borders.");
 	}
-
-
+	
 	@Override
 	public void run() {		
 		showPlotMoveMessage();
 		showResidentMap();
 	}
-
-
+	
 	private void showResidentMap() {
 		Player player;
 		try {
@@ -244,7 +247,4 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			CivMessage.send(player, AsciiMap.getMapAsString(player.getLocation()));
 		}	
 	}
-	
-	
-
 }

@@ -58,7 +58,11 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
 
 public class Barracks extends Structure {
-
+	
+	private final long COOLDOWN1 = 60;
+	private final long COOLDOWN2 = 10;
+	private Date lastUse = new Date();
+	
 	private static final long SAVE_INTERVAL = 60*1000;
 
 	private int index = 0;
@@ -152,10 +156,9 @@ public class Barracks extends Structure {
 	}
 	
 	@Override
-	public void processSignAction(Player player, StructureSign sign, PlayerInteractEvent event) {
+	public void processSignAction(Player player, StructureSign sign, PlayerInteractEvent event) throws CivException {
 		//int special_id = Integer.valueOf(sign.getAction());
 		Resident resident = CivGlobal.getResident(player);
-		
 		if (resident == null) {
 			return;
 		}
@@ -168,6 +171,14 @@ public class Barracks extends Structure {
 			changeIndex((index+1));
 			break;
 		case "train":
+			Date now1 = new Date();
+			long diff1 = now1.getTime()-lastUse.getTime();
+			diff1 /= 1000;
+			if (diff1 < COOLDOWN1) {
+				throw new CivException("Barracks training is on cooldown. Please wait another "+(COOLDOWN1-diff1)+" seconds.");
+			}
+			lastUse = now1;
+			
 			if (resident.hasTown()) {
 				try {
 				if (getTown().getAssistantGroup().hasMember(resident) || getTown().getMayorGroup().hasMember(resident)) {
@@ -181,6 +192,14 @@ public class Barracks extends Structure {
 			}
 			break;
 		case "repair_item":
+			Date now2 = new Date();
+			long diff2 = now2.getTime()-lastUse.getTime();
+			diff2 /= 1000;
+			if (diff2 < COOLDOWN2) {
+				throw new CivException("Barracks repair is on cooldown. Please wait another "+(COOLDOWN2-diff2)+" seconds.");
+			}
+			lastUse = now2;
+			
 			repairItem(player, resident, event);			
 			break;
 		}

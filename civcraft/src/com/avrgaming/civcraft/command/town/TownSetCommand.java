@@ -18,18 +18,17 @@
  */
 package com.avrgaming.civcraft.command.town;
 
-
 import org.bukkit.entity.Player;
 
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Town;
+import com.avrgaming.civcraft.object.gui.TownScoutRate;
 import com.avrgaming.civcraft.structure.Bank;
 import com.avrgaming.civcraft.structure.Blacksmith;
 import com.avrgaming.civcraft.structure.Grocer;
 import com.avrgaming.civcraft.structure.Library;
-import com.avrgaming.civcraft.structure.ScoutTower;
 import com.avrgaming.civcraft.structure.Stable;
 import com.avrgaming.civcraft.structure.Store;
 import com.avrgaming.civcraft.structure.Structure;
@@ -74,19 +73,20 @@ public class TownSetCommand extends CommandBase {
 	}
 	
 	public void scoutrate_cmd() throws CivException {
-		Town town = getSelectedTown();
-		Integer rate = getNamedInteger(1);
-		if (rate != 10 && rate != 30 && rate != 60) {
-			throw new CivException("Reporting rate must be 10,30, or 60 seconds.");
-		}
-		
-		for (Structure struct : town.getStructures()) {
-			if (struct instanceof ScoutTower) {
-				((ScoutTower)struct).setReportSeconds(rate);
-			}
-		}
-		
-		CivMessage.sendSuccess(sender, "Set scout tower report interval to "+rate+" seconds.");
+		TownScoutRate.showInventory(getPlayer());
+//		Town town = getSelectedTown();
+//		Integer rate = getNamedInteger(1);
+//		if (rate != 10 && rate != 30 && rate != 60) {
+//			throw new CivException("Reporting rate must be 10,30, or 60 seconds.");
+//		}
+//		
+//		for (Structure struct : town.getStructures()) {
+//			if (struct instanceof ScoutTower) {
+//				((ScoutTower)struct).setReportSeconds(rate);
+//			}
+//		}
+//		
+//		CivMessage.sendSuccess(sender, "Set scout tower report interval to "+rate+" seconds.");
 	}
 	
 	public void blacksmithfee_cmd() throws CivException {

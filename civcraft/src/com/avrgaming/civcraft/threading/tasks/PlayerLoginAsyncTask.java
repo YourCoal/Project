@@ -231,20 +231,15 @@ public class PlayerLoginAsyncTask implements Runnable {
 					Relation.Status status = cc.getCiv().getDiplomacyManager().getRelationStatus(getPlayer());
 					String color = PlayerChunkNotifyAsyncTask.getNotifyColor(cc, status, getPlayer());
 					String relationName = status.name();
-					
 					if (War.isWarTime() && status.equals(Relation.Status.WAR)) {
-						/* 
-						 * Test for players who were not logged in when war time started.
+						/* Test for players who were not logged in when war time started.
 						 * If they were not logged in, they are enemies, and are inside our borders
-						 * they need to be teleported back to their own town hall.
-						 */
-						
+						 * they need to be teleported back to their own town hall. */
 						if (resident.getLastOnline() < War.getStart().getTime()) {
 							resident.teleportHome();
 							CivMessage.send(resident, CivColor.LightGray+"You've been teleported back to your home since you've logged into enemy during WarTime.");
 						}
 					}
-					
 					CivMessage.sendCiv(cc.getCiv(), color+getPlayer().getDisplayName()+"("+relationName+") has logged-in to our borders.");
 				}
 			}
@@ -258,7 +253,6 @@ public class PlayerLoginAsyncTask implements Runnable {
 			//TODO set default modes?
 			resident.showWarnings(getPlayer());
 			resident.loadPerks();
-	
 			try {
 				if (CivSettings.getString(CivSettings.perkConfig, "system.free_perks").equalsIgnoreCase("true")) {
 					resident.giveAllFreePerks();
@@ -270,7 +264,6 @@ public class PlayerLoginAsyncTask implements Runnable {
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
-			
 			
 			/* Send Anti-Cheat challenge to player. */
 			if (!getPlayer().hasPermission("civ.ac_valid")) {

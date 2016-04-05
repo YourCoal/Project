@@ -152,15 +152,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -205,15 +205,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/5)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
 						} else if (rand2 < (randMax/4)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
 						} else if (rand2 < (randMax/3)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 12);
 						} else if (rand2 < (randMax/2)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -258,15 +258,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl3Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl3Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -311,15 +311,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl4Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl4Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -364,15 +364,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl5Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl5Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -417,15 +417,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl6Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl6Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -470,15 +470,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl7Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl7Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -523,15 +523,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl8Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl8Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -576,15 +576,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl9Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl9Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -629,15 +629,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					if (rand1 < ((int)((trommel.getLvl10Bonus(Mineral.HAMMERS))*randMax))) {
 						int rand2 = rand.nextInt(randMax);
 						if (rand2 < (randMax/8)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
 						} else if (rand2 < (randMax/5)) {
-							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-						} else if (rand2 < (randMax/2)) {
+						} else if (rand2 < (randMax/4)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-						} else {
+						} else if (rand2 < (randMax/2)) {
 							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 						}
 					} else if (rand1 < ((int)((trommel.getLvl10Bonus(Mineral.EMERALD))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -648,6 +648,172 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					} else if (rand1 < ((int)((trommel.getLvl10Bonus(Mineral.IRON))*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
 					} else if (rand1 < ((int)((trommel.getLvl10Bonus(Mineral.DIRTGRAVEL))*randMax))) {
+						int rand3 = rand.nextInt(randMax);
+						if (rand3 < (randMax/3)) {
+							newItem = ItemManager.createItemStack(CivData.GRAVEL, 1);
+						} else {
+							newItem = ItemManager.createItemStack(CivData.DIRT, 1);
+						}
+					}  else {
+						newItem = ItemManager.createItemStack(CivData.AIR, 1);
+					}
+					//Try to add the new item to the dest chest, if we cant, oh well.
+					try {
+						debug(trommel, "Updating inventory:"+newItem);
+						this.updateInventory(Action.ADD, dest_inv, newItem);
+					} catch (InterruptedException e) {
+						return;
+					}
+					break;
+				}
+				
+				
+				
+				
+				
+				//XXX Block Lvl 2, Bonus Lvl 1
+				if (ItemManager.getId(stack) == CivData.STONE_BRICK) {
+					if (Trommel.getBonusLevel() == 1 && Trommel.getBlockLevel() >= 2 && ItemManager.getData(stack) == ItemManager.getData(ItemManager.getMaterialData(CivData.STONE_BRICK, CivData.DATA_0))) {
+						try {
+							this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.STONE_BRICK, 1, (short) CivData.DATA_0));
+						} catch (InterruptedException e) {
+							return;
+						}
+						
+						// Attempt to get special resources
+						Random rand = new Random();
+						int randMax = Trommel.BONUS1_MAX;
+						int rand1 = rand.nextInt(randMax);
+						ItemStack newItem;
+						if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.HAMMERS))*randMax))) {
+							int rand2 = rand.nextInt(randMax);
+							if (rand2 < (randMax/8)) {
+									newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
+							} else if (rand2 < (randMax/6)) {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
+							} else if (rand2 < (randMax/4)) {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
+							} else if (rand2 < (randMax/2)) {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+							} else {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
+							}
+						} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.EMERALD))*randMax))) {
+							newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
+						} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.DIAMOND))*randMax))) {
+							newItem = ItemManager.createItemStack(CivData.DIAMOND, 1);
+						} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.GOLD))*randMax))) {
+							newItem = ItemManager.createItemStack(CivData.GOLD_INGOT, 1);
+						} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.IRON))*randMax))) {
+							newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
+						} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.DIRTGRAVEL))*randMax))) {
+							int rand3 = rand.nextInt(randMax);
+							if (rand3 < (randMax/3)) {
+								newItem = ItemManager.createItemStack(CivData.GRAVEL, 1);
+							} else {
+								newItem = ItemManager.createItemStack(CivData.DIRT, 1);
+							}
+						}  else {
+							newItem = ItemManager.createItemStack(CivData.AIR, 1);
+						}
+						//Try to add the new item to the dest chest, if we cant, oh well.
+						try {
+							debug(trommel, "Updating inventory:"+newItem);
+							this.updateInventory(Action.ADD, dest_inv, newItem);
+						} catch (InterruptedException e) {
+							return;
+						}
+						break;
+					}
+					//XXX Block Lvl 2, Bonus Lvl 2
+					if (Trommel.getBonusLevel() == 2 && Trommel.getBlockLevel() >= 2 && ItemManager.getData(stack) == ItemManager.getData(ItemManager.getMaterialData(CivData.STONE_BRICK, CivData.DATA_0))) {
+						try {
+							this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.STONE_BRICK, 1, (short) CivData.DATA_0));
+						} catch (InterruptedException e) {
+							return;
+						}
+						
+						// Attempt to get special resources
+						Random rand = new Random();
+						int randMax = Trommel.BONUS2_MAX;
+						int rand1 = rand.nextInt(randMax);
+						ItemStack newItem;
+						if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.HAMMERS))*randMax))) {
+							int rand2 = rand.nextInt(randMax);
+							if (rand2 < (randMax/8)) {
+									newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
+							} else if (rand2 < (randMax/6)) {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
+							} else if (rand2 < (randMax/4)) {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
+							} else if (rand2 < (randMax/2)) {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+							} else {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
+							}
+						} else if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.EMERALD))*randMax))) {
+							newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
+						} else if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.DIAMOND))*randMax))) {
+							newItem = ItemManager.createItemStack(CivData.DIAMOND, 1);
+						} else if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.GOLD))*randMax))) {
+							newItem = ItemManager.createItemStack(CivData.GOLD_INGOT, 1);
+						} else if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.IRON))*randMax))) {
+							newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
+						} else if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.DIRTGRAVEL))*randMax))) {
+							int rand3 = rand.nextInt(randMax);
+							if (rand3 < (randMax/3)) {
+								newItem = ItemManager.createItemStack(CivData.GRAVEL, 1);
+							} else {
+								newItem = ItemManager.createItemStack(CivData.DIRT, 1);
+							}
+						}  else {
+							newItem = ItemManager.createItemStack(CivData.AIR, 1);
+						}
+						//Try to add the new item to the dest chest, if we cant, oh well.
+						try {
+							debug(trommel, "Updating inventory:"+newItem);
+							this.updateInventory(Action.ADD, dest_inv, newItem);
+						} catch (InterruptedException e) {
+							return;
+						}
+						break;
+					}
+				}
+				//XXX Block Lvl 2, Bonus Lvl 3
+				if (Trommel.getBonusLevel() == 3 && Trommel.getBlockLevel() >= 2 && ItemManager.getData(stack) == ItemManager.getData(ItemManager.getMaterialData(CivData.STONE_BRICK, CivData.DATA_0))) {
+					try {
+						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.STONE_BRICK, 1, (short) CivData.DATA_0));
+					} catch (InterruptedException e) {
+						return;
+					}
+					
+					// Attempt to get special resources
+					Random rand = new Random();
+					int randMax = Trommel.BONUS3_MAX;
+					int rand1 = rand.nextInt(randMax);
+					ItemStack newItem;
+					if (rand1 < ((int)((trommel.getLvl3Bonus(Mineral.HAMMERS))*randMax))) {
+						int rand2 = rand.nextInt(randMax);
+						if (rand2 < (randMax/8)) {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
+						} else if (rand2 < (randMax/6)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
+						} else if (rand2 < (randMax/4)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
+						} else if (rand2 < (randMax/2)) {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+						} else {
+							newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
+						}
+					} else if (rand1 < ((int)((trommel.getLvl3Bonus(Mineral.EMERALD))*randMax))) {
+						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
+					} else if (rand1 < ((int)((trommel.getLvl3Bonus(Mineral.DIAMOND))*randMax))) {
+						newItem = ItemManager.createItemStack(CivData.DIAMOND, 1);
+					} else if (rand1 < ((int)((trommel.getLvl3Bonus(Mineral.GOLD))*randMax))) {
+						newItem = ItemManager.createItemStack(CivData.GOLD_INGOT, 1);
+					} else if (rand1 < ((int)((trommel.getLvl3Bonus(Mineral.IRON))*randMax))) {
+						newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
+					} else if (rand1 < ((int)((trommel.getLvl3Bonus(Mineral.DIRTGRAVEL))*randMax))) {
 						int rand3 = rand.nextInt(randMax);
 						if (rand3 < (randMax/3)) {
 							newItem = ItemManager.createItemStack(CivData.GRAVEL, 1);
@@ -688,15 +854,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 						if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.HAMMERS))*randMax))) {
 							int rand2 = rand.nextInt(randMax);
 							if (rand2 < (randMax/8)) {
-									newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
-							} else if (rand2 < (randMax/5)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-							} else if (rand2 < (randMax/4)) {
+									newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
+							} else if (rand2 < (randMax/6)) {
 								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-							} else if (rand2 < (randMax/2)) {
+							} else if (rand2 < (randMax/4)) {
 								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-							} else {
+							} else if (rand2 < (randMax/2)) {
 								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+							} else {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 							}
 						} else if (rand1 < ((int)((trommel.getLvl1Bonus(Mineral.EMERALD))*randMax))) {
 							newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
@@ -741,15 +907,15 @@ public class TrommelAsyncTask extends CivAsyncTask {
 						if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.HAMMERS))*randMax))) {
 							int rand2 = rand.nextInt(randMax);
 							if (rand2 < (randMax/8)) {
-									newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 32);
-							} else if (rand2 < (randMax/5)) {
-								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 20);
-							} else if (rand2 < (randMax/4)) {
+									newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 24);
+							} else if (rand2 < (randMax/6)) {
 								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 16);
-							} else if (rand2 < (randMax/2)) {
+							} else if (rand2 < (randMax/4)) {
 								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 8);
-							} else {
+							} else if (rand2 < (randMax/2)) {
 								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 4);
+							} else {
+								newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer"), 2);
 							}
 						} else if (rand1 < ((int)((trommel.getLvl2Bonus(Mineral.EMERALD))*randMax))) {
 							newItem = ItemManager.createItemStack(CivData.EMERALD, 1);

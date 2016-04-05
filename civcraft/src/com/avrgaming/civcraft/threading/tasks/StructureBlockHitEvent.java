@@ -84,7 +84,6 @@ public class StructureBlockHitEvent implements Runnable {
 			if (damage > 1) {
 				CivMessage.send(player, CivColor.LightGray+"Punchout does "+(damage-1)+" extra damage!");
 			}
-				
 			dmgBlock.getOwner().onDamage(damage, world, player, dmgBlock.getCoord(), dmgBlock);
 		} else {
 			CivMessage.sendErrorNoRepeat(player, 

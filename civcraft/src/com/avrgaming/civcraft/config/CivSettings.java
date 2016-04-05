@@ -75,6 +75,7 @@ public class CivSettings {
 	public static final int CIV_DEBT_TOWN_SELL_DAYS = 21;
 	public static final int TOWN_DEBT_GRACE_DAYS = 7;
 	public static final int TOWN_DEBT_SELL_DAYS = 14;
+	public static final int CAMP_DEBT_SELL_DAYS = 7;
 
 	
 	/* cached for faster access. */

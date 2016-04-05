@@ -25,5 +25,5 @@ public class TradeGoodPick {
 	public ChunkCoord chunkCoord;
 	public ConfigTradeGood landPick;
 	public ConfigTradeGood waterPick;
-	
+	public ConfigTradeGood none;
 }

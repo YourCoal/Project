@@ -48,7 +48,7 @@ town_levels:
       plots: 32
       plot_cost: 500.0
       tiles: 4
-      outposts: 2
+      outposts: 0
 
     - level: 2
       title: 'Hamlet'
@@ -56,7 +56,7 @@ town_levels:
       plots: 64
       plot_cost: 1000.0
       tiles: 6
-      outposts: 2
+      outposts: 0
 
     - level: 3
       title: 'Village'
@@ -64,7 +64,7 @@ town_levels:
       plots: 80
       plot_cost: 2000.0
       tiles: 8
-      outposts: 4
+      outposts: 2
     
     - level: 4
       title: 'Large Village'
@@ -72,7 +72,7 @@ town_levels:
       plots: 128
       plot_cost: 3500.0
       tiles: 12
-      outposts: 4
+      outposts: 2
 
     - level: 5
       title: 'Town'
@@ -80,7 +80,7 @@ town_levels:
       plots: 256
       plot_cost: 5000.0
       tiles: 15
-      outposts: 6
+      outposts: 4
 
     - level: 6
       title: 'Large Town'
@@ -88,7 +88,7 @@ town_levels:
       plots: 512
       plot_cost: 7500.0
       tiles: 17
-      outposts: 6
+      outposts: 4
 
     - level: 7
       title: 'City'
@@ -96,7 +96,7 @@ town_levels:
       plots: 1024
       plot_cost: 15000.0
       tiles: 20
-      outposts: 8
+      outposts: 6
 
     - level: 8
       title: 'Large City'
@@ -104,7 +104,7 @@ town_levels:
       plots: 2048
       plot_cost: 20000.0
       tiles: 25
-      outposts: 8
+      outposts: 7
 
     - level: 9
       title: 'Metropolis'
@@ -112,7 +112,7 @@ town_levels:
       plots: 4096
       plot_cost: 30000.0
       tiles: 30
-      outposts: 10
+      outposts: 8
 
 
 # Town Upgrades

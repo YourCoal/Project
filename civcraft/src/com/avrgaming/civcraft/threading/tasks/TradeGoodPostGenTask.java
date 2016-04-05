@@ -34,6 +34,7 @@ import com.avrgaming.civcraft.config.ConfigTradeGood;
 import com.avrgaming.civcraft.database.SQL;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
+import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.populators.TradeGoodPick;
@@ -211,6 +212,12 @@ public class TradeGoodPostGenTask implements Runnable {
 				
 				// Determine if we should be a water good.
 				ConfigTradeGood good;
+				if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.TREE_LEAF ||
+						ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.TREE_LEAF2)  {
+					CivLog.warning("Canceled TradeGoodPostGenTask.java Task. Reason: Tried spawning illegally.");
+					good = pick.none;
+				}
+				
 				if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_STILL || 
 					ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
 					good = pick.waterPick;

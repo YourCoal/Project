@@ -232,10 +232,6 @@ public class TradeGoodPreGenerate {
 				}
 			}
 		}
-		
-		
 		this.goodPicks.put(cCoord, pick);
 	}
-	
-	
 }

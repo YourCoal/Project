@@ -29,7 +29,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
 import com.avrgaming.civcraft.exception.CivException;
-import com.avrgaming.civcraft.interactive.InteractiveBuildTrommel;
+import com.avrgaming.civcraft.interactive.InteractiveBuildBank;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
@@ -39,11 +39,11 @@ import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
 
-public class BuildTrommel extends ItemComponent implements CallbackInterface {
+public class BuildBank extends ItemComponent implements CallbackInterface {
 	
 	@Override
 	public void onPrepareCreate(AttributeUtil attrUtil) {
-		attrUtil.addLore(ChatColor.RESET+CivColor.Gold+"Build a Trommel");
+		attrUtil.addLore(ChatColor.RESET+CivColor.Gold+"Build a Bank");
 		attrUtil.addLore(ChatColor.RESET+CivColor.Rose+"<Right Click To Use>");
 		attrUtil.addEnhancement("LoreEnhancementSoulBound", null, null);
 		attrUtil.addLore(CivColor.Gold+"Soulbound");
@@ -57,31 +57,31 @@ public class BuildTrommel extends ItemComponent implements CallbackInterface {
 		}
 		
 		if (!resident.hasTown()) {
-			throw new CivException("You need to be in a town to build a trommel.");
+			throw new CivException("You need to be in a town to build a bank.");
 		}
 		
 		if (resident.hasCamp()) {
-			throw new CivException("You cannot build a trommel in a camp.");
+			throw new CivException("You cannot build a bank in a camp.");
 		}
 			
 		/* Build a preview for the structure.  */
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Checking structure position... Please wait.");
 		ConfigBuildableInfo info = new ConfigBuildableInfo();
-		info.id = "s_trommel";
-		info.template_base_name = "trommel";
+		info.id = "s_bank";
+		info.template_base_name = "bank";
 		info.templateYShift = 0;
-		info.displayName = "Trommel";
-		info.require_tech = "tech_mining";
+		info.displayName = "Bank";
+		info.require_tech = "tech_religion";
 		info.require_upgrade = "";
 		info.require_structure = "";
 		info.check_event = "";
 		info.effect_event= "";
-		info.update_event = "trommel_process";
+		info.update_event = "";
 		info.onBuild_event = "";
 		info.limit =  0;
-		info.cost = 5000;
-		info.upkeep = 1000;
-		info.hammer_cost = 800;
+		info.cost = 2250;
+		info.upkeep = 100;
+		info.hammer_cost = 1200;
 		info.max_hitpoints = 200;
 		info.points = 1500;
 //		//XXX Optional, not normal
@@ -145,15 +145,15 @@ public class BuildTrommel extends ItemComponent implements CallbackInterface {
 		new Thread(new Runnable() {
             public void run() {
                 try {
-            		CivMessage.sendHeading(player, "Building a Trommel!");
-					CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"Do you want to build a trommel here?");
+            		CivMessage.sendHeading(player, "Building a Bank!");
+					CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"Do you want to build a bank here?");
 					CivMessage.send(player, CivColor.LightGray+ChatColor.ITALIC+"We are preparing to put a preview of the structure here.");
 					CivMessage.send(player, CivColor.LightGray+"(You will be able to cancel this in a few seconds.)");
 					Thread.sleep(4000);
 					CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
-					resident.setInteractiveMode(new InteractiveBuildTrommel(resident.getTown(), player.getLocation(), null));
+					resident.setInteractiveMode(new InteractiveBuildBank(resident.getTown(), player.getLocation(), null));
 					ConfigBuildableInfo info = new ConfigBuildableInfo();
-					Structure struct = Structure.newStructure(player.getLocation(), info.id = "s_trommel", resident.getTown());
+					Structure struct = Structure.newStructure(player.getLocation(), info.id = "s_bank", resident.getTown());
 					try {
 						struct.buildPlayerPreview(player, player.getLocation());
 					} catch (IOException e) {

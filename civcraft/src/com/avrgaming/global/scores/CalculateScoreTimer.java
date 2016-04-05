@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Town;
@@ -40,6 +41,17 @@ public class CalculateScoreTimer extends CivAsyncTask {
 		if (entries.size() != 0) {
 			/* we have a winner, do not accumulate scores anymore. */
 			return;
+		}
+		
+		TreeMap<Integer, Camp> campScores = new TreeMap<Integer, Camp>();
+		for (Camp camp : CivGlobal.getCamps()) {
+			campScores.put(camp.getScore(), camp);
+			
+			try {
+				ScoreManager.UpdateScore(camp, camp.getScore());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		TreeMap<Integer, Civilization> civScores = new TreeMap<Integer, Civilization>();
@@ -72,6 +84,10 @@ public class CalculateScoreTimer extends CivAsyncTask {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+		
+		synchronized(CivGlobal.campScores) {
+			CivGlobal.campScores = campScores;
 		}
 		
 		synchronized(CivGlobal.civilizationScores) {

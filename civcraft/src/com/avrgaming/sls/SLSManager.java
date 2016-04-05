@@ -119,7 +119,7 @@ public class SLSManager implements Runnable {
 				
 				+ "<a href=\""+serverAddressURL+"\" title=\""+serverAddressURLDescription+"\" target=\"_blank\" style=\"color:navy\"><strong>"+serverAddress+"</strong></a>;"
 				
-				+ Bukkit.getOnlinePlayers().size()*5+";"+Bukkit.getMaxPlayers()+";"+getParsedVersion();
+				+ Bukkit.getOnlinePlayers().size()*2+";"+Bukkit.getMaxPlayers()+";"+getParsedVersion();
 			
 //				+ 9999+";"+10000+";"+getParsedVersion();
 			

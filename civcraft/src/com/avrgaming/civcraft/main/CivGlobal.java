@@ -158,6 +158,7 @@ public class CivGlobal {
 	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
 	
 	//TODO fix the duplicate score issue...
+	public static TreeMap<Integer, Camp> campScores = new TreeMap<Integer, Camp>();
 	public static TreeMap<Integer, Civilization> civilizationScores = new TreeMap<Integer, Civilization>();
 	public static TreeMap<Integer, Town> townScores = new TreeMap<Integer, Town>();
 
@@ -1392,8 +1393,14 @@ public class CivGlobal {
 		case NEUTRAL:
 			out += "NEUTRAL with ";
 			break;
-		case HOSTILE:
-			out += CivColor.Yellow+"HOSTILE"+CivColor.White+" towards ";
+//		case HOSTILE:
+//			out += CivColor.Yellow+"HOSTILE"+CivColor.White+" towards ";
+//			break;
+		case WAR_HOSTILE:
+			out += "at "+CivColor.Yellow+"HOSTILE"+CivColor.Rose+CivColor.ITALIC+" WAR"+CivColor.White+" towards ";
+			break;
+		case PEACE_HOSTILE:
+			out += "at "+CivColor.Yellow+"HOSTILE"+CivColor.LightBlue+CivColor.ITALIC+" PEACE"+CivColor.White+" with ";
 			break;
 		case WAR:
 			out += "at "+CivColor.Rose+"WAR"+CivColor.White+" with ";
@@ -1556,8 +1563,14 @@ public class CivGlobal {
 			case ALLY:
 				color = CivColor.LightGreen;
 				break;
-			case HOSTILE:
-				color = CivColor.Yellow;
+//			case HOSTILE:
+//				color = CivColor.Yellow;
+//				break;
+			case WAR_HOSTILE:
+				color = CivColor.Rose+CivColor.ITALIC;
+				break;
+			case PEACE_HOSTILE:
+				color = CivColor.LightBlue+CivColor.ITALIC;
 				break;
 			case WAR:
 				color = CivColor.Rose;
@@ -1828,6 +1841,15 @@ public class CivGlobal {
 			}
 		}
 		return null;
+	}
+	
+	public static Integer getScoreForCamp(Camp camp) {
+		for (Entry<Integer,Camp> entry : campScores.entrySet()) {
+			if (camp == entry.getValue()) {
+				return entry.getKey();
+			}
+		}
+		return 0;
 	}
 
 	public static Camp getCamp(String name) {

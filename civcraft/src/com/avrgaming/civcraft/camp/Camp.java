@@ -69,6 +69,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.BuildableDamageBlock;
 import com.avrgaming.civcraft.object.ControlPoint;
 import com.avrgaming.civcraft.object.CultureChunk;
+import com.avrgaming.civcraft.object.EconObject;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.StructureBlock;
 import com.avrgaming.civcraft.object.TownChunk;
@@ -87,7 +88,10 @@ import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.SimpleBlock.Type;
 
 public class Camp extends Buildable {
-
+	
+	private EconObject treasury;
+	private int daysInDebt;
+	
 	private String ownerName;
 	private int hitpoints;
 	private int firepoints;
@@ -123,7 +127,6 @@ public class Camp extends Buildable {
 	
 	/* Doors we protect. */
 	public HashSet<BlockCoord> doors = new HashSet<BlockCoord>();
-	
 	
 	/* Control blocks */
 	public HashMap<BlockCoord, ControlPoint> controlBlocks = new HashMap<BlockCoord, ControlPoint>();
@@ -177,7 +180,6 @@ public class Camp extends Buildable {
 				}
 			}
 		}
-		
 		TaskMaster.syncTask(new SyncTask(resident, name, player));
 	}
 	
@@ -192,13 +194,17 @@ public class Camp extends Buildable {
 		}
 		nextRaidDate = new Date();
 		nextRaidDate.setTime(nextRaidDate.getTime() + 24*60*60*1000);
-
 		try {
 			this.firepoints = CivSettings.getInteger(CivSettings.campConfig, "camp.firepoints");
 			this.hitpoints = CivSettings.getInteger(CivSettings.campConfig, "camp.hitpoints");
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 		}
+		
+		this.setDaysInDebt(0);
+		this.setTreasury(new EconObject(this));	
+		this.getTreasury().setBalance(0, false);
+		
 		loadSettings();
 	}
 	
@@ -252,6 +258,9 @@ public class Camp extends Buildable {
 					"`id` int(11) unsigned NOT NULL auto_increment," +
 					"`name` VARCHAR(64) NOT NULL," +
 					"`owner_name` mediumtext NOT NULL," +
+					"`debt` double DEFAULT 0," +
+					"`coins` double DEFAULT 0," +
+					"`daysInDebt` int(11) DEFAULT 0,"+
 					"`firepoints` int(11) DEFAULT 0," +
 					"`next_raid_date` long,"+
 					"`corner` mediumtext,"+
@@ -277,6 +286,12 @@ public class Camp extends Buildable {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));
 		this.ownerName = rs.getString("owner_name");
+		
+		this.setDaysInDebt(rs.getInt("daysInDebt"));
+		this.setTreasury(new EconObject(this));
+		this.getTreasury().setBalance(rs.getDouble("coins"), false);
+		this.setDebt(rs.getDouble("debt"));
+		
 		this.corner = new BlockCoord(rs.getString("corner"));
 		this.nextRaidDate = new Date(rs.getLong("next_raid_date"));
 		this.setTemplateName(rs.getString("template_name"));
@@ -309,18 +324,21 @@ public class Camp extends Buildable {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
 		hashmap.put("owner_name", this.getOwner().getUUIDString());
+		
+		hashmap.put("coins", this.getTreasury().getBalance());
+		hashmap.put("debt", this.getTreasury().getDebt());
+		hashmap.put("daysInDebt", this.getDaysInDebt());
+		
 		hashmap.put("firepoints", this.firepoints);
 		hashmap.put("corner", this.corner.toString());
 		hashmap.put("next_raid_date", this.nextRaidDate.getTime());
 		hashmap.put("upgrades", this.getUpgradeSaveString());
 		hashmap.put("template_name", this.getSavedTemplatePath());
-
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);			
 	}	
 	
 	@Override
 	public void delete() throws SQLException {
-		
 		for (Resident resident : this.members.values()) {
 			resident.setCamp(null);
 			resident.save();
@@ -1345,5 +1363,121 @@ public class Camp extends Buildable {
 
 	public void setGardenEnabled(boolean gardenEnabled) {
 		Camp.gardenEnabled = gardenEnabled;
+	}
+	
+	//XXX Trying scores out, 1.1.1pre6
+	public int getScore() {
+		int points = 0;
+		try {
+			double perResident = CivSettings.getInteger(CivSettings.scoreConfig, "camp_scores.resident");
+			points += perResident*this.getMembers().size();
+			
+			//TODO Enable
+//			double coins_per_point = CivSettings.getInteger(CivSettings.scoreConfig, "camp_scores.coins_per_point");
+//			points += (int)(this.getTreasury().getBalance()/coins_per_point);
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+		}
+		return points;
+	}
+	
+	//XXX Now with a treasury 1.1.1pre6
+	public EconObject getTreasury() {
+		return treasury;
+	}
+	
+	public void setTreasury(EconObject treasury) {
+		this.treasury = treasury;
+	}
+	
+	public double getBalance() {
+		return Math.floor(this.treasury.getBalance());
+	}
+	
+	//XXX Enable this when we use camp upgrades for camp treasury instead of camp owner.
+//	public boolean hasEnough(double amount) {
+//		return this.treasury.hasEnough(amount);
+//	}
+	
+	public void depositFromResident(Double amount, Resident resident) throws CivException {
+		if (!resident.getTreasury().hasEnough(amount)) {
+			throw new CivException("You do not have enough coins for that.");
+		}
+		
+		if (this.inDebt()) {
+			if (this.getDebt() > amount) {
+				this.getTreasury().setDebt(this.getTreasury().getDebt() - amount);
+				resident.getTreasury().withdraw(amount);
+			} else {
+				double leftAmount = amount - this.getTreasury().getDebt();
+				this.getTreasury().setDebt(0);
+				this.getTreasury().deposit(leftAmount);				
+				resident.getTreasury().withdraw(amount);
+			}
+			
+			if (this.getTreasury().inDebt() == false) {
+				this.daysInDebt = 0;
+				CivMessage.global("Town of "+this.getName()+" is no longer in debt.");
+			}
+		} else {
+			this.getTreasury().deposit(amount);
+			resident.getTreasury().withdraw(amount);
+		}
+		
+		this.save();
+	}
+	
+	public void withdraw(double amount)  {
+		this.treasury.withdraw(amount);
+	}
+	
+	public void incrementDaysInDebt() {
+		daysInDebt++;
+		if (daysInDebt >= CivSettings.CAMP_DEBT_SELL_DAYS) {
+			this.disband();
+			CivMessage.global("Camp "+this.getName()+" could not pay its debts and has fell into ruin!");
+			return;
+		}
+		CivMessage.global("Camp "+this.getName()+" is in debt! "+getDaysLeftWarning());
+	}
+	
+	public String getDaysLeftWarning() {
+		if (daysInDebt < CivSettings.CAMP_DEBT_SELL_DAYS) {
+			return this.getName()+" is up for sale, "+(CivSettings.CAMP_DEBT_SELL_DAYS-daysInDebt)+" days until the camp is deleted!";
+		}
+		return "";
+	}
+
+	public int getDaysInDebt() {
+		return daysInDebt;
+	}
+
+	public void setDaysInDebt(int daysInDebt) {
+		this.daysInDebt = daysInDebt;
+	}
+	
+	public boolean inDebt() {
+		return this.treasury.inDebt();
+	}
+	
+	public double getDebt() {
+		return this.treasury.getDebt();
+	}
+	
+	public void setDebt(double amount) {
+		this.treasury.setDebt(amount);
+	}
+	
+	public double payUpkeep() throws InvalidConfiguration {
+		double upkeep = 100;
+		if (this.getTreasury().hasEnough(upkeep)) {
+			this.getTreasury().withdraw(upkeep);
+		} else {
+			/* Doh! We dont have enough money to pay for our upkeep, go into debt. */
+			double diff = upkeep - this.getTreasury().getBalance();
+			this.getTreasury().setDebt(this.getTreasury().getDebt()+diff);
+			this.getTreasury().withdraw(this.getTreasury().getBalance());
+		}
+		return upkeep;
 	}
 }

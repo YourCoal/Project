@@ -18,14 +18,13 @@
  */
 package com.avrgaming.civcraft.threading.tasks;
 
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 
 import com.avrgaming.civcraft.threading.TaskMaster;
 
 public class ChunkGenerateTask implements Runnable {
-
+	
 	int startX;
 	int startZ;
 	int stopX;
@@ -38,16 +37,15 @@ public class ChunkGenerateTask implements Runnable {
 		this.stopZ = stopz;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {
-	
 		int maxgen = 10;
 		int i = 0;
-
+		
 		for (int x = startX; x <= stopX; x++) {
 			for (int z = startZ; z <= stopZ; z++) {
 				i++;
-				
 				Chunk chunk = Bukkit.getWorld("world").getChunkAt(x, z);
 				if (!chunk.load(true)) {
 				}
@@ -59,13 +57,7 @@ public class ChunkGenerateTask implements Runnable {
 					TaskMaster.syncTask(new ChunkGenerateTask(x, z, stopX, stopZ));
 					return;
 				}
-				
 			}
 		}
-		
-		
 	}
-
-	
-	
 }

@@ -50,6 +50,21 @@ public class CampCommand extends CommandBase {
 		commands.put("info", "Shows information about your current camp.");
 		commands.put("disband", "Disbands this camp.");
 		commands.put("upgrade", "Manage camp upgrades.");
+		commands.put("top5", "Show the top 5 camps in the world.");
+	}
+	
+	public void top5_cmd() {	
+		CivMessage.sendHeading(sender, "Top 5 Camps");
+		synchronized(CivGlobal.campScores) {
+			int i = 1;
+			for (Integer score : CivGlobal.campScores.descendingKeySet()) {
+				CivMessage.send(sender, i+") "+CivColor.Gold+CivGlobal.campScores.get(score).getName()+CivColor.White+" - "+score+" Points");
+				i++;
+				if (i > 5) {
+					break;
+				}
+			}
+		}
 	}
 	
 	public void upgrade_cmd() {
@@ -60,22 +75,23 @@ public class CampCommand extends CommandBase {
 	public void info_cmd() throws CivException {
 		Camp camp = this.getCurrentCamp();
 		SimpleDateFormat sdf = new SimpleDateFormat("M/dd h:mm:ss a z");
-
-		CivMessage.sendHeading(sender, "Camp "+camp.getName()+" Info");
-		HashMap<String,String> info = new HashMap<String, String>();
-		info.put("Owner", camp.getOwnerName());
-		info.put("Members", ""+camp.getMembers().size());
-		info.put("Next Raid", ""+sdf.format(camp.getNextRaidDate()));
-		CivMessage.send(sender, this.makeInfoString(info, CivColor.Green, CivColor.LightGreen));
 		
-		info.clear();
-		info.put("Hours of Fire Left", ""+camp.getFirepoints());
-		info.put("Longhouse Level", ""+camp.getLonghouseLevel()+""+camp.getLonghouseCountString());
-		CivMessage.send(sender, this.makeInfoString(info, CivColor.Green, CivColor.LightGreen));
-
-		info.clear();
-		info.put("Members", camp.getMembersString());
-		CivMessage.send(sender, this.makeInfoString(info, CivColor.Green, CivColor.LightGreen));
+		CivMessage.sendHeading(sender, "Camp "+camp.getName()+" Info");
+		CivMessage.send(sender, CivColor.Green+"Score: "+CivColor.LightGreen+camp.getScore()+" "+CivColor.Green+" Treasury: "+CivColor.LightGreen+df.format(Math.floor(camp.getBalance())));
+		
+		CivMessage.send(sender, CivColor.Green+"Owned By: "+CivColor.LightGreen+camp.getOwnerName()+" "+CivColor.Green+" Located At: "+CivColor.LightGreen+camp.getCorner().toSimplifiedString());
+		
+		CivMessage.send(sender, CivColor.Green+"Raidable: "+CivColor.LightGreen+sdf.format(camp.getNextRaidDate())+
+				" "+CivColor.Green+" Longhouse Level: "+CivColor.LightGreen+camp.getLonghouseLevel()+" "+camp.getLonghouseCountString());
+		
+		CivMessage.send(sender, CivColor.Green+"Hours of Fire Left: "+CivColor.LightGreen+camp.getFirepoints()+" "+CivColor.Green+" Total Members: "+CivColor.LightGreen+camp.getMembers().size());
+		
+		CivMessage.send(sender, CivColor.Green+"Members: "+CivColor.LightGreen+camp.getMembersString());
+		
+		if (camp.inDebt()) {
+			CivMessage.send(sender, CivColor.Green+"Debt: "+CivColor.Yellow+camp.getDebt()+" coins");
+			CivMessage.send(sender, CivColor.Yellow+"Our camp is in debt! Use '/camp deposit' to pay it off.");
+		}
 	}
 	
 	public void remove_cmd() throws CivException {
