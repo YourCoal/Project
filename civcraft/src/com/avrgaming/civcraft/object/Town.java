@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
@@ -62,8 +61,8 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
+import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.structure.Buildable;
-import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.structure.TradeOutpost;
@@ -86,8 +85,10 @@ import com.avrgaming.global.perks.components.CustomTemplate;
 public class Town extends SQLObject {
 
 	private ConcurrentHashMap<String, Resident> residents = new ConcurrentHashMap<String, Resident>();
+	private ConcurrentHashMap<String, Resident> fakeResidents = new ConcurrentHashMap<String, Resident>();
 
 	private ConcurrentHashMap<ChunkCoord, TownChunk> townChunks = new ConcurrentHashMap<ChunkCoord, TownChunk>();
+	private ConcurrentHashMap<ChunkCoord, TownChunk> outposts = new ConcurrentHashMap<ChunkCoord, TownChunk>();
 	private ConcurrentHashMap<ChunkCoord, CultureChunk> cultureChunks = new ConcurrentHashMap<ChunkCoord, CultureChunk>();
 	
 	private ConcurrentHashMap<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
@@ -102,14 +103,10 @@ public class Town extends SQLObject {
 	private int daysInDebt;
 	
 	/* Hammers */
-	private double baseHammers = 0;
+	private double baseHammers = 1.0;
 	private double extraHammers;
-	public Buildable currentWonderInProgress;
 	public Buildable currentStructureInProgress;
-	
-	/* Beakers */
-	private double baseBeakers = 0;
-	//private double unusedBeakers;
+	public Buildable currentWonderInProgress;
 	
 	/* Culture */
 	private int culture;
@@ -117,6 +114,9 @@ public class Town extends SQLObject {
 	private PermissionGroup defaultGroup;
 	private PermissionGroup mayorGroup;
 	private PermissionGroup assistantGroup;
+	
+	/* Beakers */
+	private double unusedBeakers;
 	
 	// These are used to resolve reverse references after the database loads.
 	private String defaultGroupName;
@@ -149,21 +149,8 @@ public class Town extends SQLObject {
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
-	//XXX Granary Levels:
-	public int saved_granary_hammer_level = 1;
-	//XXX Quarry Levels:
-	public int saved_quarry_pickaxe_level = 1;
-	public int saved_quarry_bonus_level = 1;
-	//XXX Trommel Levels:
-	public int saved_trommel_block_level = 1;
-	public int saved_trommel_bonus_level = 1;
-	//XXX Trade Outpost Levels:
-	public int saved_tradepost_item_level = 1;
-	//XXX Fishing Boat Levels:
-	public int saved_fishboat_item_level = 1;
-	//XXX Bank Levels:
 	public int saved_bank_level = 1;
-	public double saved_bank_interest = 0;
+	public double saved_bank_interest_amount = 0;
 	
 	/* Happiness Stuff */
 	private double baseHappy = 0.0;
@@ -235,6 +222,7 @@ public class Town extends SQLObject {
 		this.setName(rs.getString("name"));		
 		this.setLevel(rs.getInt("level"));
 		this.setCiv(CivGlobal.getCivFromId(rs.getInt("civ_id")));
+		
 		Integer motherCivId = rs.getInt("mother_civ_id");
 		if (motherCivId != null && motherCivId != 0) {
 			Civilization mother = CivGlobal.getConqueredCivFromId(motherCivId);
@@ -340,6 +328,7 @@ public class Town extends SQLObject {
 	
 	@Override
 	public void delete() throws SQLException {
+		
 		/* Remove all our Groups */
 		for (PermissionGroup grp : this.groups.values()) {
 			grp.delete();
@@ -417,7 +406,7 @@ public class Town extends SQLObject {
 	
 	public void loadSettings() {
 		try {
-//			this.baseHammers = CivSettings.getDouble(CivSettings.townConfig, "town.base_hammer_rate");
+			this.baseHammers = CivSettings.getDouble(CivSettings.townConfig, "town.base_hammer_rate");
 			this.setBaseGrowth(CivSettings.getDouble(CivSettings.townConfig, "town.base_growth_rate"));
 			
 //			this.happyCoinRate = new AttributeComponent();
@@ -466,13 +455,6 @@ public class Town extends SQLObject {
 	
 	public boolean isMayor(Resident res) {
 		if (this.getMayorGroup().hasMember(res)) {
-			return true;
-		}
-		return false;		
-	}
-	
-	public boolean isAssistant(Resident res) {
-		if (this.getAssistantGroup().hasMember(res)) {
 			return true;
 		}
 		return false;		
@@ -629,10 +611,10 @@ public class Town extends SQLObject {
 		double total = 0;
 		HashMap<String, Double> sources = new HashMap<String, Double>();
 		
-//		/* Grab any culture from goodies. */
-//		double goodieCulture = getBuffManager().getEffectiveInt(Buff.EXTRA_CULTURE);
-//		sources.put("Goodies", goodieCulture);
-//		total += goodieCulture;
+		/* Grab any culture from goodies. */
+		double goodieCulture = getBuffManager().getEffectiveInt(Buff.EXTRA_CULTURE);
+		sources.put("Goodies", goodieCulture);
+		total += goodieCulture;
 			
 		/* Grab beakers generated from structures with components. */
 		double fromStructures = 0;
@@ -662,9 +644,11 @@ public class Town extends SQLObject {
 		this.attributeCache.put("CULTURE", cache);
 		return as;
 	}
-	
+
+
 	public void addAccumulatedCulture(double generated) {
-		ConfigCultureLevel clc = CivSettings.cultureLevels.get(this.getCultureLevel());	
+		ConfigCultureLevel clc = CivSettings.cultureLevels.get(this.getCultureLevel());
+				
 		this.culture += generated;
 		this.save();
 		if (this.getCultureLevel() != CivSettings.getMaxCultureLevel()) {
@@ -675,8 +659,115 @@ public class Town extends SQLObject {
 		}
 		return;
 	}
+
+
+	public double getExtraHammers() {
+		return extraHammers;
+	}
+
+
+	public void setExtraHammers(double extraHammers) {
+		this.extraHammers = extraHammers;
+	}
 	
-	@SuppressWarnings("deprecation")
+	public AttrSource getHammerRate() {
+		double rate = 1.0;
+		HashMap<String, Double> rates = new HashMap<String, Double>();
+		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
+
+		/* Happiness */
+		double newRate = rate * state.hammer_rate;
+		rates.put("Happiness", newRate - rate);
+		rate = newRate;
+		
+		/* Government */
+		newRate = rate * getGovernment().hammer_rate;
+		rates.put("Government", newRate - rate);
+		rate = newRate;
+		
+		double randomRate = RandomEvent.getHammerRate(this);
+		newRate = rate * randomRate;
+		rates.put("Random Events", newRate - rate);
+		rate = newRate;
+		
+		/* Captured Town Penalty */
+		if (this.motherCiv != null) {
+			try {
+				newRate = rate * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");	
+				rates.put("Captured Penalty", newRate - rate);
+				rate = newRate;
+				
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
+		return new AttrSource(rates, rate, null);
+	}
+	
+	public AttrSource getHammers() {
+		double total = 0;
+		
+		AttrCache cache = this.attributeCache.get("HAMMERS");
+		if (cache == null) {
+			cache = new AttrCache();
+			cache.lastUpdate = new Date();
+		} else {
+			Date now = new Date();
+			if (now.getTime() > (cache.lastUpdate.getTime() + ATTR_TIMEOUT_SECONDS*1000)) {
+				cache.lastUpdate = now;
+			} else {
+				return cache.sources;
+			}
+		}
+	
+		HashMap<String, Double> sources = new HashMap<String, Double>();
+				
+		/* Wonders and Goodies. */
+		double wonderGoodies = this.getBuffManager().getEffectiveInt(Buff.CONSTRUCTION);
+		sources.put("Wonders/Goodies", wonderGoodies);
+		total += wonderGoodies;
+		
+		double cultureHammers = this.getHammersFromCulture();
+		sources.put("Culture Biomes", cultureHammers);
+		total += cultureHammers; 
+		
+		/* Grab happiness generated from structures with components. */
+		double structures = 0;
+		for (Structure struct : this.structures.values()) {
+			for (Component comp : struct.attachedComponents) {
+				if (comp instanceof AttributeBase) {
+					AttributeBase as = (AttributeBase)comp;
+					if (as.getString("attribute").equalsIgnoreCase("HAMMERS")) {
+						structures += as.getGenerated();
+					}
+				}
+			}
+		}
+
+		total += structures;
+		sources.put("Structures", structures);
+		
+		
+		sources.put("Base Hammers", this.baseHammers);
+		total += this.baseHammers;
+		
+		AttrSource rate = getHammerRate();
+		total *= rate.total;
+		
+		if (total < this.baseHammers) {
+			total = this.baseHammers;
+		}
+		
+		AttrSource as = new AttrSource(sources, total, rate);
+		cache.sources = as;
+		this.attributeCache.put("HAMMERS", cache);
+		return as;
+	}
+
+	public void setHammerRate(double hammerRate) {
+		this.baseHammers = hammerRate;
+	}
+	
 	public static Town newTown(Resident resident, String name, Civilization civ, boolean free, boolean capitol, 
 			Location loc) throws CivException {
 		try {
@@ -770,13 +861,13 @@ public class Town extends SQLObject {
 				throw new CivException("Internal configuration exception.");
 			}		
 			
-			//XXXX Disabled 1.0.4 for FoundTown.java to work
-//			if (!free) {
-//				ConfigUnit unit = Unit.getPlayerUnit(player);
-//				if (unit == null || !unit.id.equals("u_settler")) {			
-//					throw new CivException("You must be a settler in order to found a town.");
-//				}
-//			}
+			
+			if (!free) {
+				ConfigUnit unit = Unit.getPlayerUnit(player);
+				if (unit == null || !unit.id.equals("u_settler")) {			
+					throw new CivException("You must be a settler in order to found a town.");
+				}
+			}
 			newTown.saveNow();
 		
 			CivGlobal.addTown(newTown);
@@ -1029,7 +1120,7 @@ public class Town extends SQLObject {
 	}
 	
 	public double getBalance() {
-		return Math.floor(this.treasury.getBalance());
+		return this.treasury.getBalance();
 	}
 	
 	public boolean hasEnough(double amount) {
@@ -1212,6 +1303,7 @@ public class Town extends SQLObject {
 		upkeep += this.getBaseUpkeep();
 		//upkeep += this.getSpreadUpkeep();
 		upkeep += this.getStructureUpkeep();
+		upkeep += this.getOutpostUpkeep();
 		
 		upkeep *= getGovernment().upkeep_rate;
 		
@@ -1453,18 +1545,14 @@ public class Town extends SQLObject {
 		}
 		
 		wonder.runCheck(center); //Throws exception if we can't build here.	
-		
-		
-		
-		Buildable inProgress = getCurrentStructureInProgress();
-		Buildable inProgressW = getCurrentWonderInProgress();
-		if (getCurrentStructureInProgress() != null) {
-			if (inProgress != null) {
-				throw new CivException("Your town is currently building a "+inProgress.getDisplayName()+" and can only build one structure at a time.");
-			}
+
+		Buildable inProgress  = getCurrentStructureInProgress();
+		if (inProgress != null) {
+			throw new CivException("Your town is currently building a "+inProgress.getDisplayName()+" structure. Can only build one structure at a time.");
 		} else {
-			if (inProgressW != null) {
-				throw new CivException("Your town is currently building "+inProgressW.getDisplayName()+" and can only build one wonder at a time.");
+			inProgress  = getCurrentWonderInProgress();
+			if (inProgress != null) {
+				throw new CivException("Your town is currently building "+inProgress.getDisplayName()+" and can only build one wonder at a time.");
 			}
 		}
 		
@@ -1488,11 +1576,13 @@ public class Town extends SQLObject {
 	}
 	
 	public void buildStructure(Player player, String id, Location center, Template tpl) throws CivException {
+
 //		if (!center.getWorld().getName().equals("world")) {
 //			throw new CivException("Cannot build structures in the overworld ... for now.");
 //		}
 		
 		Structure struct = Structure.newStructure(center, id, this);
+		
 		if (!this.hasUpgrade(struct.getRequiredUpgrade())) {
 			throw new CivException("We require an upgrade we do not have yet.");
 		}
@@ -1506,6 +1596,7 @@ public class Town extends SQLObject {
 		}
 		
 		struct.canBuildHere(center, Structure.MIN_DISTANCE);
+		
 		if (struct.getLimit() != 0) {
 			if (getStructureTypeCount(id) >= struct.getLimit()) {
 				throw new CivException("Your town can only have "+struct.getLimit()+" "+struct.getDisplayName()+" structures.");
@@ -1518,33 +1609,18 @@ public class Town extends SQLObject {
 		}
 		
 		struct.runCheck(center); //Throws exception if we can't build here.	
-		Buildable inProgress = getCurrentStructureInProgress();
+
+		Buildable inProgress  = getCurrentStructureInProgress();
 		if (inProgress != null) {
-			throw new CivException("Your town is currently building a "+inProgress.getDisplayName()+" and can only build "+CivColor.BOLD+"one"+CivColor.Rose+" structure at a time.");
+			throw new CivException("Your town is currently building a "+inProgress.getDisplayName()+" and can only build one structure at a time.");
 		}
 		
-		//XXX Fix this
-//		Buildable inProgress1 = getCurrentStructureInProgress1();
-//		Buildable inProgress2 = getCurrentStructureInProgress2();
-//		Buildable inProgress3 = getCurrentStructureInProgress3();
-//		if (civ.hasTech("tech_construction")) {
-//			if (inProgress3 != null) {
-//				CivMessage.send(player, "Your town is currently building a "+inProgress3.getDisplayName()+" and can only build three structures at a time.");
-//			}
-//		} else if (civ.hasTech("tech_advanced_masonry")) {
-//			if (inProgress2 != null) {
-//				CivMessage.send(player, "Your town is currently building a "+inProgress2.getDisplayName()+" and can only build two structures at a time.");
-//			}
-//		} else {
-//			if (inProgress1 != null) {
-//				CivMessage.send(player, "Your town is currently building a "+inProgress1.getDisplayName()+" and can only build "+CivColor.BOLD+"one"+CivColor.RESET+" structure at a time.");
-//			}
-//		}
-		
 		try {
-			/* if the template is null we need to just get the template first. 
+			/*
+			 * XXX if the template is null we need to just get the template first. 
 			 * This should only happen for capitols and town halls since we need to 
-			 * Make them use the structure preview code and they don't yet */
+			 * Make them use the structure preview code and they don't yet
+			 */
 			if (tpl == null) {
 				try {
 					tpl = new Template();
@@ -1597,14 +1673,10 @@ public class Town extends SQLObject {
 
 	public boolean isStructureAddable(Structure struct) {
 		int count = this.getStructureTypeCount(struct.getConfigId());
-		if (struct.isTile()) {
+
+		if (struct.isTileImprovement()) {
 			ConfigTownLevel level = CivSettings.townLevels.get(this.getLevel());
-			if (this.getTileCount() > level.tiles) {
-				return false;
-			}
-		} else if (struct.isOutpost()) {
-			ConfigTownLevel level = CivSettings.townLevels.get(this.getLevel());
-			if (this.getTileCount() > level.outposts) {
+			if (this.getTileImprovementCount() > level.tile_improvements) {
 				return false;
 			}
 		} else if ((struct.getLimit() != 0) && (count > struct.getLimit())) {
@@ -1658,12 +1730,9 @@ public class Town extends SQLObject {
 			throw new CivException("Cannot undo, cannot find the last thing built.");
 		}
 		
-//		if (!(this.lastBuildableBuilt instanceof Wall) && !(this.lastBuildableBuilt instanceof Road)) {
-//			throw new CivException("Only wall structures can be used with /build undo");
-//		}
-		
-		if (!(this.lastBuildableBuilt instanceof Wall)) {
-			throw new CivException("Only wall structures can be used with /build undo");
+		if (!(this.lastBuildableBuilt instanceof Wall) &&
+			 !(this.lastBuildableBuilt instanceof Road)) {
+			throw new CivException("Only wall and road structures can be use build undo.");
 		}
 		
 		this.lastBuildableBuilt.processUndo();
@@ -1805,9 +1874,8 @@ public class Town extends SQLObject {
 	public double getCottageRate() {
 		double rate = getGovernment().cottage_rate;
 
-		//XXX Fix
-//		double additional = rate*this.getBuffManager().getEffectiveDouble(Buff.COTTAGE_RATE);
-//		rate += additional;
+		double additional = rate*this.getBuffManager().getEffectiveDouble(Buff.COTTAGE_RATE);
+		rate += additional;
 		
 		/* Adjust for happiness state. */
 		rate *= this.getHappinessState().coin_rate;
@@ -1829,6 +1897,10 @@ public class Town extends SQLObject {
 		ChunkCoord townHallChunk = new ChunkCoord(townHall.getCorner().getLocation());
 		
 		for (TownChunk tc : this.getTownChunks()) {
+			if (tc.isOutpost()) {
+				continue;
+			}
+			
 			if (tc.getChunkCoord().equals(townHallChunk))
 				continue;
 			
@@ -1846,7 +1918,7 @@ public class Town extends SQLObject {
 	}
 
 	public double getTotalUpkeep() throws InvalidConfiguration {
-		return Math.floor(this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep());
+		return this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep() + this.getOutpostUpkeep();
 	}
 
 	public double getTradeRate() {
@@ -1875,20 +1947,10 @@ public class Town extends SQLObject {
 		return rate;
 	}
 
-	public int getTileCount() {
+	public int getTileImprovementCount() {
 		int count = 0;
 		for (Structure struct : getStructures()) {
-			if (struct.isTile()) {
-				count++;
-			}
-		}
-		return count;
-	}
-	
-	public int getOutpostCount() {
-		int count = 0;
-		for (Structure struct : getStructures()) {
-			if (struct.isOutpost()) {
+			if (struct.isTileImprovement()) {
 				count++;
 			}
 		}
@@ -1896,7 +1958,11 @@ public class Town extends SQLObject {
 	}
 
 	public void removeTownChunk(TownChunk tc) {
-		this.townChunks.remove(tc.getChunkCoord());
+		if (tc.isOutpost()) {
+			this.outposts.remove(tc.getChunkCoord());
+		} else {
+			this.townChunks.remove(tc.getChunkCoord());
+		}
 	}
 
 	public Double getHammersFromCulture() {
@@ -2261,24 +2327,45 @@ public class Town extends SQLObject {
 		return points;
 	}
 
+	public void addOutpostChunk(TownChunk tc) throws AlreadyRegisteredException {
+		if (outposts.containsKey(tc.getChunkCoord())) {
+			throw new AlreadyRegisteredException("Outpost at "+tc.getChunkCoord()+" already registered to town "+this.getName());
+		}
+		outposts.put(tc.getChunkCoord(), tc);	
+	}
+
+	public Collection<TownChunk> getOutpostChunks() {
+		return outposts.values();
+	}
+
+	public double getOutpostUpkeep() {
+//		double outpost_upkeep;
+//		try {
+//			outpost_upkeep = CivSettings.getDouble(CivSettings.townConfig, "town.outpost_upkeep");
+//		} catch (InvalidConfiguration e) {
+//			e.printStackTrace();
+//			return 0.0;
+//		}
+		//return outpost_upkeep*outposts.size();
+		return 0;
+	}
+
 	public boolean isOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		return this.outlaws.contains(res.getUUIDString());
+		return this.outlaws.contains(name);
 	}
 	
 	public void addOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.add(res.getUUIDString());
-		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
+		this.outlaws.add(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void removeOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.remove(res.getUUIDString());
-		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
+		this.outlaws.remove(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void changeCiv(Civilization newCiv) {
+		
 		/* Remove this town from its old civ. */
 		Civilization oldCiv = this.civ;
 		oldCiv.removeTown(this);
@@ -2291,7 +2378,7 @@ public class Town extends SQLObject {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
+			Resident resident = CivGlobal.getResident(outlaw);
 			if (newCiv.hasResident(resident)) {
 				removeUs.add(outlaw);
 			}
@@ -2355,6 +2442,7 @@ public class Town extends SQLObject {
 
 	public void incrementDaysInDebt() {
 		daysInDebt++;
+
 		if (daysInDebt >= CivSettings.TOWN_DEBT_GRACE_DAYS) {
 			if (daysInDebt >= CivSettings.TOWN_DEBT_SELL_DAYS) {
 				this.disband();
@@ -2362,10 +2450,12 @@ public class Town extends SQLObject {
 				return;
 			}
 		}
+		
 		CivMessage.global("Town of "+this.getName()+" is in debt! "+getDaysLeftWarning());
 	}
 	
 	public String getDaysLeftWarning() {
+		
 		if (daysInDebt < CivSettings.TOWN_DEBT_GRACE_DAYS) {
 			return ""+(CivSettings.TOWN_DEBT_GRACE_DAYS-daysInDebt)+" days until town goes up for sale.";
 		}
@@ -2373,6 +2463,7 @@ public class Town extends SQLObject {
 		if (daysInDebt < CivSettings.TOWN_DEBT_SELL_DAYS) {
 			return this.getName()+" is up for sale, "+(CivSettings.TOWN_DEBT_SELL_DAYS-daysInDebt)+" days until the town is deleted!";
 		}
+		
 		return "";
 	}
 
@@ -2431,6 +2522,11 @@ public class Town extends SQLObject {
 				//player offline
 			}
 		}
+		
+		for (Resident resident : this.fakeResidents.values()) {
+			residents.add(resident);
+		}
+		
 		return residents;
 	}
 
@@ -2464,7 +2560,96 @@ public class Town extends SQLObject {
 		return this.getCiv().getGovernment();
 	}
 	
-	/* Gets the basic amount of happiness for a town. */
+	
+	public AttrSource getBeakerRate() {
+		double rate = 1.0;
+		HashMap<String, Double> rates = new HashMap<String, Double>();
+		
+		ConfigHappinessState state = this.getHappinessState();
+		double newRate = rate*state.beaker_rate;
+		rates.put("Happiness", newRate - rate);
+		rate = newRate;
+
+		newRate = rate*getGovernment().beaker_rate;
+		rates.put("Government", newRate - rate);
+		rate = newRate;
+	
+		/* Additional rate increases from buffs. */
+		/* Great Library buff is made to not stack with Science_Rate */
+		double additional = rate*getBuffManager().getEffectiveDouble(Buff.SCIENCE_RATE);
+		additional += rate*getBuffManager().getEffectiveDouble("buff_greatlibrary_extra_beakers");
+		rate += additional;
+		rates.put("Goodies/Wonders", additional);
+
+		return new AttrSource(rates, rate, null);
+	}
+	
+	public AttrSource getBeakers() {
+		AttrCache cache = this.attributeCache.get("BEAKERS");
+		if (cache == null) {
+			cache = new AttrCache();
+			cache.lastUpdate = new Date();
+		} else {
+			Date now = new Date();
+			if (now.getTime() > (cache.lastUpdate.getTime() + ATTR_TIMEOUT_SECONDS*1000)) {
+				cache.lastUpdate = now;
+			} else {
+				return cache.sources;
+			}
+		}
+		
+		double beakers = 0;
+		HashMap<String, Double> sources = new HashMap<String, Double>();
+		
+		/* Grab beakers generated from culture. */
+		double fromCulture = 0;
+		for (CultureChunk cc : this.cultureChunks.values()) {
+			fromCulture += cc.getBeakers();
+		}
+		sources.put("Culture Biomes", fromCulture);
+		beakers += fromCulture;
+		
+		/* Grab beakers generated from structures with components. */
+		double fromStructures = 0;
+		for (Structure struct : this.structures.values()) {
+			for (Component comp : struct.attachedComponents) {
+				if (comp instanceof AttributeBase) {
+					AttributeBase as = (AttributeBase)comp;
+					if (as.getString("attribute").equalsIgnoreCase("BEAKERS")) {
+						fromStructures += as.getGenerated();
+					}
+				}
+			}
+		}
+
+		beakers += fromStructures;
+		sources.put("Structures", fromStructures);
+		
+		/* Grab any extra beakers from buffs. */
+		double wondersTrade = 0;
+		
+		//No more flat bonuses here, leaving it in case of new buffs
+		
+		beakers += wondersTrade;
+		sources.put("Goodies/Wonders", wondersTrade);
+
+		/* Make sure we never give out negative beakers. */
+		beakers = Math.max(beakers, 0);
+		AttrSource rates = getBeakerRate();
+		beakers = beakers*rates.total;
+		
+		if (beakers < 0) {
+			beakers = 0;
+		}
+		
+		AttrSource as = new AttrSource(sources, beakers, null);
+		cache.sources = as;
+		this.attributeCache.put("BEAKERS", cache);
+		return as;	}
+	
+	/* 
+	 * Gets the basic amount of happiness for a town.
+	 */
 	public AttrSource getHappiness() {
 		HashMap<String, Double> sources = new HashMap<String, Double>();
 		double total = 0;
@@ -2692,21 +2877,25 @@ public class Town extends SQLObject {
 	public void setBaseGrowth(double baseGrowth) {
 		this.baseGrowth = baseGrowth;
 	}
-	
+
 	public Buildable getCurrentStructureInProgress() {
 		return currentStructureInProgress;
 	}
-	
+
 	public void setCurrentStructureInProgress(Buildable currentStructureInProgress) {
 		this.currentStructureInProgress = currentStructureInProgress;
 	}
-	
+
 	public Buildable getCurrentWonderInProgress() {
 		return currentWonderInProgress;
 	}
 
 	public void setCurrentWonderInProgress(Buildable currentWonderInProgress) {
 		this.currentWonderInProgress = currentWonderInProgress;
+	}
+
+	public void addFakeResident(Resident fake) {
+		this.fakeResidents.put(fake.getName(), fake);
 	}
 
 	private static String lastMessage = null;
@@ -2773,6 +2962,18 @@ public class Town extends SQLObject {
 
 	public void setActiveEvent(RandomEvent activeEvent) {
 		this.activeEvent = activeEvent;
+	}
+
+	public double getUnusedBeakers() {
+		return unusedBeakers;
+	}
+
+	public void setUnusedBeakers(double unusedBeakers) {
+		this.unusedBeakers = unusedBeakers;
+	}	
+	
+	public void addUnusedBeakers(double more) {
+		this.unusedBeakers += more;
 	}
 	
 	public void markLastBuildableRefeshAsNow() {
@@ -2963,238 +3164,7 @@ public class Town extends SQLObject {
 	public Collection<Buildable> getDisabledBuildables() {
 		return this.disabledBuildables.values();
 	}
-	
-	//XXX Hammers
-	public AttrSource getHammerRate() {
-		double rate = 1.0;
-		double rateFnl = 0;
-		HashMap<String, Double> rates = new HashMap<String, Double>();
-		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
 
-		/* Happiness */
-		double newRate1 = rate*state.hammer_rate;
-		rates.put("Happiness", newRate1);
-		rateFnl = newRate1;
-		
-		/* Government */
-		double newRate2 = rate*getGovernment().hammer_rate;
-		rates.put("Government", newRate2);
-		rateFnl += newRate2;
-		
-		/* Random Event */
-		double randomRate = rate*RandomEvent.getHammerRate(this);
-		rates.put("Random Events", randomRate);
-		rateFnl += randomRate;
-		
-		/* Captured Town Penalty */
-		if (this.motherCiv != null) {
-			try {
-				double newRate4 = rate * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");
-				rates.put("Captured Penalty", newRate4);
-				rate += newRate4;
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
-		
-		/* Buffs */
-		double ad1 = rate*getBuffManager().getEffectiveDouble(Buff.CONSTRUCTION);
-//		double ad2 = rate*getBuffManager().getEffectiveDouble("buff_greatlibrary_extra_beakers");
-//		double adT = ad1 + ad2;
-		rates.put("Goodies/Wonders", ad1);
-		rateFnl += ad1;
-		
-		return new AttrSource(rates, rateFnl, null);
-	}
-	
-	public AttrSource getHammers() {
-		double hammers = 0;
-		double hammersFnl = 0;
-		HashMap<String, Double> sources = new HashMap<String, Double>();
-		
-		AttrCache cache = this.attributeCache.get("HAMMERS");
-		if (cache == null) {
-			cache = new AttrCache();
-			cache.lastUpdate = new Date();
-		} else {
-			Date now = new Date();
-			if (now.getTime() > (cache.lastUpdate.getTime() + ATTR_TIMEOUT_SECONDS*1000)) {
-				cache.lastUpdate = now;
-			} else {
-				return cache.sources;
-			}
-		}
-		
-		/* Culture */
-		double culture = 0;
-		for (CultureChunk cc : this.cultureChunks.values()) {
-			culture += cc.getHammers();
-		}
-		sources.put("Culture Biomes", culture);
-		hammers = culture;
-		
-		/* Structures */
-		double mines = 0;
-		double structures = 0;
-		for (Structure struct : this.structures.values()) {
-			if (struct instanceof Mine) {
-				Mine mine = (Mine)struct;
-				mines += mine.getBonusHammers()/4;
-			}
-			for (Component comp : struct.attachedComponents) {
-				if (comp instanceof AttributeBase) {
-					AttributeBase as = (AttributeBase)comp;
-					if (as.getString("attribute").equalsIgnoreCase("HAMMERS")) {
-						structures += as.getGenerated();
-					}
-				}
-			}
-		}
-		
-		sources.put("Mines", mines*4);
-		hammers += mines;
-		sources.put("Structures", structures);
-		hammers += structures;
-		
-		/* Admin-Set Hammers */
-		sources.put("Base Hammers", this.baseHammers);
-		hammers += this.baseHammers;
-		
-		/* No Negative Hammers. */
-		hammers = Math.max(hammers, 0);
-		
-		/* Set Final Rate */
-		AttrSource rates = getHammerRate();
-		hammersFnl = Math.floor(hammers*rates.total);
-		
-		AttrSource as = new AttrSource(sources, hammersFnl, null);
-		cache.sources = as;
-		this.attributeCache.put("HAMMERS", cache);
-		return as;
-	}
-	
-	public void setHammerRate(double hammerRate) {
-		this.baseHammers = hammerRate;
-	}
-	
-	public double getExtraHammers() {
-		return extraHammers;
-	}
-	
-	public void setExtraHammers(double extraHammers) {
-		this.extraHammers = extraHammers;
-	}
-	
-	//XXX Beakers
-	public AttrSource getBeakerRate() {
-		double rate = 1.0;
-		double rateFnl = 0;
-		HashMap<String, Double> rates = new HashMap<String, Double>();
-		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
-		
-		/* Happiness */
-		double newRate1 = rate*state.hammer_rate;
-		rates.put("Happiness", newRate1);
-		rateFnl = newRate1;
-		
-		/* Government */
-		double newRate2 = rate*getGovernment().hammer_rate;
-		rates.put("Government", newRate2);
-		rateFnl += newRate2;
-		
-		/* Random Event */
-		double randomRate = rate*RandomEvent.getBeakerRate(this);
-		rates.put("Random Events", randomRate);
-		rateFnl += randomRate;
-		
-		/* Captured Town Penalty */
-		if (this.motherCiv != null) {
-			try {
-				double newRate4 = rate * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");
-				rates.put("Captured Penalty", newRate4);
-				rate += newRate4;
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
-		
-		/* Buffs */
-		double ad1 = rate*getBuffManager().getEffectiveDouble(Buff.SCIENCE_RATE);
-		double ad2 = rate*getBuffManager().getEffectiveDouble("buff_greatlibrary_extra_beakers");
-		double adT = ad1 + ad2;
-		rates.put("Goodies/Wonders", adT);
-		rateFnl += adT;
-		
-		return new AttrSource(rates, rateFnl, null);
-	}
-	
-	public AttrSource getBeakers() {
-		double beakers = 0;
-		double beakersFnl = 0;
-		HashMap<String, Double> sources = new HashMap<String, Double>();
-		
-		AttrCache cache = this.attributeCache.get("BEAKERS");
-		if (cache == null) {
-			cache = new AttrCache();
-			cache.lastUpdate = new Date();
-		} else {
-			Date now = new Date();
-			if (now.getTime() > (cache.lastUpdate.getTime() + ATTR_TIMEOUT_SECONDS*1000)) {
-				cache.lastUpdate = now;
-			} else {
-				return cache.sources;
-			}
-		}
-		
-		/* Culture */
-		double culture = 0;
-		for (CultureChunk cc : this.cultureChunks.values()) {
-			culture += cc.getBeakers();
-		}
-		sources.put("Culture Biomes", culture);
-		beakers = culture;
-		
-		/* Structures */
-//		double labs = 0;
-		double structures = 0;
-		for (Structure struct : this.structures.values()) {
-//			if (struct instanceof Mine) {
-//				Lab lab = (Lab)struct;
-//				labs += lab.getBonusBeakers()/4;
-//			}
-			for (Component comp : struct.attachedComponents) {
-				if (comp instanceof AttributeBase) {
-					AttributeBase as = (AttributeBase)comp;
-					if (as.getString("attribute").equalsIgnoreCase("BEAKERS")) {
-						structures += as.getGenerated();
-					}
-				}
-			}
-		}
-		
-//		sources.put("Labs", labs*4);
-//		beakers += labs;
-		sources.put("Structures", structures);
-		beakers += structures;
-		
-		/* Admin-Set Hammers */
-		sources.put("Base Beakers", this.baseBeakers);
-		beakers += this.baseBeakers;
-		
-		/* No Negative Hammers. */
-		beakers = Math.max(beakers, 0);
-		
-		/* Set Final Rate */
-		AttrSource rates = getBeakerRate();
-		beakersFnl = Math.floor(beakers*rates.total);
-		
-		AttrSource as = new AttrSource(sources, beakersFnl, null);
-		cache.sources = as;
-		this.attributeCache.put("BEAKERS", cache);
-		return as;
-	}
-	
-	public void setBeakerRate(double beakerRate) {
-		this.baseBeakers = beakerRate;
-	}
+
+
 }

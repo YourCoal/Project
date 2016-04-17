@@ -16,6 +16,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from AVRGAMING LLC.
  */
+
 package com.avrgaming.civcraft.items.components;
 
 import gpl.AttributeUtil;
@@ -37,7 +38,7 @@ import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
 
-public class FoundCivilization extends ItemComponent implements CallbackInterface {
+public class FoundCivilization extends ItemComponent implements CallbackInterface{
 	
 	@Override
 	public void onPrepareCreate(AttributeUtil attrUtil) {
@@ -48,12 +49,15 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 	}
 	
 	public void foundCiv(Player player) throws CivException {
+		
 		Resident resident = CivGlobal.getResident(player);
 		if (resident == null) {
 			throw new CivException("You must be a registered resident to found a civ. This shouldn't happen. Contact an admin.");
 		}
 			
-		/* Build a preview for the Capitol structure. */
+		/*
+		 * Build a preview for the Capitol structure.
+		 */
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Checking structure position...Please wait.");
 		ConfigBuildableInfo info = CivSettings.structures.get("s_capitol");
 		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);	
@@ -92,53 +96,34 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 			}
 		}
 		TaskMaster.syncTask(new SyncTask(event.getPlayer().getName()));
+		
 	}
 
 	@Override
 	public void execute(String playerName) {
 		
-		final Player player;
+		Player player;
 		try {
 			player = CivGlobal.getPlayer(playerName);
 		} catch (CivException e) {
 			return;
 		}
 		
-		final Resident resident = CivGlobal.getResident(player);
+		Resident resident = CivGlobal.getResident(player);
 		
-		new Thread(new Runnable() {
-            public void run() {
-                try {
-                	resident.desiredTownLocation = player.getLocation();
-                	CivMessage.sendHeading(player, "Founding A Civilization!");
-					CivMessage.send(player, CivColor.LightGreen+"You and your possible friends have finally chosen to settle.");
-					Thread.sleep(2500);
-					CivMessage.send(player, CivColor.LightGreen+"While you may be alone, or have few members, will your new Empire spread?");
-					Thread.sleep(2500);
-					CivMessage.send(player, CivColor.LightGreen+"Will you expand to new frontiers, dominating your region?");
-					Thread.sleep(2500);
-					CivMessage.send(player, CivColor.LightGreen+"Can your civilization withstand the test of time, of war, debt, and raids?");
-					CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
-					CivMessage.sendHeading(player, "Pre-Generating your new capitol...");
-					Thread.sleep(4000);
-					CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new Civilization be called?");
-					resident.setInteractiveMode(new InteractiveCivName());
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-            }
-        }).start();
+		/* Save the location so we dont have to re-validate the structure position. */
+		resident.desiredTownLocation = player.getLocation();
+		CivMessage.sendHeading(player, "Founding A New Civ");
+		CivMessage.send(player, CivColor.LightGreen+"You and your small band of travelers have finally found the chosen land.");
+		CivMessage.send(player, CivColor.LightGreen+"While you are few, will your numbers will grow?");
+		CivMessage.send(player, CivColor.LightGreen+"Will you journey boldy forth into new frontiers?");
+		CivMessage.send(player, CivColor.LightGreen+"Can you build a Civilization that can stand the test of time?");
+		CivMessage.send(player, " ");
+		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new Civilization be called?");
+		CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
 		
-//		/* Save the location so we dont have to re-validate the structure position. */
-//		resident.desiredTownLocation = player.getLocation();
-//		CivMessage.sendHeading(player, "Founding A New Civ");
-//		CivMessage.send(player, CivColor.LightGreen+"You and your small band of travelers have finally found the chosen land.");
-//		CivMessage.send(player, CivColor.LightGreen+"While you are few, will your numbers will grow?");
-//		CivMessage.send(player, CivColor.LightGreen+"Will you journey boldy forth into new frontiers?");
-//		CivMessage.send(player, CivColor.LightGreen+"Can you build a Civilization that can stand the test of time?");
-//		CivMessage.send(player, " ");
-//		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new Civilization be called?");
-//		CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
-//		resident.setInteractiveMode(new InteractiveCivName());
+		resident.setInteractiveMode(new InteractiveCivName());
 	}
+
+	
 }

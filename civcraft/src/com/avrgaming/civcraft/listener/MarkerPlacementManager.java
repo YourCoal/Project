@@ -46,7 +46,6 @@ public class MarkerPlacementManager implements Listener {
 	private static HashMap<String, ArrayList<Location>> markers = new HashMap<String, ArrayList<Location>>();
 	
 	
-	@SuppressWarnings("deprecation")
 	public static void addToPlacementMode(Player player, Structure structure, String markerName) throws CivException {
 
 		if (player.getItemInHand() != null && ItemManager.getId(player.getItemInHand()) != CivData.AIR) {
@@ -69,7 +68,6 @@ public class MarkerPlacementManager implements Listener {
 		CivMessage.send(player, "You're now in placement mode for a "+structure.getDisplayName());
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void removeFromPlacementMode(Player player, boolean canceled) {
 		if (canceled) {
 			Structure struct = playersInPlacementMode.get(player.getName());
@@ -90,7 +88,6 @@ public class MarkerPlacementManager implements Listener {
 		return playersInPlacementMode.containsKey(name);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void setMarker(Player player, Location location) throws CivException {
 		ArrayList<Location> locs = markers.get(player.getName());
 

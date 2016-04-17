@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,6 +54,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.camp.CampBlock;
 import com.avrgaming.civcraft.camp.WarCamp;
@@ -62,6 +64,8 @@ import com.avrgaming.civcraft.endgame.EndGameCondition;
 import com.avrgaming.civcraft.event.EventTimer;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
+import com.avrgaming.civcraft.exception.InvalidNameException;
+import com.avrgaming.civcraft.exception.InvalidObjectException;
 import com.avrgaming.civcraft.items.BonusGoodie;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
@@ -82,6 +86,7 @@ import com.avrgaming.civcraft.populators.TradeGoodPreGenerate;
 import com.avrgaming.civcraft.questions.QuestionBaseTask;
 import com.avrgaming.civcraft.questions.QuestionResponseInterface;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
+import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.sessiondb.SessionDatabase;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
@@ -144,6 +149,7 @@ public class CivGlobal {
 	private static Map<UUID, ItemFrameStorage> protectedItemFrames = new ConcurrentHashMap<UUID, ItemFrameStorage>();
 	private static Map<BlockCoord, BonusGoodie> bonusGoodies = new ConcurrentHashMap<BlockCoord, BonusGoodie>();
 	private static Map<ChunkCoord, HashSet<Wall>> wallChunks = new ConcurrentHashMap<ChunkCoord, HashSet<Wall>>();
+	private static Map<BlockCoord, RoadBlock> roadBlocks = new ConcurrentHashMap<BlockCoord, RoadBlock>();
 	private static Map<BlockCoord, CustomMapMarker> customMapMarkers = new ConcurrentHashMap<BlockCoord, CustomMapMarker>();
 	private static Map<String, Camp> camps = new ConcurrentHashMap<String, Camp>();
 	private static Map<ChunkCoord, Camp> campChunks = new ConcurrentHashMap<ChunkCoord, Camp>();
@@ -151,14 +157,13 @@ public class CivGlobal {
 	private static Map<BlockCoord, Market> markets = new ConcurrentHashMap<BlockCoord, Market>();
 	public static HashSet<String> researchedTechs = new HashSet<String>();
 	
-//	/* TODO change this to true for MC 1.8 */
-//	public static boolean useUUID = true;
+	/* TODO change this to true for MC 1.8 */
+	public static boolean useUUID = false;
 	
 	public static Map<Integer, Boolean> CivColorInUse = new ConcurrentHashMap<Integer, Boolean>();
 	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
 	
 	//TODO fix the duplicate score issue...
-	public static TreeMap<Integer, Camp> campScores = new TreeMap<Integer, Camp>();
 	public static TreeMap<Integer, Civilization> civilizationScores = new TreeMap<Integer, Civilization>();
 	public static TreeMap<Integer, Town> townScores = new TreeMap<Integer, Town>();
 
@@ -175,7 +180,6 @@ public class CivGlobal {
 	//TODO convert this to completely static?
 	private static SessionDatabase sdb;
 
-	public static boolean granariesEnabled = true;
 	public static boolean trommelsEnabled = true;
 	public static boolean towersEnabled = true;
 	public static boolean growthEnabled = true;
@@ -210,10 +214,12 @@ public class CivGlobal {
 		loadStructures();
 		loadWonders();
 		loadWallBlocks();
+		loadRoadBlocks();
 		loadTradeGoods();
 		loadTradeGoodies();
 		loadRandomEvents();
 		loadProtectedBlocks();
+		loadTeams();
 		EventTimer.loadGlobalEvents();
 		EndGameCondition.init();
 		War.init();
@@ -283,6 +289,34 @@ public class CivGlobal {
 	
 	private static void loadTradeGoods() {
 		
+	}
+	
+	private static void loadTeams() throws SQLException {
+		Connection context = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		
+		try {
+			context = SQL.getGameConnection();		
+			ps = context.prepareStatement("SELECT * FROM "+SQL.tb_prefix+ArenaTeam.TABLE_NAME);
+			rs = ps.executeQuery();
+	
+			while(rs.next()) {
+				try {
+					new ArenaTeam(rs);
+				} catch (InvalidNameException | InvalidObjectException
+						| CivException e) {
+					e.printStackTrace();
+				}
+			}
+	
+			Collections.sort(ArenaTeam.teamRankings);
+			Collections.reverse(ArenaTeam.teamRankings); //Lazy method.
+			
+			CivLog.info("Loaded "+ArenaTeam.arenaTeams.size()+" Arena Teams");
+		} finally {
+			SQL.close(rs, ps, context);
+		}
 	}
 	
 	private static void loadTradeGoodies() throws SQLException {
@@ -580,6 +614,33 @@ public class CivGlobal {
 			}
 	
 			CivLog.info("Loaded "+count+" Wall Block");	
+		} finally {
+			SQL.close(rs, ps, context);
+		}
+	}
+	
+	private static void loadRoadBlocks() throws SQLException {
+		Connection context = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		
+		try {
+			context = SQL.getGameConnection();		
+			ps = context.prepareStatement("SELECT * FROM "+SQL.tb_prefix+RoadBlock.TABLE_NAME);
+			rs = ps.executeQuery();
+	
+			int count = 0;
+			while(rs.next()) {
+				try {
+					new RoadBlock(rs);
+					count++;
+				} catch (Exception e) {
+					CivLog.warning(e.getMessage());
+					e.printStackTrace();
+				}
+			}
+	
+			CivLog.info("Loaded "+count+" Road Block");
 		} finally {
 			SQL.close(rs, ps, context);
 		}
@@ -1393,14 +1454,8 @@ public class CivGlobal {
 		case NEUTRAL:
 			out += "NEUTRAL with ";
 			break;
-//		case HOSTILE:
-//			out += CivColor.Yellow+"HOSTILE"+CivColor.White+" towards ";
-//			break;
-		case WAR_HOSTILE:
-			out += "at "+CivColor.Yellow+"HOSTILE"+CivColor.Rose+CivColor.ITALIC+" WAR"+CivColor.White+" towards ";
-			break;
-		case PEACE_HOSTILE:
-			out += "at "+CivColor.Yellow+"HOSTILE"+CivColor.LightBlue+CivColor.ITALIC+" PEACE"+CivColor.White+" with ";
+		case HOSTILE:
+			out += CivColor.Yellow+"HOSTILE"+CivColor.White+" towards ";
 			break;
 		case WAR:
 			out += "at "+CivColor.Rose+"WAR"+CivColor.White+" with ";
@@ -1563,14 +1618,8 @@ public class CivGlobal {
 			case ALLY:
 				color = CivColor.LightGreen;
 				break;
-//			case HOSTILE:
-//				color = CivColor.Yellow;
-//				break;
-			case WAR_HOSTILE:
-				color = CivColor.Rose+CivColor.ITALIC;
-				break;
-			case PEACE_HOSTILE:
-				color = CivColor.LightBlue+CivColor.ITALIC;
+			case HOSTILE:
+				color = CivColor.Yellow;
 				break;
 			case WAR:
 				color = CivColor.Rose;
@@ -1842,15 +1891,6 @@ public class CivGlobal {
 		}
 		return null;
 	}
-	
-	public static Integer getScoreForCamp(Camp camp) {
-		for (Entry<Integer,Camp> entry : campScores.entrySet()) {
-			if (camp == entry.getValue()) {
-				return entry.getKey();
-			}
-		}
-		return 0;
-	}
 
 	public static Camp getCamp(String name) {
 		return camps.get(name.toLowerCase());
@@ -1934,6 +1974,18 @@ public class CivGlobal {
 
 	public static void setFarmGrowQueue(Queue<FarmChunk> farmGrowQueue) {
 		CivGlobal.farmGrowQueue = farmGrowQueue;
+	}
+	
+	public static void addRoadBlock(RoadBlock rb) {
+		roadBlocks.put(rb.getCoord(), rb);
+	}
+	
+	public static void removeRoadBlock(RoadBlock rb) {
+		roadBlocks.remove(rb.getCoord());
+	}
+	
+	public static RoadBlock getRoadBlock(BlockCoord coord) {
+		return roadBlocks.get(coord);
 	}
 
 	public static Collection<Civilization> getAdminCivs() {

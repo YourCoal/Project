@@ -38,8 +38,6 @@ public abstract class Unit {
 	
 	public static Spy SPY_UNIT;
 	public static Settler SETTLER_UNIT;
-	public static Solider SOLIDER_UNIT;
-	public static Defensemen DEFENSEMEN_UNIT;
 	public static ArrayList<MissionBook> SPY_MISSIONS = new ArrayList<MissionBook>();
 	public static MissionBook SPY_INVESTIGATE_TOWN;
 	public static MissionBook SPY_STEAL_TREASURY;
@@ -65,8 +63,6 @@ public abstract class Unit {
 		}
 		
 		SETTLER_UNIT = new Settler("u_settler", CivSettings.units.get("u_settler"));
-		SOLIDER_UNIT = new Solider("u_soldier", CivSettings.units.get("u_solider"));
-		DEFENSEMEN_UNIT = new Defensemen("u_defensemen", CivSettings.units.get("u_defensemen"));
 	}
 	
 	public Unit() {
@@ -105,6 +101,8 @@ public abstract class Unit {
 				if(!UnitMaterial.validateUnitUse(player, stack)) {
 					return null;
 				}
+				
+				
 				return ((UnitMaterial)material).getUnit();
 			}
 		}

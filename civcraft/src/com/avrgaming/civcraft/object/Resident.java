@@ -51,6 +51,8 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.avrgaming.civcraft.arena.Arena;
+import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
@@ -70,6 +72,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
+import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.TownHall;
@@ -91,25 +94,19 @@ import com.avrgaming.global.perks.components.CustomPersonalTemplate;
 import com.avrgaming.global.perks.components.CustomTemplate;
 
 public class Resident extends SQLObject {
-	
-	//XXX ADDING THIS NOW
-//	private int resident_level = 0; //This may not be needed
-	@SuppressWarnings("unused")
-	private int resident_xp = 0;
-	
+
 	private Town town = null;
 	private Camp camp = null;
-	private boolean campChat = false;
 	private boolean townChat = false;
 	private boolean civChat = false;
 	private boolean adminChat = false;
 	private boolean combatInfo = false;
 	
 	private boolean usesAntiCheat = false;
+	
 	public static HashSet<String> allchatters = new HashSet<String>();
 	
 	/* Town or civ to chat in besides your own. */
-	private Camp campChatOverride = null;
 	private Town townChatOverride = null;
 	private Civilization civChatOverride = null;
 	private boolean permOverride = false;
@@ -119,6 +116,7 @@ public class Resident extends SQLObject {
 	private int campID = 0;
 	private boolean dontSaveTown = false;
 	private String timezone;
+	
 	private boolean banned = false;
 	
 	private long registered;
@@ -146,16 +144,15 @@ public class Resident extends SQLObject {
 	public String desiredTownName;
 	public Location desiredTownLocation = null;
 	public Template desiredTemplate = null;
-	public boolean allchat = false;
 	
-	//XXX Admin Essentials
-	private boolean flying = false;
+	public boolean allchat = false; 
 	
-	
-	/* XXX This buildable is used as place to store which buildable we're working on when interacting 
+	/* XXX 
+	 * This buildable is used as place to store which buildable we're working on when interacting 
 	 * with GUI items. We want to be able to pass the buildable object to the GUI's action function,
 	 * but there isn't a good way to do this ATM. If we had a way to send arbitary objects it would
-	 * be better. Could we store it here on the resident object? */
+	 * be better. Could we store it here on the resident object?
+	 */
 	public Buildable pendingBuildable;
 	public ConfigBuildableInfo pendingBuildableInfo;
 	public CallbackInterface pendingCallback;
@@ -167,6 +164,7 @@ public class Resident extends SQLObject {
 	private boolean showInfo = false;
 	private String itemMode = "all";
 	private String savedInventory = null;
+	private boolean insideArena = false;
 	private boolean isProtected = false;
 	
 	public ConcurrentHashMap<BlockCoord, SimpleBlock> previewUndo = null;
@@ -175,6 +173,7 @@ public class Resident extends SQLObject {
 	private String lastIP = "";
 	private UUID uid;
 	
+	private boolean onRoad = false;
 	public String debugTown;
 	
 	public Resident(UUID uid, String name) throws InvalidNameException {
@@ -208,8 +207,6 @@ public class Resident extends SQLObject {
 					"`friends` mediumtext," + 
 					"`debt` double DEFAULT 0," +
 					"`coins` double DEFAULT 0," +
-					//XXX Attempting XP system
-					"`xp` int(11)," +
 					"`daysTilEvict` mediumint DEFAULT NULL," +
 					"`givenKit` bool NOT NULL DEFAULT '0'," +
 					"`camp_id` int(11)," +
@@ -217,6 +214,7 @@ public class Resident extends SQLObject {
 					"`banned` bool NOT NULL DEFAULT '0'," +
 					"`bannedMessage` mediumtext DEFAULT NULL,"+
 					"`savedInventory` mediumtext DEFAULT NULL,"+
+					"`insideArena` bool NOT NULL DEFAULT '0',"+
 					"`isProtected` bool NOT NULL DEFAULT '0',"+
 					"`flags` mediumtext DEFAULT NULL,"+
 					"`last_ip` mediumtext DEFAULT NULL,"+
@@ -224,6 +222,7 @@ public class Resident extends SQLObject {
 					"`debug_civ` mediumtext DEFAULT NuLL,"+
 					"UNIQUE KEY (`name`), " +
 					"PRIMARY KEY (`id`)" + ")";
+			
 			SQL.makeTable(table_create);
 			CivLog.info("Created "+TABLE_NAME+" table");
 		} else {
@@ -276,6 +275,7 @@ public class Resident extends SQLObject {
 			
 			SQL.makeCol("flags", "mediumtext", TABLE_NAME);
 			SQL.makeCol("savedInventory", "mediumtext", TABLE_NAME);
+			SQL.makeCol("insideArena", "bool NOT NULL DEFAULT '0'", TABLE_NAME);
 			SQL.makeCol("isProtected", "bool NOT NULL DEFAULT '0'", TABLE_NAME);
 		}		
 	}
@@ -297,12 +297,11 @@ public class Resident extends SQLObject {
 		
 		this.treasury = new EconObject(this);
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
-		//XXX Enable this when made
-//		this.getXP().setXP(rs.getInt("xp"), false);
 		this.setGivenKit(rs.getBoolean("givenKit"));
 		this.setTimezone(rs.getString("timezone"));
 		this.loadFlagSaveString(rs.getString("flags"));
 		this.savedInventory = rs.getString("savedInventory");
+		this.insideArena = rs.getBoolean("insideArena");
 		this.isProtected = rs.getBoolean("isProtected");
 		
 		if (this.getTimezone() == null) {
@@ -352,6 +351,7 @@ public class Resident extends SQLObject {
 		this.setDaysTilEvict(rs.getInt("daysTilEvict"));
 		this.getTreasury().setDebt(rs.getDouble("debt"));
 		this.loadFriendsFromSaveString(rs.getString("friends"));
+		
 	}
 
 	private void setTimezoneToServerDefault() {
@@ -438,7 +438,9 @@ public class Resident extends SQLObject {
 	
 	@Override
 	public void saveNow() throws SQLException {
+		
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
+		
 		hashmap.put("name", this.getName());
 		hashmap.put("uuid", this.getUUIDString());
 		if (this.getTown() != null) {
@@ -462,12 +464,11 @@ public class Resident extends SQLObject {
 		hashmap.put("friends", this.getFriendsSaveString());
 		hashmap.put("givenKit", this.isGivenKit());
 		hashmap.put("coins", this.getTreasury().getBalance());
-		//XXX Enable when I can
-//		hashmap.put("xp", this.getXP());
 		hashmap.put("timezone", this.getTimezone());
 		hashmap.put("flags", this.getFlagSaveString());
 		hashmap.put("last_ip", this.getLastIP());
 		hashmap.put("savedInventory", this.savedInventory);
+		hashmap.put("insideArena", this.insideArena);
 		hashmap.put("isProtected", this.isProtected);
 		
 		if (this.getTown() != null) {
@@ -477,6 +478,7 @@ public class Resident extends SQLObject {
 				hashmap.put("debug_civ", this.getCiv().getName());
 			}
 		}
+		
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);
 	}
 	
@@ -518,7 +520,6 @@ public class Resident extends SQLObject {
 	@Override
 	public void delete() throws SQLException {	
 		SQL.deleteByName(this.getName(), TABLE_NAME);
-		CivGlobal.removeResident(this);
 	}
 
 	public EconObject getTreasury() {
@@ -686,15 +687,7 @@ public class Resident extends SQLObject {
 			//player offline.
 		}
 	}
-	
-	public boolean isCampChat() {
-		return campChat;
-	}
 
-	public void setCampChat(boolean campChat) {
-		this.campChat = campChat;
-	}
-	
 	public boolean isTownChat() {
 		return townChat;
 	}
@@ -718,16 +711,7 @@ public class Resident extends SQLObject {
 	public void setAdminChat(boolean adminChat) {
 		this.adminChat = adminChat;
 	}
-	
-	public Camp getCampChatOverride() {
-		return campChatOverride;
-	}
 
-	public void setCampChatOverride(Camp campChatOverride) {
-		this.campChatOverride = campChatOverride;
-	}
-
-	
 	public Town getTownChatOverride() {
 		return townChatOverride;
 	}
@@ -864,7 +848,6 @@ public class Resident extends SQLObject {
 		return this.getTown().getCiv();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setScoreboardName(String name, String key) {
 		if (this.scoreboard == null) {
 			this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -1106,27 +1089,34 @@ public class Resident extends SQLObject {
 		this.performingMission = performingMission;
 	}
 
-	//XXX Disabled but left for future stuff.
-//	public void onRoadTest(BlockCoord coord, Player player) {
-//		/* Test the block beneath us for a road, if so, set the road flag. */
-//		BlockCoord feet = new BlockCoord(coord);
-//		feet.setY(feet.getY() - 1);
-//		RoadBlock rb = CivGlobal.getRoadBlock(feet);
-//		
-//		if (rb == null) {
-//			onRoad = false;
+	public void onRoadTest(BlockCoord coord, Player player) {
+		/* Test the block beneath us for a road, if so, set the road flag. */
+		BlockCoord feet = new BlockCoord(coord);
+		feet.setY(feet.getY() - 1);
+		RoadBlock rb = CivGlobal.getRoadBlock(feet);
+		
+		if (rb == null) {
+			onRoad = false;
 //			if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 //				player.removePotionEffect(PotionEffectType.SPEED);
 //			}
-//		} else {
-//			onRoad = true;
-//			
+		} else {
+			onRoad = true;
+			
 //			if (!player.hasPotionEffect(PotionEffectType.SPEED)) {
 //				CivLog.debug("setting effect.");
 //				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5, 5));
 //			}
-//		}
-//	}
+		}
+	}
+
+	public boolean isOnRoad() {
+		return onRoad;
+	}
+
+	public void setOnRoad(boolean onRoad) {
+		this.onRoad = onRoad;
+	}
 
 	public void giveAllFreePerks() {
 		int perkCount;
@@ -1432,6 +1422,10 @@ public class Resident extends SQLObject {
 	}
 	
 	public boolean hasTechForItem(ItemStack stack) {
+		if (this.isInsideArena()) {
+			return true;
+		}
+		
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 		if (craftMat == null) {
 			return true;
@@ -1545,6 +1539,35 @@ public class Resident extends SQLObject {
 		this.usesAntiCheat = usesAntiCheat;
 	}
 	
+	public boolean hasTeam() {
+		ArenaTeam team = ArenaTeam.getTeamForResident(this);
+		if (team == null) {
+			return false;
+		}
+		return true;
+	}
+	
+	public ArenaTeam getTeam() {
+		ArenaTeam team = ArenaTeam.getTeamForResident(this);
+		if (team == null) {
+			return null;
+		}
+		return team;
+	}
+
+	public boolean isTeamLeader() {
+		ArenaTeam team = ArenaTeam.getTeamForResident(this);
+		if (team == null) {
+			return false;
+		}
+		
+		if (team.getLeader() == this) {
+			return true;
+		}
+		
+		return false;		
+	}
+	
 	public void saveInventory() {
 		try {
 			Player player = CivGlobal.getPlayer(this);			
@@ -1589,6 +1612,40 @@ public class Resident extends SQLObject {
 
 	public void setSavedInventory(String savedInventory) {
 		this.savedInventory = savedInventory;
+	}
+
+	public Arena getCurrentArena() {
+		if (this.getTeam() == null) {
+			return null;
+		}
+		
+		return this.getTeam().getCurrentArena();
+	}
+	
+	public boolean isInsideArena() {
+		
+		if (!hasTeam()) {
+			this.insideArena = false;
+			return false;
+		}
+		
+		try {
+			Player player = CivGlobal.getPlayer(this);
+			
+			if (player.getWorld().getName().equals("world")) {
+				this.insideArena = false;
+				return false;
+			}
+			
+		} catch (CivException e) {
+			return false;
+		}
+		
+		return this.insideArena;
+	}
+	
+	public void setInsideArena(boolean inside) {
+		this.insideArena = inside;
 	}
 	
 	public boolean isProtected() {
@@ -1650,15 +1707,5 @@ public class Resident extends SQLObject {
 	
 	public void setUUID(UUID uid) {
 		this.uid = uid;
-	}
-	
-	
-	//XXX Admin Essentials
-	public boolean isFlying() {
-		return flying;
-	}
-	
-	public void setFlying(boolean f) {
-		flying = f;
 	}
 }

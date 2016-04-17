@@ -42,13 +42,10 @@ public class Relation extends SQLObject {
 	 */
 	public enum Status {
 		NEUTRAL,
-//		HOSTILE,
-		PEACE_HOSTILE,
-		WAR_HOSTILE,
+		HOSTILE,
 		WAR,
 		PEACE,
 		ALLY,
-		
 //		MASTER,
 //		VASSAL
 	}
@@ -194,16 +191,9 @@ public class Relation extends SQLObject {
 		out = relation.name()+CivColor.White+" with "+this.other_civ.getName();
 		switch (relation) {
 		case NEUTRAL:
-			color = CivColor.LightGray;
 			break;
-//		case HOSTILE:
-//			color = CivColor.Yellow;
-//			break;
-		case WAR_HOSTILE:
-			color = CivColor.Rose+CivColor.ITALIC;
-			break;
-		case PEACE_HOSTILE:
-			color = CivColor.LightBlue+CivColor.ITALIC;
+		case HOSTILE:
+			color = CivColor.Yellow;
 			break;
 		case WAR:
 			color = CivColor.Rose;
@@ -229,19 +219,18 @@ public class Relation extends SQLObject {
 			SimpleDateFormat sdf = new SimpleDateFormat("M/d/y k:m:s z");
 			expireString = CivColor.LightGray+" (Expires "+sdf.format(expires)+")";
 		}
+		
 		return color+out+expireString;
+		
+		
 	}
 	
 	public static String getRelationColor(Status status) {
 		switch (status) {
 		case NEUTRAL:
-			return CivColor.LightGray;
-//		case WAR_HOSTILE:
-//			return CivColor.Yellow;
-		case WAR_HOSTILE:
-			return CivColor.Rose+CivColor.ITALIC;
-		case PEACE_HOSTILE:
-			return CivColor.LightBlue+CivColor.ITALIC;
+			return CivColor.White;
+		case HOSTILE:
+			return CivColor.Yellow;
 		case WAR:
 			return CivColor.Rose;
 		case PEACE:

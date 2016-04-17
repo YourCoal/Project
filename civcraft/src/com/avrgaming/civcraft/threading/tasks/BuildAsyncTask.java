@@ -29,7 +29,6 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.structure.Buildable;
-import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
@@ -60,7 +59,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 	public Boolean aborted = false;
 	public Date lastSave; 
 	
-	private final int SAVE_INTERVAL = 4*1000; /* once every 4 sec. */
+	private final int SAVE_INTERVAL = 5*1000; /* once every 5 sec. */
 	
 	public BuildAsyncTask(Buildable bld, Template t, int s, int blocks_per_tick, Block center ) {
 		buildable = bld;
@@ -116,16 +115,16 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (inProgress != null && inProgress != buildable) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while we're constructing a "+inProgress.getDisplayName());
 					try {
-						Thread.sleep(60000); //1 min notify.
+						Thread.sleep(600000); //10 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
 				}
 				
 				if (buildable.getTown().getTownHall() == null) {
-					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while you have no town hall!");
+					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while you have no town hall.");
 					try {
-						Thread.sleep(60000); //1 min notify.
+						Thread.sleep(600000); //10 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -221,7 +220,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 		buildable.setComplete(true);
 		if (buildable instanceof Wonder) {
 			buildable.getTown().setCurrentWonderInProgress(null);
-		} else if (buildable instanceof Structure) {
+		} else {
 			buildable.getTown().setCurrentStructureInProgress(null);
 		}
 		buildable.savedBlockCount = buildable.builtBlockCount;

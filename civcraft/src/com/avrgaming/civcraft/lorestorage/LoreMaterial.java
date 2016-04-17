@@ -164,24 +164,9 @@ public abstract class LoreMaterial {
 		}
 		return null;
 	}
-	
+
 	public static ItemStack spawn(LoreMaterial material) {
 		ItemStack stack = ItemManager.createItemStack(material.getTypeID(), 1, material.getDamage());
-		AttributeUtil attrs = new AttributeUtil(stack);
-		setMIDAndName(attrs, material.getId(), material.getName());
-		
-		if (material instanceof LoreCraftableMaterial) {
-			LoreCraftableMaterial craftMat = (LoreCraftableMaterial)material;
-			//craftMat.getConfigMaterial().category
-			attrs.addLore(CivColor.ITALIC+craftMat.getConfigMaterial().category);
-		}
-		
-		material.applyAttributes(attrs);
-		return attrs.getStack();
-	}
-	
-	public static ItemStack spawn(LoreMaterial material, int count) {
-		ItemStack stack = ItemManager.createItemStack(material.getTypeID(), count, material.getDamage());
 		AttributeUtil attrs = new AttributeUtil(stack);
 		setMIDAndName(attrs, material.getId(), material.getName());
 		
@@ -282,7 +267,7 @@ public abstract class LoreMaterial {
 	public abstract void onItemCraft(CraftItemEvent event);
 	public abstract void onItemPickup(PlayerPickupItemEvent event);
 	public abstract void onItemSpawn(ItemSpawnEvent event);
-//	public abstract boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack); /* Called when this item is in inventory. */
+	public abstract boolean onAttack(EntityDamageByEntityEvent event, ItemStack stack); /* Called when this item is in inventory. */
 	public abstract void onInvItemPickup(InventoryClickEvent event, Inventory fromInv, ItemStack stack);
 	public abstract void onInvItemDrop(InventoryClickEvent event, Inventory toInv, ItemStack stack);
 	public abstract void onInvShiftClick(InventoryClickEvent event, Inventory fromInv, Inventory toInv, ItemStack stack);

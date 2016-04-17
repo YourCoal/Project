@@ -61,8 +61,8 @@ public class ConfigMarketItem {
 	
 	public static int BASE_ITEM_AMOUNT = 1;
 	public static int STEP = 1;
-	public static int STEP_COUNT = 1024;
-	public static double RATE = 0.1;
+	public static int STEP_COUNT = 256;
+	public static double RATE = 0.15;
 	
 	public enum LastAction {
 		NEUTRAL,

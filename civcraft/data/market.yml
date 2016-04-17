@@ -1,92 +1,20 @@
+#
+# Stores information used by the global marketplace. 
+# Maps sign id's to in-game id's and gives a starting price
+# for each item.
+
 # The amount of coins to increase each market 'tick'
 step: 1
+
 # The number of items that need to be sold to initialize a market 'tick'
-step_count: 1024
+step_count: 512
+
 # the percentage at which the buy price is above the sell price
-rate: 0.1
+rate: 0.15
 
 # Shelf 1 left side, front id:0-4 back id:15-19
+
 items:
-    - id: 0
-      name: 'Stone'
-      type_id: 1
-      data: 0
-      value: 2
-#
-    - id: 1
-      name: 'Cobblestone'
-      type_id: 4
-      data: 0
-      value: 2
-#
-    - id: 2
-      name: 'Granite'
-      type_id: 1
-      data: 1
-      value: 2
-#
-    - id: 3
-      name: 'Diorite'
-      type_id: 1
-      data: 3
-      value: 2
-#
-    - id: 4
-      name: 'Granite'
-      type_id: 1
-      data: 3
-      value: 2
-#
-    - id: 5
-      name: 'Normal Sand'
-      type_id: 12
-      data: 0
-      value: 4
-#
-    - id: 6
-      name: 'Red Sand'
-      type_id: 12
-      data: 1
-      value: 5
-#
-    - id: 7
-      name: 'Clay Ball'
-      type_id: 337
-      data: 0
-      value: 5
-#
-    - id: 8
-      name: 'Gravel'
-      type_id: 13
-      data: 0
-      value: 4
-#
-    - id: 9
-      name: 'Sponge'
-      type_id: 19
-      data: 0
-      value: 1000
-#
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     - id: 0
       name: 'Cobblestone'
       type_id: 4

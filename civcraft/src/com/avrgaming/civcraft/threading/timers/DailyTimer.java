@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.endgame.EndGameCheckTask;
 import com.avrgaming.civcraft.event.DailyEvent;
@@ -56,7 +55,6 @@ public class DailyTimer implements Runnable {
 				try {
 					CivLog.info("---- Running Daily Timer -----");
 					collectTownTaxes();
-					payCampUpkeep();
 					payTownUpkeep();
 					payCivUpkeep();
 					decrementResidentGraceCounters();
@@ -134,23 +132,6 @@ public class DailyTimer implements Runnable {
 		}
 	}
 
-	private void payCampUpkeep() {
-		for (Camp camp : CivGlobal.getCamps()) {
-			try {
-				double total = 0;
-				total = camp.payUpkeep();
-				if (camp.inDebt()) {
-					camp.incrementDaysInDebt();
-				}
-				
-				camp.save();
-				CivMessage.sendCamp(camp, "Paid "+total+" coins in upkeep costs.");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	private void payTownUpkeep() {
 		for (Town t : CivGlobal.getTowns()) {
 			try {
@@ -169,6 +150,7 @@ public class DailyTimer implements Runnable {
 	}
 
 	private void collectTownTaxes() {
+		
 		for (Civilization civ : CivGlobal.getCivs()) {
 			if (civ.isAdminCiv()) {
 				continue;

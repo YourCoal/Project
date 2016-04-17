@@ -320,6 +320,7 @@ public class EconCommand extends CommandBase {
 		}
 		
 		CivMessage.sendSuccess(player, resident.getTreasury().getBalance()+" coins.");
+		
 	}
 
 	@Override

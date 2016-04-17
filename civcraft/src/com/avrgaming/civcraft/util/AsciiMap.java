@@ -29,8 +29,8 @@ import com.avrgaming.civcraft.object.TownChunk;
 
 public class AsciiMap {
 
-	private static final int width = 10;
-	private static final int height = 32;	
+	private static final int width = 9;
+	private static final int height = 40;	
 	
 	public static List<String> getMapAsString(Location center) {
 		ArrayList<String> out = new ArrayList<String>();
@@ -75,8 +75,8 @@ public class AsciiMap {
 					
 					if (tc.isForSale()) {
 						outRow += CivColor.Yellow+"$";
-//					} else if (tc.isOutpost()) { 
-//						outRow += CivColor.Yellow+"O";
+					} else if (tc.isOutpost()) { 
+						outRow += CivColor.Yellow+"O";
 					} else {
 						outRow += color+"T";
 					}

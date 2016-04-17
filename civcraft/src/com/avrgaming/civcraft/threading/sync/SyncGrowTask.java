@@ -72,10 +72,9 @@ public class SyncGrowTask implements Runnable {
 						
 						for (GrowBlock growBlock : request.growBlocks) {
 							switch (growBlock.typeId) {
-							case CivData.WHEAT:
 							case CivData.CARROTS:
+							case CivData.WHEAT:
 							case CivData.POTATOES:
-							case CivData.BEETROOT_CROP:
 								if ((growBlock.data-1) != ItemManager.getData(growBlock.bcoord.getBlock())) {
 									// replanted??
 									continue;

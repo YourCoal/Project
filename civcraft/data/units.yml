@@ -33,12 +33,13 @@ base:
 # Special information per unit
 unit_info:
     # Percentage of damage increase for warrior unit.
-    warrior_damage: 1.0
+    warrior_damage: 1.00
 
     # Percentage of damage increase for archer unit.
     archer_damage: 1.5
 
 units:
+
   - id: 'u_spy'
     name: "Spy"
     class_name: 'com.avrgaming.civcraft.items.units.Spy'
@@ -50,7 +51,7 @@ units:
     limit: 1
     item_id: 381
     item_data: 0
-#
+    
   - id: 'u_settler'
     name: "Settler"
     class_name: 'com.avrgaming.civcraft.items.units.Settler'
@@ -62,27 +63,5 @@ units:
     limit: 0
     item_id: 330
     item_data: 0
-#
-  - id: 'u_solider'
-    name: "Solider"
-    class_name: 'com.avrgaming.civcraft.items.units.Solider'
-    require_tech:
-    require_struct:
-    require_upgrade:
-    cost: 50000.0
-    hammer_cost: 2000.0
-    limit: 0
-    item_id: 399
-    item_data: 0
-#
-  - id: 'u_defensemen'
-    name: "Defensemen"
-    class_name: 'com.avrgaming.civcraft.items.units.Defensemen'
-    require_tech:
-    require_struct:
-    require_upgrade:
-    cost: 50000.0
-    hammer_cost: 2000.0
-    limit: 0
-    item_id: 442
-    item_data: 0
+    
+

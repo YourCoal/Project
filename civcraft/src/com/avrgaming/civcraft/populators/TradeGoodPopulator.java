@@ -33,7 +33,6 @@ import org.bukkit.generator.BlockPopulator;
 import com.avrgaming.civcraft.config.ConfigTradeGood;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
-import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.object.ProtectedBlock;
 import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.TradeGood;
@@ -84,7 +83,6 @@ public class TradeGoodPopulator extends BlockPopulator {
     		try {
 				pb.saveNow();
 			} catch (SQLException e) {
-				CivLog.warning("Unable to Protect Goodie Sign");
 				e.printStackTrace();
 			}    
     		} else {
@@ -117,27 +115,13 @@ public class TradeGoodPopulator extends BlockPopulator {
     		structSign.setText(sign.getLines());
     		structSign.setDirection(ItemManager.getData(sign.getData()));
     		CivGlobal.addStructureSign(structSign);
-            ProtectedBlock pbsign = new ProtectedBlock(new BlockCoord(signBlock), ProtectedBlock.Type.TRADE_MARKER);
-            CivGlobal.addProtectedBlock(pbsign);
-            if (sync) {
-                try {
-                	pbsign.saveNow();
-                    structSign.saveNow();
-                } catch (SQLException e) {
-                	e.printStackTrace();
-                }
-            } else {
-            	pbsign.save();
-                structSign.save();
-            }
     	}
-        
     	if (sync) {
-	    	try {
-				new_good.saveNow();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+    	try {
+			new_good.saveNow();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     	} else {
     		new_good.save();
     	}
@@ -177,16 +161,10 @@ public class TradeGoodPopulator extends BlockPopulator {
 			
 			// Determine if we should be a water good.
 			ConfigTradeGood good;
-			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.TREE_LEAF ||
-					ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.TREE_LEAF2)  {
-				CivLog.warning("Canceled TradeGoodPopulator.java Task. Reason: Tried spawning illegally.");
-				good = pick.none;
-			}
-			
-			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_STILL || 
+			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER || 
 				ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
 				good = pick.waterPick;
-			} else {
+			}  else {
 				good = pick.landPick;
 			}
 			
@@ -199,5 +177,7 @@ public class TradeGoodPopulator extends BlockPopulator {
 			// Create a copy and save it in the global hash table.
 			buildTradeGoodie(good, coord, world, false);
     	}
+ 	
     }
+
 }

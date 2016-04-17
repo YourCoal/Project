@@ -153,10 +153,9 @@ public class War {
 			War.restoreAllTowns();
 			War.repositionPlayers("You've been teleported back to your town hall. WarTime ended and you were in enemy territory.");
 			War.processDefeated();
-			
-			CivGlobal.granariesEnabled = true;
-			CivGlobal.trommelsEnabled = true;
+		
 			CivGlobal.growthEnabled = true;
+			CivGlobal.trommelsEnabled = true;
 			CivGlobal.tradeEnabled = true;
 			
 			/* Delete any wartime file used to prevent reboots. */
@@ -195,9 +194,8 @@ public class War {
 				e1.printStackTrace();
 			}
 			
-			CivGlobal.granariesEnabled = true;
-			CivGlobal.trommelsEnabled = false;
 			CivGlobal.growthEnabled = false;
+			CivGlobal.trommelsEnabled = false;
 			CivGlobal.tradeEnabled = false;
 			
 			try {

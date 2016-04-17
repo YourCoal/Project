@@ -167,7 +167,7 @@ public class CivInfoCommand extends CommandBase {
 	}
 	
 	public static void show(CommandSender sender, Resident resident, Civilization civ) {
-		DecimalFormat df = new DecimalFormat();
+		
 		boolean isOP = false;
 		if (sender instanceof Player) {
 			Player player;
@@ -177,51 +177,45 @@ public class CivInfoCommand extends CommandBase {
 					isOP = true;
 				}
 			} catch (CivException e) {
+				/* Allow console to display. */
 			}
 		}	else {
+			/* We're the console. */
 			isOP = true;
 		}
 		
-		CivMessage.sendHeading(sender, "Civilization of "+civ.getName()+" Info");
-		CivMessage.send(sender, CivColor.Green+"Score: "+CivColor.LightGreen+civ.getScore()+" "+
-				CivColor.Green+" Total Towns: "+CivColor.LightGreen+civ.getTownCount());
+		
+		CivMessage.sendHeading(sender, "Civilization of "+civ.getName());
+		
+		CivMessage.send(sender, CivColor.Green+"Score: "+CivColor.LightGreen+civ.getScore()+
+				CivColor.Green+" Towns: "+CivColor.LightGreen+civ.getTownCount());
 		if (civ.getLeaderGroup() == null) {
 			CivMessage.send(sender, CivColor.Green+"Leaders: "+CivColor.Rose+"NONE");
-		} else if (civ.getLeaderGroup().getMemberCount() == 0) {
-			CivMessage.send(sender, CivColor.Green+"Leaders: "+CivColor.LightGray+CivColor.ITALIC+"None "+CivColor.Rose+"(Contact an admin!)");
 		} else {
 			CivMessage.send(sender, CivColor.Green+"Leaders: "+CivColor.LightGreen+civ.getLeaderGroup().getMembersString());
 		}
 		
 		if (civ.getAdviserGroup() == null) {
 			CivMessage.send(sender, CivColor.Green+"Advisers: "+CivColor.Rose+"NONE");
-		} else if (civ.getLeaderGroup().getMemberCount() == 0) {
-			CivMessage.send(sender, CivColor.Green+"Advisers: "+CivColor.LightGray+CivColor.ITALIC+"None");
 		} else {
 			CivMessage.send(sender, CivColor.Green+"Advisers: "+CivColor.LightGreen+civ.getAdviserGroup().getMembersString());
 		}
 	    
-		
 	    if (resident == null || civ.hasResident(resident)) {
-	    	CivMessage.send(sender, CivColor.Green+"Income Tax Rate: "+CivColor.LightGreen+civ.getIncomeTaxRateString()+" "+
-							CivColor.Green+" Science Rate: "+CivColor.LightGreen+DecimalHelper.formatPercentage(civ.getSciencePercentage()));
-	    	
-	    	
-			CivMessage.send(sender ,CivColor.Green+"Beakers: "+CivColor.LightGreen+df.format(Math.floor(civ.getBeakers()))+" "+
-					CivColor.Green+" Residents Online: "+CivColor.LightGreen+civ.getOnlineResidents().size());
+	    	CivMessage.send(sender, CivColor.Green+"Income Tax Rate: "+CivColor.LightGreen+civ.getIncomeTaxRateString()+
+					CivColor.Green+" Science Percentage: "+CivColor.LightGreen+DecimalHelper.formatPercentage(civ.getSciencePercentage()));
+			CivMessage.send(sender ,CivColor.Green+"Beakers: "+CivColor.LightGreen+civ.getBeakers()+
+					CivColor.Green+" Online: "+CivColor.LightGreen+civ.getOnlineResidents().size());
 	    }
 		
-	    
 		if (resident == null || civ.getLeaderGroup().hasMember(resident) || civ.getAdviserGroup().hasMember(resident) || isOP) {
-			CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+df.format(Math.floor(civ.getTreasury().getBalance()))+" Coins");
+			CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+civ.getTreasury().getBalance()+CivColor.Green+" coins.");
 		}
-		
 		
 		if (civ.getTreasury().inDebt()) {
 			CivMessage.send(sender, CivColor.Yellow+"In Debt: "+civ.getTreasury().getDebt()+" coins.");	
 			CivMessage.send(sender, CivColor.Yellow+civ.getDaysLeftWarning());
 		}
-		
 		
 		for (EndGameCondition endCond : EndGameCondition.endConditions) {
 			ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(endCond.getSessionKey());
@@ -248,31 +242,24 @@ public class CivInfoCommand extends CommandBase {
 		
 		Double beakers = EndConditionScience.getBeakersFor(civ);
 		if (beakers > 0) {
-//			DecimalFormat df = new DecimalFormat("#.#");
+			DecimalFormat df = new DecimalFormat("#.#");
 			CivMessage.send(sender, CivColor.LightBlue+CivColor.BOLD+civ.getName()+CivColor.White+" has "+
 					CivColor.LightPurple+CivColor.BOLD+df.format(beakers)+CivColor.White+" beakers on The Enlightenment.");			
 		}
 		
-		String out = CivColor.Green+"Owned Towns: ";
+		String out = CivColor.Green+"Towns: ";
 		for (Town town : civ.getTowns()) {
 			if (town.isCapitol()) {
-				out += CivColor.Gold+town.getName()+CivColor.ITALIC+" (Capitol)";
+				out += CivColor.Gold+town.getName();
 			} else if (town.getMotherCiv() != null) {
+				out += CivColor.Yellow+town.getName();
 			} else {
 				out += CivColor.White+town.getName();
 			}
-			out += " "+CivColor.LightGray+CivColor.BOLD+"- ";
+			out += ", ";
 		}
-		CivMessage.send(sender, out);
 		
-		String out1 = CivColor.Green+"Captured Towns: ";
-		for (Town town : civ.getTowns()) {
-			if (town.getMotherCiv() != null) {
-				out1 += CivColor.Yellow+town.getName();
-			}
-			out += " "+CivColor.LightGray+CivColor.BOLD+"- ";
-		}
-		CivMessage.send(sender, out1);
+		CivMessage.send(sender, out);
 	}
 	
 	public void show_info() throws CivException {

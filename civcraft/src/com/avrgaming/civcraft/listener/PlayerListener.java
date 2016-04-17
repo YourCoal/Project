@@ -59,6 +59,7 @@ import org.bukkit.util.Vector;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigTechPotion;
+import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.items.units.UnitItemMaterial;
 import com.avrgaming.civcraft.items.units.UnitMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreMaterial;
@@ -66,8 +67,10 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.PlayerChunkNotifyAsyncTask;
@@ -109,6 +112,7 @@ public class PlayerListener implements Listener {
 		
 		CivGlobal.playerFirstLoginMap.put(event.getPlayer().getName(), new Date());
 		PlayerLocationCacheUpdate.playerQueue.add(event.getPlayer().getName());
+		MobSpawnerTimer.playerQueue.add((event.getPlayer().getName()));
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -123,13 +127,55 @@ public class PlayerListener implements Listener {
 	private void setModifiedMovementSpeed(Player player) {
 		/* Change move speed based on armor. */
 		double speed = CivSettings.normal_speed;
-		if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
-			Vector vec = player.getVehicle().getVelocity();
-			double yComp = vec.getY();
-			vec.setY(yComp); /* Do not multiply y velocity. */
-			player.getVehicle().setVelocity(vec);
-		} else {
+		
+		/* Set speed from armor. */
+		if (Unit.isWearingFullComposite(player)) {
+			speed *= CivSettings.T4_leather_speed;
 		}
+		
+		if (Unit.isWearingFullHardened(player)) {
+			speed *= CivSettings.T3_leather_speed;
+		}
+		
+		if (Unit.isWearingFullRefined(player)) {
+			speed *= CivSettings.T2_leather_speed;
+		}
+		
+		if (Unit.isWearingFullBasicLeather(player)) {
+			speed *= CivSettings.T1_leather_speed;
+		}
+		
+		if (Unit.isWearingAnyIron(player)) {
+			speed *= CivSettings.T1_metal_speed;
+		}
+		
+		if (Unit.isWearingAnyChain(player)) {
+			speed *= CivSettings.T2_metal_speed;
+		}
+		
+		if (Unit.isWearingAnyGold(player)) {
+			speed *= CivSettings.T3_metal_speed;
+		}
+		
+		if (Unit.isWearingAnyDiamond(player)) {
+			speed *= CivSettings.T4_metal_speed;
+		}
+		
+		Resident resident = CivGlobal.getResident(player);
+		if (resident != null && resident.isOnRoad()) {	
+			if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
+				Vector vec = player.getVehicle().getVelocity();
+				double yComp = vec.getY();
+				
+				vec.multiply(Road.ROAD_HORSE_SPEED);
+				vec.setY(yComp); /* Do not multiply y velocity. */
+				
+				player.getVehicle().setVelocity(vec);
+			} else {
+				speed *= Road.ROAD_PLAYER_SPEED;
+			}
+		}
+		
 		player.setWalkSpeed((float) Math.min(1.0f, speed));
 	}
 	
@@ -170,17 +216,20 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		if (resident.getTown().getCiv().getDiplomacyManager().isAtWar() && War.isWarTime()) {
-			//TownHall townhall = resident.getTown().getTownHall();
-			Capitol capitol = resident.getCiv().getCapitolStructure();
-			if (capitol != null) {
-				BlockCoord respawn = capitol.getRandomRespawnPoint();
-				if (respawn != null) {
-					//PlayerReviveTask reviveTask = new PlayerReviveTask(player, townhall.getRespawnTime(), townhall, event.getRespawnLocation());
-					resident.setLastKilledTime(new Date());
-					event.setRespawnLocation(respawn.getCenteredLocation());
-					CivMessage.send(player, CivColor.LightGray+"You've respawned in the War Room since it's WarTime and you're at war.");
-					//TaskMaster.asyncTask("", reviveTask, 0);
+		if (War.isWarTime() && !resident.isInsideArena()) {
+			if (resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
+				//TownHall townhall = resident.getTown().getTownHall();
+				Capitol capitol = resident.getCiv().getCapitolStructure();
+				if (capitol != null) {
+					BlockCoord respawn = capitol.getRandomRespawnPoint();
+					if (respawn != null) {
+						//PlayerReviveTask reviveTask = new PlayerReviveTask(player, townhall.getRespawnTime(), townhall, event.getRespawnLocation());
+						resident.setLastKilledTime(new Date());
+						event.setRespawnLocation(respawn.getCenteredLocation());
+						CivMessage.send(player, CivColor.LightGray+"You've respawned in the War Room since it's WarTime and you're at war.");
+						
+						//TaskMaster.asyncTask("", reviveTask, 0);
+					}
 				}
 			}
 		}
@@ -453,7 +502,7 @@ public class PlayerListener implements Listener {
 			Resident defenderResident = CivGlobal.getResident(defender);
 			if (defenderResident.isCombatInfo()) {	
 				if (attacker != null) {
-					CivMessage.send(defender, CivColor.LightGray+"  [Combat] Took "+CivColor.Rose+damage+
+					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+
 							" damage "+CivColor.LightGray+" from "+CivColor.LightPurple+attacker.getName());				
 				} else {
 					String entityName = null;
@@ -466,7 +515,7 @@ public class PlayerListener implements Listener {
 						entityName = event.getDamager().getType().toString();
 					}
 					
-					CivMessage.send(defender, CivColor.LightGray+"  [Combat] Took "+CivColor.Rose+damage+
+					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+
 							" damage "+CivColor.LightGray+" from a "+entityName);
 				}
 			}
@@ -476,7 +525,7 @@ public class PlayerListener implements Listener {
 			Resident attackerResident = CivGlobal.getResident(attacker);
 			if (attackerResident.isCombatInfo()) {
 				if (defender != null) {
-					CivMessage.send(attacker, CivColor.LightGray+"  [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to "+CivColor.LightPurple+defender.getName());
+					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to "+CivColor.LightPurple+defender.getName());
 				} else {
 					String entityName = null;
 					
@@ -488,9 +537,13 @@ public class PlayerListener implements Listener {
 						entityName = event.getDamager().getType().toString();
 					}
 					
-					CivMessage.send(attacker, CivColor.LightGray+"  [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to a "+entityName);
+					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to a "+entityName);
 				}
 			}
 		}
+		
+		
+		
+		
 	}
 }

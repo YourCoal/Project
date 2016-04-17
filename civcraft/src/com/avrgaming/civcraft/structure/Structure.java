@@ -39,6 +39,7 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
+import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -233,6 +234,13 @@ public class Structure extends Buildable {
 				struct = (Structure) new Wall(rs);
 			}
 			break;
+		case "ti_road":
+			if (rs == null) {
+				struct = (Structure) new Road(center, id, town);
+			} else {
+				struct = (Structure) new Road(rs);
+			}
+			break;
 		case "s_barracks":
 			if (rs == null) {
 				struct = (Structure) new Barracks(center, id, town);
@@ -240,7 +248,7 @@ public class Structure extends Buildable {
 				struct = (Structure) new Barracks(rs);
 			}
 			break;
-		case "s_windmill":
+		case "ti_windmill":
 			if (rs == null) {
 				struct = (Structure) new Windmill(center, id, town);
 			} else {

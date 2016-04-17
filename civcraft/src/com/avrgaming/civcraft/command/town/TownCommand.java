@@ -461,7 +461,7 @@ public class TownCommand extends CommandBase {
 		synchronized(CivGlobal.townScores) {
 			int i = 1;
 			for (Integer score : CivGlobal.townScores.descendingKeySet()) {
-				CivMessage.send(sender, i+") "+CivColor.Gold+CivGlobal.townScores.get(score).getName()+CivColor.White+" - "+score+" Points");
+				CivMessage.send(sender, i+") "+CivColor.Gold+CivGlobal.townScores.get(score).getName()+CivColor.White+" - "+score+" points");
 				i++;
 				if (i > 5) {
 					break;
@@ -757,7 +757,14 @@ public class TownCommand extends CommandBase {
 		if (!town.playerIsInGroupName("mayors", player) && !town.playerIsInGroupName("assistants", player)) {
 			throw new CivException("Only mayors and assistants can use this command.");
 		}
-		TownChunk.claim(town, player);
+		
+//		boolean outpost = false;
+//		if (args.length >= 2 && args[1].equalsIgnoreCase("outpost")) {
+//			outpost = true;
+//			CivMessage.send(player, "Claiming an outpost!");
+//		}
+		
+		TownChunk.claim(town, player, false);
 	}
 	
 	public void unclaim_cmd() throws CivException {
@@ -782,8 +789,14 @@ public class TownCommand extends CommandBase {
 		if (tc.perms.getOwner() != null && tc.perms.getOwner() != resident) {
 			throw new CivException("You cannot unclaim a chunk that belongs to another resident.");
 		}
+		
 		TownChunk.unclaim(tc);
-		CivMessage.sendSuccess(sender, "Unclaimed "+tc.getCenterString());
+		if (tc.isOutpost()) {
+			CivMessage.sendSuccess(sender, "Unclaimed Outpost at "+tc.getCenterString());
+		} else {
+			CivMessage.sendSuccess(sender, "Unclaimed "+tc.getCenterString());
+		}
+		
 	}
 	
 	public void group_cmd() throws CivException {

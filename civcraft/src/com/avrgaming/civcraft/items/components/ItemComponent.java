@@ -44,7 +44,7 @@ public abstract class ItemComponent {
 	public static ReentrantLock lock = new ReentrantLock();
 	
 	private HashMap<String, String> attributes = new HashMap<String, String>();
-	protected String name;
+	private String name;
 	
 	public void createComponent() {
 		

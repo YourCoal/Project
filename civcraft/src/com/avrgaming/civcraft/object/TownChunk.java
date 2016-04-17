@@ -53,6 +53,7 @@ public class TownChunk extends SQLObject {
 	 */
 	private double value;
 	private double price;
+	private boolean outpost;
 	
 	public PlotPermissions perms = new PlotPermissions();
 	
@@ -88,7 +89,8 @@ public class TownChunk extends SQLObject {
 				 "`permissions` mediumtext NOT NULL," +
 				 "`for_sale` bool NOT NULL DEFAULT '0'," +
 				 "`value` float NOT NULL DEFAULT '0'," +
-				 "`price` float NOT NULL DEFAULT '0'," +		 
+				 "`price` float NOT NULL DEFAULT '0'," +
+				 "`outpost` bool DEFAULT '0'," +			 
 			//	 "FOREIGN KEY (owner_id) REFERENCES "+SQL.tb_prefix+Resident.TABLE_NAME+"(id),"+
 			//	 "FOREIGN KEY (town_id) REFERENCES "+SQL.tb_prefix+Town.TABLE_NAME+"(id),"+
 				 "PRIMARY KEY (`id`)" + ")";
@@ -135,12 +137,22 @@ public class TownChunk extends SQLObject {
 		this.forSale = rs.getBoolean("for_sale");
 		this.value = rs.getDouble("value");
 		this.price = rs.getDouble("price");
+		this.outpost = rs.getBoolean("outpost");
 		
-		try {
-			this.getTown().addTownChunk(this);
-		} catch (AlreadyRegisteredException e) {
-			e.printStackTrace();
+		if (!this.outpost) {
+			try {
+				this.getTown().addTownChunk(this);
+			} catch (AlreadyRegisteredException e1) {
+				e1.printStackTrace();
+			}
+		} else {
+			try {
+				this.getTown().addOutpostChunk(this);
+			} catch (AlreadyRegisteredException e) {
+				e.printStackTrace();
+			}
 		}
+		
 	}
 
 	@Override
@@ -161,6 +173,7 @@ public class TownChunk extends SQLObject {
 		hashmap.put("for_sale", this.isForSale());
 		hashmap.put("value", this.getValue());
 		hashmap.put("price", this.getPrice());
+		hashmap.put("outpost", this.outpost);
 		
 		if (this.perms.getOwner() != null) {
 			hashmap.put("owner_id", this.perms.getOwner().getId());
@@ -214,7 +227,7 @@ public class TownChunk extends SQLObject {
 		return effectiveTownLevel.plot_cost;		
 	}
 
-	public static TownChunk claim(Town town, ChunkCoord coord) throws CivException {
+	public static TownChunk claim(Town town, ChunkCoord coord, boolean outpost) throws CivException {
 		if (CivGlobal.getTownChunk(coord) != null) {
 			throw new CivException("This plot is already claimed.");
 		}
@@ -232,12 +245,15 @@ public class TownChunk extends SQLObject {
 		}
 		
 		TownChunk tc = new TownChunk(town, coord);
-		if (!tc.isOnEdgeOfOwnership()) {
-			throw new CivException("Can only claim on the edge of town's ownership.");
-		}
 		
-		if (!town.canClaim()) {
-			throw new CivException("Town is unable to claim, doesn't have enough plots for this town level.");
+		if (!outpost) {
+			if (!tc.isOnEdgeOfOwnership()) {
+				throw new CivException("Can only claim on the edge of town's ownership.");
+			}
+		
+			if (!town.canClaim()) {
+				throw new CivException("Town is unable to claim, doesn't have enough plots for this town level.");
+			}
 		}
 		
 		//Test that we are not too close to another civ
@@ -270,11 +286,21 @@ public class TownChunk extends SQLObject {
 //			throw new CivException("Internal configuration exception.");
 //		}
 		
-		try {
-			town.addTownChunk(tc);
-		} catch (AlreadyRegisteredException e1) {
-			e1.printStackTrace();
-			throw new CivException("Internal Error Occurred.");
+		if (!outpost) {
+			try {
+				town.addTownChunk(tc);
+			} catch (AlreadyRegisteredException e1) {
+				e1.printStackTrace();
+				throw new CivException("Internal Error Occurred.");
+	
+			}
+		} else {
+			try {
+				town.addOutpostChunk(tc);
+			} catch (AlreadyRegisteredException e) {
+				e.printStackTrace();
+				throw new CivException("Internal Error Occurred.");
+			}
 		}
 		
 		Camp camp = CivGlobal.getCampFromChunk(coord);
@@ -283,6 +309,7 @@ public class TownChunk extends SQLObject {
 			camp.disband();
 		}
 		
+		tc.setOutpost(outpost);
 		tc.save();
 		town.withdraw(cost);			
 		CivGlobal.addTownChunk(tc);
@@ -291,9 +318,9 @@ public class TownChunk extends SQLObject {
 	}
 	
 	
-	public static TownChunk claim(Town town, Player player) throws CivException {
+	public static TownChunk claim(Town town, Player player, boolean outpost) throws CivException {
 		double cost = getNextPlotCost(town);
-		TownChunk tc = claim(town, new ChunkCoord(player.getLocation()));
+		TownChunk tc = claim(town, new ChunkCoord(player.getLocation()), outpost);
 		CivMessage.sendSuccess(player, "Claimed chunk at "+tc.getChunkCoord()+" for "+CivColor.Yellow+cost+CivColor.LightGreen+" coins.");
 		return tc;
 	}
@@ -387,7 +414,9 @@ public class TownChunk extends SQLObject {
 			TownChunk tc = CivGlobal.getTownChunk(new ChunkCoord(this.getChunkCoord().getWorldname(), 
 					this.getChunkCoord().getX() + offset[i][0], 
 					this.getChunkCoord().getZ() + offset[i][1]));
-			if (tc != null && tc.getTown() == this.getTown()) {
+			if (tc != null && 
+				tc.getTown() == this.getTown() && 
+				!tc.isOutpost()) {
 				return true;
 			}
 		}
@@ -427,6 +456,7 @@ public class TownChunk extends SQLObject {
 		if (this.isForSale()) {
 			out += CivColor.Yellow+"[For Sale: "+this.price+" coins]";
 		}
+		
 		return out;
 	}
 
@@ -472,13 +502,18 @@ public class TownChunk extends SQLObject {
 	}
 
 	public boolean isEdgeBlock() {
+
 		int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+		
+		if (this.isOutpost()) {
+			return false;
+		}
 		
 		for (int i = 0; i < 4; i++) {
 			TownChunk next = CivGlobal.getTownChunk(new ChunkCoord(this.chunkLocation.getWorldname(), 
 					this.chunkLocation.getX() + offset[i][0], 
 					this.chunkLocation.getZ()+ offset[i][1]));
-			if (next == null) { 
+			if (next == null || next.isOutpost()) { 
 				return true;
 			}
 		}
@@ -487,8 +522,11 @@ public class TownChunk extends SQLObject {
 	}
 
 	public static void unclaim(TownChunk tc) throws CivException {
+		
 		//TODO check that its not the last chunk
 		//TODO make sure that its not owned by someone else.
+		
+		
 		
 		tc.getTown().removeTownChunk(tc);
 		try {
@@ -497,5 +535,17 @@ public class TownChunk extends SQLObject {
 			e.printStackTrace();
 			throw new CivException("Internal database error.");
 		}
+		
 	}
+
+	public boolean isOutpost() {
+		return outpost;
+	}
+
+	public void setOutpost(boolean outpost) {
+		this.outpost = outpost;
+	}
+
+
+
 }

@@ -234,4 +234,5 @@ public class PlotPermissions {
 		this.groups.clear();
 		this.addGroup(defaultGroup);
 	}
+	
 }

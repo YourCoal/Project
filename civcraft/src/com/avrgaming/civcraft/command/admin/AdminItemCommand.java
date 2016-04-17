@@ -2,13 +2,13 @@ package com.avrgaming.civcraft.command.admin;
 
 import java.util.HashMap;
 
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementArenaItem;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementSoulBound;
@@ -44,6 +44,7 @@ public class AdminItemCommand extends CommandBase {
 		}
 		
 		ItemStack stack = LoreCraftableMaterial.spawn(craftMat);
+		
 		stack.setAmount(amount);
 		HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(stack);
 		for (ItemStack is : leftovers.values()) {
@@ -53,16 +54,15 @@ public class AdminItemCommand extends CommandBase {
 		CivMessage.sendSuccess(player, "Gave item.");
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void enhance_cmd() throws CivException {
-		HumanEntity player = getPlayer();
+		Player player = getPlayer();
 		HashMap<String, LoreEnhancement> enhancements = new HashMap<String, LoreEnhancement>();
 		ItemStack inHand = getPlayer().getItemInHand();
 		
 		enhancements.put("soulbound", new LoreEnhancementSoulBound());
 		enhancements.put("attack", new LoreEnhancementAttack());
 		enhancements.put("defence", new LoreEnhancementDefense());
-		enhancements.put("soulbound", new LoreEnhancementSoulBound());
+		enhancements.put("arena", new LoreEnhancementArenaItem());
 
 		if (inHand == null || ItemManager.getId(inHand) == CivData.AIR) {
 			throw new CivException("You must have an item in your hand to enhance it.");

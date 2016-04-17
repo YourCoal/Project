@@ -73,6 +73,7 @@ import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PlotPermissions;
+import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.structurevalidation.StructureValidator;
 import com.avrgaming.civcraft.template.Template;
@@ -92,6 +93,8 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.SimpleBlock.Type;
 import com.avrgaming.global.perks.Perk;
+import com.wimbli.WorldBorder.BorderData;
+import com.wimbli.WorldBorder.Config;
 
 public abstract class Buildable extends SQLObject {
 	
@@ -245,12 +248,8 @@ public abstract class Buildable extends SQLObject {
 		return info.allow_demolish;
 	}
 	
-	public boolean isTile() {
-		return info.tile;
-	}
-	
-	public boolean isOutpost() {
-		return info.outpost;
+	public boolean isTileImprovement() {
+		return info.tile_improvement;
 	}
 	
 	public boolean isActive() {	
@@ -455,8 +454,9 @@ public abstract class Buildable extends SQLObject {
 		this.setCorner(new BlockCoord(centerLoc));
 		
 		CivMessage.sendHeading(player, "Building a Structure");
-		CivMessage.send(player, CivColor.Yellow+ChatColor.BOLD+"We've placed a bedrock outline, which outlines the structure's location.");
-		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"If this looks good, type 'yes'. Otherwise, type anything else to cancel.");
+		CivMessage.send(player, CivColor.Yellow+ChatColor.BOLD+"We've placed a bedrock outline, only visible to you which outlines "+
+				" the structure's location.");
+		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"If this location looks good, type 'yes'. Otherwise, type anything else to cancel building.");
 		Resident resident = CivGlobal.getResident(player);
 		resident.startPreviewTask(tpl, centerLoc.getBlock(), player.getUniqueId());
 		
@@ -551,7 +551,7 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (info.tile || info.outpost) {
+		if (info.tile_improvement) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else { 
@@ -595,7 +595,7 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (this.isTile()) {
+		if (this.isTileImprovement()) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else {  
@@ -632,7 +632,8 @@ public abstract class Buildable extends SQLObject {
 		return loc;
 	}
 	
-	public void resumeBuildFromTemplate() throws Exception {
+	public void resumeBuildFromTemplate() throws Exception
+	{
 		Template tpl;
 		
 		Location corner = getCorner().getLocation();
@@ -648,7 +649,7 @@ public abstract class Buildable extends SQLObject {
 		
 		if (this instanceof Wonder) {
 			this.getTown().setCurrentWonderInProgress(this);
-		} else if (this instanceof Structure) {
+		} else {
 			this.getTown().setCurrentStructureInProgress(this);
 		}
 		
@@ -740,7 +741,7 @@ public abstract class Buildable extends SQLObject {
 		
 		if (this.getConfigId().equals("s_shipyard")) {
 			if (!centerBlock.getBiome().equals(Biome.OCEAN) && 
-//				!centerBlock.getBiome().equals(Biome.BEACH) &&
+				!centerBlock.getBiome().equals(Biome.BEACH) &&
 				!centerBlock.getBiome().equals(Biome.DEEP_OCEAN) &&
 				!centerBlock.getBiome().equals(Biome.RIVER) &&
 				!centerBlock.getBiome().equals(Biome.FROZEN_OCEAN) &&
@@ -760,44 +761,25 @@ public abstract class Buildable extends SQLObject {
 			validateDistanceFromSpawn(centerBlock.getLocation());
 		}
 		
-		if (this.isTile()) {
+		if (this.isTileImprovement()) {
 			ignoreBorders = true;
 			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
 			
-			if (getTown().getTileCount() >= level.tiles) {
-				throw new CivException("Cannot build tile. Already at tile limit.");
+			if (getTown().getTileImprovementCount() >= level.tile_improvements) {
+				throw new CivException("Cannot build tile improvement. Already at tile improvement limit.");
 			}
 			
 			ChunkCoord coord = new ChunkCoord(centerBlock.getLocation());
 			for (Structure s : getTown().getStructures()) {
-				if (!s.isTile()) {
+				if (!s.isTileImprovement()) {
 					continue;
 				}
 				ChunkCoord sCoord = new ChunkCoord(s.getCorner());
 				if (sCoord.equals(coord)) {
-					throw new CivException("Cannot build a tile on the same chunk as another tile.");
+					throw new CivException("Cannot build a tile improvement on the same chunk as another tile improvement.");
 				}
-			}
-		}
-		
-		if (this.isOutpost()) {
-			ignoreBorders = true;
-			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
-			
-			if (getTown().getOutpostCount() >= level.outposts) {
-				throw new CivException("Cannot build outpost. Already at outpost limit.");
 			}
 			
-			ChunkCoord coord = new ChunkCoord(centerBlock.getLocation());
-			for (Structure s : getTown().getStructures()) {
-				if (!s.isOutpost()) {
-					continue;
-				}
-				ChunkCoord sCoord = new ChunkCoord(s.getCorner());
-				if (sCoord.equals(coord)) {
-					throw new CivException("Cannot build an outpost on the same chunk as another outpost.");
-				}
-			}
 		}
 		
 		TownChunk centertc = CivGlobal.getTownChunk(origin);
@@ -833,6 +815,8 @@ public abstract class Buildable extends SQLObject {
 //		}
 		
 		onCheck();
+		
+		LinkedList<RoadBlock> deletedRoadBlocks = new LinkedList<RoadBlock>();
 		ArrayList<ChunkCoord> claimCoords = new ArrayList<ChunkCoord>();
 		for (int x = 0; x < regionX; x++) {
 			for (int y = 0; y < regionY; y++) {
@@ -890,6 +874,18 @@ public abstract class Buildable extends SQLObject {
 					if (CivGlobal.getBuildablesAt(coord) != null) {
 						throw new CivException("Cannot build here, there is already a structure here.");
 					}
+					
+					RoadBlock rb = CivGlobal.getRoadBlock(coord);
+					if (rb != null) {
+						deletedRoadBlocks.add(rb);
+					}
+				
+					BorderData border = Config.Border(b.getWorld().getName());
+					if (border != null) {
+						if(!border.insideBorder(b.getLocation().getX(), b.getLocation().getZ(), Config.ShapeRound())) {
+							throw new CivException("Cannot build here. Part of the structure would sit beyond the world border.");
+						}
+					}
 				}
 			}
 		}
@@ -907,6 +903,12 @@ public abstract class Buildable extends SQLObject {
 			} catch (Exception e) {
 			}
 		}
+		
+		/* Delete any road blocks we happen to come across. */
+		for (RoadBlock rb : deletedRoadBlocks) {
+			rb.getRoad().deleteRoadBlock(rb);
+		}
+		
 	}
 	
 	public void onCheck() throws CivException {
@@ -1154,7 +1156,7 @@ public abstract class Buildable extends SQLObject {
 			
 		this.damage(amount);
 		
-		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
+		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
 		world.playEffect(hit.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		if ((hit.getOwner().getDamagePercentage() % 10) == 0 && !wasTenPercent) {
@@ -1479,9 +1481,9 @@ public abstract class Buildable extends SQLObject {
 	
 	public static int getReinforcementValue(int typeId) {
 		switch (typeId) {
-		case CivData.WATER_STILL:
+		case CivData.WATER:
 		case CivData.WATER_RUNNING:
-		case CivData.LAVA_STILL:
+		case CivData.LAVA:
 		case CivData.LAVA_RUNNING:
 		case CivData.AIR:
 		case CivData.COBWEB:

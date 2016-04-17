@@ -64,8 +64,7 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 		info.displayName = "Camp";
 		info.ignore_floating = false;
 		info.template_base_name = "camp";
-		info.tile = false;
-		info.outpost = false;
+		info.tile_improvement = false;
 		info.templateYShift = -1;
 		
 		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);
@@ -119,11 +118,13 @@ public class FoundCamp extends ItemComponent implements CallbackInterface {
 			return;
 		}
 		Resident resident = CivGlobal.getResident(playerName);
+		
 		CivMessage.sendHeading(player, "Setting up Camp!");
 		CivMessage.send(player, CivColor.LightGreen+"You and your small band of travelers need a place to sleep for the night.");
 		CivMessage.send(player, " ");
 		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new camp be called?");
 		CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
+		
 		resident.setInteractiveMode(new InteractiveCampName());
 	}
 }

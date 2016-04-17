@@ -130,10 +130,6 @@ public class BlockCoord {
 	public String toString() {
 		return this.worldname+","+this.x+","+this.y+","+this.z;
 	}
-	
-	public String toSimplifiedString() {
-		return "X: "+this.x+", Y: "+this.y+", Z: "+this.z;
-	}
 
 	@Override
 	public int hashCode() {

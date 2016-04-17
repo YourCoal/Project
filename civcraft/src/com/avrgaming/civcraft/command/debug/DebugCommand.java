@@ -21,6 +21,8 @@ package com.avrgaming.civcraft.command.debug;
 import gpl.AttributeUtil;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -72,6 +75,9 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.mobs.MobSpawner;
+import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobLevel;
+import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobType;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
@@ -80,6 +86,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.populators.TradeGoodPopulator;
+import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.siege.Cannon;
 import com.avrgaming.civcraft.structure.ArrowTower;
 import com.avrgaming.civcraft.structure.Buildable;
@@ -162,6 +169,7 @@ public class DebugCommand extends CommandBase {
 		commands.put("camp", "Debugs camps.");
 		commands.put("blockinfo", "[x] [y] [z] shows block info for this block.");
 		commands.put("trommel", "[name] - turn on this town's trommel debugging.");
+		commands.put("fakeresidents", "[town] [count] - Adds this many fake residents to a town.");
 		commands.put("clearresidents", "[town] - clears this town of it's random residents.");
 		commands.put("biomehere", "- shows you biome info where you're standing.");
 		commands.put("scout", "[civ] - enables debugging for scout towers in this civ.");
@@ -177,6 +185,7 @@ public class DebugCommand extends CommandBase {
 		commands.put("setdura", "sets the durability of an item");
 		commands.put("togglebookcheck", "Toggles checking for enchanted books on and off.");
 		commands.put("setexposure", "[int] sets your exposure to this ammount.");
+		commands.put("circle", "[int] - draws a circle at your location, with this radius.");
 		commands.put("loadperks", "loads perks for yourself");
 		commands.put("colorme", "[hex] adds nbt color value to item held.");
 		commands.put("preview", "show a single block preview at your feet.");
@@ -196,6 +205,19 @@ public class DebugCommand extends CommandBase {
 		commands.put("cannon", "builds a war cannon.");
 		commands.put("saveinv", "save an inventory");
 		commands.put("restoreinv", "restore your inventory.");
+		commands.put("arenainfo", "Shows arena info for this player.");
+	}
+	
+	public void arenainfo_cmd() throws CivException {
+		Resident resident = getResident();
+		String arenaName = "";
+		
+		if (resident.getTeam() != null && resident.getTeam().getCurrentArena() != null) {
+			arenaName = resident.getTeam().getCurrentArena().getInstanceName();
+		}
+		
+		
+		CivMessage.send(sender, "InsideArena:"+resident.isInsideArena()+" Team Active arena:"+arenaName);
 	}
 	
 	public void saveinv_cmd() throws CivException {
@@ -268,6 +290,25 @@ public class DebugCommand extends CommandBase {
 		player.setHealth(player.getMaxHealth());
 		player.setFoodLevel(50);
 		CivMessage.send(player, "Healed....");
+	}
+	
+	public void spawn_cmd() throws CivException {
+		Player player = getPlayer();		
+		String mob = getNamedString(1, "name");
+		String lvl = getNamedString(2, "level");
+		
+		MobSpawner.CustomMobType type = CustomMobType.valueOf(mob.toUpperCase());
+		MobSpawner.CustomMobLevel level = CustomMobLevel.valueOf(lvl.toUpperCase());
+		
+		if (type == null) {
+			throw new CivException("no mob named:"+mob);
+		}
+		
+		if (level == null) {
+			throw new CivException("no level named:"+lvl);
+		}
+		
+		MobSpawner.spawnCustomMob(type, level, player.getLocation());
 	}
 	
 	public void datebypass_cmd() {
@@ -382,12 +423,11 @@ public class DebugCommand extends CommandBase {
 						
 						Player player = (Player)sender;
 						ConfigBuildableInfo info = new ConfigBuildableInfo();
-						info.tile = false;
-						info.outpost = false;
+						info.tile_improvement = false;
 						info.templateYShift = 0;
 						Location center = Buildable.repositionCenterStatic(player.getLocation(), info, 
 								Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
-						
+
 						CivMessage.send(sender, "Building from "+start_x+","+start_y+","+start_z);
 						for (int y = start_y; y < tpl.size_y; y++) {
 							for (int x = start_x; x < tpl.size_x; x++) {
@@ -571,7 +611,6 @@ public class DebugCommand extends CommandBase {
 //		//CivMessage.sendSuccess(player, "Changed block");
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void colorme_cmd() throws CivException {
 		Player player = getPlayer();
 		String hex = getNamedString(1, "color code");
@@ -586,6 +625,34 @@ public class DebugCommand extends CommandBase {
 		attrs.setColor(value);		
 		player.setItemInHand(attrs.getStack());
 		CivMessage.sendSuccess(player, "Set color.");
+	}
+	
+	public void circle_cmd() throws CivException {
+		Player player = getPlayer();
+		int radius = getNamedInteger(1);
+		
+		HashMap<String, SimpleBlock> simpleBlocks = new HashMap<String, SimpleBlock>();
+		Road.getCircle(player.getLocation().getBlockX(), 
+				player.getLocation().getBlockY()-1, 
+				player.getLocation().getBlockZ(), 
+				player.getLocation().getWorld().getName(), 
+				radius, simpleBlocks);
+		
+		for (SimpleBlock sb : simpleBlocks.values()) {
+			Block block = player.getWorld().getBlockAt(sb.x, sb.y, sb.z);
+			ItemManager.setTypeId(block, sb.getType());
+		}
+		
+		CivMessage.sendSuccess(player, "Built a circle at your feet.");
+	}
+	
+	public void setexposure_cmd() throws CivException {
+		Resident resident = getResident();
+		Player player = getPlayer();
+		Double exp = getNamedDouble(1);
+		resident.setSpyExposure(exp);
+		
+		CivMessage.sendSuccess(player, "Set Exposure.");
 	}	
 	
 	public void togglebookcheck_cmd() {
@@ -593,7 +660,6 @@ public class DebugCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, "Check for books is:"+CivGlobal.checkForBooks);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setcivnbt_cmd() throws CivException {
 		Player player = getPlayer();
 		String key = getNamedString(1, "key");
@@ -611,7 +677,6 @@ public class DebugCommand extends CommandBase {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void getcivnbt_cmd() throws CivException {
 		Player player = getPlayer();
 		String key = getNamedString(1, "key");
@@ -626,7 +691,6 @@ public class DebugCommand extends CommandBase {
 		CivMessage.sendSuccess(player, "got property:"+value);
 		
 	}
-	@SuppressWarnings("deprecation")
 	public void getdura_cmd() throws CivException {
 		Player player = getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -635,7 +699,6 @@ public class DebugCommand extends CommandBase {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setdura_cmd() throws CivException {
 		Player player = getPlayer();
 		Integer dura = getNamedInteger(1);
@@ -648,7 +711,6 @@ public class DebugCommand extends CommandBase {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void getmid_cmd() throws CivException {
 		Player player = getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -659,7 +721,6 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(player, "MID:"+LoreMaterial.getMID(inHand));
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setspecial_cmd() throws CivException {
 		Player player = getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -674,7 +735,6 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(player, "Set it.");
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void getspecial_cmd() throws CivException {
 		Player player = getPlayer();
 		ItemStack inHand = player.getItemInHand();
@@ -733,6 +793,28 @@ public class DebugCommand extends CommandBase {
 		}
 	}
 	
+	public void fakeresidents_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer count = getNamedInteger(2);
+		
+		for (int i = 0; i < count; i++) {
+			SecureRandom random = new SecureRandom();
+			String name = (new BigInteger(130, random).toString(32));
+			
+			try {
+				
+				Resident fake = new Resident(UUID.randomUUID(), "RANDOM_"+name);
+				town.addResident(fake);
+				town.addFakeResident(fake);
+			} catch (AlreadyRegisteredException e) {
+				//ignore
+			} catch (InvalidNameException e) {
+				//ignore
+			}
+		}
+		CivMessage.sendSuccess(sender, "Added "+count+" residents.");
+	}
+	
 	public void trommel_cmd() throws CivException {
 		Town town = getNamedTown(1);
 		
@@ -788,7 +870,6 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(sender, out);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void refreshchunk_cmd() throws CivException {
 		Player you = getPlayer();
 		ChunkCoord coord = new ChunkCoord(you.getLocation());
@@ -818,7 +899,6 @@ public class DebugCommand extends CommandBase {
 		cmd.onCommand(sender, null, "farm", this.stripArgs(args, 1));
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void giveold_cmd() throws CivException {
 		Player player = getPlayer();
 		
@@ -852,7 +932,6 @@ public class DebugCommand extends CommandBase {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void loretest_cmd() throws CivException {
 		Player player = getPlayer();
 		
@@ -868,7 +947,6 @@ public class DebugCommand extends CommandBase {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void loreset_cmd() throws CivException {
 		Player player = getPlayer();
 		
@@ -1227,7 +1305,6 @@ public class DebugCommand extends CommandBase {
 	}
 	
 	
-	@SuppressWarnings("deprecation")
 	public void dupe_cmd() throws CivException {
 		Player player = getPlayer();
 		

@@ -70,7 +70,6 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 				this.info = info;
 			}
 			
-			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
 				Player player;
@@ -302,6 +301,10 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 					
 					yTotal += b.getWorld().getHighestBlockYAt(centerBlock.getX()+x, centerBlock.getZ()+z);
 					yCount++;
+					
+					if (CivGlobal.getRoadBlock(coord) != null) {
+						throw new CivException("Cannot build a war camp on top of an existing road block.");
+					}
 				}
 			}
 		}
@@ -477,8 +480,8 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 		Resident attacker = CivGlobal.getResident(player);
 		
 		ItemManager.setTypeId(hit.getCoord().getLocation().getBlock(), CivData.AIR);
-		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1.0f, -1.0f);
-		world.playSound(hit.getCoord().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_BREAK, 1.0f, -1.0f);
+		world.playSound(hit.getCoord().getLocation(), Sound.EXPLODE, 1.0f, 1.0f);
 		
 		FireworkEffect effect = FireworkEffect.builder().with(org.bukkit.FireworkEffect.Type.BURST).withColor(Color.OLIVE).withColor(Color.RED).withTrail().withFlicker().build();
 		FireworkEffectPlayer fePlayer = new FireworkEffectPlayer();
@@ -522,7 +525,7 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 	}
 	
 	public void onControlBlockHit(ControlPoint cp, World world, Player player, StructureBlock hit) {
-		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
+		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
 		world.playEffect(hit.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		CivMessage.send(player, CivColor.LightGray+"Damaged Control Block ("+cp.getHitpoints()+" / "+cp.getMaxHitpoints()+")");

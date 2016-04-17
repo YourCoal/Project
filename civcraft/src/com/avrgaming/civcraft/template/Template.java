@@ -360,10 +360,13 @@ public class Template {
 				ItemManager.setTypeId(b, CivData.AIR);
 				ItemManager.setData(b, 0, true);			
 			}
+
 		}
+		
 	}
 	
 	public void saveUndoTemplate(String string, String subdir, Location center) throws CivException, IOException {
+		
 		String filepath = "templates/undo/"+subdir;
 		File undo_tpl_file = new File(filepath);
 		undo_tpl_file.mkdirs();

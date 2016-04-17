@@ -4,6 +4,7 @@ import gpl.AttributeUtil;
 
 import java.util.ArrayList;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,11 +40,11 @@ public class LoreCraftableMaterialListener implements Listener {
 				
 				/* Disable notch apples */
 				ItemStack resultStack = event.getInventory().getResult();
-//				if (resultStack.getType().equals(Material.GOLDEN_APPLE)) {
-//					CivMessage.sendError((Player)event.getWhoClicked(), "You cannot craft golden apples. Sorry.");
-//					event.setCancelled(true);
-//					return;
-//				}
+				if (resultStack.getType().equals(Material.GOLDEN_APPLE)) {
+					CivMessage.sendError((Player)event.getWhoClicked(), "You cannot craft golden apples. Sorry.");
+					event.setCancelled(true);
+					return;
+				}
 				
 				ConfigTechItem restrictedTechItem = CivSettings.techItems.get(ItemManager.getId(resultStack));
 				if (restrictedTechItem != null) {

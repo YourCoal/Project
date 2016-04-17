@@ -261,9 +261,6 @@ public class CivDiplomacyCommand extends CommandBase {
 			case PEACE:
 				message += "a PEACE treaty";
 				break;
-			case PEACE_HOSTILE:
-				message += "a HOSTILE PEACE treaty";
-				break;
 			case ALLY:
 				message += "an ALLY";
 				
@@ -277,6 +274,7 @@ public class CivDiplomacyCommand extends CommandBase {
 				if (!CivGlobal.isCasualMode()) {
 					throw new CivException("Can only request war in casual mode.");
 				}
+				
 				message += "a WAR";
 				break;
 			default:
@@ -289,11 +287,15 @@ public class CivDiplomacyCommand extends CommandBase {
 			relationresponse.toCiv = otherCiv;
 			relationresponse.status = status;
 			
-			CivGlobal.requestRelation(ourCiv, otherCiv, message, INVITE_TIMEOUT, relationresponse);
+			CivGlobal.requestRelation(ourCiv, otherCiv, 
+					message,
+					INVITE_TIMEOUT, relationresponse);
+			
 			CivMessage.sendSuccess(sender, "Request sent.");
 		} catch (IllegalArgumentException e) {
 			throw new CivException("Unknown relationship type, options are 'neutral', 'peace', 'ally' or 'war'");
 		}
+		
 	}
 	
 	public void declare_cmd() throws CivException {
@@ -327,17 +329,7 @@ public class CivDiplomacyCommand extends CommandBase {
 			}
 			
 			switch (status) {
-//			case HOSTILE:
-//				if (currentStatus == Relation.Status.WAR) {
-//					throw new CivException("Cannot declare "+status.name()+" when at war.");
-//				}
-//			break;
-			case NEUTRAL:
-				if (currentStatus == Relation.Status.NEUTRAL) {
-					throw new CivException("Cannot declare "+status.name()+" when at war.");
-				}
-			break;
-			case WAR_HOSTILE:
+			case HOSTILE:
 				if (currentStatus == Relation.Status.WAR) {
 					throw new CivException("Cannot declare "+status.name()+" when at war.");
 				}
@@ -380,7 +372,8 @@ public class CivDiplomacyCommand extends CommandBase {
 			//} else {
 			//	CivGlobal.setAggressor(ourCiv, otherCiv, ourCiv);
 			//} 
-			CivGlobal.setAggressor(ourCiv, otherCiv, ourCiv);			
+			CivGlobal.setAggressor(ourCiv, otherCiv, ourCiv);
+						
 		} catch (IllegalArgumentException e) {
 			throw new CivException("Unknown relationship type, options hostile or war");
 		}

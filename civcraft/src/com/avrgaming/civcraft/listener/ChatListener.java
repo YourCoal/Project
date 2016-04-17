@@ -39,15 +39,6 @@ public class ChatListener implements Listener {
 			return;
 		}
 		
-		if (resident.isCampChat()) {
-			event.setCancelled(true);
-			if (resident.getCampChatOverride() == null) {
-				CivMessage.sendCampChat(resident.getCamp(), resident, event.getFormat(), event.getMessage());
-			} else {
-				CivMessage.sendCampChat(resident.getCampChatOverride(), resident, event.getFormat(), event.getMessage());
-			}
-		}
-		
 		if (resident.isTownChat()) {
 			event.setCancelled(true);
 			if (resident.getTownChatOverride() == null) {

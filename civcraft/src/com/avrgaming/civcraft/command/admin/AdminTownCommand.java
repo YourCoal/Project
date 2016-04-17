@@ -53,8 +53,11 @@ public class AdminTownCommand extends CommandBase {
 	public void init() {
 		command = "/ad town";
 		displayName = "Admin town";
+		
+		commands.put("disband", "[town] - disbands this town");
 		commands.put("claim", "[town] - forcibly claims the plot you stand on for this named town.");
 		commands.put("unclaim", "forcibly unclaims the plot you stand on.");
+		commands.put("hammerrate", "[town] [amount] set this town's hammer rate to this amount.");
 		commands.put("addmayor", "[town] [player] - adds the player as a mayor of this town.");
 		commands.put("addassistant", "[town] [player] - adds this player as an assistant to this town.");
 		commands.put("rmmayor", "[town] [player] - remove this player as a mayor from this town.");
@@ -73,38 +76,6 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("setunhappy", "[town] [amount] - sets a magical base unhappiness for this town.");
 		commands.put("event", "[town] [event_id] - Runs the named random event in this town.");
 		commands.put("rename", "[town] [new_name] - Renames this town.");
-		commands.put("hammers", "[town] [amount] add [amount] of hammers to this town's hammer count.");
-		commands.put("beakers", "[town] [amount] add [amount] of beakers to this town's beaker count.");
-	}
-	
-	public void hammers_cmd() throws CivException {
-		if (args.length < 3) {
-			throw new CivException("Enter a town name and amount.");
-		}
-		
-		Town town = getNamedTown(1);
-		try {
-			town.setHammerRate(Double.valueOf(args[2]));
-			CivMessage.sendSuccess(sender, "Set "+args[1]+" extra hammers to "+args[2]);
-		} catch (NumberFormatException e) {
-			throw new CivException(args[2]+" is not a number.");
-		}
-		town.save();
-	}
-	
-	public void beakers_cmd() throws CivException {
-		if (args.length < 3) {
-			throw new CivException("Enter a town name and amount.");
-		}
-		
-		Town town = getNamedTown(1);
-		try {
-			town.setBeakerRate(Double.valueOf(args[2]));
-			CivMessage.sendSuccess(sender, "Set "+args[1]+" extra beakers to "+args[2]);
-		} catch (NumberFormatException e) {
-			throw new CivException(args[2]+" is not a number.");
-		}
-		town.save();
 	}
 	
 	public void rename_cmd() throws CivException, InvalidNameException {
@@ -425,6 +396,40 @@ public class AdminTownCommand extends CommandBase {
 		
 		CivMessage.sendSuccess(sender, "Added "+resident.getName()+" to mayors group in "+town.getName());
 		
+	}
+	
+	public void disband_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		
+		if (town.isCapitol()) {
+			throw new CivException("Cannot disband the capitol town, disband the civilization instead.");
+		}
+		
+		CivMessage.sendTown(town, "Your town is has disbanded by an admin!");
+		try {
+			town.delete();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		CivMessage.sendSuccess(sender, "Town disbanded");
+	}
+	
+	public void hammerrate_cmd() throws CivException {
+		if (args.length < 3) {
+			throw new CivException("Enter a town name and amount");
+		}
+		
+		Town town = getNamedTown(1);
+		
+		try {
+			town.setHammerRate(Double.valueOf(args[2]));
+			CivMessage.sendSuccess(sender, "Set "+args[1]+" hammer rate to "+args[2]);
+		} catch (NumberFormatException e) {
+			throw new CivException(args[2]+" is not a number.");
+		}
+		
+		town.save();
 	}
 	
 	public void unclaim_cmd() throws CivException {

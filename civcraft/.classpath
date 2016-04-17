@@ -12,12 +12,12 @@
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/NoCheatPlus.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/slf4j-simple-1.7.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/TagAPI.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/VanishNoPacket.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/Vault.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/bukkit-1.9-R0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/craftbukkit-1.9-R0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/spigot-1.9-R0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/TitleAPI-1.7.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/TagAPI-1.1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/bukkit-1.9.2-R0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/craftbukkit-1.9.2-R0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Project/myciv/jars/spigot-1.9.2-R0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

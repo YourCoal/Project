@@ -17,7 +17,7 @@
 
 system:
     # Enables the perk/platinum/registration system.
-    enabled: 'true'
+    enabled: 'false'
 
     # The legacy perk system used by AvRGaming, this is likely to be non-functional only enable this
     # If you know what you're doing.
@@ -47,20 +47,14 @@ perks:
       data: 0
       components:
          - name: 'RenameCivOrTown'
-#
+
     - id: 'perk_sunny_weather'
       display_name: 'Sunny Weather!'
       item_id: 347
       data: 0
       components:
-         - name: 'ChangeWeather'
-#
-    - id: 'perk_set_day'
-      display_name: 'Set Day!'
-      item_id: 345
-      data: 0
-      components:
-         - name: 'ChangeDay'
+         - name: 'ChangeWeather' 
+
 ############ ARCTIC THEME
     - id: 'tpl_arctic_camp'
       display_name: 'Arctic Camp'

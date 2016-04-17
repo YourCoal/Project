@@ -60,6 +60,8 @@ public class DisableXPListener implements Listener {
 		Resident resident = CivGlobal.getResident(event.getPlayer());
 		CivMessage.send(resident, CivColor.LightGreen+"Picked up "+CivColor.Yellow+event.getAmount()+CivColor.LightGreen+" coins.");
 		resident.getTreasury().deposit(event.getAmount());
+		
+		
 		event.setAmount(0);
 	}
 	

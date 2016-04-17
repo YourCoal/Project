@@ -192,7 +192,6 @@ public class Bank extends Structure {
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void processSignAction(Player player, StructureSign sign, PlayerInteractEvent event) {
 		//int special_id = Integer.valueOf(sign.getAction());
@@ -348,7 +347,7 @@ public class Bank extends Structure {
 	@Override
 	public void onPostBuild(BlockCoord absCoord, SimpleBlock commandBlock) {
 		this.level = getTown().saved_bank_level;
-		this.interestRate = getTown().saved_bank_interest;
+		this.interestRate = getTown().saved_bank_interest_amount;
 	}
 
 	public NonMemberFeeComponent getNonMemberFeeComponent() {

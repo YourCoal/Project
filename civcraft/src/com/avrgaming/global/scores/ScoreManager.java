@@ -24,7 +24,6 @@ import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 
-import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.database.SQL;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.object.Civilization;
@@ -34,11 +33,6 @@ public class ScoreManager {
 	
 	public static String TOWN_TABLE_NAME = "SCORES_TOWNS";
 	public static String CIV_TABLE_NAME = "SCORES_CIVS";
-	public static String CAMP_TABLE_NAME = "SCORES_CAMPS";
-	
-	public static String getCampKey(Camp camp) {
-		return Bukkit.getServerName()+":"+camp.getName();
-	}
 	
 	public static String getCivKey(Civilization civ) {
 		return Bukkit.getServerName()+":"+civ.getName();
@@ -49,7 +43,8 @@ public class ScoreManager {
 	}
 
 	public static void init() throws SQLException {
-		System.out.println("================ SCORE_TOWN INIT ================");
+		System.out.println("================= SCORE_TOWN INIT ======================");
+		
 		// Check/Build SessionDB tables				
 		if (!SQL.hasGlobalTable(TOWN_TABLE_NAME)) {
 			String table_create = "CREATE TABLE " + TOWN_TABLE_NAME+" (" + 
@@ -61,15 +56,17 @@ public class ScoreManager {
 					"`points` int(11)," +
 					"INDEX (`server`)," +
 					"PRIMARY KEY (`key`)" + ")";
+			
 			SQL.makeGlobalTable(table_create);
 			CivLog.info("Created "+TOWN_TABLE_NAME+" table");
 		} else {
 			CivLog.info(TOWN_TABLE_NAME+" table OK!");
-		}
-		System.out.println("================================================");
+		}		
+				
+		System.out.println("==================================================");
+
+		System.out.println("================= SCORE_CIV INIT ======================");
 		
-		
-		System.out.println("================ SCORE_CIV INIT ================");
 		// Check/Build SessionDB tables				
 		if (!SQL.hasGlobalTable(CIV_TABLE_NAME)) {
 			String table_create = "CREATE TABLE " + CIV_TABLE_NAME+" (" + 
@@ -81,59 +78,14 @@ public class ScoreManager {
 					"`points` int(11)," +
 					"INDEX (`server`)," +
 					"PRIMARY KEY (`key`)" + ")";
+			
 			SQL.makeGlobalTable(table_create);
 			CivLog.info("Created "+CIV_TABLE_NAME+" table");
 		} else {
 			CivLog.info(CIV_TABLE_NAME+" table OK!");
-		}
-		System.out.println("================================================");
-		
-		
-		System.out.println("================ SCORE_CAMP INIT ================");
-		// Check/Build SessionDB tables				
-		if (!SQL.hasGlobalTable(CAMP_TABLE_NAME)) {
-			String table_create = "CREATE TABLE " + CAMP_TABLE_NAME+" (" + 
-					"`key` VARCHAR(128)," +
-					"`server` VARCHAR(64)," +
-					"`local_id` int(11)," +
-					"`local_name` mediumtext," +
-					"`points` int(11)," +
-					"INDEX (`server`)," +
-					"PRIMARY KEY (`key`)" + ")";
-			SQL.makeGlobalTable(table_create);
-			CivLog.info("Created "+CAMP_TABLE_NAME+" table");
-		} else {
-			CivLog.info(CAMP_TABLE_NAME+" table OK!");
-		}
-		System.out.println("================================================");
-	}
-	
-	public static void UpdateScore(Camp camp, int points) throws SQLException {
-		Connection global_context = null;
-		PreparedStatement s = null;
-
-		try {
-			global_context = SQL.getGlobalConnection();	
-			String query = "INSERT INTO `"+CAMP_TABLE_NAME+"` (`key`, `server`, `local_id`, `local_name`, `points`) "+
-					"VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `local_name`=?, `points`=?";
-			s = global_context.prepareStatement(query);
-		
-			s.setString(1, getCampKey(camp));
-			s.setString(2, Bukkit.getServerName());
-			s.setInt(3, camp.getId());
-			s.setString(4, camp.getName());
-			s.setInt(5, points);
-			
-			s.setString(6, camp.getName());
-			s.setInt(7, points);
-			
-			int rs = s.executeUpdate();
-			if (rs == 0) {
-				throw new SQLException("Could not execute SQL code:"+query);
-			}
-		} finally {
-			SQL.close(null, s, global_context);
-		}
+		}		
+				
+		System.out.println("==================================================");
 	}
 	
 	public static void UpdateScore(Civilization civ, int points) throws SQLException {
@@ -161,6 +113,7 @@ public class ScoreManager {
 			if (rs == 0) {
 				throw new SQLException("Could not execute SQL code:"+query);
 			}
+		
 		} finally {
 			SQL.close(null, s, global_context);
 		}
@@ -191,6 +144,7 @@ public class ScoreManager {
 			if (rs == 0) {
 				throw new SQLException("Could not execute SQL code:"+query);
 			}
+		
 		} finally {
 			SQL.close(null, s, global_context);
 		}

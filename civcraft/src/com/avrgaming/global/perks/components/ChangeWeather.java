@@ -20,13 +20,13 @@ public class ChangeWeather extends PerkComponent {
 			return;
 		}
 		if (!player.getWorld().isThundering() && !player.getWorld().hasStorm()) {
-			CivMessage.sendError(resident, "It is already sunny. Cannot change weather.");
+			CivMessage.sendError(resident, "Weather is already sunny!");
 			return;
 		}
 		
-		CivMessage.sendHeading(resident, "Clearing the Weather");
+		CivMessage.sendHeading(resident, "Changing the Weather to Sunny");
 		CivMessage.send(resident, CivColor.Green+"Are you sure you want the weather to be sunny?");
-		CivMessage.send(resident, CivColor.LightGray+"If so type 'yes', or type anything else to cancel.");
+		CivMessage.send(resident, CivColor.LightGray+"If so type 'yes', type anything else to cancel.");
 		resident.setInteractiveMode(new InteractiveConfirmWeatherChange(this));
 	}
 }

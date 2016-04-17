@@ -53,6 +53,7 @@ public class SifterComponent extends Component {
 		si.result_type = result_type;
 		si.result_data = result_data;
 		si.amount = amount;
+		
 		items.add(si);
 	}
 	
@@ -101,9 +102,12 @@ public class SifterComponent extends Component {
 		process(source, dest, 1, task);
 	}
 	
-	/* Run through the items in the contents up to count times and 
-	 * convert them based on the rates. */
+	/*
+	 * Run through the items in the contents up to count times and 
+	 * convert them based on the rates.
+	 */
 	private void process(MultiInventory source, MultiInventory dest, int count, CivAsyncTask task) {
+		
 		Random rand = new Random();
 		int i = 0;
 		for (ItemStack stack : source.getContents()) {
@@ -113,6 +117,7 @@ public class SifterComponent extends Component {
 
 			SifterItem lowestChanceItem = null;
 			boolean found = false;
+			
 			for (SifterItem si : items) {
 				if (si == null) { 
 					continue;
@@ -124,8 +129,10 @@ public class SifterComponent extends Component {
 				
 				found = true;			
 				int next = rand.nextInt(1000);
-				/* We need to award the _best_ chance they succeed at so that
-				 * all item chances are treated fairly. */
+				/* 
+				 * We need to award the _best_ chance they succeed at so that
+				 * all item chances are treated fairly. 
+				 */
 				if (next < si.rate) {
 					if (lowestChanceItem == null || lowestChanceItem.rate < si.rate) {
 						lowestChanceItem = si;
@@ -146,26 +153,30 @@ public class SifterComponent extends Component {
 			}
 			try {
 				task.updateInventory(Action.ADD, dest, ItemManager.createItemStack(lowestChanceItem.result_type, lowestChanceItem.amount, (short)lowestChanceItem.result_data));
-//				task.updateInventory(Action.ADD, dest, LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:hammer_part")));
 			} catch (InterruptedException e) {
 				return;
 			}
-			
+	
 			i++;
 			if (i >= count) {
 				/* Finished, only generate up to 'count' items. */
 				break;
 			}
+			
+			
 		}
+		
 		return;
 	}
 	
 	@Override
 	public void onLoad() {
+		
 	}
-	
+
 	@Override
 	public void onSave() {
+		
 	}
 
 	public BlockCoord getSourceCoord() {
@@ -183,4 +194,5 @@ public class SifterComponent extends Component {
 	public void setDestCoord(BlockCoord destCoord) {
 		this.destCoord = destCoord;
 	}
+
 }

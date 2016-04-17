@@ -110,7 +110,7 @@ public class ConfigTownUpgrade {
 				Bank bank = (Bank)struct;
 				if (bank.getInterestRate() < Double.valueOf(args[1].trim())) {
 					bank.setInterestRate(Double.valueOf(args[1].trim()));
-					town.saved_bank_interest = bank.getInterestRate();
+					town.saved_bank_interest_amount = bank.getInterestRate();
 					DecimalFormat df = new DecimalFormat();
 					CivMessage.sendTown(town, "The bank is now provides a "+df.format(bank.getInterestRate()*100)+"% interest rate.");
 				}

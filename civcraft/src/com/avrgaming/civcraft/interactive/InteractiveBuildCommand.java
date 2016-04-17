@@ -100,6 +100,9 @@ public class InteractiveBuildCommand implements InteractiveResponse {
 				}
 			}
 		}
+		
 		TaskMaster.syncTask(new SyncTask(resident));
+
 	}
+
 }
