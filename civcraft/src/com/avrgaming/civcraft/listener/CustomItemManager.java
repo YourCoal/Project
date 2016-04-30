@@ -78,7 +78,7 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
-import com.avrgaming.moblib.MobLib;
+import com.moblib.moblib.MobLib;
 
 public class CustomItemManager implements Listener {
 	
@@ -300,7 +300,8 @@ public class CustomItemManager implements Listener {
 				craftMat.onAttack(event, inHand);
 			} else {
 				/* Non-civcraft items only do 0.5 damage. */
-				event.setDamage(0.5);
+				//XXX Fixed 1.0Alpha
+				event.setDamage(1.0);
 			}
 		}
 		

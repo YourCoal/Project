@@ -20,7 +20,7 @@ public class MobComponentDefense extends MobComponent {
 		double damage = event.getDamage();
 		
 		damage -= this.defense;
-		if (damage < 0.5) {
+		if (damage < 0.49) {
 			damage = 0.0;
 			
 			Player player = null;
@@ -48,5 +48,4 @@ public class MobComponentDefense extends MobComponent {
 	public void setDefense(double defense) {
 		this.defense = defense;
 	}
-
 }

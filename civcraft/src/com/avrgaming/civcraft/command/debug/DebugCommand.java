@@ -870,6 +870,7 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(sender, out);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void refreshchunk_cmd() throws CivException {
 		Player you = getPlayer();
 		ChunkCoord coord = new ChunkCoord(you.getLocation());

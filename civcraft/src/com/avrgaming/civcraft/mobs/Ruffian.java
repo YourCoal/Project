@@ -1,23 +1,22 @@
 package com.avrgaming.civcraft.mobs;
 
-
 import java.util.List;
 
-import net.minecraft.server.v1_7_R4.AxisAlignedBB;
-import net.minecraft.server.v1_7_R4.DamageSource;
-import net.minecraft.server.v1_7_R4.Entity;
-import net.minecraft.server.v1_7_R4.EntityCreature;
-import net.minecraft.server.v1_7_R4.EntityHuman;
-import net.minecraft.server.v1_7_R4.EntityInsentient;
-import net.minecraft.server.v1_7_R4.EntityPlayer;
-import net.minecraft.server.v1_7_R4.IRangedEntity;
-import net.minecraft.server.v1_7_R4.PathfinderGoalArrowAttack;
-import net.minecraft.server.v1_7_R4.PathfinderGoalFloat;
-import net.minecraft.server.v1_7_R4.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_7_R4.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_7_R4.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_7_R4.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_7_R4.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_8_R3.AxisAlignedBB;
+import net.minecraft.server.v1_8_R3.DamageSource;
+import net.minecraft.server.v1_8_R3.Entity;
+import net.minecraft.server.v1_8_R3.EntityCreature;
+import net.minecraft.server.v1_8_R3.EntityHuman;
+import net.minecraft.server.v1_8_R3.EntityInsentient;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.IRangedEntity;
+import net.minecraft.server.v1_8_R3.PathfinderGoalArrowAttack;
+import net.minecraft.server.v1_8_R3.PathfinderGoalFloat;
+import net.minecraft.server.v1_8_R3.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_8_R3.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_8_R3.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_8_R3.PathfinderGoalRandomStroll;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -27,8 +26,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
@@ -39,31 +38,34 @@ import com.avrgaming.civcraft.mobs.components.MobComponentDefense;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.FireWorkTask;
 import com.avrgaming.civcraft.util.ItemManager;
-import com.avrgaming.mob.ICustomMob;
-import com.avrgaming.mob.MobBaseWitch;
+import com.moblib.mob.ICustomMob;
+import com.moblib.mob.MobBaseWitch;
 
 public class Ruffian extends CommonCustomMob implements ICustomMob {
-
+	
 	private double damage;
 	
 	public void onCreate() {
 	    initLevelAndType();
-
 	    getGoalSelector().a(1, new PathfinderGoalFloat((EntityInsentient) entity));
 	    getGoalSelector().a(2, new PathfinderGoalArrowAttack((IRangedEntity) entity, 1.0D, 60, 10.0F));
 	    getGoalSelector().a(2, new PathfinderGoalRandomStroll((EntityCreature) entity, 1.0D));
 	    getGoalSelector().a(3, new PathfinderGoalLookAtPlayer((EntityInsentient) entity, EntityHuman.class, 8.0F));
 	    getGoalSelector().a(3, new PathfinderGoalRandomLookaround((EntityInsentient) entity));
 	    getTargetSelector().a(1, new PathfinderGoalHurtByTarget((EntityCreature) entity, false));
-	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget((EntityCreature) entity, EntityHuman.class, 0, true));
+	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget<EntityHuman>((EntityCreature) entity, EntityHuman.class, true));
 	    this.setName(this.getLevel().getName()+" "+this.getType().getName());
 	}
-
+	
+	@Override
+	public void onTick() {
+		super.onTick();		
+	}
+	
 	public void onCreateAttributes() {
 		MobComponentDefense defense;
 	    this.setKnockbackResistance(0.5D);
 	    this.setMovementSpeed(0.2);
-
 		switch (this.getLevel()) {
 		case LESSER:
 		    defense = new MobComponentDefense(3.5);
@@ -230,9 +232,10 @@ public class Ruffian extends CommonCustomMob implements ICustomMob {
 				
 				CraftWorld craftWorld = (CraftWorld)attacker.getWorld();
 				
-				AxisAlignedBB bb = AxisAlignedBB.a(x-r, y-r, z-r, x+r, y+r, z+r);
+				//XXX Avoiding a 1.9 bug. :)
+//				AxisAlignedBB bb = AxisAlignedBB.a(x-r, y-r, z-r, x+r, y+r, z+r);
+				AxisAlignedBB bb = new AxisAlignedBB(x-r, y-r, z-r, x+r, y+r, z+r);
 				
-				@SuppressWarnings("unchecked")
 				List<Entity> entities = craftWorld.getHandle().getEntities(((CraftEntity)attacker).getHandle(), bb);
 				
 				for (Entity e : entities) {

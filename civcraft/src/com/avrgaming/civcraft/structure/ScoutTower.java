@@ -39,7 +39,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.CivColor;
 
 public class ScoutTower extends Structure {
-
+	
 	double range;
 	private PlayerProximityComponent proximityComponent;
 	
@@ -170,18 +170,28 @@ public class ScoutTower extends Structure {
 			
 			
 			if (center.getWorld() != this.getCorner().getLocation().getWorld()) {
-				scoutDebug("wrong world");
+				scoutDebug("Wrong World!");
 				continue;
+			}
+			
+			//XXX 1.0Alpha
+			if (this.isDestroyed()) {
+				CivMessage.sendScout(this.getCiv(), "Your scout tower in "+this.getTown().getName()+" is destroyed and cannot report anymore!");
+			}
+			
+			//XXX 1.0Alpha
+			Resident res;
+			res = CivGlobal.getResident(player.getName());
+			if (res.getCiv() != this.getTown().getCultureChunks()) {
+				CivMessage.sendScout(this.getCiv(), "We notice you may have a "+CivColor.BOLD+relationColor+relationName+CivColor.White+" around the town of "+this.getTown().getName());
 			}
 			
 			if (center.distance(player.getLocation()) < range) {
 				/* Notify the town or civ. */
-					CivMessage.sendScout(this.getCiv(), "Scout tower detected "+relationColor+
-							player.getName()+"("+relationName+")"+CivColor.White+
+					CivMessage.sendScout(this.getCiv(), "Scout tower detected "+relationColor+player.getName()+"("+relationName+")"+CivColor.White+
 							" at ("+player.getLocation().getBlockX()+","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()+") in "+
 							this.getTown().getName());
 					alreadyAnnounced.add(this.getCiv().getName()+":"+player.getName());
-				
 			}
 		}
 		

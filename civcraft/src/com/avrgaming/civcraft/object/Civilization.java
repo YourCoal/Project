@@ -52,6 +52,7 @@ import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.main.ScoreboardTeam;
 import com.avrgaming.civcraft.object.Relation.Status;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.structure.Capitol;
@@ -564,6 +565,7 @@ public class Civilization extends SQLObject {
 			CivGlobal.addCiv(civ);
 			ItemStack newStack = new ItemStack(Material.AIR);
 			player.setItemInHand(newStack);
+			ScoreboardTeam.createTeam(civ.getName(), resident);
 			CivMessage.global("The Civilization of "+civ.getName()+" has been founded! "+civ.getCapitolName()+" is it's capitol!");
 			
 		} catch (InvalidNameException e) {
@@ -1271,6 +1273,18 @@ public class Civilization extends SQLObject {
 		
 		
 		/* Remove ourselves from the main global civ list and into a special conquered list. */
+//		for (Relation relation : this.getDiplomacyManager().getRelations()) {
+//			if (relation.getStatus().equals(Status.WAR)) {
+//				CivGlobal.setRelation(this, this.getWars(), Status.NEUTRAL);
+//			}
+//		}
+		
+		//XXX 1.0Alpha
+		try {
+			this.getDiplomacyManager().getRelation(this).delete();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		CivGlobal.removeCiv(this);
 		CivGlobal.addConqueredCiv(this);
 		this.conquered = true;

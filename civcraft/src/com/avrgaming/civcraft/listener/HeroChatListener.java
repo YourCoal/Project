@@ -1,5 +1,5 @@
 package com.avrgaming.civcraft.listener;
-
+/*
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,10 +13,11 @@ import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Chatter.Result;
 import com.dthielke.herochat.Herochat;
-
-public class HeroChatListener implements Listener {
+*/
+//public class HeroChatListener implements Listener {
+	public class HeroChatListener {
 	
-	@EventHandler(priority = EventPriority.MONITOR)
+/*	@EventHandler(priority = EventPriority.MONITOR)
 	public void onChannelChatEvent(ChannelChatEvent event) {
 		Resident resident = CivGlobal.getResident(event.getSender().getName());
 		if (resident == null) {
@@ -46,5 +47,5 @@ public class HeroChatListener implements Listener {
 				}
 			}
 		}
-	}
+	}*/
 }

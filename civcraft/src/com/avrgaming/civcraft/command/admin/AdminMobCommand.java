@@ -3,7 +3,7 @@ package com.avrgaming.civcraft.command.admin;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import net.minecraft.server.v1_7_R4.EntityCreature;
+import net.minecraft.server.v1_8_R3.EntityCreature;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -33,7 +33,6 @@ public class AdminMobCommand extends CommandBase {
 	public void killall_cmd() throws CivException {
 		Player player = getPlayer();
 		String name = getNamedString(1, "Enter a mob name");
-		
 		LinkedList<CommonCustomMob> removeUs = new LinkedList<CommonCustomMob>();
 		for (CommonCustomMob mob :CommonCustomMob.customMobs.values()) {
 			if (mob.getType().toString().equalsIgnoreCase(name)) {
@@ -47,7 +46,6 @@ public class AdminMobCommand extends CommandBase {
 			mob.entity.getBukkitEntity().remove();
 			count++;
 		}
-		
 		CivMessage.sendSuccess(player, "Removed "+count+ " mobs of type "+name);
 	}
 
