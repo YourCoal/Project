@@ -72,7 +72,7 @@ import com.avrgaming.civcraft.listener.DisableXPListener;
 import com.avrgaming.civcraft.listener.HeroChatListener;
 import com.avrgaming.civcraft.listener.MarkerPlacementManager;
 import com.avrgaming.civcraft.listener.PlayerListener;
-import com.avrgaming.civcraft.listener.TagAPIListener;
+//import com.avrgaming.civcraft.listener.TagAPIListener;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementArenaItem;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterialListener;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
@@ -178,7 +178,8 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("FarmGrowthTimer",
 				new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
 
-		TaskMaster.asyncTimer("announcer", new AnnouncementTimer("tips.txt"), 0, TimeTools.toTicks(60*60));
+		TaskMaster.asyncTimer("announcer", new AnnouncementTimer("tips.txt", 5), 0, TimeTools.toTicks(60*60));
+		TaskMaster.asyncTimer("warannouncer", new AnnouncementTimer("war.txt", 60), 0, TimeTools.toTicks(60*60));
 		
 		TaskMaster.asyncTimer("ChangeGovernmentTimer", new ChangeGovernmentTimer(), TimeTools.toTicks(60));
 		TaskMaster.asyncTimer("CalculateScoreTimer", new CalculateScoreTimer(), 0, TimeTools.toTicks(60));
@@ -229,9 +230,9 @@ public final class CivCraft extends JavaPlugin {
 		pluginManager.registerEvents(new PvPListener(), this);
 		pluginManager.registerEvents(new LoreEnhancementArenaItem(), this);
 		
-		if (hasPlugin("TagAPI")) {
-			pluginManager.registerEvents(new TagAPIListener(), this);
-		}
+//		if (hasPlugin("TagAPI")) {
+//			pluginManager.registerEvents(new TagAPIListener(), this);
+//		}
 		
 		if (hasPlugin("HeroChat")) {
 			pluginManager.registerEvents(new HeroChatListener(), this);

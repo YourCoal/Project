@@ -206,7 +206,7 @@ public class MissionBook extends UnitItemMaterial {
 		try {
 			Resident resident = CivGlobal.getResident(playerName);
 			if (!resident.getTown().getTreasury().hasEnough(mission.cost)) {
-				throw new CivException("Your town requires "+mission.cost+" coins to perform this mission.");
+				throw new CivException("Your town requires "+mission.cost+" Coins to perform this mission.");
 			}
 			
 			switch (mission.id) {
@@ -504,7 +504,7 @@ public class MissionBook extends UnitItemMaterial {
 				resident.getTown().getTreasury().deposit(amount);
 			}
 			
-			CivMessage.sendSuccess(player, "Success! Stole "+amount+" coins from "+tc.getTown().getName());
+			CivMessage.sendSuccess(player, "Success! Stole "+amount+" Coins from "+tc.getTown().getName());
 		}
 	}
 	

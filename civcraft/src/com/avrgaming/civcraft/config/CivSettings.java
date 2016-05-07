@@ -201,8 +201,16 @@ public class CivSettings {
 	public static boolean hasVanishNoPacket = false;
 	
 	public static final String MINI_ADMIN = "civ.admin";
+	public static final String HACKER = "civ.hacker";
 	public static final String MODERATOR = "civ.moderator";
 	public static final String FREE_PERKS = "civ.freeperks";
+	public static final String ARCTIC_PERKS = "civ.arcticperks";
+	public static final String AZTEC_PERKS = "civ.aztecperks";
+	public static final String EGYPTIAN_PERKS = "civ.egyptianperks";
+	public static final String ROMAN_PERKS = "civ.romanperks";
+	public static final String HELL_PERKS = "civ.hellperks";
+	public static final String ELVEN_PERKS = "civ.elvenperks";
+	public static final String CULTIST_PERKS = "civ.cultistperks";
 	public static final String ECON = "civ.econ";
 	public static final int MARKET_COIN_STEP = 5;
 	public static final int MARKET_BUYSELL_COIN_DIFF = 30;
@@ -283,9 +291,35 @@ public class CivSettings {
 		restrictedUndoBlocks.add(Material.CARROT);
 		restrictedUndoBlocks.add(Material.POTATO);
 		restrictedUndoBlocks.add(Material.REDSTONE);
+		restrictedUndoBlocks.add(Material.REDSTONE_WIRE);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_OFF);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_ON);
+		restrictedUndoBlocks.add(Material.DIODE_BLOCK_OFF);
+		restrictedUndoBlocks.add(Material.DIODE_BLOCK_ON);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_ON);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR);
 		restrictedUndoBlocks.add(Material.STRING);
+		restrictedUndoBlocks.add(Material.LEVER);
+		restrictedUndoBlocks.add(Material.TRIPWIRE);
+		restrictedUndoBlocks.add(Material.SUGAR_CANE_BLOCK);
+		restrictedUndoBlocks.add(Material.POWERED_RAIL);
+		restrictedUndoBlocks.add(Material.RAILS);
+		restrictedUndoBlocks.add(Material.DETECTOR_RAIL);
+		restrictedUndoBlocks.add(Material.ACTIVATOR_RAIL);
+		restrictedUndoBlocks.add(Material.LADDER);
+		restrictedUndoBlocks.add(Material.VINE);
+		restrictedUndoBlocks.add(Material.WEB);
+		restrictedUndoBlocks.add(Material.SAPLING);
+		restrictedUndoBlocks.add(Material.STONE_PLATE);
+		restrictedUndoBlocks.add(Material.WOOD_PLATE);
+		restrictedUndoBlocks.add(Material.GOLD_PLATE);
+		restrictedUndoBlocks.add(Material.IRON_PLATE);
+		restrictedUndoBlocks.add(Material.TRIPWIRE_HOOK);
+		restrictedUndoBlocks.add(Material.MELON_STEM);
+		restrictedUndoBlocks.add(Material.PUMPKIN_STEM);
+		
+		
 	}
 
 	private static void initPlayerEntityWeapons() {
@@ -337,6 +371,12 @@ public class CivSettings {
 		return cfg;
 	}
 	
+	public static void reloadGovConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration
+	{
+		CivSettings.governments.clear();
+		governmentConfig = loadCivConfig("governments.yml");
+		ConfigGovernment.loadConfig(governmentConfig, governments);
+	}
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
 		townConfig = loadCivConfig("town.yml");

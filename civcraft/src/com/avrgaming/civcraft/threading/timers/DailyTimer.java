@@ -35,6 +35,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.NotreDame;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
+import com.avrgaming.civcraft.structure.wonders.Colosseum;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -110,6 +111,14 @@ public class DailyTimer implements Runnable {
 			}
 		}
 		
+		Wonder colosseum = CivGlobal.getWonderByConfigId("w_colosseum");
+		if (colosseum != null) {
+			try {
+				((Colosseum)colosseum).processCoinsFromColosseum();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
 		for (Civilization civ : CivGlobal.getCivs()) {
 			if (civ.isAdminCiv()) {
@@ -123,7 +132,7 @@ public class DailyTimer implements Runnable {
 				if (civ.getTreasury().inDebt()) {
 					civ.incrementDaysInDebt();
 				}
-				CivMessage.sendCiv(civ, CivColor.Yellow+"Paid "+total+" in civ upkeep costs.");
+				CivMessage.sendCiv(civ, CivColor.Yellow+"Paid "+total+" Coins in civ upkeep costs.");
 				civ.save();
 			}
 			catch (Exception e) {
@@ -142,7 +151,7 @@ public class DailyTimer implements Runnable {
 				}
 				
 				t.save();
-				CivMessage.sendTown(t, "Paid "+total+" coins in upkeep costs.");
+				CivMessage.sendTown(t, "Paid "+total+" Coins in upkeep costs.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -168,7 +177,7 @@ public class DailyTimer implements Runnable {
 					
 					double taxesToCiv = total*taxrate;
 					townTotal -= taxesToCiv;
-					CivMessage.sendTown(t, "Collected "+townTotal+" coins in resident taxes."); 
+					CivMessage.sendTown(t, "Collected "+townTotal+" Coins in resident taxes."); 
 					t.depositTaxed(townTotal);	
 					
 					if (t.getDepositCiv().getId() == civ.getId()) {

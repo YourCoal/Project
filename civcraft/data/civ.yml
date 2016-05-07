@@ -38,7 +38,7 @@ global:
 
    # max distance players can be apart for trading
    max_trade_distance: 10.0
-    
+
    # catalyst free amount
    free_catalyst_amount: 3
 

@@ -53,19 +53,22 @@ public class PlayerLoginAsyncTask implements Runnable {
 	}
 	
 	public Player getPlayer() throws CivException {
-		Player player = Bukkit.getPlayer(playerUUID);
-		if (player == null) {
-			throw new CivException("Player offline now. May have been kicked.");
-		}
-		
-		return player;
+		return Bukkit.getPlayer(playerUUID);
 	}
 	
 	@Override
 	public void run() {
 		try {
 			CivLog.info("Running PlayerLoginAsyncTask for "+getPlayer().getName()+" UUID("+playerUUID+")");
-			Resident resident = CivGlobal.getResident(getPlayer().getName());
+			//Resident resident = CivGlobal.getResident(getPlayer().getName());
+			Resident resident = CivGlobal.getResidentViaUUID(playerUUID);
+			if (resident != null && !resident.getName().equals(getPlayer().getName()))
+			{
+				CivGlobal.removeResident(resident);
+				resident.setName(getPlayer().getName());
+				resident.save();
+				CivGlobal.addResident(resident);
+			}
 			
 			/* 
 			 * Test to see if player has changed their name. If they have, these residents
@@ -122,7 +125,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 			if (!resident.isGivenKit()) {
 				TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
 			}
-					
+			
 			if (War.isWarTime() && War.isOnlyWarriors()) {
 				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
 					//Allowed to connect since player is OP or mini admin.
@@ -177,13 +180,45 @@ public class PlayerLoginAsyncTask implements Runnable {
 			resident.loadPerks();
 	
 			try {
+				String perkMessage = "";
 				if (CivSettings.getString(CivSettings.perkConfig, "system.free_perks").equalsIgnoreCase("true")) {
 					resident.giveAllFreePerks();
+					perkMessage = "You have access to the Following Perks: ";
 				} else if (CivSettings.getString(CivSettings.perkConfig, "system.free_admin_perks").equalsIgnoreCase("true")) {
 					if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
 						resident.giveAllFreePerks();
+
+						perkMessage = "You have access to the Following Perks: ";
+						perkMessage += "Weather, Name Change, ";
 					}
 				}
+				if (getPlayer().hasPermission(CivSettings.ARCTIC_PERKS))
+				{
+					resident.giveAllArcticPerks();
+					perkMessage += "Arctic, ";
+				}
+				if (getPlayer().hasPermission(CivSettings.AZTEC_PERKS))
+				{
+					resident.giveAllAztecPerks();
+					perkMessage += "Aztec, ";
+				}
+				if (getPlayer().hasPermission(CivSettings.EGYPTIAN_PERKS))
+				{
+					resident.giveAllEgyptianPerks();
+					perkMessage += "Egyptian, ";
+				}
+				if (getPlayer().hasPermission(CivSettings.HELL_PERKS))
+				{
+					resident.giveAllHellPerks();
+					perkMessage += "Hell, ";
+				}
+				if (getPlayer().hasPermission(CivSettings.ROMAN_PERKS))
+				{
+					resident.giveAllRomanPerks();
+					perkMessage += "Roman, ";
+				}
+				perkMessage += "Apply them with /res perks";
+				CivMessage.send(resident, CivColor.LightGreen+perkMessage);
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
@@ -255,7 +290,9 @@ public class PlayerLoginAsyncTask implements Runnable {
 			}
 		} catch (CivException playerNotFound) {
 			// Player logged out while async task was running.
-			CivLog.warning("Couldn't complete PlayerLoginAsyncTask. Player may have been kicked while async task was running.");
+		} catch (InvalidNameException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 	

@@ -176,3 +176,9 @@ items:
       type_id: 365
       data: 0
       value: 5
+ 
+    - id: 132
+      name: 'Gunpowder'
+      type_id: 289
+      data: 0
+      value: 100

@@ -55,7 +55,7 @@ public class CivTutorial {
 					ChatColor.RESET+"These items are crafted using a crafting bench",
 					ChatColor.RESET+"and combining many more normal Minecraft items",
 					ChatColor.RESET+"into higher tier items. Certain items like iron, gold,",
-					ChatColor.RESET+"diamonds and emeralds can be exchanged for coins at "+CivColor.Yellow+"Bank",
+					ChatColor.RESET+"diamonds and emeralds can be exchanged for Coins at "+CivColor.Yellow+"Bank",
 					ChatColor.RESET+"structures. Coins can be traded for materials at the "+CivColor.Yellow+"Market"
 					));
 			
@@ -63,7 +63,7 @@ public class CivTutorial {
 					ChatColor.RESET+"Towns can be created by players to protect",
 					ChatColor.RESET+"areas from outsiders. Inside a town the owners are",
 					ChatColor.RESET+"free to build creatively without interference from griefers",
-					ChatColor.RESET+"Towns cost materials to create and coins to maintain.",
+					ChatColor.RESET+"Towns cost materials to create and Coins to maintain.",
 					ChatColor.RESET+"Towns can build functional structures which allow it's",
 					ChatColor.RESET+"residents access to more features. Towns can only be built",
 					ChatColor.RESET+"inside of a civilization."
@@ -222,11 +222,6 @@ public class CivTutorial {
 			craftRec = LoreGuiItem.setAction(craftRec, "OpenInventory");
 			craftRec = LoreGuiItem.setActionData(craftRec, "invType", "showCraftingHelp");
 			guiInventory.addItem(craftRec);
-			
-			ItemStack buildMenu = LoreGuiItem.build("Build Structure", ItemManager.getId(Material.BRICK_STAIRS), 0, CivColor.Gold+"<Click to View>");
-			buildMenu = LoreGuiItem.setAction(buildMenu, "BuildStructureList");
-			guiInventory.addItem(buildMenu);
-			
 			
 			LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);
 		}
