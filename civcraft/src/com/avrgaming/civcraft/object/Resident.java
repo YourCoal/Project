@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,6 +84,7 @@ import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
+import com.avrgaming.civcraft.util.Paginator;
 import com.avrgaming.civcraft.util.PlayerBlockChangeUtil;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.global.perks.NotVerifiedException;
@@ -167,8 +167,8 @@ public class Resident extends SQLObject {
 	private boolean insideArena = false;
 	private boolean isProtected = false;
 	
-	public HashMap<BlockCoord, SimpleBlock> previewUndo = null;
-	public LinkedHashMap<String, Perk> perks = new LinkedHashMap<String, Perk>();
+	public ConcurrentHashMap<BlockCoord, SimpleBlock> previewUndo = null;
+	public HashMap<String, Perk> perks = new HashMap<String, Perk>();
 	private Date lastKilledTime = null;
 	private String lastIP = "";
 	private UUID uid;
@@ -538,7 +538,7 @@ public class Resident extends SQLObject {
 		Player player;
 		try {
 			player = CivGlobal.getPlayer(this);
-			CivMessage.send(player, CivColor.Yellow+"You are in "+this.getTreasury().getDebt()+" Coins of debt!");
+			CivMessage.send(player, CivColor.Yellow+"You are in "+this.getTreasury().getDebt()+" coins of debt!");
 			CivMessage.send(player, CivColor.LightGray+"If you do not pay your debt within "+this.daysTilEvict+" days you will be evicted from town.");
 		} catch (CivException e) {
 			//Player is not online.
@@ -737,27 +737,6 @@ public class Resident extends SQLObject {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public int takeItemsInHand(int itemId, int itemData) throws CivException {
-		Player player = CivGlobal.getPlayer(this);
-		Inventory inv = player.getInventory();
-		if (!inv.contains(itemId)) {
-			return 0;
-		}
-
-		if ((player.getItemInHand().getTypeId() != itemId) &&
-				(player.getItemInHand().getTypeId() != itemData)) {
-			return 0;
-		}
-		
-		ItemStack stack = player.getItemInHand();
-		int count = stack.getAmount();
-		inv.removeItem(stack);
-		
-		player.updateInventory();
-		return count;
-	}
-	
-	@SuppressWarnings("deprecation")
 	public boolean takeItemInHand(int itemId, int itemData, int amount) throws CivException {
 		Player player = CivGlobal.getPlayer(this);
 		Inventory inv = player.getInventory();
@@ -840,7 +819,7 @@ public class Resident extends SQLObject {
 	public boolean buyItem(String itemName, int id, byte data, double price, int amount) throws CivException {
 		
 		if (!this.getTreasury().hasEnough(price)) {
-			throw new CivException("Not enough Coins.");
+			throw new CivException("Not enough coins.");
 		}
 		
 		boolean completed = true;
@@ -869,6 +848,7 @@ public class Resident extends SQLObject {
 		return this.getTown().getCiv();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void setScoreboardName(String name, String key) {
 		if (this.scoreboard == null) {
 			this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -1040,7 +1020,7 @@ public class Resident extends SQLObject {
 	
 	public void undoPreview() {
 		if (this.previewUndo == null) {
-			this.previewUndo = new HashMap<BlockCoord, SimpleBlock>();
+			this.previewUndo = new ConcurrentHashMap<BlockCoord, SimpleBlock>();
 			return;
 		}
 		
@@ -1067,7 +1047,7 @@ public class Resident extends SQLObject {
 		}
 		
 		this.previewUndo.clear();
-		this.previewUndo = new HashMap<BlockCoord, SimpleBlock>();
+		this.previewUndo = new ConcurrentHashMap<BlockCoord, SimpleBlock>();
 	}
 
 	public boolean isShowInfo() {
@@ -1139,154 +1119,6 @@ public class Resident extends SQLObject {
 		this.onRoad = onRoad;
 	}
 
-	public void giveAllArcticPerks() {
-		int perkCount;
-		try {
-			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		for (ConfigPerk p : CivSettings.perks.values()) {
-			Perk perk = new Perk(p);
-			
-			if (perk.getIdent().startsWith("tpl_arctic") || perk.getIdent().startsWith("template_arctic"))
-			{
-				perk.count = perkCount;
-				this.perks.put(perk.getIdent(), perk);
-			}
-		}
-		
-	}
-	
-	public void giveAllAztecPerks() {
-		int perkCount;
-		try {
-			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		for (ConfigPerk p : CivSettings.perks.values()) {
-			Perk perk = new Perk(p);
-			
-			if (perk.getIdent().startsWith("tpl_aztec") || perk.getIdent().startsWith("template_aztec"))
-			{
-				perk.count = perkCount;
-				this.perks.put(perk.getIdent(), perk);
-			}
-		}
-		
-	}
-	
-	public void giveAllEgyptianPerks() {
-		int perkCount;
-		try {
-			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		for (ConfigPerk p : CivSettings.perks.values()) {
-			Perk perk = new Perk(p);
-			
-			if (perk.getIdent().startsWith("tpl_egyptian") || perk.getIdent().startsWith("template_egyptian"))
-			{
-				perk.count = perkCount;
-				this.perks.put(perk.getIdent(), perk);
-			}
-		}
-		
-	}
-	
-	public void giveAllRomanPerks() {
-		int perkCount;
-		try {
-			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		for (ConfigPerk p : CivSettings.perks.values()) {
-			Perk perk = new Perk(p);
-			
-			if (perk.getIdent().startsWith("tpl_roman") || perk.getIdent().startsWith("template_roman"))
-			{
-				perk.count = perkCount;
-				this.perks.put(perk.getIdent(), perk);
-			}
-		}
-		
-	}
-	
-	public void giveAllHellPerks() {
-		int perkCount;
-		try {
-			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		for (ConfigPerk p : CivSettings.perks.values()) {
-			Perk perk = new Perk(p);
-			
-			if (perk.getIdent().startsWith("tpl_hell") || perk.getIdent().startsWith("template_hell"))
-			{
-				perk.count = perkCount;
-				this.perks.put(perk.getIdent(), perk);
-			}
-		}
-		
-	}
-	
-	public void giveAllElvenPerks() {
-		int perkCount;
-		try {
-			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		for (ConfigPerk p : CivSettings.perks.values()) {
-			Perk perk = new Perk(p);
-			
-			if (perk.getIdent().startsWith("prem_tpl_elven") || perk.getIdent().startsWith("template_elven"))
-			{
-				perk.count = perkCount;
-				this.perks.put(perk.getIdent(), perk);
-			}
-		}
-		
-	}
-	
-	public void giveAllCultistPerks() {
-		int perkCount;
-		try {
-			perkCount = CivSettings.getInteger(CivSettings.perkConfig, "system.free_perk_count");
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		for (ConfigPerk p : CivSettings.perks.values()) {
-			Perk perk = new Perk(p);
-			
-			if (perk.getIdent().startsWith("prem_tpl_cultist") || perk.getIdent().startsWith("template_cultist"))
-			{
-				perk.count = perkCount;
-				this.perks.put(perk.getIdent(), perk);
-			}
-		}
-		
-	}
-
-
 	public void giveAllFreePerks() {
 		int perkCount;
 		try {
@@ -1298,14 +1130,11 @@ public class Resident extends SQLObject {
 		
 		for (ConfigPerk p : CivSettings.perks.values()) {
 			Perk perk = new Perk(p);
-			
-			if (perk.getIdent().startsWith("perk_"))
-			{
-				perk.count = perkCount;
-				this.perks.put(perk.getIdent(), perk);
-			}
+			perk.count = perkCount;
+			this.perks.put(perk.getIdent(), perk);
 		}
 		
+		CivMessage.send(this, CivColor.LightGreen+"You've got free perks! Use /resident perks to see them.");
 	}
 	
 	public void loadPerks() {
@@ -1435,9 +1264,6 @@ public class Resident extends SQLObject {
 	public ArrayList<Perk> getUnboundTemplatePerks(ArrayList<Perk> alreadyBoundPerkList, ConfigBuildableInfo info) {
 		ArrayList<Perk> unboundPerks = new ArrayList<Perk>();
 		for (Perk ourPerk : perks.values()) {
-
-			if (!ourPerk.getIdent().contains("template"))
-			{
 			CustomTemplate customTemplate = (CustomTemplate) ourPerk.getComponent("CustomTemplate");
 			if (customTemplate == null) {
 				continue;
@@ -1456,7 +1282,6 @@ public class Resident extends SQLObject {
 			}
 			
 			unboundPerks.add(ourPerk);
-			}
 		}
 		
 		return unboundPerks;
@@ -1552,14 +1377,14 @@ public class Resident extends SQLObject {
 				} else if ((i-start) == 0){ 
 					ItemStack guiStack = LoreGuiItem.build("Remove Coins", 
 							ItemManager.getId(Material.NETHER_BRICK_ITEM), 0, 
-							CivColor.Gold+"Click to Remove 100 Coins.",
-							CivColor.Gold+"Shift-Click to Remove 1000 Coins.");
+							CivColor.Gold+"Click to Remove 100 coins.",
+							CivColor.Gold+"Shift-Click to Remove 1000 coins.");
 					inv.setItem(i, guiStack);
 				} else if ((i-start) == 1) {
 					ItemStack guiStack = LoreGuiItem.build("Add Coins", 
 							ItemManager.getId(Material.GOLD_INGOT), 0, 
-							CivColor.Gold+"Click to Add 100 Coins.",
-							CivColor.Gold+"Shift-Click to Add 1000 Coins.");
+							CivColor.Gold+"Click to Add 100 coins.",
+							CivColor.Gold+"Shift-Click to Add 1000 coins.");
 					inv.setItem(i, guiStack);
 				} else if ((i-start) == 7) {
 					ItemStack guiStack = LoreGuiItem.build("Coins Offered", 
@@ -1841,52 +1666,11 @@ public class Resident extends SQLObject {
 		}
 		
 		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9, "Perks");
+		Paginator paginator = new Paginator();
+		paginator.paginate(perks.values(), pageNumber);
 		
-		for (Object obj : perks.values()) {
+		for (Object obj : paginator.page) {
 			Perk p = (Perk)obj;
-			if (p.getIdent().startsWith("temp"))
-			{
-				ItemStack stack = LoreGuiItem.build(p.configPerk.display_name, 
-						p.configPerk.type_id, 
-						p.configPerk.data, CivColor.LightBlue+"Click To View",
-						CivColor.LightBlue+"These Templates");
-				stack = LoreGuiItem.setAction(stack, "ShowTemplateType");
-				stack = LoreGuiItem.setActionData(stack, "perk", p.configPerk.id);
-
-				inv.addItem(stack);
-			}
-			else if (p.getIdent().startsWith("perk"))
-			{
-				ItemStack stack = LoreGuiItem.build(p.configPerk.display_name, 
-						p.configPerk.type_id, 
-						p.configPerk.data, CivColor.Gold+"<Click To Activate>",
-						CivColor.LightBlue+"Count: "+p.count);
-				stack = LoreGuiItem.setAction(stack, "ActivatePerk");
-				stack = LoreGuiItem.setActionData(stack, "perk", p.configPerk.id);
-
-				inv.addItem(stack);
-				
-			}
-			
-		}
-		
-		player.openInventory(inv);
-	}
-	
-	public void showTemplatePerks(String name) {
-		Player player;
-		try {
-			player = CivGlobal.getPlayer(this);
-		} catch (CivException e) {
-			return;
-		}
-		
-		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9, "Templates for "+name);
-		
-		for (Object obj : perks.values()) {
-			Perk p = (Perk)obj;
-			if (p.getIdent().contains("tpl_" +name))
-			{
 			ItemStack stack = LoreGuiItem.build(p.configPerk.display_name, 
 					p.configPerk.type_id, 
 					p.configPerk.data, CivColor.Gold+"<Click To Activate>",
@@ -1895,7 +1679,20 @@ public class Resident extends SQLObject {
 			stack = LoreGuiItem.setActionData(stack, "perk", p.configPerk.id);
 
 			inv.addItem(stack);
-			}
+		}
+		
+		if (paginator.hasPrevPage) {
+			ItemStack stack = LoreGuiItem.build("Prev Page", ItemManager.getId(Material.PAPER), 0, "");
+			stack = LoreGuiItem.setAction(stack, "ShowPerkPage");
+			stack = LoreGuiItem.setActionData(stack, "page", ""+(pageNumber-1));
+			inv.setItem(9*5, stack);
+		}
+		
+		if (paginator.hasNextPage) {
+			ItemStack stack = LoreGuiItem.build("Next Page", ItemManager.getId(Material.PAPER), 0, "");
+			stack = LoreGuiItem.setAction(stack, "ShowPerkPage");
+			stack = LoreGuiItem.setActionData(stack, "page", ""+(pageNumber+1));
+			inv.setItem((CivTutorial.MAX_CHEST_SIZE*9)-1, stack);
 		}
 		
 		player.openInventory(inv);

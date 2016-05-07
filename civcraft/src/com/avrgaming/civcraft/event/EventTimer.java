@@ -99,14 +99,6 @@ public class EventTimer {
 			e.printStackTrace();
 		}
 		
-		/* Setup disable Teleport event. */
-		try {
-			DisableTeleportEvent DisableTeleportEvent = new DisableTeleportEvent();
-			new EventTimer("disabletp", DisableTeleportEvent, DisableTeleportEvent.getNextDate());
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-		}
-		
 		/* Setup repo event. */
 		try {
 			GoodieRepoEvent repoEvent = new GoodieRepoEvent();

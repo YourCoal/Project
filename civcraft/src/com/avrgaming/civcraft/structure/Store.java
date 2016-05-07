@@ -148,13 +148,13 @@ public class Store extends Structure {
 				if (t == this.getTown()) {
 					// Pay no taxes! You're a member.
 					resident.buyItem(itemName, id, data, price, amount);
-					CivMessage.send(player, CivColor.LightGreen + "Bought "+amount+" "+itemName+" for "+ price+ " Coins.");
+					CivMessage.send(player, CivColor.LightGreen + "Bought "+amount+" "+itemName+" for "+ price+ " coins.");
 					return;
 				} else {
 					// Pay non-resident taxes
 					resident.buyItem(itemName, id, data, price + payToTown, amount);
 					getTown().depositDirect(payToTown);
-					CivMessage.send(player, CivColor.Yellow + "Paid "+ payToTown+" Coins in non-resident taxes.");
+					CivMessage.send(player, CivColor.Yellow + "Paid "+ payToTown+" coins in non-resident taxes.");
 				}
 			
 			}

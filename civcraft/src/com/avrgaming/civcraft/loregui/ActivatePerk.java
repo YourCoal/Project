@@ -19,12 +19,11 @@ public class ActivatePerk implements GuiAction {
 		String perk_id = LoreGuiItem.getActionData(stack, "perk");
 		Perk perk = resident.perks.get(perk_id);
 		if (perk != null) {
-
-				perk.onActivate(resident);
+			perk.onActivate(resident);
 		} else {
 			CivLog.error("Couldn't activate perk:"+perk_id+" cause it wasn't found in perks hashmap.");
 		}
 		player.closeInventory();		
 	}
-	
+
 }

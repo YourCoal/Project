@@ -46,7 +46,7 @@ public class MarketBuyCommand extends CommandBase {
 			if (!town.isCapitol()) {
 				if (town.isForSale()) {
 					CivMessage.send(sender, town.getName()+" - "+CivColor.Yellow+
-							df.format(town.getForSalePrice())+" Coins.");
+							df.format(town.getForSalePrice())+" coins.");
 				}
 			}
 		}
@@ -59,7 +59,7 @@ public class MarketBuyCommand extends CommandBase {
 		for (Civilization civ : CivGlobal.getCivs()) {
 				if (civ.isForSale()) {
 					CivMessage.send(sender, civ.getName()+" - "+CivColor.Yellow+
-							df.format(civ.getTotalSalePrice())+" Coins.");
+							df.format(civ.getTotalSalePrice())+" coins.");
 				}
 		}
 	}

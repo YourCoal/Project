@@ -2,21 +2,26 @@ package com.avrgaming.civcraft.mobs;
 
 import java.util.LinkedList;
 
-import net.minecraft.server.v1_7_R4.DamageSource;
-import net.minecraft.server.v1_7_R4.Entity;
-import net.minecraft.server.v1_7_R4.EntityCreature;
-import net.minecraft.server.v1_7_R4.EntityDamageSource;
-import net.minecraft.server.v1_7_R4.EntityHuman;
-import net.minecraft.server.v1_7_R4.EntityInsentient;
-import net.minecraft.server.v1_7_R4.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_7_R4.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_7_R4.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_7_R4.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
+import net.minecraft.server.v1_8_R3.DamageSource;
+import net.minecraft.server.v1_8_R3.Entity;
+import net.minecraft.server.v1_8_R3.EntityCreature;
+import net.minecraft.server.v1_8_R3.EntityDamageSource;
+import net.minecraft.server.v1_8_R3.EntityHuman;
+import net.minecraft.server.v1_8_R3.EntityInsentient;
+import net.minecraft.server.v1_8_R3.Item;
+import net.minecraft.server.v1_8_R3.ItemStack;
+import net.minecraft.server.v1_8_R3.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_8_R3.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_8_R3.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
 
 import org.bukkit.block.Biome;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivLog;
@@ -35,12 +40,16 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 	
 	public void onCreate() {
 	    initLevelAndType();
-
 	    getGoalSelector().a(7, new PathfinderGoalRandomStroll((EntityCreature) entity, 1.0D));
 	    getGoalSelector().a(8, new PathfinderGoalLookAtPlayer((EntityInsentient) entity, EntityHuman.class, 8.0F));
 	    getTargetSelector().a(1, new PathfinderGoalHurtByTarget((EntityCreature) entity, true));
-
 	    this.setName(this.getLevel().getName()+" "+this.getType().getName());
+	    
+		entity.getBukkitEntity().getHandle().setEquipment(4, new ItemStack(Item.getById(397), 1, 2));
+		if (entity.getBukkitEntity() instanceof LivingEntity) {
+			LivingEntity damaged = (LivingEntity) entity.getBukkitEntity();
+			damaged.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 999999999, 0));
+		}
 	}
 	
 	public void onCreateAttributes() {

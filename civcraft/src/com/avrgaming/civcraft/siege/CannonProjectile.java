@@ -2,9 +2,8 @@ package com.avrgaming.civcraft.siege;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Random;
 
-import net.minecraft.server.v1_7_R4.EntityPlayer;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -44,13 +43,11 @@ public class CannonProjectile {
 	public static double yield;
 	public static double playerDamage;
 	public static double maxRange;
-	public static int controlBlockHP;
 	static {
 		try {
 			yield = CivSettings.getDouble(CivSettings.warConfig, "cannon.yield");
 			playerDamage = CivSettings.getDouble(CivSettings.warConfig, "cannon.player_damage");
 			maxRange = CivSettings.getDouble(CivSettings.warConfig, "cannon.max_range");
-			controlBlockHP = CivSettings.getInteger(CivSettings.warConfig, "cannon.control_block_hp");
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 		}
@@ -64,7 +61,8 @@ public class CannonProjectile {
 	}
 	
 	private void explodeBlock(Block b) {
-		WarRegen.explodeThisBlock(b, Cannon.RESTORE_NAME);
+		WarRegen.saveBlock(b, Cannon.RESTORE_NAME, false);
+		ItemManager.setTypeId(b, CivData.AIR);
 		launchExplodeFirework(b.getLocation());
 	}
 	
@@ -118,12 +116,7 @@ public class CannonProjectile {
 										if (th.getHitpoints() == 0) { 
 											explodeBlock(b);
 										} else {
-											try {
-												th.onCannonDamage(cannon.getDamage(), this);
-											} catch (CivException e1) {
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
+											th.onCannonDamage(cannon.getDamage());
 										}
 									} else {
 										Player player = null;
@@ -176,14 +169,8 @@ public class CannonProjectile {
 	}
 	
 	private void launchExplodeFirework(Location loc) {
-		Random rand = new Random();
-		int rand1 = rand.nextInt(100);
-		
-		if (rand1 > 90)
-		{
 		FireworkEffect fe = FireworkEffect.builder().withColor(Color.ORANGE).withColor(Color.YELLOW).flicker(true).with(Type.BURST).build();		
 		TaskMaster.syncTask(new FireWorkTask(fe, loc.getWorld(), loc, 3), 0);
-		}
 	}
 	
 	public boolean advance() {

@@ -1,19 +1,24 @@
 package com.avrgaming.civcraft.mobs;
 
 
-import net.minecraft.server.v1_7_R4.DamageSource;
-import net.minecraft.server.v1_7_R4.Entity;
-import net.minecraft.server.v1_7_R4.EntityCreature;
-import net.minecraft.server.v1_7_R4.EntityHuman;
-import net.minecraft.server.v1_7_R4.EntityInsentient;
-import net.minecraft.server.v1_7_R4.PathfinderGoalFloat;
-import net.minecraft.server.v1_7_R4.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_7_R4.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_7_R4.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
+import net.minecraft.server.v1_8_R3.DamageSource;
+import net.minecraft.server.v1_8_R3.Entity;
+import net.minecraft.server.v1_8_R3.EntityCreature;
+import net.minecraft.server.v1_8_R3.EntityHuman;
+import net.minecraft.server.v1_8_R3.EntityInsentient;
+import net.minecraft.server.v1_8_R3.Item;
+import net.minecraft.server.v1_8_R3.ItemStack;
+import net.minecraft.server.v1_8_R3.PathfinderGoalFloat;
+import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_8_R3.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_8_R3.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_8_R3.PathfinderGoalSelector;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.avrgaming.civcraft.mobs.components.MobComponentDefense;
 import com.avrgaming.mob.ICustomMob;
@@ -23,15 +28,19 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 
 	public void onCreate() {
 	    initLevelAndType();
-
 	    getGoalSelector().a(0, new PathfinderGoalFloat((EntityInsentient) entity));
 	    getGoalSelector().a(2, new PathfinderGoalMeleeAttack((EntityCreature) entity, EntityHuman.class, 1.0D, false));
 	    getGoalSelector().a(8, new PathfinderGoalLookAtPlayer((EntityInsentient) entity, EntityHuman.class, 8.0F));
-
-	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget((EntityCreature) entity, EntityHuman.class, 0, true));
+	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget<EntityHuman>((EntityCreature) entity, EntityHuman.class, true));
 	    this.setName(this.getLevel().getName()+" "+this.getType().getName());
 	    MobBaseZombie zombie = ((MobBaseZombie)this.entity);
 	    zombie.setBaby(true);
+	    
+		entity.getBukkitEntity().getHandle().setEquipment(4, new ItemStack(Item.getById(397), 1, 2));
+		if (entity.getBukkitEntity() instanceof LivingEntity) {
+			LivingEntity damaged = (LivingEntity) entity.getBukkitEntity();
+			damaged.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 999999999, 0));
+		}
 	}
 
 	@Override

@@ -120,7 +120,7 @@ public class Stable extends Structure {
 				double paid;
 				if (resident.getTown() != getTown()) {
 					if (!resident.getTreasury().hasEnough(getItemCost(cost))) {
-						CivMessage.sendError(player, "You do not have the required "+getItemCost(cost)+" Coins.");
+						CivMessage.sendError(player, "You do not have the required "+getItemCost(cost)+" coins.");
 						return;
 					}
 					
@@ -131,7 +131,7 @@ public class Stable extends Structure {
 					paid = getItemCost(cost);
 				} else {
 					if (!resident.getTreasury().hasEnough(cost)) {
-						CivMessage.sendError(player, "You do not have the required "+cost+" Coins.");
+						CivMessage.sendError(player, "You do not have the required "+cost+" coins.");
 						return;
 					}
 
@@ -155,7 +155,7 @@ public class Stable extends Structure {
 				((Horse)mod.getHorse()).setOwner(player);
 				((Horse)mod.getHorse()).setBaby();
 				
-				CivMessage.send(player, CivColor.LightGreen+"Paid "+paid+" Coins.");
+				CivMessage.send(player, CivColor.LightGreen+"Paid "+paid+" coins.");
 			}
 		}
 		
@@ -177,7 +177,7 @@ public class Stable extends Structure {
 				double paid;
 				if (resident.getTown() != getTown()) {
 					if (!resident.getTreasury().hasEnough(getItemCost(cost))) {
-						CivMessage.sendError(player, "You do not have the required "+getItemCost(cost)+" Coins.");
+						CivMessage.sendError(player, "You do not have the required "+getItemCost(cost)+" coins.");
 						return;
 					}
 					
@@ -186,7 +186,7 @@ public class Stable extends Structure {
 					paid = getItemCost(cost);
 				} else {
 					if (!resident.getTreasury().hasEnough(cost)) {
-						CivMessage.sendError(player, "You do not have the required "+cost+" Coins.");
+						CivMessage.sendError(player, "You do not have the required "+cost+" coins.");
 						return;
 					}
 					
@@ -201,7 +201,7 @@ public class Stable extends Structure {
 					}
 				}
 				
-				CivMessage.send(player, CivColor.LightGreen+"Paid "+paid+" Coins.");
+				CivMessage.send(player, CivColor.LightGreen+"Paid "+paid+" coins.");
 			}
 			
 		}

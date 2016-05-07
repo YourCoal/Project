@@ -103,7 +103,7 @@ import com.avrgaming.civcraft.threading.tasks.CivLeaderQuestionTask;
 import com.avrgaming.civcraft.threading.tasks.CivQuestionTask;
 import com.avrgaming.civcraft.threading.tasks.CultureProcessAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PlayerQuestionTask;
-//import com.avrgaming.civcraft.threading.tasks.UpdateTagBetweenCivsTask;
+import com.avrgaming.civcraft.threading.tasks.UpdateTagBetweenCivsTask;
 import com.avrgaming.civcraft.threading.tasks.onLoadTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.BukkitObjects;
@@ -158,7 +158,7 @@ public class CivGlobal {
 	public static HashSet<String> researchedTechs = new HashSet<String>();
 	
 	/* TODO change this to true for MC 1.8 */
-	public static boolean useUUID = true;
+	public static boolean useUUID = false;
 	
 	public static Map<Integer, Boolean> CivColorInUse = new ConcurrentHashMap<Integer, Boolean>();
 	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
@@ -717,29 +717,29 @@ public class CivGlobal {
 	}
 	
 	public static Resident getResident(Player player) {
-		return residents.get(player.getName());
+		return residents.get(player.getName().toLowerCase());
 	}
 	
 	public static Resident getResident(Resident resident) {
-		return residents.get(resident.getName());
+		return residents.get(resident.getName().toLowerCase());
 	}
 
 	public static boolean hasResident(String name) {
-		return residents.containsKey(name);
+		return residents.containsKey(name.toLowerCase());
 	}
 
 	public static void addResident(Resident res) {
-		residents.put(res.getName(), res);
+		residents.put(res.getName().toLowerCase(), res);
 		residentsViaUUID.put(res.getUUID(), res);
 	}
 	
 	public static void removeResident(Resident res) {
-		residents.remove(res.getName());
+		residents.remove(res.getName().toLowerCase());
 		residentsViaUUID.remove(res.getUUID());
 	}
 
 	public static Resident getResident(String name) {
-		return residents.get(name);
+		return residents.get(name.toLowerCase());
 	}
 	
 	public static Resident getResidentViaUUID(UUID uuid) {
@@ -914,8 +914,10 @@ public class CivGlobal {
 	
 	public static Player getPlayer(String name) throws CivException {
 		Resident res = CivGlobal.getResident(name);
-		if (res == null)
-			throw new CivException("No resident named"+name);
+		if (res == null) {
+			throw new CivException("No resident named "+name);
+		}
+		
 		Player player = Bukkit.getPlayer(res.getUUID());
 		if (player == null)
 			throw new CivException("No player named "+name);
@@ -1095,10 +1097,6 @@ public class CivGlobal {
 	
 	public static ProtectedBlock getProtectedBlock(BlockCoord coord) {
 		return protectedBlocks.get(coord);
-	}
-	
-	public static ProtectedBlock removeProtectedBlock(BlockCoord coord) {
-		return protectedBlocks.remove(coord);
 	}
 
 	public static SessionDatabase getSessionDB() {
@@ -1473,12 +1471,12 @@ public class CivGlobal {
 		}
 		out += otherCiv.getName();
 		CivMessage.global(out);
-//		CivGlobal.updateTagsBetween(civ, otherCiv);
+		CivGlobal.updateTagsBetween(civ, otherCiv);
 	}
 	
-//	private static void updateTagsBetween(Civilization civ, Civilization otherCiv) {
-//		TaskMaster.asyncTask(new UpdateTagBetweenCivsTask(civ, otherCiv), 0);
-//	}
+	private static void updateTagsBetween(Civilization civ, Civilization otherCiv) {
+		TaskMaster.asyncTask(new UpdateTagBetweenCivsTask(civ, otherCiv), 0);
+	}
 
 	public static void requestRelation(Civilization fromCiv, Civilization toCiv, String question, 
 			long timeout, QuestionResponseInterface finishedFunction) throws CivException {

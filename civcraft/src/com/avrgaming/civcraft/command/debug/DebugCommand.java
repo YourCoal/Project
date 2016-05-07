@@ -152,7 +152,6 @@ public class DebugCommand extends CommandBase {
 		commands.put("cleartradesigns", "clears extra trade signs above trade outpots");
 		commands.put("restoresigns", "restores all structure signs");
 		commands.put("regenchunk", "regens every chunk that has a trade good in it");
-		commands.put("regenunclaimedchunk", "regens every unclaimed chunk that has a trade good in it");
 		commands.put("quickcodereload", "Reloads the quick code plugin");
 		commands.put("loadbans", "Loads bans from ban list into global table");
 		commands.put("setallculture", "[amount] - sets all towns culture in the world to this amount.");
@@ -871,6 +870,7 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(sender, out);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void refreshchunk_cmd() throws CivException {
 		Player you = getPlayer();
 		ChunkCoord coord = new ChunkCoord(you.getLocation());
@@ -1031,21 +1031,6 @@ public class DebugCommand extends CommandBase {
 			
 			world.regenerateChunk(coord.getX(), coord.getZ());
 			CivMessage.send(sender, "Regened:"+coord);
-		}
-		
-		
-	}
-	
-	public void regenunclaimedchunk_cmd() {
-	
-		World world = Bukkit.getWorld("world");
-
-		for(ChunkCoord coord : CivGlobal.preGenerator.goodPicks.keySet()) {
-			TownChunk tc = CivGlobal.getTownChunk(coord);
-			if (tc == null) {
-			world.regenerateChunk(coord.getX(), coord.getZ());
-			CivMessage.send(sender, "Regened:"+coord);
-			}
 		}
 		
 		

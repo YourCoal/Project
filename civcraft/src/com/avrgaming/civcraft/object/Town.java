@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
@@ -630,21 +629,6 @@ public class Town extends SQLObject {
 			}
 		}
 		
-		if (this.getBuffManager().hasBuff("buff_globe_theatre_culture_from_towns")) {
-			int townCount = 0;
-			for (Civilization civ : CivGlobal.getCivs())
-			{
-				townCount += civ.getTownCount();
-			}
-			double culturePerTown = Double.valueOf(CivSettings.buffs.get("buff_globe_theatre_culture_from_towns").value);
-			
-			double bonus = culturePerTown*townCount;
-			
-			CivMessage.sendTown(this, CivColor.LightGreen+"The Globe Theatre generated "+CivColor.Yellow+bonus+CivColor.LightGreen+" culture from shows.");
-
-			fromStructures += bonus;
-		}
-		
 		total += fromStructures;
 		sources.put("Structures", fromStructures);
 		
@@ -1111,7 +1095,7 @@ public class Town extends SQLObject {
 			}
 			
 			double capturePayment = amount * capturedPenalty;
-			CivMessage.sendTown(this, CivColor.Yellow+"Your town paid "+(amount - capturePayment)+" Coins due to being captured by "+this.getCiv().getName());
+			CivMessage.sendTown(this, CivColor.Yellow+"Your town paid "+(amount - capturePayment)+" coins due to being captured by "+this.getCiv().getName());
 			amount = capturePayment;
 		}
 		
@@ -1162,7 +1146,7 @@ public class Town extends SQLObject {
 		}
 		
 		if (!this.getTreasury().hasEnough(upgrade.cost)) {
-			throw new CivException("The town does not have the required "+upgrade.cost+" Coins.");
+			throw new CivException("The town does not have the required "+upgrade.cost+" coins.");
 		}
 		
 		if (!this.hasStructure(upgrade.require_structure)) {
@@ -1557,7 +1541,7 @@ public class Town extends SQLObject {
 		
 		double cost = wonder.getCost();
 		if (!this.getTreasury().hasEnough(cost)) {
-			throw new CivException("Your town cannot not afford the "+cost+" Coins to build "+wonder.getDisplayName());
+			throw new CivException("Your town cannot not afford the "+cost+" coins to build "+wonder.getDisplayName());
 		}
 		
 		wonder.runCheck(center); //Throws exception if we can't build here.	
@@ -1621,7 +1605,7 @@ public class Town extends SQLObject {
 		
 		double cost = struct.getCost();
 		if (!this.getTreasury().hasEnough(cost)) {
-			throw new CivException("Your town cannot not afford the "+cost+" Coins to build a "+struct.getDisplayName());
+			throw new CivException("Your town cannot not afford the "+cost+" coins to build a "+struct.getDisplayName());
 		}
 		
 		struct.runCheck(center); //Throws exception if we can't build here.	
@@ -2367,23 +2351,20 @@ public class Town extends SQLObject {
 	}
 
 	public boolean isOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		return this.outlaws.contains(res.getUUIDString());
+		return this.outlaws.contains(name);
 	}
 	
 	public void addOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.add(res.getUUIDString());
-		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
+		this.outlaws.add(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void removeOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.remove(res.getUUIDString());
-		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
+		this.outlaws.remove(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
-public void changeCiv(Civilization newCiv) {
+	public void changeCiv(Civilization newCiv) {
 		
 		/* Remove this town from its old civ. */
 		Civilization oldCiv = this.civ;
@@ -2397,11 +2378,9 @@ public void changeCiv(Civilization newCiv) {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			if (outlaw.length() >= 2){
-			Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
+			Resident resident = CivGlobal.getResident(outlaw);
 			if (newCiv.hasResident(resident)) {
 				removeUs.add(outlaw);
-			}
 			}
 		}
 		
@@ -2498,7 +2477,7 @@ public void changeCiv(Civilization newCiv) {
 
 	public void depositFromResident(Double amount, Resident resident) throws CivException {
 		if (!resident.getTreasury().hasEnough(amount)) {
-			throw new CivException("You do not have enough Coins for that.");
+			throw new CivException("You do not have enough coins for that.");
 		}
 		
 		if (this.inDebt()) {

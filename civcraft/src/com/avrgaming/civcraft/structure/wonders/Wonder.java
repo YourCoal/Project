@@ -194,10 +194,6 @@ public abstract class Wonder extends Buildable {
 		
 		for (Wonder wonder : CivGlobal.getWonders()) {
 			if (wonder.getConfigId().equals(configId)) {
-				if (wonder.getConfigId().equals("w_colosseum"))
-				{
-					return true;
-				}
 				if (wonder.isComplete()) {
 					return false;
 				}
@@ -223,7 +219,7 @@ public abstract class Wonder extends Buildable {
 				
 		double refund = this.getCost();
 		this.getTown().depositDirect(refund);
-		CivMessage.sendTown(getTown(), "Town refunded "+refund+" Coins.");
+		CivMessage.sendTown(getTown(), "Town refunded "+refund+" coins.");
 		
 		this.unbindStructureBlocks();
 		
@@ -366,20 +362,6 @@ public abstract class Wonder extends Buildable {
 				wonder = new CouncilOfEight(rs);
 			}
 			break;
-		case "w_colosseum":
-			if (rs == null) {
-				wonder = new Colosseum(center, id, town);
-			} else {
-				wonder = new Colosseum(rs);
-			}
-			break;
-		case "w_globe_theatre":
-			if (rs == null) {
-				wonder = new GlobeTheatre(center, id, town);
-			} else {
-				wonder = new GlobeTheatre(rs);
-			}
-			break;
 		default:
 			throw new CivException("Unknown wonder type "+id);
 		}
@@ -468,21 +450,7 @@ public abstract class Wonder extends Buildable {
 		double total = coinsPerCulture*cultureCount;
 		this.getCiv().getTreasury().deposit(total);
 		
-		CivMessage.sendCiv(this.getCiv(), CivColor.LightGreen+"The Colossus generated "+CivColor.Yellow+total+CivColor.LightGreen+" Coins from culture.");
-	}
-	
-	public void processCoinsFromColosseum() {
-		int townCount = 0;
-		for (Civilization civ : CivGlobal.getCivs())
-		{
-			townCount += civ.getTownCount();
-		}
-		double coinsPerTown = Double.valueOf(CivSettings.buffs.get("buff_colosseum_coins_from_towns").value);
-		
-		double total = coinsPerTown*townCount;
-		this.getCiv().getTreasury().deposit(total);
-		
-		CivMessage.sendCiv(this.getCiv(), CivColor.LightGreen+"The Colosseum generated "+CivColor.Yellow+total+CivColor.LightGreen+" Coins from ticket sales.");
+		CivMessage.sendCiv(this.getCiv(), CivColor.LightGreen+"The Colossus generated "+CivColor.Yellow+total+CivColor.LightGreen+" coins from culture.");
 	}
 	
 }
