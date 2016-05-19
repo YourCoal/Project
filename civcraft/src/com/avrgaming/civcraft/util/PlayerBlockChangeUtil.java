@@ -155,7 +155,7 @@ public class PlayerBlockChangeUtil {
 //			//CraftWorld craftWorld;
 //			//CraftBukkit bukkit;
 //			//player.getw
-//			net.minecraft.server.v1_8_R3.World w = ((CraftWorld) player.getWorld()).getHandle();
+//			net.minecraft.server.v1_7_R4.World w = ((CraftWorld) player.getWorld()).getHandle();
 //			BlockCoord playerCoord = new BlockCoord(player.getLocation());
 //			
 //			Double viewDistanceSquared = (double)Math.pow(Bukkit.getServer().getViewDistance()*16, 2);

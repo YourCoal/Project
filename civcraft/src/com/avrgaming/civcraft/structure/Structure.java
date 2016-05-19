@@ -38,6 +38,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.template.Template;
@@ -57,7 +58,7 @@ public class Structure extends Buildable {
 		// Disallow duplicate structures with the same hash.
 		Structure struct = CivGlobal.getStructure(this.getCorner());
 		if (struct != null) {
-			throw new CivException("There is a structure already here.");
+			throw new CivException(CivSettings.localize.localizedString("structure_alreadyExistsHere"));
 		}
 	}
 	
@@ -95,12 +96,60 @@ public class Structure extends Buildable {
 				struct = (Structure) new Trommel(rs);
 			}
 			break;	
+
+		case "ti_fish_hatchery":
+			if (rs == null) {
+				struct = (Structure) new FishHatchery(center, id, town);
+			} else {
+				struct = (Structure) new FishHatchery(rs);
+			}
+			break;	
+
+		case "ti_trade_ship":
+			if (rs == null) {
+				struct = (Structure) new TradeShip(center, id, town);
+			} else {
+				struct = (Structure) new TradeShip(rs);
+			}
+			break;	
+
+		case "ti_quarry":
+			if (rs == null) {
+				struct = (Structure) new Quarry(center, id, town);
+			} else {
+				struct = (Structure) new Quarry(rs);
+			}
+			break;	
+			
+		case "s_mob_grinder":
+			if (rs == null) {
+				struct = (Structure) new MobGrinder(center, id, town);
+			} else {
+				struct = (Structure) new MobGrinder(rs);
+			}
+			break;	
 			
 		case "s_store":
 			if (rs == null) {
 				struct = (Structure) new Store(center, id, town);
 			} else {
 				struct = (Structure) new Store(rs);
+			}
+			break;
+			
+		case "s_stadium":
+			if (rs == null) {
+				struct = (Structure) new Stadium(center, id, town);
+			} else {
+				struct = (Structure) new Stadium(rs);
+			}
+			break;
+			
+		case "ti_hospital":
+			if (rs == null) {
+				struct = (Structure) new Hospital(center, id, town);
+			} else {
+				struct = (Structure) new Hospital(rs);
 			}
 			break;
 		
@@ -111,12 +160,43 @@ public class Structure extends Buildable {
 				struct = (Structure) new Grocer(rs);
 			}
 			break;
-			
+
+		case "s_broadcast_tower":
+			if (rs == null) {
+				struct = (BroadcastTower) new BroadcastTower(center, id, town);
+			} else {
+				struct = (BroadcastTower) new BroadcastTower(rs);
+			}
+			break;
 		case "s_library":
 			if (rs == null) {
 				struct = (Structure) new Library(center, id, town);
 			} else {
 				struct = (Structure) new Library(rs);
+			}
+			break;	
+			
+		case "s_university":
+			if (rs == null) {
+				struct = (Structure) new University(center, id, town);
+			} else {
+				struct = (Structure) new University(rs);
+			}
+			break;	
+			
+		case "s_school":
+			if (rs == null) {
+				struct = (Structure) new School(center, id, town);
+			} else {
+				struct = (Structure) new School(rs);
+			}
+			break;
+			
+		case "s_research_lab":
+			if (rs == null) {
+				struct = (Structure) new ResearchLab(center, id, town);
+			} else {
+				struct = (Structure) new ResearchLab(rs);
 			}
 			break;	
 		
@@ -192,11 +272,26 @@ public class Structure extends Buildable {
 				struct = (Structure) new TownHall(rs);
 			}
 			break;
+		// Just for backwards compatibility with old typos on existing servers:
+		case "s_capital":
+			if (rs == null) {
+				struct = (Structure) new Capitol(center, id, town);
+			} else {
+				struct = (Structure) new Capitol(rs);
+			}
+			break;
 		case "s_capitol":
 			if (rs == null) {
 				struct = (Structure) new Capitol(center, id, town);
 			} else {
 				struct = (Structure) new Capitol(rs);
+			}
+			break;
+		case "s_arrowship":
+			if (rs == null) {
+				struct = (ArrowShip) new ArrowShip(center, id, town);
+			} else {
+				struct = (ArrowShip) new ArrowShip(rs);
 			}
 			break;
 		case "s_arrowtower":
@@ -206,11 +301,25 @@ public class Structure extends Buildable {
 				struct = (Structure) new ArrowTower(rs);
 			}
 			break;
+		case "s_cannonship":
+			if (rs == null) {
+				struct = (CannonShip) new CannonShip(center, id, town);
+			} else {
+				struct = (CannonShip) new CannonShip(rs);
+			}
+			break;
 		case "s_cannontower":
 			if (rs == null) {
 				struct = (Structure) new CannonTower(center, id, town);
 			} else {
 				struct = (Structure) new CannonTower(rs);
+			}
+			break;
+		case "s_scoutship":
+			if (rs == null) {
+				struct = (ScoutShip) new ScoutShip(center, id, town);
+			} else {
+				struct = (ScoutShip) new ScoutShip(rs);
 			}
 			break;
 		case "s_scouttower":
@@ -222,9 +331,9 @@ public class Structure extends Buildable {
 			break;
 		case "s_shipyard":
 			if (rs == null) {
-				struct = (Structure) new WaterStructure(center, id, town);
+				struct = (Structure) new Shipyard(center, id, town);
 			} else {
-				struct = (Structure) new WaterStructure(rs);
+				struct = (Structure) new Shipyard(rs);
 			}
 			break;
 		case "ti_wall":
@@ -232,6 +341,13 @@ public class Structure extends Buildable {
 				struct = (Structure) new Wall(center, id, town);
 			} else {
 				struct = (Structure) new Wall(rs);
+			}
+			break;
+		case "ti_fortifiedwall":
+			if (rs == null) {
+				struct = (Structure) new FortifiedWall(center, id, town);
+			} else {
+				struct = (Structure) new FortifiedWall(rs);
 			}
 			break;
 		case "ti_road":
@@ -255,6 +371,13 @@ public class Structure extends Buildable {
 				struct = (Structure) new Windmill(rs);
 			}
 			break;
+		case "s_museum":
+			if (rs == null) {
+				struct = (Museum) new Museum(center, id, town);
+			} else {
+				struct = (Museum) new Museum(rs);
+			}
+			break;
 		case "s_market":
 			if (rs == null) {
 				struct = (Market) new Market(center, id, town);
@@ -274,6 +397,20 @@ public class Structure extends Buildable {
 				struct = (Pasture) new Pasture(center, id, town);
 			} else {
 				struct = (Pasture) new Pasture(rs);
+			}
+			break;
+		case "ti_lighthouse":
+			if (rs == null) {
+				struct = (Lighthouse) new Lighthouse(center, id, town);
+			} else {
+				struct = (Lighthouse) new Lighthouse(rs);
+			}
+			break;
+		case "s_teslatower":
+			if (rs == null) {
+				struct = (TeslaTower) new TeslaTower(center, id, town);
+			} else {
+				struct = (TeslaTower) new TeslaTower(rs);
 			}
 			break;
 		default:
@@ -410,6 +547,69 @@ public class Structure extends Buildable {
 		hashmap.put("template_z", this.getTemplateZ());
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);
 	}
+	
+	public void deleteSkipUndo() throws SQLException {
+		super.delete();
+		
+		if (this.getTown() != null) {
+			/* Release trade goods if we are a trade outpost. */
+			if (this instanceof TradeOutpost) {
+				//TODO move to trade outpost delete..
+				TradeOutpost outpost = (TradeOutpost)this;
+				
+				if (outpost.getGood() != null) {
+					outpost.getGood().setStruct(null);
+					outpost.getGood().setTown(null);
+					outpost.getGood().setCiv(null);
+					outpost.getGood().save();
+				}
+			}
+			
+			if (!(this instanceof Wall || this instanceof FortifiedWall || this instanceof Road))
+			{
+				CivLog.debug("Delete with Undo! "+this.getDisplayName());
+				/* Remove StructureSigns */
+				for (StructureSign sign : this.getSigns()) {
+					sign.delete();
+				}
+				try {
+					this.undoFromTemplate();	
+				} catch (IOException | CivException e1) {
+					e1.printStackTrace();
+					this.fancyDestroyStructureBlocks();
+				}
+				CivGlobal.removeStructure(this);
+				this.getTown().removeStructure(this);
+				this.unbindStructureBlocks();
+				if (this instanceof Farm) {
+					Farm farm = (Farm)this;
+					farm.removeFarmChunk();
+				}
+			} else {
+				CivLog.debug("Delete skip Undo! "+this.getDisplayName());
+				CivGlobal.removeStructure(this);
+				this.getTown().removeStructure(this);
+				this.unbindStructureBlocks();
+				if (this instanceof Road)
+				{
+					Road road = (Road)this;
+					road.deleteOnDisband();
+				} else if (this instanceof Wall)
+				{
+					Wall wall = (Wall)this;
+					wall.deleteOnDisband();
+				}else if (this instanceof FortifiedWall)
+				{
+					FortifiedWall wall = (FortifiedWall)this;
+					wall.deleteOnDisband();
+				}
+			}
+						
+			
+		}
+		SQL.deleteNamedObject(this, TABLE_NAME);
+	}
+	
 	
 	@Override
 	public void delete() throws SQLException {
@@ -565,7 +765,7 @@ public class Structure extends Buildable {
 	public void processUndo() throws CivException {
 		
 		if (isTownHall()) {
-			throw new CivException("Cannot undo town halls or a capitols, build a new town hall using '/build town hall' or '/build capitol' to move it.");
+			throw new CivException(CivSettings.localize.localizedString("structure_move_notCaporHall"));
 		}
 	
 		try {
@@ -573,14 +773,14 @@ public class Structure extends Buildable {
 			getTown().removeStructure(this);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new CivException("Internal database error.");
+			throw new CivException(CivSettings.localize.localizedString("internalDatabaseException"));
 		}		
 		
-		CivMessage.sendTown(getTown(), CivColor.LightGreen+getDisplayName()+" was unbuilt with the undo command.");
+		CivMessage.sendTown(getTown(), CivColor.LightGreen+CivSettings.localize.localizedString("var_structure_undo_success",getDisplayName()));
 				
 		double refund = this.getCost();
 		this.getTown().depositDirect(refund);
-		CivMessage.sendTown(getTown(), "Town refunded "+refund+" coins.");
+		CivMessage.sendTown(getTown(), CivSettings.localize.localizedString("var_structure_undo_refund",this.getTown().getName(),refund,CivSettings.CURRENCY_NAME));
 		
 		this.unbindStructureBlocks();
 	}
@@ -623,25 +823,25 @@ public class Structure extends Buildable {
 		try {
 			repairFromTemplate();
 		} catch (CivException | IOException e) {
-			throw new CivException("Internal template error.");
+			throw new CivException(CivSettings.localize.localizedString("internalIOException"));
 		}
 		save();
 	}
 	
 	public void repairStructure() throws CivException {
 		if (this instanceof TownHall) {
-			throw new CivException("Town halls and capitols cannot be repaired.");
+			throw new CivException(CivSettings.localize.localizedString("structure_repair_notCaporHall"));
 		}
 		
 		double cost = getRepairCost();
 		if (!getTown().getTreasury().hasEnough(cost)) {
-			throw new CivException("Your town cannot not afford the "+cost+" coins to build a "+getDisplayName());
+			throw new CivException(CivSettings.localize.localizedString("var_structure_repair_tooPoor",getTown().getName(),cost,CivSettings.CURRENCY_NAME,getDisplayName()));
 		}
 		
 		repairStructureForFree();
 		
 		getTown().getTreasury().withdraw(cost);
-		CivMessage.sendTown(getTown(), CivColor.Yellow+"The town has repaired a "+getDisplayName()+" at "+getCorner());
+		CivMessage.sendTown(getTown(), CivColor.Yellow+CivSettings.localize.localizedString("var_structure_repair_success",getTown().getName(),getDisplayName(),getCorner()));
 	}
 
 	@Override

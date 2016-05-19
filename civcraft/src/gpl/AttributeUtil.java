@@ -803,4 +803,6 @@ public class AttributeUtil {
 			addLore(str);
 		}
 	}
+
+
 }

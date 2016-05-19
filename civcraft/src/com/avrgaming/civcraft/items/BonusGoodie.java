@@ -71,7 +71,7 @@ public class BonusGoodie extends LoreItem {
 		OUTPOSTLOCATION
 	}
 		
-	public static final String LORE_TYPE = "Bonus Goodie";
+	public static final String LORE_TYPE = CivSettings.localize.localizedString("bonusGoodie_SignHeading");
 	
 	/* Holder that holding this item. null if on the ground or in an itemframe*/
 	private InventoryHolderStorage holderStore = null; 
@@ -179,6 +179,8 @@ public class BonusGoodie extends LoreItem {
 				
 		if (isStackable()) {
 			lore.add(CivColor.LightBlue+"Stackable");
+		} else {
+			lore.add(CivColor.LightGray+"Not Stackable");
 		}
 		
 		this.setLore(stack, lore);
@@ -218,7 +220,7 @@ public class BonusGoodie extends LoreItem {
 		// if in an item frame
 		if (this.frameStore != null) {
 			try {
-				if (frameStore.isEmpty() || !isItemStackOurs(frameStore.getItem())) {
+				if (frameStore.isEmpty()) {
 					CivLog.warning("Found frame, but item was wrong, trying to recover by spawning item.");
 					
 					ItemStack stack = ItemManager.createItemStack(this.config.material, 1, (short) this.config.material_data);
@@ -578,7 +580,7 @@ public class BonusGoodie extends LoreItem {
 			this.item = null;
 			
 			try {
-				if (frameStore.isEmpty() || !isItemStackOurs(frameStore.getItem())) {
+				if (frameStore.isEmpty()) {
 					//Couldn't find good, deleting...
 					CivLog.warning("Found frame, but item was wrong:"+frameUID);
 					deleteAndReset();
@@ -604,6 +606,8 @@ public class BonusGoodie extends LoreItem {
 			holderStore = null;
 			
 			if (!this.isItemStackOurs(this.item.getItemStack())) {
+
+				CivLog.warning("ITEM STOLEN...deleting goodie");
 				deleteAndReset();
 				return;
 			}

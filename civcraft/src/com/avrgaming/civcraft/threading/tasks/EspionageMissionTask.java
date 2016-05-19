@@ -32,6 +32,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
+import com.avrgaming.civcraft.structure.ScoutShip;
 import com.avrgaming.civcraft.structure.ScoutTower;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.threading.TaskMaster;
@@ -77,7 +78,7 @@ public class EspionageMissionTask implements Runnable {
 			return;
 		}
 		Resident resident = CivGlobal.getResident(player);	
-		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Mission Started.");
+		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+CivSettings.localize.localizedString("espionage_missionStarted"));
 			
 		while (secondsLeft > 0) {
 	
@@ -116,7 +117,7 @@ public class EspionageMissionTask implements Runnable {
 						continue;
 					}
 					
-					if (struct instanceof ScoutTower) {
+					if (struct instanceof ScoutTower || struct instanceof ScoutShip) {
 						if (bcoord.distance(struct.getCenterLocation()) < range) {
 							amount += exposePerScout;							
 						}
@@ -126,19 +127,17 @@ public class EspionageMissionTask implements Runnable {
 				
 				/* Process exposure penalities */
 				if (target.processSpyExposure(resident)) {
-					CivMessage.global(CivColor.Yellow+"INTERNATIONAL INCIDENT!"+CivColor.White+" "+
-							player.getName()+" was caught trying to perform a "+mission.name+" spy mission in "+
-							target.getName()+"!");
-					CivMessage.send(player, CivColor.Rose+"You've been compromised! (Exposure got too high) Spy unit was destroyed!");
+					CivMessage.global(CivColor.Yellow+CivSettings.localize.localizedString("var_espionage_missionFailedAlert",(CivColor.White+player.getName()),mission.name,target.getName()));
+					CivMessage.send(player, CivColor.Rose+CivSettings.localize.localizedString("espionage_missionFailed"));
 					Unit.removeUnit(player);
 					resident.setPerformingMission(false);
 					return;
 				}
 				
 				if ((secondsLeft % 15) == 0) {
-					CivMessage.send(player, CivColor.Yellow+CivColor.BOLD+""+secondsLeft+" seconds remain");
+					CivMessage.send(player, CivColor.Yellow+CivColor.BOLD+CivSettings.localize.localizedString("var_espionage_secondsRemain",secondsLeft));
 				} else if (secondsLeft < 15) {
-					CivMessage.send(player, CivColor.Yellow+CivColor.BOLD+""+secondsLeft+" seconds remain");
+					CivMessage.send(player, CivColor.Yellow+CivColor.BOLD+CivSettings.localize.localizedString("var_espionage_secondsRemain",secondsLeft));
 				}
 				
 			}
@@ -147,7 +146,7 @@ public class EspionageMissionTask implements Runnable {
 			CultureChunk cc = CivGlobal.getCultureChunk(coord);
 			
 			if (cc == null || cc.getCiv() != target.getCiv()) {
-				CivMessage.sendError(player, "You've left the civ borders. Mission Failed.");
+				CivMessage.sendError(player, CivSettings.localize.localizedString("espionage_missionAborted"));
 				return;
 			}
 			

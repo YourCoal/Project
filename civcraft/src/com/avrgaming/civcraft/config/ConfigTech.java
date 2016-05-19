@@ -28,6 +28,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Civilization;
+import com.avrgaming.civcraft.object.Town;
 
 public class ConfigTech {
 	public String id;
@@ -35,6 +36,7 @@ public class ConfigTech {
 	public double beaker_cost;
 	public double cost;
 	public String require_techs;
+	public int era;
 	public Integer points;
 	
 	public static void loadConfig(FileConfiguration cfg, Map<String, ConfigTech> tech_maps) {
@@ -47,12 +49,44 @@ public class ConfigTech {
 			tech.name = (String)confTech.get("name");
 			tech.beaker_cost = (Double)confTech.get("beaker_cost");
 			tech.cost = (Double)confTech.get("cost");
+			tech.era = (Integer)confTech.get("era");
 			tech.require_techs = (String)confTech.get("require_techs");
 			tech.points = (Integer)confTech.get("points");
 			
 			tech_maps.put(tech.id, tech);
 		}
-		CivLog.info("Loaded "+tech_maps.size()+" technologies.");		
+		CivLog.info("Loaded "+tech_maps.size()+" technologies.");
+	}
+	
+	public static double eraRate(Civilization civ) {
+		double rate = 0.0;
+		double era = (CivGlobal.highestCivEra-1) - civ.getCurrentEra();
+		if (era > 0) {
+			rate = (era/10);
+		}
+		return rate;
+	}
+	
+	public double getAdjustedBeakerCost(Civilization civ) {
+		double rate = 1.0;
+		rate -= eraRate(civ);
+		return Math.floor(this.beaker_cost*Math.max(rate, .01));
+	}
+	
+	public double getAdjustedTechCost(Civilization civ) {
+		double rate = 1.0;
+		
+		for (Town town : civ.getTowns())
+		{
+			if (town.getBuffManager().hasBuff("buff_profit_sharing"))
+			{
+				rate -= town.getBuffManager().getEffectiveDouble("buff_profit_sharing");
+			}
+		}
+		rate = Math.max(rate, 0.75);
+		rate -= eraRate(civ);
+		
+		return Math.floor(this.cost * Math.max(rate, .01));
 	}
 	
 	

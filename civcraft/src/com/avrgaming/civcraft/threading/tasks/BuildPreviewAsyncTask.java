@@ -72,7 +72,7 @@ public class BuildPreviewAsyncTask extends CivAsyncTask {
 		}
 		return player;
 	}
-			
+		
 	@Override
 	public void run() {
 		
@@ -95,7 +95,7 @@ public class BuildPreviewAsyncTask extends CivAsyncTask {
 							}
 							
 							ItemManager.sendBlockChange(getPlayer(), b.getLocation(), ItemManager.getId(Material.GLASS), 5);
-							resident.previewUndo.put(new BlockCoord(b.getLocation()), 
+							resident.previewUndo.put(new BlockCoord(b.getLocation()),
 									new SimpleBlock(ItemManager.getId(b), ItemManager.getData(b)));
 							count++;			
 						} finally {

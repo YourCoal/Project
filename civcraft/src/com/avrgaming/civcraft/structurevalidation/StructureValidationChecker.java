@@ -17,9 +17,6 @@ public class StructureValidationChecker implements Runnable {
 		Iterator<Entry<BlockCoord, Structure>> structIter = CivGlobal.getStructureIterator();
 		while (structIter.hasNext()) {
 			Structure struct = structIter.next().getValue();
-			if (struct.getCiv().isAdminCiv()) {
-				continue;
-			}
 			
 			if (War.isWarTime()) {
 				/* Don't do any work once it's war time. */
@@ -35,7 +32,7 @@ public class StructureValidationChecker implements Runnable {
 			}
 			
 			try {
-				CivLog.warning("Doing a structure validate...");
+				CivLog.warning("Doing a structure validate... "+struct.getDisplayName());
 				struct.validate(null);
 			} catch (CivException e) {
 				e.printStackTrace();

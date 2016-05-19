@@ -73,6 +73,7 @@ public class Civilization extends SQLObject {
 	
 	private int color;
 	private int daysInDebt = 0;
+	private int currentEra = 0;
 	private double incomeTaxRate;
 	private double sciencePercentage;
 	private ConfigTech researchTech = null;
@@ -116,11 +117,13 @@ public class Civilization extends SQLObject {
 	public boolean scoutDebug = false;
 	public String scoutDebugPlayer = null;
 	
+	public String messageOfTheDay = "";
+	
 	private LinkedList<WarCamp> warCamps = new LinkedList<WarCamp>();
 	
 	public Civilization(String name, String capitolName, Resident leader) throws InvalidNameException {
 		this.setName(name);
-		this.leaderName = leader.getName();
+		this.leaderName = leader.getUUID().toString();
 		this.setCapitolName(capitolName);
 		
 		this.government = CivSettings.governments.get("gov_tribalism");		
@@ -156,6 +159,7 @@ public class Civilization extends SQLObject {
 					"`coins` double DEFAULT 0,"+
 					"`daysInDebt` int NOT NULL DEFAULT '0',"+
 					"`techs` mediumtext DEFAULT NULL," +
+					"`motd` mediumtext DEFAULT NULL,"+
 					"`researchTech` mediumtext DEFAULT NULL,"+
 					"`researchProgress` float NOT NULL DEFAULT 0,"+
 					"`researched` mediumtext DEFAULT NULL, "+
@@ -181,6 +185,7 @@ public class Civilization extends SQLObject {
 			SQL.makeCol("conquered", "booelan", TABLE_NAME);
 			SQL.makeCol("conquered_date", "long", TABLE_NAME);
 			SQL.makeCol("created_date", "long", TABLE_NAME);
+			SQL.makeCol("motd", "mediumtext", TABLE_NAME);
 		}
 	}
 
@@ -188,12 +193,10 @@ public class Civilization extends SQLObject {
 	public void load(ResultSet rs) throws SQLException, InvalidNameException {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));		
-
-		if (CivGlobal.useUUID) {
-			leaderName = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("leaderName"))).getName();
-		} else {
-			leaderName = rs.getString("leaderName");		
-		}
+		String resUUID = rs.getString("leaderName");
+//		Resident res = CivGlobal.getResidentViaUUID(UUID.fromString(resUUID));
+		leaderName = resUUID;
+		
 		
 		capitolName = rs.getString("capitolName");
 		setLeaderGroupName(rs.getString("leaderGroupName"));
@@ -223,6 +226,13 @@ public class Civilization extends SQLObject {
 			this.conquer_date = new Date(ctime);
 		}
 		
+		String motd = rs.getString("motd");
+		if (motd == null || motd == "") {
+			this.messageOfTheDay = null; //Forever in the past.
+		} else {
+			this.messageOfTheDay = motd;
+		}
+		
 		ctime = rs.getLong("created_date");
 		if (ctime == null || ctime == 0) {
 			this.created_date = new Date(0); //Forever in the past.
@@ -233,6 +243,13 @@ public class Civilization extends SQLObject {
 		this.setTreasury(new EconObject(this));
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
 		this.getTreasury().setDebt(rs.getDouble("debt"));
+
+		for (ConfigTech tech : this.getTechs())
+		{
+			if (tech.era > this.getCurrentEra()) {
+				this.setCurrentEra(tech.era);
+			}
+		}
 	}
 
 	@Override
@@ -244,11 +261,8 @@ public class Civilization extends SQLObject {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-		if (CivGlobal.useUUID) {
 			hashmap.put("leaderName", this.getLeader().getUUIDString());
-		} else {
-			hashmap.put("leaderName", leaderName);			
-		}
+		
 		hashmap.put("capitolName", this.capitolName);
 		hashmap.put("leaderGroupName", this.getLeaderGroupName());
 		hashmap.put("advisersGroupName", this.getAdvisersGroupName());
@@ -274,6 +288,12 @@ public class Civilization extends SQLObject {
 			hashmap.put("conquered_date", this.conquer_date.getTime());
 		} else {
 			hashmap.put("conquered_date", null);
+		}
+		
+		if (this.messageOfTheDay != null) {
+			hashmap.put("motd", this.messageOfTheDay);
+		} else {
+			hashmap.put("motd", null);
 		}
 		
 		if (this.created_date != null) {
@@ -361,6 +381,10 @@ public class Civilization extends SQLObject {
 	}
 	
 	public void addTech(ConfigTech t) {
+		if (t.era > this.getCurrentEra()) {
+			this.setCurrentEra(t.era);
+		}
+		
 		CivGlobal.researchedTechs.add(t.id.toLowerCase());
 		techs.put(t.id, t);
 		
@@ -402,13 +426,21 @@ public class Civilization extends SQLObject {
 	public void setColor(int color) {
 		this.color = color;
 	}
+	
+	public void setMotd(String message) {
+		this.messageOfTheDay = message;
+	}
+	
+	public String MOTD() {
+		return this.messageOfTheDay;
+	}
 
 	public Resident getLeader() {
-		return CivGlobal.getResident(leaderName);
+		return CivGlobal.getResidentViaUUID(UUID.fromString(leaderName));
 	}
 
 	public void setLeader(Resident leader) {
-		this.leaderName = leader.getName();
+		this.leaderName = leader.getUUID().toString();
 	}
 
 	@Override
@@ -495,21 +527,21 @@ public class Civilization extends SQLObject {
 		 */
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 		if (craftMat == null || !craftMat.hasComponent("FoundCivilization")) {
-			throw new CivException("You must be holding an item that can found a Civilization.");
+			throw new CivException(CivSettings.localize.localizedString("civ_found_notItem"));
 		}
 		
 		Civilization existCiv = CivGlobal.getCiv(name);
 		if (existCiv != null) {
-			throw new CivException("A Civilization named "+name+" already exists!");
+			throw new CivException(CivSettings.localize.localizedString("var_civ_found_civExists",name));
 		}
 		
 		Town existTown = CivGlobal.getTown(capitolName);
 		if (existTown != null) {
-			throw new CivException("A town named "+capitolName+" already exists!");
+			throw new CivException(CivSettings.localize.localizedString("var_civ_found_townExists",capitolName));
 		}
 		
 		if (resident.hasCamp()) {
-			throw new CivException("You must first leave your camp before founding a civilization.");
+			throw new CivException(CivSettings.localize.localizedString("civ_found_mustleavecamp"));
 		}
 		
 		//Test that we are not too close to another civ
@@ -518,13 +550,15 @@ public class Civilization extends SQLObject {
 			ChunkCoord foundLocation = new ChunkCoord(loc);
 			
 			for (CultureChunk cc : CivGlobal.getCultureChunks()) {
-				if (foundLocation.distance(cc.getChunkCoord()) <= min_distance) {
-					throw new CivException("Too close to the culture of "+cc.getCiv().getName()+", cannot found civilization here.");
+				double dist = foundLocation.distance(cc.getChunkCoord());
+				if (dist <= min_distance) {
+					DecimalFormat df = new DecimalFormat();
+					throw new CivException(CivSettings.localize.localizedString("var_civ_found_errorTooClose1",cc.getCiv().getName(),df.format(dist),min_distance));
 				}
 			}	
 		} catch (InvalidConfiguration e1) {
 			e1.printStackTrace();
-			throw new CivException("Internal configuration exception.");
+			throw new CivException(CivSettings.localize.localizedString("internalException"));
 		}
 		
 		try {
@@ -535,8 +569,7 @@ public class Civilization extends SQLObject {
 				CivLog.error("Caught exception:"+e.getMessage()+" error code:"+e.getErrorCode());
 				if (e.getMessage().contains("Duplicate entry")) {
 					SQL.deleteByName(name, TABLE_NAME);
-					throw new CivException("We detected and internal inconsistency with the database. Try founding your civ again,"+
-				"if the problem persists, contact an admin.");
+					throw new CivException(CivSettings.localize.localizedString("civ_found_databaseException"));
 				}
 			}
 			
@@ -564,13 +597,13 @@ public class Civilization extends SQLObject {
 			CivGlobal.addCiv(civ);
 			ItemStack newStack = new ItemStack(Material.AIR);
 			player.setItemInHand(newStack);
-			CivMessage.global("The Civilization of "+civ.getName()+" has been founded! "+civ.getCapitolName()+" is it's capitol!");
+			CivMessage.globalTitle(CivSettings.localize.localizedString("var_civ_found_successTitle",civ.getName()),CivSettings.localize.localizedString("var_civ_found_successSubTitle",civ.getCapitolName(),player.getName()));
 			
 		} catch (InvalidNameException e) {
-			throw new CivException("The name of "+name+" is invalid, please choose another.");
+			throw new CivException(CivSettings.localize.localizedString("var_civ_found_invalidName",name));
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new CivException("Internal SQL Error.");
+			throw new CivException(CivSettings.localize.localizedString("internalDatabaseException"));
 		}
 		
 	}
@@ -815,7 +848,11 @@ public class Civilization extends SQLObject {
 	public double payUpkeep() throws InvalidConfiguration, CivException {
 		double upkeep = 0;
 		this.lastUpkeepPaidMap.clear();
-		
+
+		if (this.isAdminCiv())
+		{
+			return 0;
+		}
 		Town capitol = this.getTown(capitolName);
 		if (capitol == null) {
 			throw new CivException("Civilization found with no capitol!");
@@ -861,7 +898,7 @@ public class Civilization extends SQLObject {
 	}
 	
 	public void warnDebt() {
-		CivMessage.global(this.getName()+" is in "+this.getTreasury().getDebt()+" coins of debt!");
+		CivMessage.global(CivSettings.localize.localizedString("var_civ_debtAnnounce",this.getName(),this.getTreasury().getDebt(),CivSettings.CURRENCY_NAME));
 	}
 	
 	
@@ -871,7 +908,7 @@ public class Civilization extends SQLObject {
 		if (daysInDebt >= CivSettings.CIV_DEBT_GRACE_DAYS) {
 			if (daysInDebt >= CivSettings.CIV_DEBT_SELL_DAYS) {
 				if (daysInDebt >= CivSettings.CIV_DEBT_TOWN_SELL_DAYS) {
-					CivMessage.global(this.getName()+" and its towns have fell into ruin!");
+					CivMessage.global(CivSettings.localize.localizedString("var_civ_fellIntoRuin",this.getName()));
 					try {
 						this.delete();
 						return;
@@ -883,7 +920,7 @@ public class Civilization extends SQLObject {
 		}
 		
 		// warn sell..
-		CivMessage.global(this.getName()+" is in debt! "+getDaysLeftWarning());
+		CivMessage.global(CivSettings.localize.localizedString("var_civ_debtGlobalAnnounce",this.getName())+" "+getDaysLeftWarning());
 		this.save();
 		return;
 	}
@@ -891,16 +928,16 @@ public class Civilization extends SQLObject {
 	public String getDaysLeftWarning() {
 		
 		if (daysInDebt < CivSettings.CIV_DEBT_GRACE_DAYS) {
-			return ""+(CivSettings.CIV_DEBT_GRACE_DAYS-daysInDebt)+" days until civ goes up for sale.";
+			return CivSettings.localize.localizedString("var_civ_daystillSaleAnnounce",(CivSettings.CIV_DEBT_GRACE_DAYS-daysInDebt));
 		}
 		
 		if (daysInDebt < CivSettings.CIV_DEBT_SELL_DAYS) {
-			return this.getName()+" is up for sale, "+(CivSettings.CIV_DEBT_SELL_DAYS-daysInDebt)+" days until it's towns go up for sale.";
+			return CivSettings.localize.localizedString("var_civ_isForSale1",this.getName(),(CivSettings.CIV_DEBT_SELL_DAYS-daysInDebt));
 			
 		}
 				
 		if (daysInDebt < CivSettings.CIV_DEBT_TOWN_SELL_DAYS) {
-			return this.getName()+" is up for sale, "+(CivSettings.CIV_DEBT_TOWN_SELL_DAYS-daysInDebt)+" days until the civ is deleted.";		
+			return CivSettings.localize.localizedString("var_civ_isForSale2",this.getName(),(CivSettings.CIV_DEBT_TOWN_SELL_DAYS-daysInDebt));		
 		}
 		
 		return "";
@@ -924,7 +961,7 @@ public class Civilization extends SQLObject {
 		//If we couldn't find a close color withing the max retries, pick any old color as a failsafe.
 		if (found == false) {
 			c = rand.nextInt();
-			System.out.println("WARNING: color exhaustion? couldn't find a free color within tolerance");
+			System.out.println(CivSettings.localize.localizedString("civ_colorExhaustion"));
 		}
 		
 		return c;
@@ -1003,13 +1040,13 @@ public class Civilization extends SQLObject {
 		
 		if (beakers == 0) {
 			return;
-		}	
+		}
 		
 		TaskMaster.asyncTask(new UpdateTechBar(this), 0);
 		setResearchProgress(getResearchProgress() + beakers);
 		
-		if (getResearchProgress() >= getResearchTech().beaker_cost) {
-			CivMessage.sendCiv(this, "Our civilization has discovered "+getResearchTech().name+"!");
+		if (getResearchProgress() >= getResearchTech().getAdjustedBeakerCost(this)) {
+			CivMessage.sendCiv(this, CivSettings.localize.localizedString("var_civ_research_Discovery",getResearchTech().name));
 			this.addTech(this.getResearchTech());
 			this.setResearchProgress(0);
 			this.setResearchTech(null);
@@ -1019,11 +1056,11 @@ public class Civilization extends SQLObject {
 			return;
 		}
 		
-		int percentageComplete = (int)((getResearchProgress() / this.getResearchTech().beaker_cost)*100);
+		int percentageComplete = (int)((getResearchProgress() / this.getResearchTech().getAdjustedBeakerCost(this))*100);
 		if ((percentageComplete % 10) == 0) {
 			
 			if (percentageComplete != lastTechPercentage) {
-				CivMessage.sendCiv(this, "Our civilizations research progress on "+getResearchTech().name+" is now "+percentageComplete+"% completed!");
+				CivMessage.sendCiv(this, CivSettings.localize.localizedString("var_civ_research_currentProgress",getResearchTech().name,percentageComplete));
 				lastTechPercentage = percentageComplete;
 			}
 			
@@ -1035,26 +1072,26 @@ public class Civilization extends SQLObject {
 
 	public void startTechnologyResearch(ConfigTech tech) throws CivException {		
 		if (this.getResearchTech() != null) {
-			throw new CivException("Current researching "+this.getResearchTech().name+". " +
-					"If you want to change your focus, use /civ research switch instead.");
+			throw new CivException(CivSettings.localize.localizedString("var_civ_research_switchAlert1",this.getResearchTech().name));
 		}
+		double cost = tech.getAdjustedTechCost(this);
 		
-		if (!this.getTreasury().hasEnough(tech.cost)) {
-			throw new CivException("Our Civilization's treasury does have the required "+tech.cost+" coins to start this research.");
+		if (!this.getTreasury().hasEnough(cost)) {
+			throw new CivException(CivSettings.localize.localizedString("var_civ_research_notEnoughMoney",cost,CivSettings.CURRENCY_NAME));
 		}
 		
 		if (this.hasTech(tech.id)) {
-			throw new CivException("You already have this technology.");
+			throw new CivException(CivSettings.localize.localizedString("civ_research_alreadyDone"));
 		}
 		
 		if (!tech.isAvailable(this)) {
-			throw new CivException("You do not have the required technology to research this technology.");
+			throw new CivException(CivSettings.localize.localizedString("civ_research_missingRequirements"));
 		}
 		
 		this.setResearchTech(tech);
 		this.setResearchProgress(0.0);
 	
-		this.getTreasury().withdraw(tech.cost);
+		this.getTreasury().withdraw(cost);
 		TaskMaster.asyncTask(new UpdateTechBar(this),0);
 	}
 
@@ -1075,26 +1112,21 @@ public class Civilization extends SQLObject {
 	}
 
 	public void changeGovernment(Civilization civ, ConfigGovernment gov, boolean force) throws CivException {
-		changeGovernment(civ, gov, force, 24);
-	}
-	
-	//TODO make hours of subvert government different.
-	public void changeGovernment(Civilization civ, ConfigGovernment gov, boolean force, int hours) throws CivException {
 		if (civ.getGovernment() == gov && !force) {
-			throw new CivException("You are already a "+gov.displayName);
+			throw new CivException(CivSettings.localize.localizedString("var_civ_gov_already",gov.displayName));
 		}
 		
 		if (civ.getGovernment().id.equals("gov_anarchy")) {
-			throw new CivException("You are already in anarchy, you cannot switch governments.");
+			throw new CivException(CivSettings.localize.localizedString("civ_gov_errorAnarchy"));
 		}
 		
 		boolean noanarchy = false;
-		for (Town t : this.getTowns()) {
-			if (t.getBuffManager().hasBuff("buff_noanarchy")) {
-				noanarchy = true;
-				break;
-			}
-		}
+//		for (Town t : this.getTowns()) {
+//			if (t.getBuffManager().hasBuff("buff_noanarchy")) {
+//				noanarchy = true;
+//				break;
+//			}
+//		}
 		
 		if (!noanarchy) {
 			String key = "changegov_"+this.getId();
@@ -1104,10 +1136,10 @@ public class Civilization extends SQLObject {
 			
 			// Set the town's government to anarchy in the meantime
 			civ.setGovernment("gov_anarchy");
-			CivMessage.global(this.getName()+" has fallen into anarchy!");
+			CivMessage.global(CivSettings.localize.localizedString("var_civ_gov_anachyAlert",this.getName()));
 		} else {
 			civ.setGovernment(gov.id);
-			CivMessage.global(civ.getName()+" has emerged from anarchy and has adopted "+CivSettings.governments.get(gov.id).displayName);
+			CivMessage.global(CivSettings.localize.localizedString("var_civ_gov_success",civ.getName(),CivSettings.governments.get(gov.id).displayName));
 		}
 		
 		
@@ -1201,7 +1233,7 @@ public class Civilization extends SQLObject {
 	public void depositFromResident(Resident resident, Double amount) throws CivException, SQLException {
 
 		if (resident.getTreasury().hasEnough(amount) == false) {
-			throw new CivException("You do not have enough.");
+			throw new CivException(CivSettings.localize.localizedString("var_civ_deposit_NotEnough",CivSettings.CURRENCY_NAME));
 		}
 		
 		if (this.getTreasury().inDebt()) {
@@ -1217,7 +1249,7 @@ public class Civilization extends SQLObject {
 			
 			if (this.getTreasury().inDebt() == false) {
 				this.daysInDebt = 0;
-				CivMessage.global(this.getName()+" is no longer in debt.");				
+				CivMessage.global(CivSettings.localize.localizedString("var_civ_deposit_cleardebt",this.getName()));				
 			}
 		} else {
 			this.getTreasury().deposit(amount);
@@ -1263,6 +1295,9 @@ public class Civilization extends SQLObject {
 		}
 		for (Relation relation : deletedRelations) {
 			try {
+				if (relation.getStatus() == Relation.Status.WAR) {
+					relation.setStatus(Relation.Status.NEUTRAL);
+				}
 				relation.delete();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1400,7 +1435,7 @@ public class Civilization extends SQLObject {
 	public void buyCiv(Civilization civ) throws CivException {
 		
 		if (!this.getTreasury().hasEnough(civ.getTotalSalePrice())) {
-			throw new CivException("Your civilization treasury does not have enough money.");
+			throw new CivException(CivSettings.localize.localizedString("civ_buy_notEnough")+" "+CivSettings.CURRENCY_NAME);
 		}
 		
 		this.getTreasury().withdraw(civ.getTotalSalePrice());
@@ -1475,7 +1510,7 @@ public class Civilization extends SQLObject {
 	public void buyTown(Town town) throws CivException {
 
 		if (!this.getTreasury().hasEnough(town.getForSalePrice())) {
-			throw new CivException("Your civilization treasury does not have enough money.");
+			throw new CivException(CivSettings.localize.localizedString("civ_buy_notEnough")+" "+CivSettings.CURRENCY_NAME);
 		}
 		
 		this.getTreasury().withdraw(town.getForSalePrice());
@@ -1485,7 +1520,7 @@ public class Civilization extends SQLObject {
 		town.setDaysInDebt(0);
 		town.save();
 		CivGlobal.processCulture();
-		CivMessage.global("The town of "+this.getName()+" has been bought by "+this.getName());
+		CivMessage.global(CivSettings.localize.localizedString("var_civ_buyTown_Success1",this.getName(),this.getName()));
 
 	}
 	
@@ -1553,7 +1588,7 @@ public class Civilization extends SQLObject {
 			e.printStackTrace();
 		}
 		
-		CivMessage.global("The Civilization of "+this.getName()+" has capitualted all of its old towns can no longer revolt.");	
+		CivMessage.global(CivSettings.localize.localizedString("var_civ_capitulate_Success1",this.getName()));	
 	}
 
 	/*
@@ -1623,13 +1658,13 @@ public class Civilization extends SQLObject {
 	 }
 
 	public void declareAsWinner(EndGameCondition end) {
-		String out = "The Civilization of "+this.getName()+" has acheived a "+end.getVictoryName()+" victory!";
+		String out = CivSettings.localize.localizedString("var_civ_victory_end1",this.getName(),end.getVictoryName());
 		CivGlobal.getSessionDB().add("endgame:winningCiv", out, 0, 0, 0);
 		CivMessage.global(out);
 	}
 
 	public void winConditionWarning(EndGameCondition end, int daysLeft) {
-		CivMessage.global("The Civilization of "+this.getName()+" is close to achieving a "+end.getVictoryName()+" victory! Only "+daysLeft+" days left.");
+		CivMessage.global(CivSettings.localize.localizedString("var_civ_victory_end2",this.getName(),end.getVictoryName(),daysLeft));
 	}
 
 	public double getPercentageConquered() {
@@ -1638,14 +1673,14 @@ public class Civilization extends SQLObject {
 		int conqueredCivs = 1; /* Your civ already counts */
 		
 		for (Civilization civ : CivGlobal.getConqueredCivs()) {
-			Town capital = CivGlobal.getTown(civ.getCapitolName());
-			if (capital == null) {
+			Town capitol = CivGlobal.getTown(civ.getCapitolName());
+			if (capitol == null) {
 				/* Invalid civ? */
 				totalCivs--;
 				continue;
 			}
 			
-			if (capital.getCiv() == this) {
+			if (capitol.getCiv() == this) {
 				conqueredCivs++;
 			}
 		}
@@ -1698,12 +1733,12 @@ public class Civilization extends SQLObject {
 		
 		Civilization other = CivGlobal.getCiv(name);
 		if (other != null) {
-			throw new CivException("Already another civ with this name");
+			throw new CivException(CivSettings.localize.localizedString("civ_rename_errorExists"));
 		}
 		
 		other = CivGlobal.getConqueredCiv(name);
 		if (other != null) {
-			throw new CivException("Already another civ with this name");
+			throw new CivException(CivSettings.localize.localizedString("civ_rename_errorExists"));
 		}
 		
 		if (this.conquered) {
@@ -1722,7 +1757,7 @@ public class Civilization extends SQLObject {
 			CivGlobal.addCiv(this);
 		}
 		
-		CivMessage.global("The civilization "+oldName+" is now called "+this.getName());
+		CivMessage.global(CivSettings.localize.localizedString("var_civ_rename_success1",oldName,this.getName()));
 	}
 
 	public ArrayList<RespawnLocationHolder> getAvailableRespawnables() {
@@ -1783,10 +1818,10 @@ public class Civilization extends SQLObject {
 			int min_gift_age = CivSettings.getInteger(CivSettings.civConfig, "civ.min_gift_age");
 		
 			if (!DateUtil.isAfterDays(created_date, min_gift_age)) {
-				throw new CivException(this.getName()+" cannot participate in gifting/merging civs or towns until it is "+min_gift_age+" days old.");
+				throw new CivException(CivSettings.localize.localizedString("var_civ_gift_tooyoung1",this.getName(),min_gift_age));
 			}
 		} catch (InvalidConfiguration e) {
-			throw new CivException("Configuration error.");
+			throw new CivException(CivSettings.localize.localizedString("internalException"));
 		}			
 	}
 
@@ -1803,7 +1838,7 @@ public class Civilization extends SQLObject {
 		
 		for (Relation relation : removeUs) {
 			this.getDiplomacyManager().deleteRelation(relation);
-			CivMessage.global(this.getName()+" was in debt too long and can no longer maintain it's aggressive war with "+relation.getOtherCiv().getName()+".");
+			CivMessage.global(CivSettings.localize.localizedString("var_civ_debt_endWar",this.getName(),relation.getOtherCiv().getName()));
 		}
 		
 	}
@@ -1854,6 +1889,19 @@ public class Civilization extends SQLObject {
 		
 		ItemStack stack = ItemManager.spawnPlayerHead(leader, message+" ("+leader+")");
 		return stack;
+	}
+
+	public int getCurrentEra() {
+		return currentEra;
+	}
+
+	public void setCurrentEra(int currentEra) {
+		this.currentEra = currentEra;
+		
+		if (this.currentEra > CivGlobal.highestCivEra && !this.isAdminCiv())
+		{
+			CivGlobal.setCurrentEra(this.currentEra, this);
+		}
 	}
 	
 }

@@ -19,6 +19,7 @@
 package com.avrgaming.civcraft.command.resident;
 
 import com.avrgaming.civcraft.command.CommandBase;
+import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
@@ -28,15 +29,16 @@ public class ResidentToggleCommand extends CommandBase {
 	@Override
 	public void init() {
 		command = "/resident toggle";
-		displayName = "Resident Toggle";	
+		displayName = CivSettings.localize.localizedString("cmd_res_toggle_name");	
 		
-		commands.put("map", "Toggles a ASCII map which shows town locations of claimed town chunks.");
-		commands.put("info", "Toggles a message displayed as you enter each culture chunk. Tells you what it would generate the town.");
-		commands.put("showtown", "Toggles displaying of [Town] messages.");
-		commands.put("showciv", "Toggles displaying of [Civ] messages.");
-		commands.put("showscout", "Toggles displaying of scout tower messages.");
-		commands.put("combatinfo", "Toggles displaying of combat information.");
-		commands.put("itemdrops", "Toggles displaying of item drops.");
+		commands.put("map", CivSettings.localize.localizedString("cmd_res_toggle_mapDesc"));
+		commands.put("info", CivSettings.localize.localizedString("cmd_res_toggle_infoDesc"));
+		commands.put("showtown", CivSettings.localize.localizedString("cmd_res_toggle_showtownDesc"));
+		commands.put("showciv", CivSettings.localize.localizedString("cmd_res_toggle_showcivDesc"));
+		commands.put("showscout", CivSettings.localize.localizedString("cmd_res_toggle_showscoutDesc"));
+		commands.put("combatinfo", CivSettings.localize.localizedString("cmd_res_toggle_combatinfoDesc"));
+		commands.put("itemdrops", CivSettings.localize.localizedString("cmd_res_toggle_itemdropsDesc"));
+		commands.put("titles", CivSettings.localize.localizedString("cmd_res_toggle_titleAPIDesc"));
 		
 	}
 	public void itemdrops_cmd() throws CivException {
@@ -63,6 +65,10 @@ public class ResidentToggleCommand extends CommandBase {
 	}
 	
 	public void combatinfo_cmd() throws CivException {
+		toggle();
+	}
+	
+	public void titles_cmd() throws CivException {
 		toggle();
 	}
 	
@@ -95,15 +101,19 @@ public class ResidentToggleCommand extends CommandBase {
 			resident.setCombatInfo(!resident.isCombatInfo());
 			result = resident.isCombatInfo();
 			break;
+		case "titles":
+			resident.setTitleAPI(!resident.isTitleAPI());
+			result = resident.isTitleAPI();
+			break;
 		case "itemdrops":
 			resident.toggleItemMode();
 			return;
 		default:
-			throw new CivException("Unknown flag "+args[0]);
+			throw new CivException(CivSettings.localize.localizedString("cmd_unkownFlag")+" "+args[0]);
 		}
 		
 		resident.save();
-		CivMessage.sendSuccess(sender, "Toggled "+args[0]+" to "+result);
+		CivMessage.sendSuccess(sender, CivSettings.localize.localizedString("cmd_toggled")+" "+args[0]+" -> "+result);
 	}
 
 	@Override

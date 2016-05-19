@@ -29,6 +29,7 @@ import java.util.List;
 import com.avrgaming.civcraft.camp.WarCamp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.endgame.EndGameCondition;
+import com.avrgaming.civcraft.event.DisableTeleportEvent;
 import com.avrgaming.civcraft.event.EventTimer;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivGlobal;
@@ -37,12 +38,10 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Relation;
 import com.avrgaming.civcraft.object.Relation.Status;
-import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.siege.Cannon;
 import com.avrgaming.civcraft.util.CivColor;
-import com.avrgaming.global.perks.PlatinumManager;
 
 public class War {
 
@@ -71,14 +70,6 @@ public class War {
 		/* Save in the SessionDB just in case the server goes down. */
 		String key = "capturedCiv";
 		String value = defeated.getName()+":"+master.getId();
-		
-		for (Town town : master.getTowns()) {
-			for (Resident resident : town.getResidents()) {
-				PlatinumManager.givePlatinum(resident, 
-						CivSettings.platinumRewards.get("winningWar").amount, 
-						"Spoils to the victor! You've earned %d");	
-			}
-		}
 		
 		EndGameCondition.onCivilizationWarDefeat(defeated);
 		CivGlobal.getSessionDB().add(key, value, master.getId(), 0, 0);
@@ -140,31 +131,63 @@ public class War {
 	public static boolean isWarTime() {
 		return warTime;
 	}
+	
+	public static boolean hasWars() {
+		
+		for (Civilization civ : CivGlobal.getCivs()) {
+			for (Relation relation : civ.getDiplomacyManager().getRelations()) {
+				if (relation.getStatus().equals(Status.WAR)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * @param warTime the warTime to set
 	 */
 	public static void setWarTime(boolean warTime) {
 		
+		if (warTime == true && !War.hasWars()) {
+
+			CivMessage.globalHeading(CivColor.BOLD+CivSettings.localize.localizedString("war_wartimeSkippedHeading"));
+			try {
+				DisableTeleportEvent.enableTeleport();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return;
+		} else if (warTime == false && !War.isWarTime()) {
+			
+		}
+		
 		if (warTime == false) {
+			try {
+				DisableTeleportEvent.enableTeleport();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			/* War time has ended. */
 			War.setStart(null);
 			War.setEnd(null);
 			War.restoreAllTowns();
-			War.repositionPlayers("You've been teleported back to your town hall. WarTime ended and you were in enemy territory.");
+			War.repositionPlayers(CivSettings.localize.localizedString("war_repositionMessage"));
 			War.processDefeated();
 		
 			CivGlobal.growthEnabled = true;
 			CivGlobal.trommelsEnabled = true;
+			CivGlobal.quarriesEnabled = true;
 			CivGlobal.tradeEnabled = true;
+			CivGlobal.fisheryEnabled = true;
 			
 			/* Delete any wartime file used to prevent reboots. */
 			File file = new File("wartime");
 			file.delete();
 		
-			CivMessage.globalHeading(CivColor.BOLD+"WarTime Has Ended");
+			CivMessage.globalTitle(CivColor.Yellow+CivColor.BOLD+CivSettings.localize.localizedString("war_wartimeEndedHeading"),CivSettings.localize.localizedString("var_war_mostLethal",WarStats.getTopKiller()));
 			/* display some stats. */
-			CivMessage.global("Most Lethal: "+WarStats.getTopKiller());
 			List<String> civs = WarStats.getCapturedCivs();
 			if (civs.size() > 0) {
 				for (String str : civs) {
@@ -178,10 +201,25 @@ public class War {
 			}
 			
 		} else {
+			try {
+				DisableTeleportEvent.disableTeleport();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+			int mins = 0;
+			try {
+				mins = CivSettings.getInteger(CivSettings.warConfig, "war.time_length");
+			} catch (InvalidConfiguration e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
 			/* War time has started. */
-			CivMessage.globalHeading(CivColor.BOLD+"WarTime Has Started");
+			CivMessage.globalTitle(CivColor.Red+CivColor.BOLD+CivSettings.localize.localizedString("war_wartimeBeginHeading"),CivSettings.localize.localizedString("war_wartimeBegin_title_length",mins/60.0));
 			War.setStart(new Date());
-			War.repositionPlayers("You've been teleported back to your town hall. WarTime has started and you were in enemy territory.");
+			War.repositionPlayers(CivSettings.localize.localizedString("war_wartimeBeginOutOfPosition"));
 			//War.vassalTownsWithNoTownHalls();
 			War.resetTownClaimFlags();
 			WarAntiCheat.kickUnvalidatedPlayers();
@@ -196,22 +234,19 @@ public class War {
 			
 			CivGlobal.growthEnabled = false;
 			CivGlobal.trommelsEnabled = false;
+			CivGlobal.quarriesEnabled = false;
 			CivGlobal.tradeEnabled = false;
+			CivGlobal.fisheryEnabled = false;
 			
-			try {
-				int mins = CivSettings.getInteger(CivSettings.warConfig, "war.time_length");
-				Calendar endCal = Calendar.getInstance();
-				endCal.add(Calendar.MINUTE, mins);
+			Calendar endCal = Calendar.getInstance();
+			endCal.add(Calendar.MINUTE, mins);
 
-				War.setEnd(endCal.getTime());
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
+			War.setEnd(endCal.getTime());
+			
 		}
 		
 		War.warTime = warTime;
 	}
-
 	/*
 	 * When a civ conqueres a town, then has its capitol conquered,
 	 * the town that it just conquered needs to go to the new owner.
@@ -266,7 +301,7 @@ public class War {
 					Civilization winner = defeatedTowns.get(townName);
 					
 					town.onDefeat(winner);
-					CivMessage.sendTown(town, CivColor.LightBlue+"Welcome our new overlords "+winner.getName());
+					CivMessage.sendTown(town, CivColor.LightBlue+CivSettings.localize.localizedString("var_war_overlordAnnounce",winner.getName()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -285,7 +320,7 @@ public class War {
 					}
 					
 					Civilization winner = defeatedCivs.get(civName);
-					CivMessage.sendCiv(civ, CivColor.LightBlue+"Welcome our new overlords "+winner.getName());
+					CivMessage.sendCiv(civ, CivColor.LightBlue+CivColor.LightBlue+CivSettings.localize.localizedString("var_war_overlordAnnounce",winner.getName()));
 					civ.onDefeat(winner);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -310,8 +345,7 @@ public class War {
 					}
 					
 					Civilization winner = defeatedCivs.get(civName);
-					CivMessage.sendCiv(winner, " has honorably defeated "+civName+". Their differences settled, they now revert to a neutral relationship.");
-					CivMessage.sendCiv(civ, " has honorably defeated "+civName+". Their differences settled, they now revert to a neutral relationship.");
+					CivMessage.global(CivSettings.localize.localizedString("var_war_defeatedMsg1",winner,civ));
 					CivGlobal.setRelation(winner, civ, Status.NEUTRAL);				
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -360,6 +394,7 @@ public class War {
 		
 		WarRegen.restoreBlocksFor(WarCamp.RESTORE_NAME);
 		WarRegen.restoreBlocksFor(Cannon.RESTORE_NAME);
+		WarRegen.restoreBlocksFor(WarListener.RESTORE_NAME);
 		Cannon.cleanupAll();
 	}
 

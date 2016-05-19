@@ -32,11 +32,13 @@ import org.bukkit.entity.Player;
 import com.avrgaming.civcraft.arena.Arena;
 import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
+import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.CivColor;
+import com.connorlinfoot.titleapi.TitleAPI;
 
 public class CivMessage {
 
@@ -78,6 +80,36 @@ public class CivMessage {
 		} catch (CivException e) {
 		}
 		CivLog.info(line);	
+	}
+	public static void sendTitle(Object sender, int fadeIn, int show, int fadeOut, String title, String subTitle) {
+		if (CivSettings.hasTitleAPI) {
+			Player player = null;
+			Resident resident = null;
+			if ((sender instanceof Player)) {
+				player = (Player) sender;
+				resident = CivGlobal.getResident(player);
+			} else if (sender instanceof Resident) {
+				try {
+					resident = (Resident)sender;
+					player = CivGlobal.getPlayer(resident);
+				} catch (CivException e) {
+					// No player online
+				}
+			}
+			if (player != null && resident != null && resident.isTitleAPI())
+			{
+				TitleAPI.sendTitle(player, fadeIn, show, fadeOut, title, subTitle);
+			}
+		}
+		send(sender, title);
+		if (subTitle != "") {
+			send(sender, subTitle);
+		}
+	}
+	
+	
+	public static void sendTitle(Object sender, String title, String subTitle) {
+		sendTitle(sender, 10, 40, 5, title, subTitle);
 	}
 	
 	public static void send(Object sender, String line) {
@@ -163,7 +195,22 @@ public class CivMessage {
 	public static void global(String string) {
 		CivLog.info("[Global] "+string);
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.sendMessage(CivColor.LightBlue+"[Global] "+CivColor.White+string);
+			player.sendMessage(CivColor.LightBlue+CivSettings.localize.localizedString("civMsg_Globalprefix")+" "+CivColor.White+string);
+		}
+	}
+	
+	public static void globalTitle(String title, String subTitle) {
+		CivLog.info("[GlobalTitle] "+title+" - "+subTitle);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			Resident resident = CivGlobal.getResident(player);
+			if (CivSettings.hasTitleAPI && resident.isTitleAPI()) {
+				CivMessage.sendTitle(player, 10, 60, 10, title, subTitle);
+			} else {
+				send(player, buildTitle(title));
+				if (!subTitle.equals("")) {
+					send(player, subTitle);
+				}
+			}
 		}
 	}
 	
@@ -186,7 +233,7 @@ public class CivMessage {
 				try {
 					player = CivGlobal.getPlayer(resident);
 					if (player != null) {
-						CivMessage.send(player, CivColor.Purple+"[Scout] "+CivColor.White+string);
+						CivMessage.send(player, CivColor.Purple+CivSettings.localize.localizedString("civMsg_ScoutPrefix")+" "+CivColor.White+string);
 					}
 				} catch (CivException e) {
 				}
@@ -207,7 +254,7 @@ public class CivMessage {
 			try {
 				player = CivGlobal.getPlayer(resident);
 				if (player != null) {
-					CivMessage.send(player, CivColor.Gold+"[Town] "+CivColor.White+string);
+					CivMessage.send(player, CivColor.Gold+CivSettings.localize.localizedString("civMsg_Townprefix")+" "+CivColor.White+string);
 				}
 			} catch (CivException e) {
 			}
@@ -226,7 +273,7 @@ public class CivMessage {
 				try {
 					player = CivGlobal.getPlayer(resident);
 					if (player != null) {
-						CivMessage.send(player, CivColor.LightPurple+"[Civ] "+CivColor.White+string);
+						CivMessage.send(player, CivColor.LightPurple+CivSettings.localize.localizedString("civMsg_Civprefix")+" "+CivColor.White+string);
 					}
 				} catch (CivException e) {
 				}
@@ -247,7 +294,7 @@ public class CivMessage {
 		if (town == null) {
 			try {
 				Player player = CivGlobal.getPlayer(resident);
-				player.sendMessage(CivColor.Rose+"You are not part of a town, nobody hears you. Type /tc to chat normally.");
+				player.sendMessage(CivColor.Rose+CivSettings.localize.localizedString("civMsg_tcNotInTown"));
 
 			} catch (CivException e) {
 			}
@@ -259,7 +306,7 @@ public class CivMessage {
 		for (Resident r : town.getResidents()) {
 			try {
 				Player player = CivGlobal.getPlayer(r);
-				String msg = CivColor.LightBlue+"[TC]"+CivColor.White+String.format(format, resident.getName(), message);
+				String msg = CivColor.LightBlue+CivSettings.localize.localizedString("civMsg_tcPrefix")+CivColor.White+String.format(format, resident.getName(), message);
 				player.sendMessage(msg);
 			} catch (CivException e) {
 				continue; /* player not online. */
@@ -269,7 +316,7 @@ public class CivMessage {
 		for (String name : getExtraTownChatListeners(town)) {
 			try {
 				Player player = CivGlobal.getPlayer(name);
-				String msg = CivColor.LightBlue+"[TC:"+town.getName()+"]"+CivColor.White+String.format(format, resident.getName(), message);
+				String msg = CivColor.LightBlue+CivSettings.localize.localizedString("civMsg_tcPrefix2")+town.getName()+"]"+CivColor.White+String.format(format, resident.getName(), message);
 				player.sendMessage(msg);
 			} catch (CivException e) {
 				/* player not online. */
@@ -282,7 +329,7 @@ public class CivMessage {
 		if (civ == null) {
 			try {
 				Player player = CivGlobal.getPlayer(resident);
-				player.sendMessage(CivColor.Rose+"You are not part of a civ, nobody hears you. Type /cc to chat normally.");
+				player.sendMessage(CivColor.Rose+CivSettings.localize.localizedString("civMsg_ccNotInCiv"));
 
 			} catch (CivException e) {
 			}
@@ -300,7 +347,7 @@ public class CivMessage {
 					Player player = CivGlobal.getPlayer(r);
 					
 					
-					String msg = CivColor.Gold+"[CC "+townName+"]"+CivColor.White+String.format(format, resident.getName(), message);
+					String msg = CivColor.Gold+CivSettings.localize.localizedString("civMsg_ccPrefix1")+" "+townName+"]"+CivColor.White+String.format(format, resident.getName(), message);
 					player.sendMessage(msg);
 				} catch (CivException e) {
 					continue; /* player not online. */
@@ -311,7 +358,7 @@ public class CivMessage {
 		for (String name : getExtraCivChatListeners(civ)) {
 			try {
 				Player player = CivGlobal.getPlayer(name);
-				String msg = CivColor.Gold+"[CC:"+civ.getName()+" "+townName+"]"+CivColor.White+String.format(format, resident.getName(), message);
+				String msg = CivColor.Gold+CivSettings.localize.localizedString("civMsg_ccPrefix2")+civ.getName()+" "+townName+"]"+CivColor.White+String.format(format, resident.getName(), message);
 				player.sendMessage(msg);
 			} catch (CivException e) {
 				/* player not online. */
@@ -473,7 +520,7 @@ public class CivMessage {
 
 	public static void sendTeam(ArenaTeam team, String message) {
 		for (Resident resident : team.teamMembers) {
-			CivMessage.send(resident, CivColor.Blue+"[Team ("+team.getName()+")] "+CivColor.RESET+message);
+			CivMessage.send(resident, CivColor.Blue+CivSettings.localize.localizedString("civMsg_teamchatPrefix")+" ("+team.getName()+")] "+CivColor.RESET+message);
 		}
 	}
 	
@@ -487,7 +534,7 @@ public class CivMessage {
 		CivLog.info("[Arena] "+message);
 		for (ArenaTeam team : arena.getTeams()) {
 			for (Resident resident : team.teamMembers) {
-				CivMessage.send(resident, CivColor.LightBlue+"[Arena] "+CivColor.RESET+message);
+				CivMessage.send(resident, CivColor.LightBlue+CivSettings.localize.localizedString("civMsg_arenaPrefix")+" "+CivColor.RESET+message);
 			}
 		}
 	}

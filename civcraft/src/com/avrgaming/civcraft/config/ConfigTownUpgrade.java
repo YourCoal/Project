@@ -33,10 +33,14 @@ import com.avrgaming.civcraft.object.LibraryEnchantment;
 import com.avrgaming.civcraft.object.StoreMaterial;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Bank;
+import com.avrgaming.civcraft.structure.FishHatchery;
 import com.avrgaming.civcraft.structure.Grocer;
 import com.avrgaming.civcraft.structure.Library;
+import com.avrgaming.civcraft.structure.Quarry;
 import com.avrgaming.civcraft.structure.Store;
 import com.avrgaming.civcraft.structure.Structure;
+import com.avrgaming.civcraft.structure.TradeShip;
+import com.avrgaming.civcraft.structure.Trommel;
 
 public class ConfigTownUpgrade {
 	public String id;
@@ -88,42 +92,52 @@ public class ConfigTownUpgrade {
 		case "set_town_level":
 			if (town.getLevel() < Integer.valueOf(args[1].trim())) {
 				town.setLevel(Integer.valueOf(args[1].trim()));
-				CivMessage.global(town.getName()+" is now a "+town.getLevelTitle()+"!");
+				CivMessage.global(CivSettings.localize.localizedString("var_townUpgrade_town",town.getName(),town.getLevelTitle()));
 			}
 			break;
 		
 		case "set_bank_level":
+			if (town.saved_bank_level < Integer.valueOf(args[1].trim()))
+			{
+				town.saved_bank_level = Integer.valueOf(args[1].trim());
+			}
 			struct = town.getStructureByType("s_bank");
 			if (struct != null && (struct instanceof Bank)) {
 				Bank bank = (Bank)struct;
-				if (bank.getLevel() < Integer.valueOf(args[1].trim())) {
-					bank.setLevel(Integer.valueOf(args[1].trim()));
+				if (bank.getLevel() < town.saved_bank_level) {
+					bank.setLevel(town.saved_bank_level);
 					bank.updateSignText();
-					town.saved_bank_level = bank.getLevel();
-					CivMessage.sendTown(town, "The bank is now level "+bank.getLevel());
+					CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townUpgrade_bank",bank.getLevel()));
 				}
 			}
 			break;
 		case "set_bank_interest":
+			if (town.saved_bank_interest_amount < Double.valueOf(args[1].trim()))
+			{
+				town.saved_bank_interest_amount = Double.valueOf(args[1].trim());
+			}
 			struct = town.getStructureByType("s_bank");
 			if (struct != null && (struct instanceof Bank)) {
 				Bank bank = (Bank)struct;
-				if (bank.getInterestRate() < Double.valueOf(args[1].trim())) {
-					bank.setInterestRate(Double.valueOf(args[1].trim()));
-					town.saved_bank_interest_amount = bank.getInterestRate();
+				if (bank.getInterestRate() < town.saved_bank_interest_amount) {
+					bank.setInterestRate(town.saved_bank_interest_amount);
 					DecimalFormat df = new DecimalFormat();
-					CivMessage.sendTown(town, "The bank is now provides a "+df.format(bank.getInterestRate()*100)+"% interest rate.");
+					CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_interest",df.format(bank.getInterestRate()*100)));
 				}
 			}
 			break;
 		case "set_store_level":
+			if (town.saved_store_level < Integer.valueOf(args[1].trim()))
+			{
+				town.saved_store_level = Integer.valueOf(args[1].trim());
+			}
 			struct = town.getStructureByType("s_store");
 			if (struct != null && (struct instanceof Store)) {
 				Store store = (Store)struct;
-				if (store.getLevel() < Integer.valueOf(args[1].trim())) {
-					store.setLevel(Integer.valueOf(args[1].trim()));
+				if (store.getLevel() < town.saved_store_level) {
+					store.setLevel(town.saved_store_level);
 					store.updateSignText();
-					CivMessage.sendTown(town, "The store is now level "+store.getLevel());
+					CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_store",store.getLevel()));
 				}
 			}
 			break;
@@ -137,13 +151,17 @@ public class ConfigTownUpgrade {
 			}
 			break;
 		case "set_library_level":
+			if (town.saved_library_level < Integer.valueOf(args[1].trim()))
+			{
+				town.saved_library_level = Integer.valueOf(args[1].trim());
+			}
 			struct = town.getStructureByType("s_library");
 			if (struct != null && (struct instanceof Library)) {
 				Library library = (Library)struct;
-				if (library.getLevel() < Integer.valueOf(args[1].trim())) {
-					library.setLevel(Integer.valueOf(args[1].trim()));
+				if (library.getLevel() < town.saved_library_level) {
+					library.setLevel(town.saved_library_level);
 					library.updateSignText();
-					CivMessage.sendTown(town, "The library is now level "+library.getLevel());
+					CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_library",library.getLevel()));
 				}
 			}
 			break;
@@ -154,18 +172,116 @@ public class ConfigTownUpgrade {
 				LibraryEnchantment enchant = new LibraryEnchantment(args[1].trim(), Integer.valueOf(args[2].trim()), Double.valueOf(args[3].trim()));
 				library.addEnchant(enchant);
 				library.updateSignText();
-				CivMessage.sendTown(town, "The library now offers the "+args[1].trim()+" enchantment at level "+args[2]+"!");
+				CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_enchantment",args[1].trim()+" "+args[2]));
+			}
+			break;
+		case "set_fish_hatchery_level":
+			boolean didUpgradeFishery = false;
+			if (town.saved_fish_hatchery_level < Integer.valueOf(args[1].trim()))
+			{
+				town.saved_fish_hatchery_level = Integer.valueOf(args[1].trim());
+			}
+			for (Structure structure : town.getStructures()) {
+				if (structure.getConfigId().equalsIgnoreCase("ti_fish_hatchery")) {
+
+					if (structure != null && (structure instanceof FishHatchery)) {
+						FishHatchery fishery = (FishHatchery)structure;
+						if (fishery.getLevel() < town.saved_fish_hatchery_level) {
+							didUpgradeFishery = true;
+							fishery.setLevel(town.saved_fish_hatchery_level);
+							fishery.updateSignText();
+						}
+					}
+				}
+			}
+			if (didUpgradeFishery)
+			{
+				CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_fish_hatchery",town.saved_fish_hatchery_level));
+			}
+			break;
+		case "set_tradeship_upgrade_level":
+			if (town.saved_tradeship_upgrade_levels < Integer.valueOf(args[1].trim()))
+			{
+				town.saved_tradeship_upgrade_levels = Integer.valueOf(args[1].trim());
+			}
+			boolean didUpgradeTradeShip = false;
+			for (Structure structure : town.getStructures()) {
+				if (structure.getConfigId().equalsIgnoreCase("ti_trade_ship")) {
+
+					if (structure != null && (structure instanceof TradeShip)) {
+						TradeShip tradeShip = (TradeShip)structure;
+						if (tradeShip.getUpgradeLvl() < town.saved_tradeship_upgrade_levels) {
+							didUpgradeTradeShip = true;
+							tradeShip.setUpgradeLvl(town.saved_tradeship_upgrade_levels);
+							tradeShip.reprocessCommandSigns();
+						}
+					}
+				}
+			}
+			if (didUpgradeTradeShip)
+			{
+				CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_tradeship",town.saved_tradeship_upgrade_levels));
 			}
 			break;
 		case "set_grocer_level":
+			if (town.saved_grocer_levels < Integer.valueOf(args[1].trim()))
+			{
+				town.saved_grocer_levels = Integer.valueOf(args[1].trim());
+			}
 			struct = town.getStructureByType("s_grocer");
 			if (struct != null && (struct instanceof Grocer)) {
 				Grocer grocer = (Grocer)struct;
-				if (grocer.getLevel() < Integer.valueOf(args[1].trim())) {
-					grocer.setLevel(Integer.valueOf(args[1].trim()));
+				if (grocer.getLevel() < town.saved_grocer_levels) {
+					grocer.setLevel(town.saved_grocer_levels);
 					grocer.updateSignText();
-					CivMessage.sendTown(town, "The grocer is now level "+grocer.getLevel());
+					CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_grocer",grocer.getLevel()));
 				}
+			}
+			break;
+		case "set_trommel_level":
+			boolean didUpgrade = false;
+			if (town.saved_trommel_level < Integer.valueOf(args[1].trim()))
+			{
+				town.saved_trommel_level = Integer.valueOf(args[1].trim());
+			}
+			for (Structure structure : town.getStructures()) {
+				if (structure.getConfigId().equalsIgnoreCase("s_trommel")) {
+
+					if (structure != null && (structure instanceof Trommel)) {
+						Trommel trommel = (Trommel)structure;
+						if (trommel.getLevel() < town.saved_trommel_level) {
+							didUpgrade = true;
+							trommel.setLevel(town.saved_trommel_level);
+						}
+					}
+				}
+			}
+			if (didUpgrade)
+			{
+				CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_trommels",town.saved_trommel_level));
+			}
+			break;
+		case "set_quarry_level":
+			if (town.saved_quarry_level < Integer.valueOf(args[1].trim()))
+			{
+				town.saved_quarry_level = Integer.valueOf(args[1].trim());
+			}
+			boolean didUpgradeQuarry = false;
+			for (Structure structure : town.getStructures()) {
+				if (structure.getConfigId().equalsIgnoreCase("ti_quarry")) {
+
+					if (structure != null && (structure instanceof Quarry)) {
+						Quarry quarry = (Quarry)structure;
+						if (quarry.getLevel() < town.saved_quarry_level) {
+							didUpgradeQuarry = true;
+							quarry.setLevel(town.saved_quarry_level);
+						}
+					}
+				}
+			}
+			if (didUpgradeQuarry)
+			{
+				CivMessage.sendTown(town, CivSettings.localize.localizedString("var_townupgrade_quarries",town.saved_quarry_level));
 			}
 			break;
 		}

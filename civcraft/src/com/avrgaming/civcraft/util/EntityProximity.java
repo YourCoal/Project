@@ -11,6 +11,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 
 public class EntityProximity {
+
 	
 	/*
 	 * Use a NMS method to grab an axis aligned bounding box around an area to 
@@ -18,7 +19,6 @@ public class EntityProximity {
 	 * Optionally provide an entity that is exempt from these checks.
 	 * Also optionally provide a filter so we can only capture specific types of entities.
 	 */
-	
 	public static LinkedList<Entity> getNearbyEntities(Entity exempt, Location loc, double radius, Class<?> filter) {
 		LinkedList<Entity> entities = new LinkedList<Entity>();
 		
@@ -28,7 +28,7 @@ public class EntityProximity {
 		double r = radius;
 		
 		CraftWorld craftWorld = (CraftWorld)loc.getWorld();
-		AxisAlignedBB bb = new AxisAlignedBB(x-r, y-r, z-r, x+r, y+r, z+r);
+		AxisAlignedBB bb = AxisAlignedBB.a(x-r, y-r, z-r, x+r, y+r, z+r);
 		
 		List<net.minecraft.server.v1_8_R3.Entity> eList;
 		if (exempt != null) {

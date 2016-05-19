@@ -81,7 +81,7 @@ public class Market extends Structure {
 					try {
 					market.setSignText(sign, item);
 					} catch (ClassCastException e) {
-						CivLog.error("Can't cast structure sign to sign for market update.");
+						CivLog.error("Can't cast structure sign to sign for market update. "+sign.getCoord().getX()+" "+sign.getCoord().getY()+" "+sign.getCoord().getZ());
 						continue;
 					}
 				}
@@ -106,12 +106,12 @@ public class Market extends Structure {
 		Resident resident = CivGlobal.getResident(player);
 
 		if (resident == null) {
-			CivMessage.sendError(player, "You're not registerd?? what??");
+			CivMessage.sendError(player, CivSettings.localize.localizedString("market_invalidPlayer"));
 			return;
 		}
 		
 		if (item == null) {
-			CivMessage.sendError(player, "ERROR: Unknown item. Market ID:"+id);
+			CivMessage.sendError(player, CivSettings.localize.localizedString("market_invalidID")+id);
 			return;
 		}
 		
@@ -134,7 +134,7 @@ public class Market extends Structure {
 		Market.globalSignUpdate(id);
 	}
 	
-	public void setSignText(StructureSign sign, ConfigMarketItem item) {
+	public void setSignText(StructureSign sign, ConfigMarketItem item) throws ClassCastException {
 
 		String itemColor;
 		switch (item.lastaction) {
@@ -153,36 +153,44 @@ public class Market extends Structure {
 		Sign s;
 		switch (sign.getAction().toLowerCase()) {
 		case "sellbig":
+			if (sign.getCoord().getBlock().getState() instanceof Sign) {
 			s = (Sign)sign.getCoord().getBlock().getState();
-			s.setLine(0, ChatColor.BOLD+"Sell Bulk");
+			s.setLine(0, ChatColor.BOLD+CivSettings.localize.localizedString("market_sign_sellBulk"));
 			s.setLine(1, item.name);
-			s.setLine(2, itemColor+item.getSellCostForAmount(BULK_AMOUNT)+" Coins");
-			s.setLine(3, "Amount "+BULK_AMOUNT);
+			s.setLine(2, itemColor+item.getSellCostForAmount(BULK_AMOUNT)+" "+CivSettings.CURRENCY_NAME);
+			s.setLine(3, CivSettings.localize.localizedString("var_market_sign_amount",BULK_AMOUNT));
 			s.update();
+			}
 			break;
 		case "sell":
+			if (sign.getCoord().getBlock().getState() instanceof Sign) {
 			s = (Sign)sign.getCoord().getBlock().getState();
-			s.setLine(0, ChatColor.BOLD+"Sell");
+			s.setLine(0, ChatColor.BOLD+CivSettings.localize.localizedString("market_sign_sell"));
 			s.setLine(1, item.name);
-			s.setLine(2, itemColor+item.getSellCostForAmount(1)+" Coins");
-			s.setLine(3, "Amount 1");
+			s.setLine(2, itemColor+item.getSellCostForAmount(1)+" "+CivSettings.CURRENCY_NAME);
+			s.setLine(3, CivSettings.localize.localizedString("var_market_sign_amount",1));
 			s.update();
+			}
 			break;
 		case "buy":
+			if (sign.getCoord().getBlock().getState() instanceof Sign) {
 			s = (Sign)sign.getCoord().getBlock().getState();
-			s.setLine(0, ChatColor.BOLD+"Buy");
+			s.setLine(0, ChatColor.BOLD+CivSettings.localize.localizedString("market_sign_buy"));
 			s.setLine(1, item.name);
-			s.setLine(2, itemColor+item.getBuyCostForAmount(1)+" Coins");
-			s.setLine(3, "Amount 1");
+			s.setLine(2, itemColor+item.getBuyCostForAmount(1)+" "+CivSettings.CURRENCY_NAME);
+			s.setLine(3, CivSettings.localize.localizedString("var_market_sign_amount",1));
 			s.update();
+			}
 			break;
 		case "buybig":
+			if (sign.getCoord().getBlock().getState() instanceof Sign) {
 			s = (Sign)sign.getCoord().getBlock().getState();
-			s.setLine(0, ChatColor.BOLD+"Buy Bulk");
+			s.setLine(0, ChatColor.BOLD+CivSettings.localize.localizedString("market_sign_buyBulk"));
 			s.setLine(1, item.name);
-			s.setLine(2, itemColor+item.getBuyCostForAmount(BULK_AMOUNT)+" Coins");
-			s.setLine(3, "Amount "+BULK_AMOUNT);
+			s.setLine(2, itemColor+item.getBuyCostForAmount(BULK_AMOUNT)+" "+CivSettings.CURRENCY_NAME);
+			s.setLine(3, CivSettings.localize.localizedString("var_market_sign_amount",BULK_AMOUNT));
 			s.update();
+			}
 			break;
 		}
 		} catch (Exception e) {
@@ -190,8 +198,7 @@ public class Market extends Structure {
 		}
 	}
 	
-	private void buildSign(String action, Integer id, BlockCoord absCoord, 
-			ConfigMarketItem item, SimpleBlock commandBlock) {
+	private void buildSign(String action, Integer id, BlockCoord absCoord, ConfigMarketItem item, SimpleBlock commandBlock) {
 		Block b = absCoord.getBlock();
 		
 		ItemManager.setTypeIdAndData(b, ItemManager.getId(Material.WALL_SIGN), (byte)commandBlock.getData(), false);

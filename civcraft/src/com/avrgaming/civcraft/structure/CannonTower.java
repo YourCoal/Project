@@ -68,9 +68,9 @@ public class CannonTower extends Structure {
 		return (int) (info.max_hitpoints * rate);
 	}
 	
-	public void setDamage(int damage) {
-		cannonComponent.setDamage(damage);
-	}
+//	public void setDamage(int damage) {
+//		cannonComponent.setDamage(damage);
+//	}
 
 
 	public void setTurretLocation(BlockCoord absCoord) {
@@ -101,7 +101,14 @@ public class CannonTower extends Structure {
 						BlockCoord center = struct.getCenterLocation();
 						double distance = center.distance(this.getCenterLocation());
 						if (distance <= build_distance) {
-							throw new CivException("Cannot build here. Too close to another Cannon Tower at ("+center.getX()+","+center.getY()+","+center.getZ()+")");
+							throw new CivException(CivSettings.localize.localizedString("var_buildable_tooCloseToCannonTower",(center.getX()+","+center.getY()+","+center.getZ())));
+						}
+					}
+					if (struct instanceof CannonShip) {
+						BlockCoord center = struct.getCenterLocation();
+						double distance = center.distance(this.getCenterLocation());
+						if (distance <= build_distance) {
+							throw new CivException(CivSettings.localize.localizedString("var_buildable_tooCloseToCannonShip",(center.getX()+","+center.getY()+","+center.getZ())));
 						}
 					}
 				}

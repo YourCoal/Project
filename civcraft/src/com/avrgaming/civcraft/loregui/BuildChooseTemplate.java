@@ -49,32 +49,37 @@ public class BuildChooseTemplate implements GuiAction {
 		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9);
 		ItemStack infoRec = LoreGuiItem.build("Default "+struct.getDisplayName(), 
 				ItemManager.getId(Material.WRITTEN_BOOK), 
-				0, CivColor.Gold+"<Click To Build>");
+				0, CivColor.Gold+CivSettings.localize.localizedString("loreGui_template_clickToBuild"));
 		infoRec = LoreGuiItem.setAction(infoRec, "BuildWithTemplate");
 		inv.addItem(infoRec);
 		
 		for (Perk perk : perkList) {
+			if (!perk.getIdent().contains("template"))
+			{
 			infoRec = LoreGuiItem.build(perk.getDisplayName(), 
 					perk.configPerk.type_id, 
-					perk.configPerk.data, CivColor.Gold+"<Click To Build>",
-					CivColor.Gray+"Provided by: "+CivColor.LightBlue+perk.provider);
+					perk.configPerk.data, CivColor.Gold+CivSettings.localize.localizedString("loreGui_template_clickToBuild"),
+					CivColor.Gray+CivSettings.localize.localizedString("loreGui_template_providedBy")+" "+CivColor.LightBlue+perk.provider);
 			infoRec = LoreGuiItem.setAction(infoRec, "BuildWithTemplate");
 			infoRec = LoreGuiItem.setActionData(infoRec, "perk", perk.getIdent());
 			inv.addItem(infoRec);
+			}
 		}
 		
 		for (Perk perk : personalUnboundPerks) {
+			if (!perk.getIdent().contains("template"))
+			{
 			infoRec = LoreGuiItem.build(perk.getDisplayName(), 
 					CivData.BEDROCK, 
-					perk.configPerk.data, CivColor.Gold+"<Click To Bind>",
-					CivColor.Gray+"Unbound Temple",
-					CivColor.Gray+"You own this template.",
-					CivColor.Gray+"The town is missing it.",
-					CivColor.Gray+"Click to bind to town first.",
-					CivColor.Gray+"Then build again.");				
+					perk.configPerk.data, CivColor.Gold+CivSettings.localize.localizedString("loreGui_template_clickToBuild"),
+					CivColor.Gray+CivSettings.localize.localizedString("loreGui_template_unbound"),
+					CivColor.Gray+CivSettings.localize.localizedString("loreGui_template_unbound2"),
+					CivColor.Gray+CivSettings.localize.localizedString("loreGui_template_unbound3"),
+					CivColor.Gray+CivSettings.localize.localizedString("loreGui_template_unbound4"),
+					CivColor.Gray+CivSettings.localize.localizedString("loreGui_template_unbound5"));				
 			infoRec = LoreGuiItem.setAction(infoRec, "ActivatePerk");
 			infoRec = LoreGuiItem.setActionData(infoRec, "perk", perk.getIdent());
-			
+			}
 		}
 		
 		TaskMaster.syncTask(new OpenInventoryTask(player, inv));

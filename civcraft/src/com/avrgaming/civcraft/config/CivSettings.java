@@ -18,6 +18,8 @@
  */
 package com.avrgaming.civcraft.config;
 
+import localize.Localize;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +38,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
-
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -57,9 +58,9 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.randomevents.ConfigRandomEvent;
+import com.avrgaming.civcraft.structure.FortifiedWall;
 import com.avrgaming.civcraft.structure.Wall;
 import com.avrgaming.civcraft.template.Template;
-import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.global.perks.Perk;
 
 public class CivSettings {
@@ -98,7 +99,6 @@ public class CivSettings {
 	
 	public static FileConfiguration civConfig; /* civ.yml */
 	public static Map<String, ConfigEndCondition> endConditions = new HashMap<String, ConfigEndCondition>();
-	public static Map<String, ConfigPlatinumReward> platinumRewards = new HashMap<String, ConfigPlatinumReward>();
 	
 	public static FileConfiguration cultureConfig; /* culture.yml */
 	public static Map<Integer, ConfigCultureLevel> cultureLevels = new HashMap<Integer, ConfigCultureLevel>();
@@ -108,8 +108,9 @@ public class CivSettings {
 	public static Map<String, ConfigBuildableInfo> structures = new HashMap<String, ConfigBuildableInfo>();
 	public static Map<Integer, ConfigGrocerLevel> grocerLevels = new HashMap<Integer, ConfigGrocerLevel>();
 	public static Map<Integer, ConfigCottageLevel> cottageLevels = new HashMap<Integer, ConfigCottageLevel>();
-	public static ArrayList<ConfigTempleSacrifice> templeSacrifices = new ArrayList<ConfigTempleSacrifice>();
 	public static Map<Integer, ConfigMineLevel> mineLevels = new HashMap<Integer, ConfigMineLevel>();
+	public static Map<Integer, ConfigTempleLevel> templeLevels = new HashMap<Integer, ConfigTempleLevel>();
+	public static Map<Integer, ConfigTradeShipLevel> tradeShipLevels = new HashMap<Integer, ConfigTradeShipLevel>();
 	
 	public static FileConfiguration wonderConfig; /* wonders.yml */
 	public static Map<String, ConfigBuildableInfo> wonders = new HashMap<String, ConfigBuildableInfo>();
@@ -151,6 +152,7 @@ public class CivSettings {
 	
 	public static FileConfiguration perkConfig; /* perks.yml */
 	public static Map<String, ConfigPerk> perks = new HashMap<String, ConfigPerk>();
+	public static Map<String, ConfigPerk> templates = new HashMap<String, ConfigPerk>();
 
 	public static FileConfiguration enchantConfig; /* enchantments.yml */
 	public static Map<String, ConfigEnchant> enchants = new HashMap<String, ConfigEnchant>();
@@ -201,15 +203,38 @@ public class CivSettings {
 	public static boolean hasVanishNoPacket = false;
 	
 	public static final String MINI_ADMIN = "civ.admin";
+	public static final String HACKER = "civ.hacker";
 	public static final String MODERATOR = "civ.moderator";
 	public static final String FREE_PERKS = "civ.freeperks";
 	public static final String ECON = "civ.econ";
+	public static final String TPALLY = "civ.tp.ally";
+	public static final String TPNEUTRAL = "civ.tp.neutral";
+	public static final String TPHOSTILE = "civ.tp.hostile";
+	public static final String TPWAR = "civ.tp.war";
+	public static final String TPPEACE = "civ.tp.peace";
+	public static final String TPCAMP = "civ.tp.camp";
+	public static final String TPALL = "civ.tp.*";
 	public static final int MARKET_COIN_STEP = 5;
 	public static final int MARKET_BUYSELL_COIN_DIFF = 30;
 	public static final int MARKET_STEP_THRESHOLD = 2;
+	public static String CURRENCY_NAME;
+	
+	public static Localize localize;
+
+	public static boolean hasTitleAPI = false;
+	public static boolean hasITag = false;
 	
 	public static void init(JavaPlugin plugin) throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
 		CivSettings.plugin = (CivCraft)plugin;
+		
+
+		String languageFile = CivSettings.getStringBase("localization_file");
+		localize = new Localize(plugin, languageFile);
+
+
+		CivLog.debug(localize.localizedString("welcome_string","test",1337,100.50));
+		CURRENCY_NAME = localize.localizedString("civ_currencyName");
+		CivGlobal.fullMessage = CivSettings.localize.localizedString("civGlobal_serverFullMsg");
 		
 		// Check for required data folder, if it's not there export it.
 		CivSettings.validateFiles();
@@ -262,10 +287,17 @@ public class CivSettings {
 		startingCoins = CivSettings.getDouble(civConfig, "global.starting_coins");
 		
 		alwaysCrumble.add(CivData.BEDROCK);
-		alwaysCrumble.add(ItemManager.getId(Material.GOLD_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.DIAMOND_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.IRON_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.REDSTONE_BLOCK));
+		alwaysCrumble.add(CivData.COAL_BLOCK);
+		alwaysCrumble.add(CivData.EMERALD_BLOCK);
+		alwaysCrumble.add(CivData.LAPIS_BLOCK);
+		alwaysCrumble.add(CivData.SPONGE);
+		alwaysCrumble.add(CivData.HAY_BALE);
+		alwaysCrumble.add(CivData.GOLD_BLOCK);
+		alwaysCrumble.add(CivData.DIAMOND_BLOCK);
+		alwaysCrumble.add(CivData.IRON_BLOCK);
+		alwaysCrumble.add(CivData.REDSTONE_BLOCK);
+		alwaysCrumble.add(CivData.ENDER_CHEST);
+		alwaysCrumble.add(CivData.BEACON);
 		
 		LoreEnhancement.init();
 		LoreCraftableMaterial.buildStaticMaterials();
@@ -275,6 +307,10 @@ public class CivSettings {
 		if (CivSettings.plugin.hasPlugin("VanishNoPacket")) {
 			hasVanishNoPacket = true;
 		}
+		
+		if (CivSettings.plugin.hasPlugin("TitleAPI")) {
+			hasTitleAPI = true;
+		}
 
 	}
 	
@@ -283,9 +319,17 @@ public class CivSettings {
 		restrictedUndoBlocks.add(Material.CARROT);
 		restrictedUndoBlocks.add(Material.POTATO);
 		restrictedUndoBlocks.add(Material.REDSTONE);
+		restrictedUndoBlocks.add(Material.REDSTONE_WIRE);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_OFF);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_ON);
+		restrictedUndoBlocks.add(Material.DIODE_BLOCK_OFF);
+		restrictedUndoBlocks.add(Material.DIODE_BLOCK_ON);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_ON);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR);
 		restrictedUndoBlocks.add(Material.STRING);
+		restrictedUndoBlocks.add(Material.TRIPWIRE);
+		restrictedUndoBlocks.add(Material.SUGAR_CANE_BLOCK);
 	}
 
 	private static void initPlayerEntityWeapons() {
@@ -337,6 +381,12 @@ public class CivSettings {
 		return cfg;
 	}
 	
+	public static void reloadGovConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration
+	{
+		CivSettings.governments.clear();
+		governmentConfig = loadCivConfig("governments.yml");
+		ConfigGovernment.loadConfig(governmentConfig, governments);
+	}
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
 		townConfig = loadCivConfig("town.yml");
@@ -363,6 +413,18 @@ public class CivSettings {
 		arenaConfig = loadCivConfig("arena.yml");
 		fishingConfig = loadCivConfig("fishing.yml");
 	}
+	
+	public static void reloadPerks() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		perkConfig = loadCivConfig("perks.yml");
+		ConfigPerk.loadConfig(perkConfig, perks);
+		ConfigPerk.loadTemplates(perkConfig, templates);
+	}
+	
+	public static void reloadNoCheat() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+
+		nocheatConfig = loadCivConfig("nocheat.yml");
+		ConfigValidMod.loadConfig(nocheatConfig, validMods);
+	}
 
 	private static void loadConfigObjects() throws InvalidConfiguration {
 		ConfigTownLevel.loadConfig(townConfig, townLevels);
@@ -379,13 +441,14 @@ public class CivSettings {
 		ConfigTradeGood.loadConfig(goodsConfig, goods, landGoods, waterGoods);
 		ConfigGrocerLevel.loadConfig(structureConfig, grocerLevels);
 		ConfigCottageLevel.loadConfig(structureConfig, cottageLevels);
-		ConfigTempleSacrifice.loadConfig(structureConfig, templeSacrifices);
+		ConfigTempleLevel.loadConfig(structureConfig, templeLevels);
 		ConfigMineLevel.loadConfig(structureConfig, mineLevels);
 		ConfigGovernment.loadConfig(governmentConfig, governments);
 		ConfigEnchant.loadConfig(enchantConfig, enchants);
 		ConfigUnit.loadConfig(unitConfig, units);
 		ConfigMission.loadConfig(espionageConfig, missions);
 		ConfigPerk.loadConfig(perkConfig, perks);
+		ConfigPerk.loadTemplates(perkConfig, templates);
 		ConfigCampLonghouseLevel.loadConfig(campConfig, longhouseLevels);
 		ConfigCampUpgrade.loadConfig(campConfig, campUpgrades);
 		ConfigMarketItem.loadConfig(marketConfig, marketItems);
@@ -397,14 +460,15 @@ public class CivSettings {
 		ConfigMaterial.loadConfig(materialsConfig, materials);
 		ConfigRandomEvent.loadConfig(randomEventsConfig, randomEvents, randomEventIDs);
 		ConfigEndCondition.loadConfig(civConfig, endConditions);
-		ConfigPlatinumReward.loadConfig(civConfig, platinumRewards);
 		ConfigValidMod.loadConfig(nocheatConfig, validMods);
 		ConfigArena.loadConfig(arenaConfig, arenas);
 		ConfigFishing.loadConfig(fishingConfig, fishingDrops);
+		ConfigTradeShipLevel.loadConfig(structureConfig, tradeShipLevels);
 	
 		ConfigRemovedRecipes.removeRecipes(materialsConfig, removedRecipies );
 		CivGlobal.preGenerator.preGenerate();
 		Wall.init_settings();
+		FortifiedWall.init_settings();
 	}
 
 	private static void initRestrictedSpawns() {
@@ -452,6 +516,7 @@ public class CivSettings {
 		switchItems.add(Material.CAKE_BLOCK);
 		switchItems.add(Material.CAULDRON);
 		switchItems.add(Material.CHEST);
+		switchItems.add(Material.TRAPPED_CHEST);
 		switchItems.add(Material.COMMAND);
 		switchItems.add(Material.DIODE);
 		switchItems.add(Material.DIODE_BLOCK_OFF);
@@ -482,8 +547,21 @@ public class CivSettings {
 		switchItems.add(Material.TRAPPED_CHEST);
 		switchItems.add(Material.GOLD_PLATE);
 		switchItems.add(Material.IRON_PLATE);
+		switchItems.add(Material.IRON_TRAPDOOR);
 		
+		// 1.6 additions.
+		switchItems.add(Material.SPRUCE_DOOR);
+		switchItems.add(Material.BIRCH_DOOR);
+		switchItems.add(Material.JUNGLE_DOOR);
+		switchItems.add(Material.ACACIA_DOOR);
+		switchItems.add(Material.DARK_OAK_DOOR);
 		
+		// 1.7 additions
+		switchItems.add(Material.ACACIA_FENCE_GATE);
+		switchItems.add(Material.BIRCH_FENCE_GATE);
+		switchItems.add(Material.DARK_OAK_FENCE_GATE);
+		switchItems.add(Material.SPRUCE_FENCE_GATE);
+		switchItems.add(Material.JUNGLE_FENCE_GATE);
 	}
 	
 	private static void initBlockPlaceExceptions() {
@@ -539,6 +617,17 @@ public class CivSettings {
 		return ret;
 	}
 	
+	public static Boolean getBooleanStructure(String path) {
+		Boolean ret;
+		try {
+			ret = getBoolean(structureConfig, path);
+		} catch (InvalidConfiguration e) {
+			ret = false;
+			e.printStackTrace();
+		}
+		return ret;
+	}
+	
 	public static int getIntegerStructure(String path) {
 		Integer ret;
 		try {
@@ -584,6 +673,15 @@ public class CivSettings {
 		}
 		
 		double data = cfg.getDouble(path);
+		return data;
+	}
+	
+	public static boolean getBoolean(FileConfiguration cfg, String path) throws InvalidConfiguration {
+		if (!cfg.contains(path)) {
+			throw new InvalidConfiguration("Could not get configuration boolean "+path);
+		}
+		
+		boolean data = cfg.getBoolean(path);
 		return data;
 	}
 
@@ -645,7 +743,7 @@ public class CivSettings {
 				if (returnUpgrade == null) {
 					returnUpgrade = upgrade;
 				} else {
-					throw new CivException(name+" is not specific enough to single out only one upgrade.");
+					throw new CivException(CivSettings.localize.localizedString("var_cmd_notSpecificUpgrade",name));
 				}
 			}
 		}
@@ -670,7 +768,7 @@ public class CivSettings {
 				if (returnUpgrade == null) {
 					returnUpgrade = upgrade;
 				} else {
-					throw new CivException(name+" is not specific enough to single out only one upgrade.");
+					throw new CivException(CivSettings.localize.localizedString("var_cmd_notSpecificUpgrade",name));
 				}
 			}
 		}
@@ -710,6 +808,16 @@ public class CivSettings {
 			}
 		}
 		
+		return returnLevel;
+	}
+	
+	public static int getTempleMaxLevel() {
+		int returnLevel = 0;
+		for (Integer level : templeLevels.keySet()) {
+			if (returnLevel < level) {
+				returnLevel = level;
+			}
+		}
 		return returnLevel;
 	}
 

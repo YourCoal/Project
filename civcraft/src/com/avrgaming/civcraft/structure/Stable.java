@@ -97,7 +97,12 @@ public class Stable extends Structure {
 			public void process(Player player) {
 				ConfigStableHorse horse = CivSettings.horses.get(horse_id);
 				if (horse == null) {
-					CivMessage.sendError(player, "Unknown horse ID.");
+					CivMessage.sendError(player, CivSettings.localize.localizedString("stable_unknownHorse"));
+					return;
+				}
+				if (horse_id >= 5 && !getCiv().hasTechnology("tech_military_science"))
+				{
+					CivMessage.sendError(player, CivSettings.localize.localizedString("stable_missingTech_MilitaryScience"));
 					return;
 				}
 				
@@ -112,7 +117,7 @@ public class Stable extends Structure {
 					}
 					
 					if (!allow) {
-						CivMessage.sendError(player, "Town does not have any horses. Socket a horse trade good in the town hall.");
+						CivMessage.sendError(player, CivSettings.localize.localizedString("stable_townNoHorses"));
 						return;
 					}
 				}
@@ -120,18 +125,19 @@ public class Stable extends Structure {
 				double paid;
 				if (resident.getTown() != getTown()) {
 					if (!resident.getTreasury().hasEnough(getItemCost(cost))) {
-						CivMessage.sendError(player, "You do not have the required "+getItemCost(cost)+" coins.");
+						CivMessage.sendError(player, CivSettings.localize.localizedString("var_config_marketItem_notEnoughCurrency",(getItemCost(cost)+" "+CivSettings.CURRENCY_NAME)));
+
 						return;
 					}
 					
 					
 					resident.getTreasury().withdraw(getItemCost(cost));
 					getTown().depositTaxed(getFeeToTown(cost));
-					CivMessage.send(player, CivColor.Yellow+"Paid "+getFeeToTown(cost)+" in non-resident fees.");
+					CivMessage.send(player, CivColor.Yellow+CivSettings.localize.localizedString("var_taxes_paid",getFeeToTown(cost),CivSettings.CURRENCY_NAME));
 					paid = getItemCost(cost);
 				} else {
 					if (!resident.getTreasury().hasEnough(cost)) {
-						CivMessage.sendError(player, "You do not have the required "+cost+" coins.");
+						CivMessage.sendError(player, CivSettings.localize.localizedString("var_config_marketItem_notEnoughCurrency",(cost+" "+CivSettings.CURRENCY_NAME)));
 						return;
 					}
 
@@ -143,6 +149,8 @@ public class Stable extends Structure {
 				if (!horse.mule) {			
 					mod = HorseModifier.spawn(horseSpawnCoord.getLocation());
 					mod.setType(HorseType.NORMAL);
+					mod.setTamed(true);
+					mod.setSaddled(true);
 				} else {
 					mod = HorseModifier.spawn(muleSpawnCoord.getLocation());
 					mod.setType(HorseType.MULE);
@@ -153,9 +161,10 @@ public class Stable extends Structure {
 				((Horse)mod.getHorse()).setJumpStrength(horse.jump);
 				((Horse)mod.getHorse()).setHealth(horse.health);
 				((Horse)mod.getHorse()).setOwner(player);
-				((Horse)mod.getHorse()).setBaby();
+				((Horse)mod.getHorse()).setCustomName(horse.name);
+				((Horse)mod.getHorse()).setCustomNameVisible(true);
 				
-				CivMessage.send(player, CivColor.LightGreen+"Paid "+paid+" coins.");
+				CivMessage.send(player, CivColor.LightGreen+CivSettings.localize.localizedString("var_stable_buySuccess",paid,CivSettings.CURRENCY_NAME));
 			}
 		}
 		
@@ -173,20 +182,25 @@ public class Stable extends Structure {
 			public void process(Player player) {
 
 				Resident resident = CivGlobal.getResident(player);
+				if ((item_id >= 417 && item_id <= 419)  && !getCiv().hasTechnology("tech_military_science"))
+				{
+					CivMessage.sendError(player, CivSettings.localize.localizedString("stable_missingTech_MilitaryScience"));
+					return;
+				}
 				
 				double paid;
 				if (resident.getTown() != getTown()) {
 					if (!resident.getTreasury().hasEnough(getItemCost(cost))) {
-						CivMessage.sendError(player, "You do not have the required "+getItemCost(cost)+" coins.");
+						CivMessage.sendError(player, CivSettings.localize.localizedString("var_config_marketItem_notEnoughCurrency",(getItemCost(cost)+" "+CivSettings.CURRENCY_NAME)));
 						return;
 					}
 					
 					resident.getTreasury().withdraw(getItemCost(cost));
-					CivMessage.send(player, CivColor.Yellow+"Paid "+getFeeToTown(cost)+" in non-resident fees.");
+					CivMessage.send(player, CivColor.Yellow+CivSettings.localize.localizedString("var_taxes_paid",getFeeToTown(cost),CivSettings.CURRENCY_NAME));
 					paid = getItemCost(cost);
 				} else {
 					if (!resident.getTreasury().hasEnough(cost)) {
-						CivMessage.sendError(player, "You do not have the required "+cost+" coins.");
+						CivMessage.sendError(player, CivSettings.localize.localizedString("var_config_marketItem_notEnoughCurrency",(cost+" "+CivSettings.CURRENCY_NAME)));
 						return;
 					}
 					
@@ -201,7 +215,7 @@ public class Stable extends Structure {
 					}
 				}
 				
-				CivMessage.send(player, CivColor.LightGreen+"Paid "+paid+" coins.");
+				CivMessage.send(player, CivColor.LightGreen+CivSettings.localize.localizedString("var_stable_buySuccess",paid,CivSettings.CURRENCY_NAME));
 			}
 			
 		}
@@ -212,9 +226,9 @@ public class Stable extends Structure {
 				continue;
 			}
 			if (item.item_id == 0) {
-				comp.addItem(new String[] {CivColor.LightGreen+item.name, "Buy For", ""+item.cost, "Fee:"+this.nonMemberFeeComponent.getFeeString()}, new buyHorseAction(item.horse_id, item.cost));
+				comp.addItem(new String[] {CivColor.LightGreen+item.name, CivSettings.localize.localizedString("stable_sign_buyFor"), ""+item.cost, CivSettings.localize.localizedString("Fee:")+this.nonMemberFeeComponent.getFeeString()}, new buyHorseAction(item.horse_id, item.cost));
 			} else {
-				comp.addItem(new String[] {CivColor.LightGreen+item.name, "Buy For", ""+item.cost, "Fee: "+this.nonMemberFeeComponent.getFeeString()}, new buyItemAction(item.item_id, item.cost));			
+				comp.addItem(new String[] {CivColor.LightGreen+item.name, CivSettings.localize.localizedString("stable_sign_buyFor"), ""+item.cost, CivSettings.localize.localizedString("Fee:")+this.nonMemberFeeComponent.getFeeString()}, new buyItemAction(item.item_id, item.cost));			
 			}
 		}
 	}
@@ -251,7 +265,7 @@ public class Stable extends Structure {
 	@Override
 	public void updateSignText() {
 		for (SignSelectionComponent comp : signSelectors.values()) {
-			comp.setMessageAllItems(3, "Fee: "+this.nonMemberFeeComponent.getFeeString());
+			comp.setMessageAllItems(3, CivSettings.localize.localizedString("Fee:")+" "+this.nonMemberFeeComponent.getFeeString());
 		}
 	}
 	
@@ -266,7 +280,7 @@ public class Stable extends Structure {
 			ItemManager.setTypeId(absCoord.getBlock(), sb.getType());
 			ItemManager.setData(absCoord.getBlock(), sb.getData());
 			structSign = new StructureSign(absCoord, this);
-			structSign.setText("\n"+ChatColor.BOLD+ChatColor.UNDERLINE+"Prev");
+			structSign.setText("\n"+ChatColor.BOLD+ChatColor.UNDERLINE+CivSettings.localize.localizedString("stable_sign_previousUnit"));
 			structSign.setDirection(sb.getData());
 			structSign.setAction(sb.keyvalues.get("id"));
 			structSign.setType("prev");
@@ -303,7 +317,7 @@ public class Stable extends Structure {
 			ItemManager.setData(absCoord.getBlock(), sb.getData());
 
 			structSign = new StructureSign(absCoord, this);
-			structSign.setText("\n"+ChatColor.BOLD+ChatColor.UNDERLINE+"Next");
+			structSign.setText("\n"+ChatColor.BOLD+ChatColor.UNDERLINE+CivSettings.localize.localizedString("stable_sign_nextUnit"));
 			structSign.setDirection(sb.getData());
 			structSign.setType("next");
 			structSign.setAction(sb.keyvalues.get("id"));

@@ -26,9 +26,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.avrgaming.civcraft.camp.Camp;
+import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Relation;
 import com.avrgaming.civcraft.object.Resident;
@@ -82,7 +84,7 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 	}
 	
 	private String getToWildMessage() {
-		return CivColor.LightGray+"Entering Wilderness "+CivColor.Rose+"[PvP]";
+		return CivColor.LightGray+CivSettings.localize.localizedString("playerChunkNotify_enterWilderness")+" "+CivColor.Rose+"[PvP]";
 	}
 	
 	private String getToTownMessage(Town town, TownChunk tc) {
@@ -101,9 +103,9 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 		}
 		
 		if (!tc.isOutpost()) {
-			return CivColor.LightGray+"Entering "+CivColor.White+town.getName()+" "+town.getPvpString()+" ";
+			return CivColor.LightGray+CivSettings.localize.localizedString("var_playerChunkNotify_EnterTown",CivColor.White+town.getName(),town.getPvpString());
 		} else {
-			return CivColor.LightGray+"Entering Outpost of "+CivColor.White+town.getName()+" "+town.getPvpString()+" ";
+			return CivColor.LightGray+CivSettings.localize.localizedString("var_playerChunkNotify_EnterOutpost",CivColor.White+town.getName(),town.getPvpString());
 		}
 	}
 	
@@ -125,59 +127,82 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			return;
 		}
 		
-		String out = "";
+		Civilization civilization = resident.getCiv();
+		
+		String title = "";
+		String subTitle = "";
 		
 		//We've entered a camp.
 		if (toCamp != null && toCamp != fromCamp) {
-			out += CivColor.Gold+"Camp "+toCamp.getName()+" "+CivColor.Rose+"[PvP]";
-		}
-		
-		if (toCamp == null && fromCamp != null) {
-			out += getToWildMessage();
-		}
-		
-		// From Wild, to town
+			title += CivColor.Gold+CivSettings.localize.localizedString("var_playerChunkNotify_enterCamp",toCamp.getName())+" "+CivColor.Rose+"[PvP]";
+		} else if (toCamp == null && fromCamp != null) {
+			title += getToWildMessage();
+		} else if (fromTc != null && toTc == null) {
+			// From a town... to the wild
+			title += getToWildMessage();
+		} 
 		if (fromTc == null && toTc != null) {			
 			// To Town
-			out += getToTownMessage(toTc.getTown(), toTc);
+			Town t = toTc.getTown();
+			title += getToTownMessage(t, toTc);
+			if (resident.getTown() == toTc.getTown()) {
+				subTitle += CivSettings.localize.localizedString("var_civ_border_welcomeHome", player.getName());
+			} else {
+				if (t.isOutlaw(resident)) {
+					subTitle += CivColor.Red+CivSettings.localize.localizedString("town_border_outlaw");
+				}
+			}
+			
 		}
 		
-		// From a town... to the wild
-		if (fromTc != null && toTc == null) {
-			out += getToWildMessage();
-		}
 		
-		// To another town(should never happen with culture...)
-		if (fromTc != null && toTc != null && fromTc.getTown() != toTc.getTown()) {
-			out += getToTownMessage(toTc.getTown(), toTc);
-		}
 		
-		if (toTc != null) {
-			out += toTc.getOnEnterString(player, fromTc);
-		}
+//		// To another town(should never happen with culture...)
+//		if (fromTc != null && toTc != null && fromTc.getTown() != toTc.getTown()) {
+//			title += getToTownMessage(toTc.getTown(), toTc);
+//		}
+		
+//		if (toTc != null) {
+//			subTitle += toTc.getOnEnterString(player, fromTc);
+//		}
 		
 		// Leaving culture to the wild.
 		if (fromCc != null && toCc == null) {
-			out += fromCc.getOnLeaveString();
-		}
-		
-		// Leaving wild, entering culture. 
-		if (fromCc == null && toCc != null) {
-			out += toCc.getOnEnterString();
+			title += fromCc.getOnLeaveString();
+		} else if (fromCc == null && toCc != null) {	// Leaving wild, entering culture.
+			title += toCc.getOnEnterString();
+			if (civilization != null) {
+				if (civilization == toCc.getCiv()) {
+					subTitle += CivSettings.localize.localizedString("var_civ_border_welcomeBack", player.getName());
+				} else {
+					String relationship = civilization.getDiplomacyManager().getRelation(toCc.getCiv()).toString();
+					if (relationship != null && relationship.length() >= 1) {
+						subTitle = CivSettings.localize.localizedString("var_civ_border_relation",relationship);
+					}
+				}			}
 			onCultureEnter(toCc);
-		}
-		
-		//Leaving one civ's culture, into another. 
-		if (fromCc != null && toCc !=null && fromCc.getCiv() != toCc.getCiv()) {
-			out += fromCc.getOnLeaveString() +" | "+ toCc.getOnEnterString();
+		} else if (fromCc != null && toCc !=null && fromCc.getCiv() != toCc.getCiv()) {
+			//Leaving one civ's culture, into another. 
+			
+			title += fromCc.getOnLeaveString() +" | "+ toCc.getOnEnterString();
 			onCultureEnter(toCc);
+			if (civilization != null) {
+				if (civilization == toCc.getCiv()) {
+					subTitle += CivSettings.localize.localizedString("var_civ_border_welcomeBack", player.getName());
+				} else {
+					String relationship = civilization.getDiplomacyManager().getRelation(toCc.getCiv()).toString();
+					if (relationship != null && relationship.length() >= 1) {
+						subTitle = CivSettings.localize.localizedString("var_civ_border_relation",relationship);
+					}
+				}
+			}
 		}
 		
-		if (!out.equals("")) {
+		if (!title.equals("")) {
 			//ItemMessage im = new ItemMessage(CivCraft.getPlugin());
 			//im.sendMessage(player, CivColor.BOLD+out, 3);
-			
-			CivMessage.send(player, out);
+			CivMessage.sendTitle(player, title, subTitle);
+//			CivMessage.send(player, title);
 		}
 		
 		if (resident.isShowInfo()) {
@@ -219,7 +244,7 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 		lastMessageTime = now;
 
 		cultureEnterTimes.put(borderSpamKey, lastMessageTime);
-		CivMessage.sendCiv(toCc.getCiv(), color+player.getDisplayName()+"("+relationName+") has entered our borders.");
+		CivMessage.sendCiv(toCc.getCiv(), CivSettings.localize.localizedString("var_playerChunkNotify_enteredBorderAlert",(color+player.getDisplayName()+"("+relationName+")")));
 	}
 
 

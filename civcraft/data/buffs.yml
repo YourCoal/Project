@@ -29,14 +29,14 @@ buffs:
 
     - id: 'buff_monopoly'
       name: 'Monopoly'
-      description: 'Increases coin output from all trade goods in use by <lightgreen>3%<r> <gold>Stackable<r>'
-      value: '0.3'
+      description: 'Increases coin output from all trade goods in use by <lightgreen>15%<r> <gold>Stackable<r>'
+      value: '0.15'
       stackable: true
       parent:
     
     - id: 'buff_preservative'
       name: 'Preservative'
-      description: 'Reduces consumption of cottages by <lightgreen>50%<r>'
+      description: 'Reduces consumption of cottages by <lightgreen>50%<r> <red>Not Stackable<r>'
       value: '0.5'
       stackable: false
       parent:
@@ -50,7 +50,7 @@ buffs:
 
     - id: 'buff_barricade'
       name: 'Barricade'
-      description: 'Increases HP of defensive structures by <lightgreen>50%<r>'
+      description: 'Increases HP of defensive structures by <lightgreen>50%<r> <red>Not Stackable<r>'
       value: '0.5'
       stackable: false
       parent:
@@ -64,85 +64,106 @@ buffs:
 
     - id: 'buff_fine_art'
       name: 'Fine Art'
-      description: 'Increases culture output of a town by <lightgreen>25%<r>'
+      description: 'Increases culture output of a town by <lightgreen>25%<r> <red>Not Stackable<r>'
       value: '0.25'
+      stackable: false
+      parent:
+
+    - id: 'buff_art_appreciation'
+      name: 'Art Appreciation'
+      description: 'Increases culture output of a town by <lightgreen>20%<r> <red>Not Stackable<r>'
+      value: '0.20'
       stackable: false
       parent:
 
     - id: 'buff_extraction'
       name: 'Extraction'
-      description: 'Increases the Trommel chance of producing precious minerals by <lightgreen>50%<r> <gold>Stackable<r>'
+      description: 'Increases the Trommel chance of producing precious minerals by <lightgreen>50%<r> <red>Not Stackable<r>'
       value: '0.5'
       stackable: false
       parent:
 
     - id: 'buff_fire_bomb'
       name: 'Fire Bomb'
-      description: 'Increases damage of arrow/cannon towers by a <lightgreen>10%<r> Also makes arrow towers shoot flaming arrows <gold>Stackable<r>'
-      value: '1.0'
+      description: 'Increases damage of arrow/cannon towers by <lightgreen>50%<r> Also makes arrow towers shoot flaming arrows <red>Not Stackable<r>'
+      value: '0.5'
       stackable: false
       parent:
 
     - id: 'buff_fishing'
       name: 'Fishing'
-      description: 'Allows uncooked fish to replace the need for bread. <lightgreen>1 fish = 2 bread<r>'
+      description: 'Allows uncooked fish to replace the need for bread. <lightgreen>1 fish = 2 bread<r> <red>Not Stackable<r>'
       value: '2'
       stackable: false
       parent:
     
     - id: 'buff_greed'
       name: 'Greed'
-      description: 'Increases interest rates by <lightgreen>3%<r>'
+      description: 'Increases interest rates by <lightgreen>3%<r> <red>Not Stackable<r>'
       value: '0.03'
       stackable: false
       parent:
 
     - id: 'buff_medicine'
       name: 'Medicine'
-      description: 'Decreases friendly respawn time during war by <lightgreen>50<r> seconds.'
+      description: 'Decreases friendly respawn time during war by <lightgreen>50<r> seconds.<r> <red>Not Stackable<r>'
       value: '50'
       stackable: false
       parent:
     
     - id: 'buff_dirty_money'
       name: 'Dirty Money'
-      description: 'Increases the chances of Steal Treasury by <lightgreen>50%<r>'
+      description: 'Increases the chances of Steal Treasury by <lightgreen>50%<r> <red>Not Stackable<r>'
       value: '0.5'
       stackable: false
       parent:
 
     - id: 'buff_espionage'
       name: 'Espionage'
-      description: 'Increases the chances of poison granary and incite revolt by <lightgreen>50%<r>'
+      description: 'Increases the chances of poison granary and incite revolt by <lightgreen>50%<r> <red>Not Stackable<r>'
       value: '0.5'
       stackable: false
       parent:
     
     - id: 'buff_rush'
       name: 'Rush'
-      description: 'Reduces the hammer cost of all structures, wonders and improvements by <lightgreen>15%<r>'
+      description: 'Reduces the hammer cost of all structures, wonders and improvements by <lightgreen>15%<r> <red>Not Stackable<r>'
       value: '0.15'
       stackable: false
       parent:
-    
+
+    - id: 'buff_profit_sharing'
+      name: 'Profit Sharing'
+      description: 'Reduces the coin cost of all technology researches by <lightgreen>5%<r> <red>Not Stackable<r>'
+      value: '0.05'
+      stackable: false
+      parent:
+  
     - id: 'buff_sabotage'
       name: 'Sabotage'
-      description: 'Greatly increases the effectivenes of sabotage missions by <lightgreen>50%<r>'
+      description: 'Greatly increases the effectivenes of sabotage missions by <lightgreen>50%<r> <red>Not Stackable<r>'
       value: '0.5'
       stackable: false
       parent:
 
     - id: 'buff_hedonism'
       name: 'Hedonism'
-      description: 'Grants an extra <lightgreen>3<r> happiness'
+      description: 'Grants an extra <lightgreen>3<r> happiness<r> <gold>Stackable<r>'
       value: '3.0'
       stackable: true
       parent:
 
     - id: 'buff_noanarchy'
       name: 'No Anarchy'
-      description: 'Civilization does not experience anarchy when switching governments.'
+      description: 'Civilization spends 50% less time in anarchy, with a max of 2 hours.<r> <red>Not Stackable<r>'
       value: '0'
+      stackable: false
+      parent:
+
+    - id: 'buff_reduced_anarchy'
+      name: 'Reduced Anarchy'
+      description: 'Civilization spends 50% less time in anarchy per resident for this town.<r> <red>Not Stackable<r>'
+      value: '0.5'
       stackable: false
       parent:
 
@@ -163,8 +184,8 @@ buffs:
 
     - id: 'buff_pyramid_culture'
       name: 'Pyramid Culture Bonus' 
-      description: 'Increases culture output from civilization by 10%'
-      value: '1.1'
+      description: 'Increases culture output from civilization by 50%'
+      value: '0.5'
       stackable: false
       parent:
 
@@ -241,9 +262,9 @@ buffs:
       parent:
 # Notre Dame buffs
     - id: 'buff_notre_dame_no_anarchy'
-      name: 'Notre Dame No Anarchy'
-      description: 'Civilization suffers no anarchy during government changes.'
-      value: '0'
+      name: 'Notre Dame Reduced Anarchy'
+      description: 'Civilization suffers 1/2 anarchy time during government changes.'
+      value: '0.5'
       stackable: false
       parent: 'buff_noanarchy'
 
@@ -255,7 +276,7 @@ buffs:
       parent:
 
     - id: 'buff_notre_dame_extra_war_penalty'
-      name: 'Notre Dame No Anarchy'
+      name: 'Notre Dame Extra War Penalty'
       description: 'Aggressors pay 2x war penalties when declaring war on this civilization or its allies.'
       value: '2'
       stackable: false
@@ -275,26 +296,85 @@ buffs:
       value: '2'
       stackable: false
       parent:
-      
+
     - id: 'buff_chichen_itza_cp_bonus_hp'
       name: 'Chichen Itza Control Point Bonus HP'
       description: 'Increase the hitpoints of all Control Points of a town by 10 HP.'
       value: '10'
       stackable: false
       parent:
+
 #Colosseum Buffs
     - id: 'buff_colosseum_coins_from_towns'
       name: 'Colosseum Coins From Towns'
-      description: 'Grants 100 coins per day to the civilization for every town in the world.'
-      value: '100'
+      description: 'Grants 1000 coins per day to the civilization for every town in the world.'
+      value: '1000'
       stackable: false
       parent:
-
 
 #Globe Theatre Buffs
     - id: 'buff_globe_theatre_culture_from_towns'
       name: 'Globe Theatre Culture From Towns'
-      description: 'Increase culture by 1 for every town in the world.'
-      value: '1'
+      description: 'Increase culture by 10 for every town in the world.'
+      value: '10'
+      stackable: false
+      parent:
+
+#Great Lighthouse Buffs
+    - id: 'buff_great_lighthouse_tower_range'
+      name: 'Great Lighthouse Increse Tower Range'
+      description: 'Increase Tower Firing range in this town by 50%'
+      value: '1.5'
+      stackable: false
+      parent:
+
+    - id: 'buff_great_lighthouse_trade_ship_income'
+      name: 'Lighthouse Trade Ship Income'
+      description: 'Trade Ships earn 20% more for selling items'
+      value: '1.2'
+      stackable: false
+      parent:
+
+# Mother Tree buffs
+    - id: 'buff_mother_tree_growth'
+      name: 'Mother Tree Growth Bonus'
+      description: 'Grants a 50% bonus to farm growth rates across the civilization.'
+      value: '0.50'
+      stackable: false
+      parent:
+
+    - id: 'buff_mother_tree_tile_improvement_cost'
+      name: 'Mother Tree Tile Improvment Cost'
+      description: 'Tile Improvements cost 20% less across the civilization.'
+      value: '0.20'
+      stackable: false
+      parent:
+
+    - id: 'buff_mother_tree_tile_improvement_bonus'
+      name: 'Mother Tree Tile Improvment Bonus'
+      description: 'Can build twice as many tile improvments in this town.'
+      value: '0.20'
+      stackable: false
+      parent:
+
+# Grand Ship Ingermanland Buffs
+    - id: 'buff_ingermanland_fishing_boat_immunity'
+      name: 'Ingermanland Fishing Boat Immunity'
+      description: 'Fishing Boats are immune to Espionage missions.'
+      value: '1.0'
+      stackable: false
+      parent:
+
+    - id: 'buff_ingermanland_trade_ship_income'
+      name: 'Ingermanland Trade Ship Income'
+      description: 'Trade Ships earn 30% more for selling items'
+      value: '1.3'
+      stackable: false
+      parent:
+
+    - id: 'buff_ingermanland_water_range'
+      name: 'Ingermanland Navy Range'
+      description: 'Navy Vessels have 50% greater attack range'
+      value: '1.5'
       stackable: false
       parent:

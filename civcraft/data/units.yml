@@ -59,7 +59,7 @@ units:
     require_struct:
     require_upgrade:
     cost: 25000.0
-    hammer_cost: 500.0
+    hammer_cost: 1000.0
     limit: 0
     item_id: 330
     item_data: 0

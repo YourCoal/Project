@@ -30,6 +30,7 @@ import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigGrocerLevel;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivGlobal;
+import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.StructureSign;
@@ -46,6 +47,7 @@ public class Grocer extends Structure {
 		super(center, id, town);
 		nonMemberFeeComponent = new NonMemberFeeComponent(this);
 		nonMemberFeeComponent.onSave();
+		setLevel(town.saved_grocer_levels);
 	}
 
 	public Grocer(ResultSet rs) throws SQLException, CivException {
@@ -56,11 +58,11 @@ public class Grocer extends Structure {
 
 	@Override
 	public String getDynmapDescription() {
-		String out = "<u><b>Grocer</u></b><br/>";
+		String out = "<u><b>"+this.getDisplayName()+"</u></b><br/>";
 
 		for (int i = 0; i < level; i++) {
 			ConfigGrocerLevel grocerlevel = CivSettings.grocerLevels.get(i+1);
-			out += "<b>"+grocerlevel.itemName+"</b> Amount: "+grocerlevel.amount+ " Price: "+grocerlevel.price+" coins.<br/>";
+			out += "<b>"+grocerlevel.itemName+"</b> "+CivSettings.localize.localizedString("Amount")+" "+grocerlevel.amount+ " "+CivSettings.localize.localizedString("Price")+" "+grocerlevel.price+" "+CivSettings.CURRENCY_NAME+".<br/>";
 		}
 		
 		return out;
@@ -112,14 +114,14 @@ public class Grocer extends Structure {
 				if (t == this.getTown()) {
 					// Pay no taxes! You're a member.
 					resident.buyItem(itemName, id, data, price, amount);
-					CivMessage.send(player, CivColor.LightGreen + "Bought "+amount+" "+itemName+" for "+ price+ " coins.");
+					CivMessage.send(player, CivColor.LightGreen + CivSettings.localize.localizedString("var_grocer_msgBought",amount,itemName,price+" "+CivSettings.CURRENCY_NAME));
 					return;
 				} else {
 					// Pay non-resident taxes
 					resident.buyItem(itemName, id, data, price + payToTown, amount);
 					getTown().depositDirect(payToTown);
-					CivMessage.send(player, CivColor.LightGreen + "Bought "+amount+" "+itemName+" for "+ price+ " coins.");
-					CivMessage.send(player, CivColor.Yellow + "Paid "+ payToTown+" coins in non-resident taxes.");
+					CivMessage.send(player, CivColor.LightGreen + CivSettings.localize.localizedString("var_grocer_msgBought",amount,itemName,price,CivSettings.CURRENCY_NAME));
+					CivMessage.send(player, CivColor.Yellow + CivSettings.localize.localizedString("var_grocer_msgPaidTaxes",this.getTown().getName(),payToTown+" "+CivSettings.CURRENCY_NAME));
 				}
 			
 			}
@@ -136,10 +138,14 @@ public class Grocer extends Structure {
 	
 		for (count = 0; count < level; count++) {
 			StructureSign sign = getSignFromSpecialId(count);
+			if (sign == null) {
+				CivLog.error("sign from special id was null, id:"+count);
+				return;
+			}
 			ConfigGrocerLevel grocerlevel = CivSettings.grocerLevels.get(count+1);
 			
-			sign.setText("Buy\n"+grocerlevel.itemName+"\n"+
-						 "For "+grocerlevel.price+" Coins\n"+
+			sign.setText(CivSettings.localize.localizedString("grocer_sign_buy")+"\n"+grocerlevel.itemName+"\n"+
+						 CivSettings.localize.localizedString("grocer_sign_for")+" "+grocerlevel.price+" "+CivSettings.CURRENCY_NAME+"\n"+
 					     getNonResidentFeeString());
 			
 			sign.update();
@@ -147,7 +153,11 @@ public class Grocer extends Structure {
 		
 		for (; count < getSigns().size(); count++) {
 			StructureSign sign = getSignFromSpecialId(count);
-			sign.setText("Grocer Shelf\nEmpty");
+			if (sign == null) {
+				CivLog.error("sign from special id was null, id:"+count);
+				return;
+			}
+			sign.setText(CivSettings.localize.localizedString("grocer_sign_empty"));
 			sign.update();
 		}
 		
@@ -161,7 +171,7 @@ public class Grocer extends Structure {
 			sign_buy_material(player, grocerlevel.itemName, grocerlevel.itemId, 
 					(byte)grocerlevel.itemData, grocerlevel.amount, grocerlevel.price);
 		} else {
-			CivMessage.send(player, CivColor.Rose+"Grocer shelf empty, stock it using /town upgrade.");
+			CivMessage.send(player, CivColor.Rose+CivSettings.localize.localizedString("grocer_sign_needUpgrade"));
 		}
 	}
 	

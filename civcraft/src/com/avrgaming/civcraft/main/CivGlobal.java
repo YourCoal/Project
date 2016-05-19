@@ -119,6 +119,9 @@ public class CivGlobal {
 
 	public static final double MIN_FRAME_DISTANCE = 3.0;
 	
+	public static double LIGHTHOUSE_WATER_PLAYER_SPEED = 1.5;
+	public static double LIGHTHOUSE_WATER_BOAT_SPEED = 1.1;
+	
 	public static Economy econ;
 	
 	private static Map<String, QuestionBaseTask> questions = new ConcurrentHashMap<String, QuestionBaseTask>();
@@ -158,7 +161,7 @@ public class CivGlobal {
 	public static HashSet<String> researchedTechs = new HashSet<String>();
 	
 	/* TODO change this to true for MC 1.8 */
-	public static boolean useUUID = false;
+	public static boolean useUUID = true;
 	
 	public static Map<Integer, Boolean> CivColorInUse = new ConcurrentHashMap<Integer, Boolean>();
 	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
@@ -174,13 +177,16 @@ public class CivGlobal {
 	
 	public static Integer maxPlayers = -1;
 	public static HashSet<String> betaPlayers = new HashSet<String>();
-	public static String fullMessage = "Server is full for now, come back later.";
+	public static String fullMessage = "";
 	public static Boolean betaOnly = false;
 	
 	//TODO convert this to completely static?
 	private static SessionDatabase sdb;
 
 	public static boolean trommelsEnabled = true;
+	public static boolean quarriesEnabled = true;
+	public static boolean fisheryEnabled = true;
+	public static boolean mobGrinderEnabled = true;
 	public static boolean towersEnabled = true;
 	public static boolean growthEnabled = true;
 	public static Boolean banWordsAlways = false;
@@ -189,6 +195,8 @@ public class CivGlobal {
 	public static boolean warningsEnabled = true;
 	public static boolean tradeEnabled = true;
 	public static boolean loadCompleted = false;
+	public static boolean speedChunks = false;
+	public static int minBuildHeight = 1;
 
 	public static ArrayList<Town> orphanTowns = new ArrayList<Town>();
 	public static ArrayList<Civilization> orphanCivs = new ArrayList<Civilization>();
@@ -199,6 +207,8 @@ public class CivGlobal {
 	public static PerkManager perkManager = null;
 	public static boolean installMode = false;
 	
+	public static int highestCivEra = 0;
+		
 	public static void loadGlobals() throws SQLException, CivException {
 		
 		CivLog.heading("Loading CivCraft Objects From Database");
@@ -211,8 +221,8 @@ public class CivGlobal {
 		loadResidents();
 		loadPermissionGroups();
 		loadTownChunks();
-		loadStructures();
 		loadWonders();
+		loadStructures();
 		loadWallBlocks();
 		loadRoadBlocks();
 		loadTradeGoods();
@@ -269,6 +279,21 @@ public class CivGlobal {
 		objective2.setDisplayName("OBJECTIVE2 NAME HERE");*/
 		
 		checkForInvalidStructures();
+		
+		try {
+			minBuildHeight = CivSettings.getInteger(CivSettings.civConfig, "global.min_build_height");
+		} catch (InvalidConfiguration e) {
+			minBuildHeight = 1;
+			e.printStackTrace();
+		}
+
+		try {
+			speedChunks = CivSettings.getBoolean(CivSettings.civConfig, "global.speed_check_chunks");
+		} catch (InvalidConfiguration e) {
+			speedChunks = false;
+			e.printStackTrace();
+		}
+		
 		loadCompleted = true;
 	}
 	
@@ -354,6 +379,47 @@ public class CivGlobal {
 			}
 		}
 	}
+	
+	public static String localizedEraString(int era) {
+		String newEra = "";
+		switch (era) {
+		case 0: //ANCIENT
+			newEra = "announce_ancientEra";
+			break;
+		case 1: //CLASSICAL
+			newEra = "announce_classicalEra";
+			break;
+		case 2: //MEDIEVAL
+			newEra = "announce_medievalEra";
+			break;
+		case 3: //RENAISSANCE
+			newEra = "announce_renaissanceEra";
+			break;
+		case 4: //INDUSTRIAL
+			newEra = "announce_industrialEra";
+			break;
+		case 5: //MODERN
+			newEra = "announce_modernEra";
+			break;
+		case 6: //ATOMIC
+			newEra = "announce_atomicEra";
+			break;
+		case 7: //INFORMATION
+			newEra = "announce_informationEra";
+			break;
+		default:
+			break;
+		}
+		return CivSettings.localize.localizedString(newEra);
+	}
+	
+	public static void setCurrentEra(int era, Civilization civ) {
+		if (era > highestCivEra && !civ.isAdminCiv()) {
+			highestCivEra = era;
+			CivMessage.globalTitle(CivColor.Green+ localizedEraString(highestCivEra) , CivColor.LightGreen+CivSettings.localize.localizedString("var_announce_newEraCiv", civ.getName()));
+			
+		}
+	}
 
 	private static void loadCivs() throws SQLException {
 		Connection context = null;
@@ -369,6 +435,12 @@ public class CivGlobal {
 			while(rs.next()) {
 				try {
 					Civilization civ = new Civilization(rs);
+					
+					if (highestCivEra < civ.getCurrentEra() && !civ.isAdminCiv())
+					{
+						highestCivEra = civ.getCurrentEra();
+					}
+					
 					if (!civ.isConquered()) {
 						CivGlobal.addCiv(civ);
 					} else {
@@ -702,7 +774,7 @@ public class CivGlobal {
 	public static Player getPlayer(Resident resident) throws CivException {
 		Player player = Bukkit.getPlayer(resident.getUUID());
 		if (player == null)
-			throw new CivException("No player named "+resident.getName());
+			throw new CivException("No player named"+" "+resident.getName());
 		return player;
 	}
 	
@@ -717,29 +789,29 @@ public class CivGlobal {
 	}
 	
 	public static Resident getResident(Player player) {
-		return residents.get(player.getName().toLowerCase());
+		return residents.get(player.getName());
 	}
 	
 	public static Resident getResident(Resident resident) {
-		return residents.get(resident.getName().toLowerCase());
+		return residents.get(resident.getName());
 	}
 
 	public static boolean hasResident(String name) {
-		return residents.containsKey(name.toLowerCase());
+		return residents.containsKey(name);
 	}
 
 	public static void addResident(Resident res) {
-		residents.put(res.getName().toLowerCase(), res);
+		residents.put(res.getName(), res);
 		residentsViaUUID.put(res.getUUID(), res);
 	}
 	
 	public static void removeResident(Resident res) {
-		residents.remove(res.getName().toLowerCase());
+		residents.remove(res.getName());
 		residentsViaUUID.remove(res.getUUID());
 	}
 
 	public static Resident getResident(String name) {
-		return residents.get(name.toLowerCase());
+		return residents.get(name);
 	}
 	
 	public static Resident getResidentViaUUID(UUID uuid) {
@@ -824,7 +896,7 @@ public class CivGlobal {
 			 * this will allow questions to come in on a pseduo 'first come first serve' and 
 			 * prevents question spamming.
 			 */
-			throw new CivException("Player already has a question pending, wait 30 seconds and try again.");			
+			throw new CivException(CivSettings.localize.localizedString("civGlobal_hasPendingRequest"));			
 		}
 		
 		task = new PlayerQuestionTask(toPlayer, fromPlayer, question, timeout, finishedFunction);
@@ -841,7 +913,7 @@ public class CivGlobal {
 			 * this will allow questions to come in on a pseduo 'first come first serve' and 
 			 * prevents question spamming.
 			 */
-			throw new CivException("Leaders of civ already have a question pending, wait 30 seconds and try again.");			
+			throw new CivException(CivSettings.localize.localizedString("civGlobal_civHasPendingRequest"));			
 		}
 		
 		task = new CivLeaderQuestionTask(toCiv, fromPlayer, question, timeout, finishedFunction);
@@ -914,13 +986,11 @@ public class CivGlobal {
 	
 	public static Player getPlayer(String name) throws CivException {
 		Resident res = CivGlobal.getResident(name);
-		if (res == null) {
-			throw new CivException("No resident named "+name);
-		}
-		
+		if (res == null)
+			throw new CivException(CivSettings.localize.localizedString("var_civGlobal_noResident",name));
 		Player player = Bukkit.getPlayer(res.getUUID());
 		if (player == null)
-			throw new CivException("No player named "+name);
+			throw new CivException(CivSettings.localize.localizedString("var_civGlobal_noPlayer",name));
 		return player;	
 	}
 	
@@ -1122,7 +1192,7 @@ public class CivGlobal {
 		return false;		
 	}
 
-	public static boolean hasTimeElapsed(SessionEntry se, int seconds) {
+	public static boolean hasTimeElapsed(SessionEntry se, double seconds) {
 		long now = System.currentTimeMillis();
 		int secondsBetween = getSecondsBetween(se.time, now);
 		
@@ -1194,7 +1264,12 @@ public class CivGlobal {
 	}
 
 	public static void removeFarmChunk(ChunkCoord coord) {
-		farmChunks.remove(coord);
+		FarmChunk fc = getFarmChunk(coord);
+		if (fc != null) {
+			CivGlobal.dequeueFarmChunk(fc);
+			farmGrowQueue.remove(fc);
+		}
+		farmChunks.remove(coord);	
 	}
 	
 	public static void addProtectedItemFrame(ItemFrameStorage framestore) {
@@ -1207,7 +1282,17 @@ public class CivGlobal {
 	}
 	
 	public static void removeProtectedItemFrame(UUID id) {
+
+		CivLog.debug("Remove ID: "+id);
+		if (id == null)
+		{
+			return;
+		}
 		ItemFrameStorage store = getProtectedItemFrame(id);
+		if (store == null)
+		{
+			return;
+		}
 		ItemFrameStorage.attachedBlockMap.remove(store.getAttachedBlock());
 		protectedItemFrames.remove(id);
 	}
@@ -1449,28 +1534,27 @@ public class CivGlobal {
 		civ.getDiplomacyManager().setRelation(otherCiv, status, null);
 		otherCiv.getDiplomacyManager().setRelation(civ, status, null);
 		
-		String out = civ.getName()+" is now ";
+		String out = "";
 		switch (status) {
 		case NEUTRAL:
-			out += "NEUTRAL with ";
+			out += CivColor.LightGray+CivSettings.localize.localizedString("civGlobal_relation_Neutral")+CivColor.White;
 			break;
 		case HOSTILE:
-			out += CivColor.Yellow+"HOSTILE"+CivColor.White+" towards ";
+			out += CivColor.Yellow+CivSettings.localize.localizedString("civGlobal_relation_Hostile")+CivColor.White;
 			break;
 		case WAR:
-			out += "at "+CivColor.Rose+"WAR"+CivColor.White+" with ";
+			out += CivColor.Rose+CivSettings.localize.localizedString("civGlobal_relation_War")+CivColor.White;
 			break;
 		case PEACE:
-			out += "at PEACE with ";
+			out += CivColor.LightGreen+CivSettings.localize.localizedString("civGlobal_relation_Peace")+CivColor.White;
 			break;
 		case ALLY:
-			out += CivColor.LightGreen+" ALLIED "+CivColor.White+" with ";
+			out += CivColor.Green+CivSettings.localize.localizedString("civGlobal_relation_Allied")+CivColor.White;
 			break;
 		default:
 			break;
 		}
-		out += otherCiv.getName();
-		CivMessage.global(out);
+		CivMessage.global(CivSettings.localize.localizedString("var_civGlobal_relation_isNow",civ.getName(),out,otherCiv.getName()));
 		CivGlobal.updateTagsBetween(civ, otherCiv);
 	}
 	
@@ -1487,7 +1571,7 @@ public class CivGlobal {
 			 * this will allow questions to come in on a pseduo 'first come first serve' and 
 			 * prevents question spamming.
 			 */
-			throw new CivException("Civilization already has an offer pending, wait 30 seconds and try again.");			
+			throw new CivException(CivSettings.localize.localizedString("civGlobal_civHasPendingRequest"));			
 		}
 		
 		task = new CivQuestionTask(toCiv, fromCiv, question, timeout, finishedFunction);
@@ -1504,7 +1588,7 @@ public class CivGlobal {
 			 * this will allow questions to come in on a pseduo 'first come first serve' and 
 			 * prevents question spamming.
 			 */
-			throw new CivException("Civilization already has an offer pending, wait 30 seconds and try again.");			
+			throw new CivException(CivSettings.localize.localizedString("civGlobal_civHasPendingRequest"));			
 		}
 		
 		task = new CivQuestionTask(toCiv, fromCiv, question, timeout, finishedFunction);
@@ -1954,6 +2038,10 @@ public class CivGlobal {
 
 	public static Collection<Structure> getStructures() {
 		return structures.values();
+	}
+	
+	public static void dequeueFarmChunk(FarmChunk fc) {
+		farmChunkUpdateQueue.remove(fc);
 	}
 	
 	public static void queueFarmChunk(FarmChunk fc) {

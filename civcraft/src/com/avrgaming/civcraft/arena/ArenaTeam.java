@@ -65,7 +65,6 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	
 	private void loadMembers(String memberList) {
 		
-		if (CivGlobal.useUUID) {
 			String[] members = memberList.split(",");
 			for (String uuid : members) {
 				Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(uuid));
@@ -73,29 +72,14 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 					teamMembers.add(resident);
 				}
 			}
-		} else {
-			String[] members = memberList.split(",");
-			for (String name : members) {
-				Resident resident = CivGlobal.getResident(name);
-				if (resident != null) {
-					teamMembers.add(resident);
-				}
-			}
-		}
 	}
 	
 	public String getMemberListSaveString() {
 		String out = "";
 
-		if (CivGlobal.useUUID) {
 			for (Resident resident : teamMembers) {
 				out += resident.getUUIDString()+",";
-			}			
-		} else {
-			for (Resident resident : teamMembers) {
-				out += resident.getName()+",";
-			}
-		}
+			}	
 		
 		return out;
 	}
@@ -106,11 +90,7 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));
 		
-		if (CivGlobal.useUUID) {
 			this.leader = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("leader")));
-		} else {
-			this.leader = CivGlobal.getResident(rs.getString("leader"));
-		}
 		if (leader == null) {
 			CivLog.error("Couldn't load leader for team:"+this.getName()+"("+this.getId()+")");
 			return;
@@ -132,11 +112,7 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-		if (CivGlobal.useUUID) {
 			hashmap.put("leader", this.leader.getUUIDString());
-		} else {
-			hashmap.put("leader", this.leader.getName());		
-		}
 		hashmap.put("ladderPoints", this.getLadderPoints());
 		hashmap.put("members", this.getMemberListSaveString());
 
@@ -179,7 +155,7 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public static void createTeam(String name, Resident leader) throws CivException {
 		try {
 			if (arenaTeams.containsKey(name)) {
-				throw new CivException("A team with that name already exists.");
+				throw new CivException(CivSettings.localize.localizedString("arena_teamExists"));
 			}
 			
 			ArenaTeam team = new ArenaTeam(name, leader);
@@ -189,9 +165,9 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 			teamRankings.add(team);
 			
 			Collections.sort(teamRankings);			
-			CivMessage.sendSuccess(leader, "Create a new team named "+name);
+			CivMessage.sendSuccess(leader, CivSettings.localize.localizedString("arena_createTeamPrompt")+" "+name);
 		} catch (InvalidNameException e) {
-			throw new CivException("Invalid name("+name+") choose another.");
+			throw new CivException(CivSettings.localize.localizedString("arena_createInvalid",name));
 		}
 	}
 	
@@ -209,18 +185,18 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public static void addMember(String teamName, Resident member) throws CivException {
 		ArenaTeam team = arenaTeams.get(teamName);
 		if (team == null) {
-			throw new CivException("No team named "+teamName);
+			throw new CivException(CivSettings.localize.localizedString("arena_noTeamNamed")+" "+teamName);
 		}
 		
 		try {
 			int max_team_size = CivSettings.getInteger(CivSettings.arenaConfig, "max_team_size");
 			
 			if (team.teamMembers.size() >= max_team_size) {
-				throw new CivException("Cannot have teams with more than "+max_team_size+" players.");
+				throw new CivException(CivSettings.localize.localizedString("var_arena_maxPlayers",max_team_size));
 			}
 			
 		} catch (InvalidConfiguration e) {
-			throw new CivException("Internal configuration error");
+			throw new CivException(CivSettings.localize.localizedString("internalException"));
 		}
 		
 		team.teamMembers.add(member);
@@ -230,11 +206,11 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public static void removeMember(String teamName, Resident member) throws CivException {
 		ArenaTeam team = arenaTeams.get(teamName);
 		if (team == null) {
-			throw new CivException("No team named "+teamName);
+			throw new CivException(CivSettings.localize.localizedString("arena_noTeamNamed")+" "+teamName);
 		}
 		
 		if (!team.teamMembers.contains(member)) {
-			throw new CivException("No team member named:"+member);
+			throw new CivException(CivSettings.localize.localizedString("arena_noteamMember")+" "+member);
 		}
 		
 		team.teamMembers.remove(member);
@@ -253,7 +229,7 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public static boolean isInTeam(String teamName, Resident resident) throws CivException {
 		ArenaTeam team = arenaTeams.get(teamName);
 		if (team == null) {
-			throw new CivException("No team named "+teamName);
+			throw new CivException(CivSettings.localize.localizedString("arena_noTeamNamed")+" "+teamName);
 		}
 		
 		return team.hasMember(resident);

@@ -75,9 +75,6 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.MobSpawner;
-import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobLevel;
-import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobType;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
@@ -94,15 +91,20 @@ import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.structure.Wall;
+import com.avrgaming.civcraft.structure.wonders.GrandShipIngermanland;
+import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.tasks.TradeGoodSignCleanupTask;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.template.TemplateStream;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.ChunkGenerateTask;
 import com.avrgaming.civcraft.threading.tasks.CultureProcessAsyncTask;
+import com.avrgaming.civcraft.threading.tasks.FisheryAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
+import com.avrgaming.civcraft.threading.tasks.QuarryAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.TradeGoodPostGenTask;
 import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
+import com.avrgaming.civcraft.threading.tasks.MobGrinderAsyncTask;
 import com.avrgaming.civcraft.threading.timers.DailyTimer;
 import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.AsciiMap;
@@ -169,6 +171,9 @@ public class DebugCommand extends CommandBase {
 		commands.put("camp", "Debugs camps.");
 		commands.put("blockinfo", "[x] [y] [z] shows block info for this block.");
 		commands.put("trommel", "[name] - turn on this town's trommel debugging.");
+		commands.put("quarry", "[name] - turn on this town's quarry debugging.");
+		commands.put("fishery", "[name] - turn on this town's Fish Hatchery debugging.");
+		commands.put("mobgrinder", "[name] - turn on this town's mob grinder debugging.");
 		commands.put("fakeresidents", "[town] [count] - Adds this many fake residents to a town.");
 		commands.put("clearresidents", "[town] - clears this town of it's random residents.");
 		commands.put("biomehere", "- shows you biome info where you're standing.");
@@ -290,25 +295,6 @@ public class DebugCommand extends CommandBase {
 		player.setHealth(player.getMaxHealth());
 		player.setFoodLevel(50);
 		CivMessage.send(player, "Healed....");
-	}
-	
-	public void spawn_cmd() throws CivException {
-		Player player = getPlayer();		
-		String mob = getNamedString(1, "name");
-		String lvl = getNamedString(2, "level");
-		
-		MobSpawner.CustomMobType type = CustomMobType.valueOf(mob.toUpperCase());
-		MobSpawner.CustomMobLevel level = CustomMobLevel.valueOf(lvl.toUpperCase());
-		
-		if (type == null) {
-			throw new CivException("no mob named:"+mob);
-		}
-		
-		if (level == null) {
-			throw new CivException("no level named:"+lvl);
-		}
-		
-		MobSpawner.spawnCustomMob(type, level, player.getLocation());
 	}
 	
 	public void datebypass_cmd() {
@@ -826,6 +812,39 @@ public class DebugCommand extends CommandBase {
 		
 		CivMessage.send(sender, "Trommel toggled.");
 	}
+	public void quarry_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		
+		if (QuarryAsyncTask.debugTowns.contains(town.getName())) {
+			QuarryAsyncTask.debugTowns.remove(town.getName());
+		} else {
+			QuarryAsyncTask.debugTowns.add(town.getName());
+		}
+		
+		CivMessage.send(sender, "Quarry toggled.");
+	}
+	public void fishery_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		
+		if (FisheryAsyncTask.debugTowns.contains(town.getName())) {
+			FisheryAsyncTask.debugTowns.remove(town.getName());
+		} else {
+			FisheryAsyncTask.debugTowns.add(town.getName());
+		}
+		
+		CivMessage.send(sender, "Fish Hatchery toggled.");
+	}
+	public void mobgrinder_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		
+		if (MobGrinderAsyncTask.debugTowns.contains(town.getName())) {
+			MobGrinderAsyncTask.debugTowns.remove(town.getName());
+		} else {
+			MobGrinderAsyncTask.debugTowns.add(town.getName());
+		}
+		
+		CivMessage.send(sender, "Mob Grinder toggled.");
+	}
 	
 	public void blockinfo_cmd() throws CivException {
 		int x = getNamedInteger(1);
@@ -870,13 +889,13 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(sender, out);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void refreshchunk_cmd() throws CivException {
 		Player you = getPlayer();
 		ChunkCoord coord = new ChunkCoord(you.getLocation());
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.getWorld().refreshChunk(coord.getX(), coord.getZ());
+			player.getWorld().unloadChunk(coord.getX(), coord.getZ());
+			player.getWorld().loadChunk(coord.getX(), coord.getZ());
 		}
 	}
 	
@@ -1214,6 +1233,11 @@ public class DebugCommand extends CommandBase {
 			for (Structure struct : town.getStructures()) {
 				if (struct instanceof ArrowTower) {
 					((ArrowTower)struct).setPower(Float.valueOf(args[1]));
+				}
+			}
+			for (Wonder wonder : town.getWonders()) {
+				if (wonder instanceof GrandShipIngermanland) {
+					((GrandShipIngermanland)wonder).setArrorPower(Float.valueOf(args[1]));
 				}
 			}
 		}
