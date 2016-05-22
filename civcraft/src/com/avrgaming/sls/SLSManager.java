@@ -14,10 +14,9 @@ import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.util.TimeTools;
 
 public class SLSManager implements Runnable {
-
+	
 	public static String serverName;
 	public static String serverDescription;
 	public static String serverAddress;
@@ -28,7 +27,6 @@ public class SLSManager implements Runnable {
 	
 	public static void init() throws CivException, InvalidConfiguration {
 		String useListing = CivSettings.getStringBase("use_server_listing_service");
-		
 		if (useListing == null) {
 			return;
 		}
@@ -76,7 +74,6 @@ public class SLSManager implements Runnable {
 			throw new CivException("Cannot have a server timezone with a ';' in it.");
 		}
 		
-		
 		gen_id = CivSettings.getGenID();
 		if (gen_id == null) {
 			UUID uid = UUID.randomUUID();
@@ -84,8 +81,8 @@ public class SLSManager implements Runnable {
 			CivSettings.saveGenID(gen_id);
 		}
 		
-	
-		TaskMaster.asyncTimer("SLS", new SLSManager(), TimeTools.toTicks(60));
+		int update_tick = CivSettings.getIntegerBase("update_tick");
+		TaskMaster.asyncTimer("SLS", new SLSManager(), update_tick);
 	}
 	
 	public static String getParsedVersion() {
@@ -117,17 +114,14 @@ public class SLSManager implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 		} catch (UnknownHostException e) {
 			CivLog.error("Couldn't IP address to SLS service. If you're on a LAN with no internet access, disable SLS in the CivCraft config.");
 			//e.printStackTrace();
 		}
 	}
-
-
+	
 	@Override
 	public void run() {
 		SLSManager.sendHeartbeat();
 	}
-	
 }

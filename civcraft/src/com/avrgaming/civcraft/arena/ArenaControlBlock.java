@@ -17,6 +17,7 @@ import com.avrgaming.civcraft.util.FireworkEffectPlayer;
 import com.avrgaming.civcraft.util.ItemManager;
 
 public class ArenaControlBlock {
+	
 	public BlockCoord coord;
 	public int teamID;
 	public int maxHP;
@@ -42,19 +43,15 @@ public class ArenaControlBlock {
 		}
 		
 		curHP--;
-		
 		arena.decrementScoreForTeamID(teamID);	
-		
 		if (curHP <= 0) {
 			/* Destroy control block. */
 			explode();
 			arena.onControlBlockDestroy(teamID, resident.getTeam());
-
 		} else {
 			CivMessage.sendTeam(resident.getTeam(), CivSettings.localize.localizedString("var_arena_playerHitControlBlock",CivColor.LightGreen+resident.getName(),(curHP+" / "+maxHP)));
 			CivMessage.sendTeam(arena.getTeamFromID(teamID), CivColor.Rose+CivSettings.localize.localizedString("var_arena_announceHitControlBlock",resident.getName(),(curHP+" / "+maxHP)));
 		}
-		
 	}
 	
 	public void explode() {
@@ -62,7 +59,6 @@ public class ArenaControlBlock {
 		ItemManager.setTypeId(coord.getLocation().getBlock(), CivData.AIR);
 		world.playSound(coord.getLocation(), Sound.ANVIL_BREAK, 1.0f, -1.0f);
 		world.playSound(coord.getLocation(), Sound.EXPLODE, 1.0f, 1.0f);
-		
 		FireworkEffect effect = FireworkEffect.builder().with(Type.BURST).withColor(Color.YELLOW).withColor(Color.RED).withTrail().withFlicker().build();
 		FireworkEffectPlayer fePlayer = new FireworkEffectPlayer();
 		for (int i = 0; i < 3; i++) {
@@ -73,5 +69,4 @@ public class ArenaControlBlock {
 			}
 		}
 	}
-
 }

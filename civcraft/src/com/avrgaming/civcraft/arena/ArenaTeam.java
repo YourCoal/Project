@@ -23,7 +23,7 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.SQLObject;
 
 public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
-
+	
 	public LinkedList<Resident> teamMembers = new LinkedList<Resident>();
 	private Resident leader;
 	private int ladderPoints;
@@ -43,7 +43,7 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public ArenaTeam(ResultSet rs) throws SQLException, InvalidNameException, InvalidObjectException, CivException {
 		load(rs);
 	}
-
+	
 	public static final String TABLE_NAME = "ARENA_TEAMS";
 	public static void init() throws SQLException {
 		if (!SQL.hasTable(TABLE_NAME)) {
@@ -55,7 +55,6 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 					"`members` mediumtext NULL,"+
 				"UNIQUE KEY (`name`), " +
 				"PRIMARY KEY (`id`)" + ")";
-			
 			SQL.makeTable(table_create);
 			CivLog.info("Created "+TABLE_NAME+" table");
 		} else {
@@ -64,32 +63,27 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	}
 	
 	private void loadMembers(String memberList) {
-		
-			String[] members = memberList.split(",");
-			for (String uuid : members) {
-				Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(uuid));
-				if (resident != null) {
-					teamMembers.add(resident);
-				}
+		String[] members = memberList.split(",");
+		for (String uuid : members) {
+			Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(uuid));
+			if (resident != null) {
+				teamMembers.add(resident);
 			}
+		}
 	}
 	
 	public String getMemberListSaveString() {
 		String out = "";
-
-			for (Resident resident : teamMembers) {
-				out += resident.getUUIDString()+",";
-			}	
-		
-		return out;
+		for (Resident resident : teamMembers) {
+			out += resident.getUUIDString()+",";
+		}
+	return out;
 	}
 	
 	@Override
-	public void load(ResultSet rs) throws SQLException, InvalidNameException,
-			InvalidObjectException, CivException {
+	public void load(ResultSet rs) throws SQLException, InvalidNameException, InvalidObjectException, CivException {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));
-		
 			this.leader = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("leader")));
 		if (leader == null) {
 			CivLog.error("Couldn't load leader for team:"+this.getName()+"("+this.getId()+")");
@@ -98,7 +92,6 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 		
 		this.setLadderPoints(rs.getInt("ladderPoints"));
 		loadMembers(rs.getString("members"));
-		
 		arenaTeams.put(this.getName(), this);
 		teamRankings.add(this);
 	}
@@ -112,10 +105,9 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-			hashmap.put("leader", this.leader.getUUIDString());
+		hashmap.put("leader", this.leader.getUUIDString());
 		hashmap.put("ladderPoints", this.getLadderPoints());
 		hashmap.put("members", this.getMemberListSaveString());
-
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);		
 	}
 	
@@ -123,11 +115,11 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public void delete() throws SQLException {
 		SQL.deleteNamedObject(this, TABLE_NAME);		
 	}
-
+	
 	public int getLadderPoints() {
 		return ladderPoints;
 	}
-
+	
 	public void setLadderPoints(int ladderPoints) {
 		this.ladderPoints = ladderPoints;
 	}
@@ -139,7 +131,7 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public void setLeader(Resident leader) {
 		this.leader = leader;
 	}
-
+	
 	public void addPoints(int points) {
 		this.ladderPoints += points;
 		Collections.sort(teamRankings);
@@ -160,10 +152,8 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 			
 			ArenaTeam team = new ArenaTeam(name, leader);
 			team.save();
-			
 			arenaTeams.put(team.getName(), team);
 			teamRankings.add(team);
-			
 			Collections.sort(teamRankings);			
 			CivMessage.sendSuccess(leader, CivSettings.localize.localizedString("arena_createTeamPrompt")+" "+name);
 		} catch (InvalidNameException e) {
@@ -186,19 +176,14 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 		ArenaTeam team = arenaTeams.get(teamName);
 		if (team == null) {
 			throw new CivException(CivSettings.localize.localizedString("arena_noTeamNamed")+" "+teamName);
-		}
-		
-		try {
+		} try {
 			int max_team_size = CivSettings.getInteger(CivSettings.arenaConfig, "max_team_size");
-			
 			if (team.teamMembers.size() >= max_team_size) {
 				throw new CivException(CivSettings.localize.localizedString("var_arena_maxPlayers",max_team_size));
 			}
-			
 		} catch (InvalidConfiguration e) {
 			throw new CivException(CivSettings.localize.localizedString("internalException"));
 		}
-		
 		team.teamMembers.add(member);
 		team.save();
 	}
@@ -212,7 +197,6 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 		if (!team.teamMembers.contains(member)) {
 			throw new CivException(CivSettings.localize.localizedString("arena_noteamMember")+" "+member);
 		}
-		
 		team.teamMembers.remove(member);
 		team.save();
 	}
@@ -231,7 +215,6 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 		if (team == null) {
 			throw new CivException(CivSettings.localize.localizedString("arena_noTeamNamed")+" "+teamName);
 		}
-		
 		return team.hasMember(resident);
 	}
 	
@@ -241,11 +224,9 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 				return team;
 			}
 		}
-		
 		return null;
 	}
-
-
+	
 	@Override
 	public int compareTo(ArenaTeam otherTeam) {
 		if (this.ladderPoints == otherTeam.getLadderPoints()) {
@@ -253,10 +234,9 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 		} else if (this.ladderPoints > otherTeam.ladderPoints) {
 			return 1;
 		}
-		
 		return -1;
 	}
-
+	
 	public void setCurrentArena(Arena arena) {
 		this.currentArena = arena;
 	}
@@ -264,11 +244,11 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public Arena getCurrentArena() {
 		return currentArena;
 	}
-
+	
 	public Team getScoreboardTeam() {
 		return team;
 	}
-
+	
 	public void setScoreboardTeam(Team team) {
 		this.team = team;
 	}
@@ -276,11 +256,11 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public String getTeamScoreboardName() {
 		return getTeamColor()+this.getName();
 	}
-
+	
 	public String getTeamColor() {
 		return teamColor;
 	}
-
+	
 	public void setTeamColor(String teamColor) {
 		this.teamColor = teamColor;
 	}

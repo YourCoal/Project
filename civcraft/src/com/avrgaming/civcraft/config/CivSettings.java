@@ -577,6 +577,10 @@ public class CivSettings {
 		return getString(plugin.getConfig(), path);
 	}
 	
+	public static Integer getIntegerBase(String path) throws InvalidConfiguration {
+		return getInteger(plugin.getConfig(), path);
+	}
+	
 	public static double getDoubleTown(String path) throws InvalidConfiguration {
 		return getDouble(townConfig, path);
 	}

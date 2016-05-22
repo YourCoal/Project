@@ -1,6 +1,5 @@
 package com.avrgaming.civcraft.arena;
 
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
@@ -30,6 +29,7 @@ import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
 public class Arena {
+	
 	public ConfigArena config;
 	public int instanceID;
 	
@@ -41,14 +41,12 @@ public class Arena {
 	public  HashMap<String, Objective> objectives = new HashMap<String, Objective>();
 	public int timeleft;
 	public boolean ended = false;
-		
-	int teamCount = 0;
 	
+	int teamCount = 0;
 	public static int nextInstanceID = 0;
 	
 	public Arena(ConfigArena a) throws CivException {
 		this.config = a;
-		
 		/* Search for a free instance id. */
 		boolean found = false;
 		int id = 0;
@@ -64,17 +62,14 @@ public class Arena {
 		
 		if (!found) {
 			throw new CivException("Couldn't find a free instance ID!");
-		}
-		
-		try {
+		} try {
 			this.timeleft = CivSettings.getInteger(CivSettings.arenaConfig, "timeout");
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 		}
-		this.instanceID = id;
-				
+		this.instanceID = id;	
 	}
-
+	
 	public static String getInstanceName(int id, ConfigArena config) {
 		String instanceWorldName = config.world_source+"_"+"instance_"+id;
 		return instanceWorldName;
@@ -87,7 +82,6 @@ public class Arena {
 	@SuppressWarnings("deprecation")
 	public void addTeam(ArenaTeam team) throws CivException {
 		this.scoreboards.put(team.getName(), ArenaManager.scoreboardManager.getNewScoreboard());
-		
 		teams.put(teamCount, team);
 		teamIDmap.put(team.getId(), teamCount);
 		teamHP.put(teamCount, config.teams.get(teamCount).controlPoints.size());
@@ -100,7 +94,6 @@ public class Arena {
 		}
 		
 		//team.getScoreboardTeam().setPrefix(team.getTeamColor()+"["+team.getName()+"]");
-		
 		for (Resident resident : team.teamMembers) {
 			try {
 			CivGlobal.getPlayer(resident);
@@ -110,9 +103,7 @@ public class Arena {
 			
 			if (!resident.isUsesAntiCheat()) {
 				throw new CivException(resident.getName()+" must be using anti-cheat in order to join the arena.");
-			}
-			
-			try {
+			} try {
 				teleportToRandomRevivePoint(resident, teamCount);
 				createInventory(resident);
 				team.getScoreboardTeam().addPlayer(Bukkit.getOfflinePlayer(resident.getUUID()));
@@ -120,8 +111,6 @@ public class Arena {
 				e.printStackTrace();
 			}
 		}
-		
-		
 		teamCount++;
 	}
 	
@@ -145,23 +134,21 @@ public class Arena {
 		try {
 			player = CivGlobal.getPlayer(resident);
 			Inventory inv = Bukkit.createInventory(player, 9*6, resident.getName()+"'s Gear");
-
 			for (int i = 0; i < 3; i++) {
 				addCivCraftItemToInventory("mat_tungsten_sword", inv);
 				addCivCraftItemToInventory("mat_tungsten_boots", inv);
 				addCivCraftItemToInventory("mat_tungsten_chestplate", inv);
 				addCivCraftItemToInventory("mat_tungsten_leggings", inv);
 				addCivCraftItemToInventory("mat_tungsten_helmet", inv);
-		
+				
 				addCivCraftItemToInventory("mat_marksmen_bow", inv);
 				addCivCraftItemToInventory("mat_composite_leather_boots", inv);
 				addCivCraftItemToInventory("mat_composite_leather_chestplate", inv);
 				addCivCraftItemToInventory("mat_composite_leather_leggings", inv);
 				addCivCraftItemToInventory("mat_composite_leather_helmet", inv);
 			}
-						
+			
 			addCivCraftItemToInventory("mat_vanilla_diamond_pickaxe", inv);
-
 			addItemToInventory(Material.ARROW, inv, 64);
 			addItemToInventory(Material.ARROW, inv, 64);
 			addItemToInventory(Material.ARROW, inv, 64);
@@ -170,14 +157,10 @@ public class Arena {
 			addItemToInventory(Material.ARROW, inv, 64);
 			addItemToInventory(Material.PUMPKIN_PIE, inv, 64);
 			addItemToInventory(Material.PUMPKIN_PIE, inv, 64);
-
-			
 			playerInvs.put(resident.getName(), inv);
-			
 		} catch (CivException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private ConfigArenaTeam getConfigTeam(int id) throws CivException {
@@ -193,10 +176,8 @@ public class Arena {
 		ConfigArenaTeam ct = getConfigTeam(teamID);
 		Random rand = new Random();
 		int index = rand.nextInt(ct.revivePoints.size());
-		
 		int i = 0;
 		for (BlockCoord coord : ct.revivePoints) {
-			
 			if (index == i) {
 				try {
 					Player player = CivGlobal.getPlayer(r);
@@ -209,9 +190,8 @@ public class Arena {
 			}
 			i++;
 		}
-
 	}
-
+	
 	public void returnPlayers() {
 		for (ArenaTeam team : teams.values()) {
 			for (Resident r : team.teamMembers) {
@@ -220,14 +200,12 @@ public class Arena {
 						/* Only set inside arena to false if the player is online. */
 						Player player = CivGlobal.getPlayer(r);
 						player.setScoreboard(ArenaManager.scoreboardManager.getNewScoreboard());
-						
 						r.setInsideArena(false);
 						r.restoreInventory();
 						r.teleportHome();
 						r.save();
 						CivMessage.send(r, CivColor.LightGray+CivSettings.localize.localizedString("arena_endedTeleport"));
-					} catch (CivException e) {
-						/* player not online, inside arena is set true */
+					} catch (CivException e) { /* player not online, inside arena is set true */
 					}
 				} catch (Exception e) {
 					// Continue if there was an error restoring one player.
@@ -237,7 +215,7 @@ public class Arena {
 			}
 		}
 	}
-
+	
 	public Collection<ArenaTeam> getTeams() {
 		return teams.values();
 	}
@@ -250,23 +228,19 @@ public class Arena {
 		Integer hp = teamHP.get(teamID);
 		hp--;
 		teamHP.put(teamID, hp);
-		
 		ArenaTeam team = teams.get(teamID);
-		
 		if (hp <= 0) {
 			ArenaManager.declareVictor(this, team, attackingTeam);
 		}
-		
 	}
-
+	
 	public void clearTeams() {
 		for (ArenaTeam team : teams.values()) {
 			team.setCurrentArena(null);
 		}
-		
 		teams.clear();
 	}
-
+	
 	public Location getRespawnLocation(Resident resident) {
 		int teamID = teamIDmap.get(resident.getTeam().getId());
 		for (int i = 0; i < config.teams.size(); i++) {
@@ -277,10 +251,9 @@ public class Arena {
 				return configTeam.respawnPoints.get(index).getCenteredLocation();
 			}
 		}
-		
 		return null;
 	}
-
+	
 	public BlockCoord getRandomReviveLocation(Resident resident) {
 		int teamID = teamIDmap.get(resident.getTeam().getId());
 		for (int i = 0; i < config.teams.size(); i++) {
@@ -291,10 +264,9 @@ public class Arena {
 				return configTeam.revivePoints.get(index);
 			}
 		}
-		
 		return null;
 	}
-
+	
 	public Inventory getInventory(Resident resident) {
 		return playerInvs.get(resident.getName());
 	}
@@ -302,13 +274,11 @@ public class Arena {
 	public Scoreboard getScoreboard(String name) {
 		return this.scoreboards.get(name);
 	}
-
+	
 	public void decrementScoreForTeamID(int teamID) {
 		ArenaTeam team = getTeamFromID(teamID);
-		
 		for (ArenaTeam t : this.teams.values()) {
 			Objective obj = this.objectives.get(t.getName()+";score");
-			
 			for (ArenaTeam t2 : this.teams.values()) {
 				Score score = obj.getScore(t2.getTeamScoreboardName());
 				if (t2.getName().equals(team.getName())) {
@@ -317,7 +287,7 @@ public class Arena {
 			}
 		}
 	}
-
+	
 	public void decrementTimer() {
 		if (timeleft <= 0) {
 			if (!ended) {
@@ -327,7 +297,6 @@ public class Arena {
 			}
 		} else {
 			this.timeleft--;
-
 			for (ArenaTeam team : this.teams.values()) {	
 				Objective obj = objectives.get(team.getName()+";score");
 				Score score = obj.getScore("Time Left");
@@ -335,5 +304,4 @@ public class Arena {
 			}
 		}
 	}
-	
 }

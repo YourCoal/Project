@@ -28,6 +28,7 @@ import org.bukkit.entity.Fireball;
 import com.avrgaming.civcraft.structure.Buildable;
 
 public class CannonFiredCache {
+	
 	private Buildable whoFired;
 	private Location target;
 	private Fireball fireball;
@@ -47,47 +48,55 @@ public class CannonFiredCache {
 	public Buildable getWhoFired() {
 		return whoFired;
 	}
+	
 	public void setWhoFired(Buildable whoFired) {
 		this.whoFired = whoFired;
 	}
+	
 	public Location getTarget() {
 		return target;
 	}
+	
 	public void setTarget(Location target) {
 		this.target = target;
 	}
+	
 	public Fireball getFireball() {
 		return fireball;
 	}
+	
 	public void setFireball(Fireball fireball) {
 		this.fireball = fireball;
 	}
+	
 	public UUID getUuid() {
 		return uuid;
 	}
+	
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
 	}
+	
 	public Calendar getExpired() {
 		return expired;
 	}
+	
 	public void setExpired(Calendar expired) {
 		this.expired = expired;
 	}
+	
 	public boolean isHit() {
 		return hit;
 	}
+	
 	public void setHit(boolean hit) {
 		this.hit = hit;
 	}
-
+	
 	public void destroy(Entity damager) {
 		fireball.remove();
 		this.fireball = null;
 		CivCache.cannonBallsFired.remove(this.getUuid());
 		this.uuid = null;		
 	}
-	
-	
-	
 }

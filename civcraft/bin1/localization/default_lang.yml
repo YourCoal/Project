@@ -149,16 +149,13 @@ structureRepairComplete: "Structure repair finished."
 
 
 # =========================== AntiCheat =========================
-ac_invalidAuth: "Invalid Auth Message"
 ac_validated: "You have been validated by CivCraft Anti-Cheat"
 ac_unableToValidate: "[CivCraft Anti Cheat] Could not Verify your client"
-ac_hackerNeedsAC: "You must use AntiCheat to join this server. Visit https://www.minetexas.com/ to get it."
 ac_unapprovedMod: "Unapproved Mod:"
 var_ac_failedAuthCheck: "[%0] ([%1]) failed authorization check."
 
 # =========================== Arena =========================
 # This section is currently not used in MineTexas CivlizationCraft
-arena_WithoutAnticheat: "You've been teleported home since you cannot be inside an arena without anti-cheat."
 arena_endedTeleport: "We've been teleported back to our home since the arena has ended."
 arena_revived: "Revived in arena"
 arena_destroyedTeleport: "You've been teleported home since the arena you were in no longer exists."

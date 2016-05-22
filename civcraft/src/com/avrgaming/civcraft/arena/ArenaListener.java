@@ -31,7 +31,7 @@ import com.avrgaming.civcraft.util.DateUtil;
 import com.avrgaming.civcraft.util.TimeTools;
 
 public class ArenaListener implements Listener {
-
+	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBlockIgniteEvent(BlockIgniteEvent event) {
 		if (ArenaManager.activeArenas.containsKey(event.getBlock().getWorld().getName())) {
@@ -48,9 +48,7 @@ public class ArenaListener implements Listener {
 		
 		if (resident.isInsideArena()) {
 			if (resident.getCurrentArena() != null) {
-				
 				CivMessage.sendArena(resident.getCurrentArena(), CivSettings.localize.localizedString("var_arena_playerJoined",event.getPlayer().getName()));
-				
 				class SyncTask implements Runnable {
 					String name;
 					
@@ -69,11 +67,9 @@ public class ArenaListener implements Listener {
 						}						
 					}
 				}
-				
 				TaskMaster.syncTask(new SyncTask(event.getPlayer().getName()));
 				return;
 			} else {
-				
 				class SyncTask implements Runnable {
 					String name;
 					
@@ -84,19 +80,14 @@ public class ArenaListener implements Listener {
 					@Override
 					public void run() {
 						Resident resident = CivGlobal.getResident(name);
-						
 						/* Player is rejoining but the arena is no longer active. Return home. */
 						resident.teleportHome();
 						resident.restoreInventory();
 						resident.setInsideArena(false);
 						resident.save();
-						
-						
-
 						CivMessage.send(resident, CivColor.LightGray+CivSettings.localize.localizedString("arena_destroyedTeleport"));
 					}
 				}
-				
 				event.getPlayer().getInventory().clear();
 				TaskMaster.syncTask(new SyncTask(event.getPlayer().getName()), 10);
 			}
@@ -108,9 +99,7 @@ public class ArenaListener implements Listener {
 		String worldName = event.getPlayer().getWorld().getName();
 		if (!ArenaManager.activeArenas.containsKey(worldName)) {
 			return;
-		}
-		
-		/* Player is leaving an active arena. Let everyone know. */
+		} /* Player is leaving an active arena. Let everyone know. */
 		CivMessage.sendArena(ArenaManager.activeArenas.get(worldName), CivSettings.localize.localizedString("var_arena_playerLeft",event.getPlayer().getName()));
 	}
 	
@@ -125,10 +114,8 @@ public class ArenaListener implements Listener {
 		if (resident.isSBPermOverride()) {
 			return;
 		}
-		
 		event.setCancelled(true);
 	}
-	
 	
 	public static BlockCoord bcoord = new BlockCoord();
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -148,14 +135,12 @@ public class ArenaListener implements Listener {
 		if (acb != null) {
 			acb.onBreak(resident);
 		}
-		
 		event.setCancelled(true);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Resident resident = CivGlobal.getResident(event.getPlayer());
-		
 		if (!resident.isInsideArena()) {
 			return;
 		}
@@ -170,7 +155,6 @@ public class ArenaListener implements Listener {
 			CivMessage.send(resident, CivColor.LightGray+CivSettings.localize.localizedString("arena_respawned"));
 			World world = Bukkit.getWorld(arena.getInstanceName());
 			loc.setWorld(world);
-			
 			resident.setLastKilledTime(new Date());
 			event.setRespawnLocation(loc);
 		}
@@ -179,9 +163,7 @@ public class ArenaListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Resident resident = CivGlobal.getResident(event.getPlayer());
-		
-		if (!resident.isInsideArena()) 
-		{
+		if (!resident.isInsideArena())  {
 			return;
 		}
 		
@@ -222,9 +204,7 @@ public class ArenaListener implements Listener {
 							player.openInventory(inv);
 						} catch (CivException e) {
 						}
-	
 					}
-					
 				}
 				
 				TaskMaster.syncTask(new SyncTask(arena, resident), 0);
@@ -232,7 +212,6 @@ public class ArenaListener implements Listener {
 				return;
 			}
 		}
-		
 		
 		/* Did we click on a respawn sign. */
 		if (ArenaManager.respawnSigns.containsKey(bcoord)) {
@@ -251,7 +230,6 @@ public class ArenaListener implements Listener {
 						Date now = new Date();
 						long secondsLeft = (now.getTime() - resident.getLastKilledTime().getTime()) / 1000;
 						secondsLeft = 30 - secondsLeft;
-						
 						CivMessage.sendError(resident, CivSettings.localize.localizedString("var_arena_respawningIn",secondsLeft));
 						TaskMaster.syncTask(this, TimeTools.toTicks(1));
 					} else {
@@ -261,7 +239,6 @@ public class ArenaListener implements Listener {
 							World world = Bukkit.getWorld(arena.getInstanceName());
 							loc.setWorld(world);
 							CivMessage.send(resident, CivColor.LightGray+CivSettings.localize.localizedString("arena_revived"));
-							
 							Player player;
 							try {
 								player = CivGlobal.getPlayer(resident);
@@ -273,9 +250,7 @@ public class ArenaListener implements Listener {
 					}
 				}
 			}
-			
 			TaskMaster.syncTask(new SyncTask(resident, arena));
 		}
 	}
-	
 }
