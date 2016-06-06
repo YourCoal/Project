@@ -33,10 +33,12 @@ public class UpdateInventoryRequest extends AsyncRequest {
 	public enum Action {
 		ADD,
 		REMOVE
+		//REMOVE_CUST
 	}
 	
 	public MultiInventory inv;
 	public ItemStack stack;
+	//public LoreMaterial stack1;
 	public Action action;
 	
 	

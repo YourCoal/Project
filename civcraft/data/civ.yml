@@ -32,7 +32,7 @@ global:
    regen_spawn_hour: 0
 
    # Exchange rate you get using /resident exchange instead of using a bank.
-   exchange_rate: 0.3
+   exchange_rate: 0.4
 
    starting_coins: 250.0
 
@@ -126,10 +126,14 @@ civ:
     gift_cooldown_hours: 48
 
 ore_rates:
+    coal: 10.0
     iron: 20.0
     gold: 200.0
-    diamond: 400.0
-    emerald: 500.0
+    diamond: 500.0
+    emerald: 1000.0
+    quartz: 400.0
+    lapis: 100.0
+    redstone: 100.0
 
 # These are end condition configurations...
 end_conditions:

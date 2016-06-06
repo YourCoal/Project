@@ -12,8 +12,6 @@
 # We will be able to attach components to these items which
 # will passed in-game events such as onItemPickup() and onItemUse()
 #-------------------------------------------------------------------
-
-
 # --- Each Material must have the following ----
 # id: - unquie identifier for this material
 # item_id: - This is a minecraft compatible typeID, used to choose which item to convert.
@@ -67,13 +65,327 @@
 #  - name: 'DurabilityOnDeath'
 #    value: '0.1'
 #
-#
 materials:
+#==============================================#
+#================> Resources <=================#
+#==============================================#
+        #Created 6/02/2016
+        #Updated 6/02/2016
+        - id: 'civ:hammer'
+          item_id: 139
+          item_data: 0
+          name: 'Hammer'
+          shaped: false
+          craftable: false
+          category: '<goldBold>Resources'
+#
+        #Created 6/02/2016
+        #Updated 6/02/2016
+        - id: 'civ:wooden_hammer'
+          item_id: 139
+          item_data: 0
+          name: 'Wooden Hammer'
+          shaped: false
+          craftable: true
+          amount: 60
+          category: '<goldBold>Resources'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:hammer'
+                data: 0
+                count: 1
+              - type_id: 270
+                data: 0
+                count: 1
+#
+        #Created 6/02/2016
+        #Updated 6/02/2016
+        - id: 'civ:beaker'
+          item_id: 374
+          item_data: 0
+          name: 'Beaker'
+          shaped: false
+          craftable: false
+          category: '<goldBold>Resources'
+#
+#==============================================#
+#============> Crystal Fragments <=============#
+#==============================================#
+        #Created 5/26/2016
+        #Updated 5/26/2016
+        - id: 'civ:crystal_fragment_1'
+          item_id: 370
+          item_data: 0
+          name: 'Common Crystal Fragment'
+          shaped: false
+          craftable: true
+          category: '<roseBold>Crystals'
+          ingredients:
+              - type_id: 0
+                custom_id: 'mat_chromium_ore'
+                data: 0
+                count: 4
+              - type_id: 42
+                data: 0
+                count: 3
+#
+        #Created 5/26/2016
+        #Updated 5/26/2016
+        - id: 'civ:crystal_fragment_2'
+          item_id: 371
+          item_data: 0
+          name: 'Uncommon Crystal Fragment'
+          shaped: false
+          craftable: true
+          category: '<roseBold>Crystals'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:crystal_fragment_1'
+                data: 0
+                count: 4
+              - type_id: 41
+                data: 0
+                count: 3
+#
+        #Created 5/26/2016
+        #Updated 5/26/2016
+        - id: 'civ:crystal_fragment_3'
+          item_id: 409
+          item_data: 0
+          name: 'Rare Crystal Fragment'
+          shaped: false
+          craftable: true
+          category: '<roseBold>Crystals'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:crystal_fragment_2'
+                data: 0
+                count: 4
+              - type_id: 57
+                data: 0
+                count: 3
+#
+        #Created 5/26/2016
+        #Updated 5/26/2016
+        - id: 'civ:crystal_fragment_4'
+          item_id: 322
+          item_data: 0
+          name: 'Legendary Crystal Fragment'
+          shaped: false
+          craftable: true
+          category: '<roseBold>Crystals'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:crystal_fragment_3'
+                data: 0
+                count: 4
+              - type_id: 133
+                data: 0
+                count: 3
+#
+        #Created 5/26/2016
+        #Updated 5/26/2016
+        - id: 'civ:crystal_fragment_5'
+          item_id: 322
+          item_data: 1
+          name: 'Heroic Crystal Fragment'
+          shaped: false
+          craftable: true
+          category: '<roseBold>Crystals'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:crystal_fragment_4'
+                data: 0
+                count: 4
+              - type_id: 0
+                custom_id: 'civ:compact_obsidian'
+                data: 0
+                count: 3
+#==============================================#
+#===============> Trommel Ores <===============#
+#==============================================#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:common_coal_ore_rock'
+          item_id: 16
+          item_data: 0
+          name: 'Common Coal Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:rare_coal_ore_rock'
+          item_id: 16
+          item_data: 0
+          name: 'Rare Coal Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:common_iron_ore_rock'
+          item_id: 15
+          item_data: 0
+          name: 'Common Iron Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:rare_iron_ore_rock'
+          item_id: 15
+          item_data: 0
+          name: 'Rare Iron Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:common_gold_ore_rock'
+          item_id: 14
+          item_data: 0
+          name: 'Common Gold Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:rare_gold_ore_rock'
+          item_id: 14
+          item_data: 0
+          name: 'Rare Gold Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:common_lapis_ore_rock'
+          item_id: 21
+          item_data: 0
+          name: 'Common Lapis Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:rare_lapis_ore_rock'
+          item_id: 21
+          item_data: 0
+          name: 'Rare Lapis Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:common_redstone_ore_rock'
+          item_id: 73
+          item_data: 0
+          name: 'Common Redstone Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:rare_redstone_ore_rock'
+          item_id: 73
+          item_data: 0
+          name: 'Rare Redstone Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:common_diamond_ore_rock'
+          item_id: 56
+          item_data: 0
+          name: 'Common Diamond Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:rare_diamond_ore_rock'
+          item_id: 56
+          item_data: 0
+          name: 'Rare Diamond Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:common_emerald_ore_rock'
+          item_id: 129
+          item_data: 0
+          name: 'Common Emerald Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+        #Created 5/23/2016
+        #Updated 5/26/2016
+        - id: 'civ:rare_emerald_ore_rock'
+          item_id: 129
+          item_data: 0
+          name: 'Rare Emerald Ore Rock'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Ores'
+#
+#
+#
+#
+#
+#
+        #Updated 10/8/13
+        - id: 'civ:refined_obsidian'
+          item_id: 35
+          item_data: 15
+          name: 'Refined Obsidian'
+          craftable: true
+          shaped: false
+          category: '<lightgreen>Tier 1 Materials'
+          ingredients:
+              - type_id: 49
+                data: 0
+                count: 9
+#
+        - id: 'civ:compact_obsidian'
+          item_id: 159
+          item_data: 15
+          name: 'Compact Obsidian'
+          craftable: true
+          shaped: false
+          tradeable: true
+          tradeValue: 1.0
+          category: '<lightblue>Tier 2 Materials'
+          ingredients:
+              - type_id: 0
+                custom_id: 'civ:refined_obsidian'
+                data: 0
+                count: 9
+#
+#
+#
+#
+#
         #
         # Primary Materials, Tier 1
         #
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carved_leather'
           item_id: 334
           item_data: 0
@@ -86,7 +398,7 @@ materials:
                 data: 0
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_stone'
           item_id: 1
           item_data: 0
@@ -99,7 +411,7 @@ materials:
                 data: 0
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_stone_alt0'
           item_id: 1
           item_data: 0
@@ -112,7 +424,7 @@ materials:
                 data: 1
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_stone_alt1'
           item_id: 1
           item_data: 0
@@ -125,7 +437,7 @@ materials:
                 data: 3
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_stone_alt2'
           item_id: 1
           item_data: 0
@@ -151,7 +463,7 @@ materials:
 #                data: 0
 #                count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_feathers'
           item_id: 406
           item_data: 0
@@ -164,7 +476,7 @@ materials:
                 data: 0
                 count: 9
         
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_crafted_string'
           item_id: 287
           item_data: 0
@@ -177,7 +489,7 @@ materials:
                 data: 0
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_slime'
           item_id: 341
           item_data: 0
@@ -204,7 +516,7 @@ materials:
 #                data: 0
 #                count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_crafted_reeds'
           item_id: 338
           item_data: 0
@@ -232,7 +544,7 @@ materials:
 #                data: 0
 #                count: 9
   
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_crafted_sticks'
           item_id: 280
           item_data: 0
@@ -245,7 +557,7 @@ materials:
                 data: 0
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_sulphur'
           item_id: 289
           item_data: 0
@@ -270,7 +582,7 @@ materials:
                 data: -1
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_forged_clay'
           item_id: 336
           item_data: 0
@@ -283,7 +595,7 @@ materials:
                 data: 0
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_sugar'
           item_id: 353
           item_data: 0
@@ -296,7 +608,7 @@ materials:
                 data: 0
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_wart'
           item_id: 372
           item_data: 0
@@ -309,7 +621,7 @@ materials:
                 data: 0
                 count: 9
         
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_forged_chromium'
           item_id: 265
           item_data: 0
@@ -323,7 +635,7 @@ materials:
                 custom_id: 'mat_chromium_ore'
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_forged_tungsten'
           item_id: 133
           item_data: 0
@@ -337,7 +649,7 @@ materials:
                 custom_id: 'mat_tungsten_ore'
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_wood'
           item_id: 126
           item_data: 0
@@ -377,7 +689,7 @@ materials:
 #                count: 9
 
           # XXX Statically coded to drop from lapis.        
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_ore'
           item_id: 385
           item_data: 0
@@ -391,7 +703,7 @@ materials:
           category: '<lightgreen>Tier 1 Materials'
         
           # XXX Statically coded to drop from trommel 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_chromium_ore'
           item_id: 370
           item_data: 0
@@ -407,7 +719,7 @@ materials:
 # Tier 2.0 ======================================================
 
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_crafted_leather'
           item_id: 31
           item_data: 0
@@ -427,7 +739,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_decorative_jewels'
           item_id: 372
           item_data: 0
@@ -442,7 +754,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_crushed_stone'
           item_id: 44
           item_data: 0
@@ -459,7 +771,7 @@ materials:
                 count: 9
 
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_jewelry_grade_gold'
           item_id: 322
           item_data: 0
@@ -474,7 +786,7 @@ materials:
                 data: 0
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_milled_lumber'
           item_id: 53
           item_data: 0
@@ -490,7 +802,7 @@ materials:
                 data: 0
                 count: 9
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_woven_mesh_patch'
           item_id: 358
           item_data: 0
@@ -514,7 +826,7 @@ materials:
                 data: 0
                 count: 1
   
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_ingot'
           item_id: 265
           item_data: 0
@@ -536,7 +848,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_varnish'
           item_id: 384
           item_data: 0
@@ -587,7 +899,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_clay_molding'
           item_id: 45
           item_data: 0
@@ -612,7 +924,7 @@ materials:
                 count: 3
 
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_chromium_ingot'
           item_id: 399
           item_data: 0
@@ -639,7 +951,7 @@ materials:
                 count: 1
 
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_aged_wood_stave'
           item_id: 280
           item_data: 0
@@ -663,7 +975,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_woven_threading'
           item_id: 420
           item_data: 0
@@ -685,7 +997,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_sword_blade'
           item_id: 265
           item_data: 0
@@ -703,7 +1015,7 @@ materials:
                 data: 0
                 count: 1
         
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_sword_hilt'
           item_id: 280
           item_data: 0
@@ -729,7 +1041,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_plate'
           item_id: 148
           item_data: 0
@@ -758,7 +1070,7 @@ materials:
 # <lightpurple>Tier 3 Materials =======================================================
 
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_leather_straps'
           item_id: 32
           item_data: 0
@@ -778,7 +1090,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_clay_steel_cast'
           item_id: 343
           item_data: 0
@@ -808,7 +1120,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_reinforced_braid'
           item_id: 287
           item_data: 0
@@ -832,7 +1144,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_steel_ingot'
           item_id: 318
           item_data: 0
@@ -856,7 +1168,7 @@ materials:
                 data: 0
                 count: 1
         
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_longbow_stave'
           item_id: 280
           item_data: 0
@@ -874,7 +1186,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_feathered_lining'
           item_id: 288
           item_data: 0
@@ -898,7 +1210,7 @@ materials:
                 data: 0
                 count: 3
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_molding'
           item_id: 380
           item_data: 0
@@ -924,7 +1236,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_smithy_resin'
           item_id: 378
           item_data: 0
@@ -947,7 +1259,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_ingot'
           item_id: 368
           item_data: 0
@@ -972,7 +1284,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_clay_tungsten_casting'
           item_id: 368
           item_data: 0
@@ -999,7 +1311,7 @@ materials:
                 count: 2
 
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_masonry_mortar'
           item_id: 45
           item_data: 0
@@ -1019,7 +1331,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_royal_crown'
           item_id: 314
           item_data: 0
@@ -1083,7 +1395,7 @@ materials:
           components:
               - name: 'Tagged'
          
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_chieftains_headdress'
           item_id: 302
           item_data: 0
@@ -1103,7 +1415,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_compacted_stone'
           item_id: 98
           item_data: 0
@@ -1119,7 +1431,7 @@ materials:
                 data: 0
                 count: 9
         
-         # Checked 10/8/13
+         #Updated 10/8/13
         - id: 'mat_carbide_steel_sword_hilt'
           item_id: 280
           item_data: 0
@@ -1146,7 +1458,7 @@ materials:
                 count: 1
 
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_steel_sword_blade'
           item_id: 265
           item_data: 0
@@ -1168,7 +1480,7 @@ materials:
                 data: 0
                 count: 2
         
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_steel_plate'
           item_id: 265
           item_data: 0
@@ -1195,7 +1507,7 @@ materials:
 
 #=================================<<< TIER 4 >>>=================================================
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_artisan_leather'
           item_id: 31
           item_data: 0
@@ -1215,7 +1527,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_plate'
           item_id: 405
           item_data: 0
@@ -1239,7 +1551,7 @@ materials:
                 data: 0
                 count: 1
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_sword_blade'
           item_id: 57
           item_data: 0
@@ -1261,7 +1573,7 @@ materials:
                 data: 0
                 count: 3
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_sword_hilt'
           item_id: 280
           item_data: 0
@@ -1287,7 +1599,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_composite_bow_stave'
           item_id: 280
           item_data: 0
@@ -1309,7 +1621,7 @@ materials:
                 data: 0
                 count: 2
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_composite_bow_string'
           item_id: 287
           item_data: 0
@@ -1327,7 +1639,7 @@ materials:
                 data: 0
                 count: 3
 
-        # Checked 10/8/13 RJ
+        #Updated 10/8/13 RJ
         - id: 'mat_cannon_wheel'
           item_id: 163
           item_data: 0
@@ -1363,7 +1675,7 @@ materials:
               - " p "
 
 # Special Recipes  ===========================================            
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_found_civ'
           item_id: 369
           item_data: 0
@@ -1393,7 +1705,7 @@ materials:
 
        
           # XXX mat ID hard coded for camp refund. with /camp undo 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_found_camp'
           item_id: 324
           item_data: 0
@@ -1473,7 +1785,7 @@ materials:
 
 # Wood Gear & Leather Gear =========================================
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_wood_sword'
           item_id: 268
           item_data: 0
@@ -1499,7 +1811,7 @@ materials:
               - " p "
               - " s "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_leather_helmet'
           item_id: 298
           item_data: 0
@@ -1522,7 +1834,7 @@ materials:
               - "l l"
               - "   "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_leather_chestplate'
           item_id: 299
           item_data: 0
@@ -1545,7 +1857,7 @@ materials:
               - "lll"
               - "lll"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_leather_leggings'
           item_id: 300
           item_data: 0
@@ -1568,7 +1880,7 @@ materials:
               - "l l"
               - "l l"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_leather_Boots'
           item_id: 301
           item_data: 0
@@ -1593,7 +1905,7 @@ materials:
 
 # Refined leather Gear =============================================
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_leather_helmet'
           item_id: 298
           item_data: 0
@@ -1621,7 +1933,7 @@ materials:
               - "c c"
               - "   "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_leather_chestplate'
           item_id: 299
           item_data: 0
@@ -1649,7 +1961,7 @@ materials:
               - "ccc"
               - "ccc"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_leather_leggings'
           item_id: 300
           item_data: 0
@@ -1677,7 +1989,7 @@ materials:
               - "c c"
               - "c c"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_refined_leather_boots'
           item_id: 301
           item_data: 0
@@ -1707,7 +2019,7 @@ materials:
 
 # Composite Leather Gear recipes ===================================
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_hardened_leather_helmet'
           item_id: 298
           item_data: 0
@@ -1735,7 +2047,7 @@ materials:
               - "l l"
               - "   "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_hardened_leather_chestplate'
           item_id: 299
           item_data: 0
@@ -1763,7 +2075,7 @@ materials:
               - "lll"
               - "lll"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_hardened_leather_leggings'
           item_id: 300
           item_data: 0
@@ -1791,7 +2103,7 @@ materials:
               - "l l"
               - "l l"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_hardened_leather_boots'
           item_id: 301
           item_data: 0
@@ -1821,7 +2133,7 @@ materials:
 
 # Composit Leather Gear Recipes
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_composite_leather_helmet'
           item_id: 298
           item_data: 0
@@ -1849,7 +2161,7 @@ materials:
               - "a a"
               - "   "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_composite_leather_chestplate'
           item_id: 299
           item_data: 0
@@ -1877,7 +2189,7 @@ materials:
               - "aaa"
               - "aaa"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_composite_leather_leggings'
           item_id: 300
           item_data: 0
@@ -1905,7 +2217,7 @@ materials:
               - "a a"
               - "a a"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_composite_leather_boots'
           item_id: 301
           item_data: 0
@@ -1935,7 +2247,7 @@ materials:
 
 # Bow Recipes ------------------------------------------------------
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_hunting_bow'
           item_id: 261
           item_data: 0
@@ -1962,7 +2274,7 @@ materials:
               - "s w"
               - "sw "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_recurve_bow'
           item_id: 261
           item_data: 0
@@ -1991,7 +2303,7 @@ materials:
               - "s a"
               - "sa "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_longbow'
           item_id: 261
           item_data: 0
@@ -2020,7 +2332,7 @@ materials:
               - "b l"
               - "bl "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_marksmen_bow'
           item_id: 261
           item_data: 0
@@ -2051,7 +2363,7 @@ materials:
 
 # Stone Gear -------------------------------------------------------
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_stone_sword'
           item_id: 272
           item_data: 0
@@ -2079,7 +2391,7 @@ materials:
 
 # Iron Gear recipes -------------------------------------------------
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_iron_sword'
           item_id: 267
           item_data: 0
@@ -2106,7 +2418,7 @@ materials:
               - " i "
               - " s "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_iron_helmet'
           item_id: 306
           item_data: 0
@@ -2130,7 +2442,7 @@ materials:
               - "i i"
               - "   "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_iron_chestplate'
           item_id: 307
           item_data: 0
@@ -2154,7 +2466,7 @@ materials:
               - "iii"
               - "iii"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_iron_leggings'
           item_id: 308
           item_data: 0
@@ -2179,7 +2491,7 @@ materials:
               - "i i"
               - "i i"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_iron_boots'
           item_id: 309
           item_data: 0
@@ -2206,7 +2518,7 @@ materials:
 
 # Steel Gear recipes ================================================
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_helmet'
           item_id: 302
           item_data: 0
@@ -2231,7 +2543,7 @@ materials:
               - "s s"
               - "   "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_boots'
           item_id: 305
           item_data: 0
@@ -2256,7 +2568,7 @@ materials:
               - "s s"
               - "s s"
         
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_chestplate'
           item_id: 303
           item_data: 0
@@ -2281,7 +2593,7 @@ materials:
               - "sss"
               - "sss"
         
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_leggings'
           item_id: 304
           item_data: 0
@@ -2306,7 +2618,7 @@ materials:
               - "s s"
               - "s s"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_steel_sword'
           item_id: 267
           item_data: 0
@@ -2337,7 +2649,7 @@ materials:
 
 ## Carbide steel - -- -                  -----------------------------------------
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_steel_sword'
           item_id: 283
           item_data: 0
@@ -2366,7 +2678,7 @@ materials:
               - " b "
               - " h "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_steel_helmet'
           item_id: 314
           item_data: 0
@@ -2391,7 +2703,7 @@ materials:
               - "c c"
               - "   "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_steel_chestplate'
           item_id: 315
           item_data: 0
@@ -2416,7 +2728,7 @@ materials:
               - "ccc"
               - "ccc"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_steel_leggings'
           item_id: 316
           item_data: 0
@@ -2441,7 +2753,7 @@ materials:
               - "c c"
               - "c c"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_carbide_steel_boots'
           item_id: 317
           item_data: 0
@@ -2469,7 +2781,7 @@ materials:
 # Tungsten Gear recipes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_sword'
           item_id: 276
           item_data: 0
@@ -2498,7 +2810,7 @@ materials:
               - " b "
               - " h "
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_boots'
           item_id: 313
           item_data: 0
@@ -2523,7 +2835,7 @@ materials:
               - "t t"
               - "t t"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_chestplate'
           item_id: 311 
           item_data: 0
@@ -2548,7 +2860,7 @@ materials:
               - "ttt"
               - "ttt"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_leggings'
           item_id: 312
           item_data: 0
@@ -2573,7 +2885,7 @@ materials:
               - "t t"
               - "t t"
 
-        # Checked 10/8/13
+        #Updated 10/8/13
         - id: 'mat_tungsten_helmet'
           item_id: 310
           item_data: 0

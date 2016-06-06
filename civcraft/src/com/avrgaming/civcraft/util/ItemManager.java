@@ -13,6 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 
+import com.avrgaming.civcraft.lorestorage.LoreMaterial;
+
 
 /*
  * The ItemManager class is going to be used to wrap itemstack operations that have now
@@ -25,7 +27,7 @@ import org.bukkit.material.MaterialData;
  */
 
 public class ItemManager {
-
+	
 	@SuppressWarnings("deprecation")
 	public static ItemStack createItemStack(int typeId, int amount, short damage) {
 		return new ItemStack(typeId, amount, damage);
@@ -78,6 +80,11 @@ public class ItemManager {
 	@SuppressWarnings("deprecation")
 	public static byte getData(Block block) {
 		return block.getData();
+	}
+	
+	//Added Alpha1.0pre3
+	public static int getData(LoreMaterial loreMaterial) {
+		return loreMaterial.getTypeID();
 	}
 	
 	public static short getData(ItemStack stack) {
@@ -169,4 +176,8 @@ public class ItemManager {
 		return false;
 	}
 	
+/*	public static LoreMaterial createItemStack(LoreMaterial loreMaterial) {
+		// TODO Auto-generated method stub
+		return LoreMaterial.materialMap.get(loreMaterial);
+	} */
 }

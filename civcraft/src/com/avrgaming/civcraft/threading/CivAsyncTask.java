@@ -158,14 +158,11 @@ public abstract class CivAsyncTask implements Runnable {
 	}
 	
 	public Boolean updateInventory(Action action, MultiInventory inv, ItemStack itemStack) throws InterruptedException {
-
 		UpdateInventoryRequest request = new UpdateInventoryRequest(SyncUpdateInventory.lock);
 		request.action = action;
 		request.stack = itemStack;
 		request.inv = inv;
-		
 		this.finished = false;
-		
 		SyncUpdateInventory.lock.lock();
 		try {
 			SyncUpdateInventory.requestQueue.add(request);
@@ -180,13 +177,37 @@ public abstract class CivAsyncTask implements Runnable {
 					CivLog.warning("Couldn't update inventory in "+TIMEOUT+" milliseconds! Retrying.");
 				}
 			}
-			
 			return (Boolean)request.result;
 		} finally {
 			this.finished = true;
 			SyncUpdateInventory.lock.unlock();
 		}
 	}
+	
+/*	public Boolean updateInventoryCust(Action action, MultiInventory inv, LoreMaterial loreMaterial) throws InterruptedException {
+		UpdateInventoryRequest request = new UpdateInventoryRequest(SyncUpdateInventory.lock);
+		request.action = action;
+		request.stack1 = loreMaterial;
+		request.inv = inv;
+		this.finished = false;
+		SyncUpdateInventory.lock.lock();
+		try {
+			SyncUpdateInventory.requestQueue.add(request);
+			while(!request.finished) {
+				/* We await for the finished flag to be set, at this
+				 * time the await function will give up the lock above
+				 * and automagically re-lock when its finished. /
+				request.condition.await(TIMEOUT, TimeUnit.MILLISECONDS);
+				if (!request.finished) {
+					CivLog.warning("Couldn't update inventory in "+TIMEOUT+" milliseconds! Retrying.");
+				}
+			}
+			return (Boolean)request.result;
+		} finally {
+			this.finished = true;
+			SyncUpdateInventory.lock.unlock();
+		}
+	} */
 	
 	public Boolean growBlocks(LinkedList<GrowBlock> growBlocks, FarmChunk farmChunk) throws InterruptedException {
 		

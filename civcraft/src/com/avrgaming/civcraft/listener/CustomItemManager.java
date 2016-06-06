@@ -315,7 +315,8 @@ public class CustomItemManager implements Listener {
 				craftMat.onAttack(event, inHand);
 			} else {
 				/* Non-civcraft items only do 0.5 damage. */
-				event.setDamage(0.5);
+				//Changed 1.0pre5
+				event.setDamage(1.0);
 			}
 		}
 		
@@ -342,7 +343,7 @@ public class CustomItemManager implements Listener {
 			}
 		}
 	}
-		
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnInventoryClose(InventoryCloseEvent event) {
 		for (ItemStack stack : event.getInventory().getContents()) {

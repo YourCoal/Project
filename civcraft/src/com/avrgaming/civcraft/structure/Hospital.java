@@ -36,7 +36,6 @@ public class Hospital extends Structure {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		
 		for (Town t : this.getTown().getCiv().getTowns()) {
 			for (Resident res : t.getResidents()) {
 				try {

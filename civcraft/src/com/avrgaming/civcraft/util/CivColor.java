@@ -26,6 +26,11 @@ public class CivColor {
 	public static final String STRIKETHROUGH = ""+ChatColor.STRIKETHROUGH;
 	public static final String RESET = ""+ChatColor.RESET;
 	public static final String UNDERLINE = ""+ChatColor.UNDERLINE;
+	
+	//New Alpha1.0pre3
+	public static final String RoseBold = "\u00A7c"+ChatColor.BOLD;
+	//New Alpha1.0pre5
+	public static final String goldBold = "\u00A76"+ChatColor.BOLD;
 
 	
 	/*
@@ -58,6 +63,11 @@ public class CivColor {
 		output = output.replaceAll("<magic>", ""+ChatColor.MAGIC);
 		output = output.replaceAll("<s>", ""+ChatColor.STRIKETHROUGH);
 		output = output.replaceAll("<r>", ""+ChatColor.RESET);
+		
+		//New Alpha1.0pre3
+		output = output.replaceAll("<roseBold>", RoseBold);
+		//New Alpha1.0pre5
+		output = output.replaceAll("<goldBold>", goldBold);
 		
 		return output;
 	}

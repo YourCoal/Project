@@ -191,10 +191,14 @@ public class CivSettings {
 	public static FileConfiguration fishingConfig; /* fishing.yml */
 	public static ArrayList<ConfigFishing> fishingDrops = new ArrayList<ConfigFishing>();
 		
+	public static double coal_rate;
 	public static double iron_rate;
 	public static double gold_rate;
 	public static double diamond_rate;
 	public static double emerald_rate;
+	public static double quartz_rate;
+	public static double lapis_rate;
+	public static double redstone_rate;
 	public static double startingCoins;
 	
 	public static ArrayList<String> kitItems = new ArrayList<String>();
@@ -207,6 +211,8 @@ public class CivSettings {
 	public static final String MODERATOR = "civ.moderator";
 	public static final String FREE_PERKS = "civ.freeperks";
 	public static final String ECON = "civ.econ";
+	
+	//TP Permissions
 	public static final String TPALLY = "civ.tp.ally";
 	public static final String TPNEUTRAL = "civ.tp.neutral";
 	public static final String TPHOSTILE = "civ.tp.hostile";
@@ -214,6 +220,7 @@ public class CivSettings {
 	public static final String TPPEACE = "civ.tp.peace";
 	public static final String TPCAMP = "civ.tp.camp";
 	public static final String TPALL = "civ.tp.*";
+	
 	public static final int MARKET_COIN_STEP = 5;
 	public static final int MARKET_BUYSELL_COIN_DIFF = 30;
 	public static final int MARKET_STEP_THRESHOLD = 2;
@@ -280,10 +287,14 @@ public class CivSettings {
 		CivGlobal.banWords.add("http");
 		CivGlobal.banWords.add("cunt");
 		
+		coal_rate = CivSettings.getDouble(civConfig, "ore_rates.coal");
 		iron_rate = CivSettings.getDouble(civConfig, "ore_rates.iron");
 		gold_rate = CivSettings.getDouble(civConfig, "ore_rates.gold");
 		diamond_rate = CivSettings.getDouble(civConfig, "ore_rates.diamond");
 		emerald_rate = CivSettings.getDouble(civConfig, "ore_rates.emerald");
+		quartz_rate = CivSettings.getDouble(civConfig, "ore_rates.quartz");
+		lapis_rate = CivSettings.getDouble(civConfig, "ore_rates.lapis");
+		redstone_rate = CivSettings.getDouble(civConfig, "ore_rates.redstone");
 		startingCoins = CivSettings.getDouble(civConfig, "global.starting_coins");
 		
 		alwaysCrumble.add(CivData.BEDROCK);

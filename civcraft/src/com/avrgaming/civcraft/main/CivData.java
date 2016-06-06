@@ -41,11 +41,49 @@ public class CivData {
 	public static final byte DATA_PINE = 1;
 	public static final byte DATA_BIRCH = 2;
 	public static final byte DATA_JUNGLE = 3;
-
+	
+	
+	//Global Data Bytes
+	public static final int DATA_0 = 0;
+	public static final int DATA_1 = 1;
+	public static final int DATA_2 = 2;
+	public static final int DATA_3 = 3;
+	public static final int DATA_4 = 4;
+	public static final int DATA_5 = 5;
+	public static final int DATA_6 = 6;
+	public static final int DATA_7 = 7;
+	public static final int DATA_8 = 8;
+	public static final int DATA_9 = 9;
+	public static final int DATA_10 = 10;
+	public static final int DATA_11 = 11;
+	public static final int DATA_12 = 12;
+	public static final int DATA_13 = 13;
+	public static final int DATA_14 = 14;
+	public static final int DATA_15 = 15;
+	
+	
+	public static final int AIR = 0;
+	public static final int STONE = 1;
+	public static final int GRANITE = 1;
+	public static final int POLISHED_GRANITE = 2;
+	public static final int DIORITE = 3;
+	public static final int POLISHED_DIORITE = 4;
+	public static final int ANDESITE = 5;
+	public static final int POLISHED_ANDESITE = 6;
+	
 	public static final int DIRT = 3;
-
 	public static final int COARSE_DIRT = 1;
 	public static final int PODZOL = 2;
+	
+	public static final int EMERALD_ORE = 129;
+	
+	public static final int COBBLESTONE_WALL = 139;
+	
+	public static final int QUARTZ_BLOCK = 155;
+	
+//	public static final int LAPIS = ItemManager.getMaterialData(Material.INK_SACK, 4);
+	
+	public static final int QUARTZ = 406;
 	
 	public static final int SALMON = 1;
 	public static final int CLOWNFISH = 2;
@@ -67,7 +105,6 @@ public class CivData {
 	public static final int EMERALD = 388;
 	public static final int DIAMOND = 264;
 	public static final int GRAVEL = 13;
-	public static final int AIR = 0;
 	public static final int DISPENSER = 23;
 	public static final int REDSTONE_DUST = 331;
 	public static final int WHEAT = 59;
@@ -205,13 +242,6 @@ public class CivData {
 	public static final int ANVIL = 145;
 	public static final int IRON_BLOCK = 42;
 	public static final int COBWEB = 30;
-	public static final int STONE = 1;
-	public static final int GRANITE = 1;
-	public static final int POLISHED_GRANITE = 2;
-	public static final int DIORITE = 3;
-	public static final int POLISHED_DIORITE = 4;
-	public static final int ANDESITE = 5;
-	public static final int POLISHED_ANDESITE = 6;
 	
 	
 	public static final short MUNDANE_POTION_DATA = 8192;

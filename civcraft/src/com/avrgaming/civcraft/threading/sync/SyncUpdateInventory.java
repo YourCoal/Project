@@ -65,6 +65,13 @@ public class SyncUpdateInventory implements Runnable {
 							e.printStackTrace();
 						}
 						break;
+/*					case REMOVE_CUST:
+						try {
+							retBool = request.inv.removeItemCust(request.stack1);
+						} catch (CivException e) {
+							e.printStackTrace();
+						}
+						break;*/
 					}
 					
 					request.result = retBool;

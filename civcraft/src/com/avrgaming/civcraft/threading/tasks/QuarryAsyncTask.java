@@ -128,13 +128,19 @@ public class QuarryAsyncTask extends CivAsyncTask {
 					} catch (InterruptedException e) {
 						return;
 					}
+				
+/*				if (ItemManager.getId(stack) == ItemManager.getData(LoreMaterial.materialMap.get("civ:wooden_hammer"))) {
+					try {
+						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.COBBLESTONE_WALL, 1));
+					} catch (InterruptedException e) {
+						return;
+					}*/
 					
 					// Attempt to get special resources
 					Random rand = new Random();
 					int randMax = Quarry.MAX_CHANCE;
 					int rand1 = rand.nextInt(randMax);
 					ItemStack newItem;
-					
 					if (rand1 < ((int)((quarry.getChance(Mineral.COAL)/2)*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.COAL, 1);
 					} else if (rand1 < ((int)((quarry.getChance(Mineral.OTHER)/2)*randMax))) {

@@ -165,6 +165,7 @@ public class Town extends SQLObject {
 	public int saved_store_level = 1;
 	public int saved_library_level = 1;
 	public int saved_trommel_level = 1;
+	public int saved_forge_level = 1;
 	public int saved_tradeship_upgrade_levels = 1;
 	public int saved_grocer_levels = 1;
 	public int saved_quarry_level = 1;

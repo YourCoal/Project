@@ -36,65 +36,104 @@ trommel:
     despotism_rate: 2.0
     penalty_rate: 0.8
 
-trommel_gravel:
+trommel_cobble:
     max: 10000
-    iron_chance: 0.06
-    redstone_chance: 0.04
-    gold_chance: 0.02
-    diamond_chance: 0.0050
-    emerald_chance: 0.0020
-    chromium_chance: 0.0008
+    dirt_gravel: 0.85
+    iron_chance: 0.05
+    gold_chance: 0.025
+    lapis_chance: 0.0175
+    redstone_chance: 0.0125
+    diamond_chance: 0.005
+    emerald_chance: 0.0025
+    chromium_chance: 0.001
+
+trommel_stone:
+    max: 50000
+    dirt_gravel: 0.85
+    iron_chance: 0.1
+    gold_chance: 0.05
+    lapis_chance: 0.035
+    redstone_chance: 0.025
+    diamond_chance: 0.01
+    emerald_chance: 0.005
+    chromium_chance: 0.002
 
 trommel_granite:
-    max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
-    redstone_chance: 0.04
-    gold_chance: 0.02
-    tungsten_chance: 0.0075
-    diamond_chance: 0.0050
-    emerald_chance: 0.0020
-    chromium_chance: 0.0008
-    crystal_fragment_chance: 0.0002
-    refined_chromium_chance: 0.00008
-    refined_tungsten_chance: 0.00004
-    crystal_chance: 0.00002
+    max: 10000
+    dirt_gravel: 0.85
+    iron_chance: 0.05
+    gold_chance: 0.025
+    lapis_chance: 0.0175
+    redstone_chance: 0.0125
+    diamond_chance: 0.005
+    emerald_chance: 0.0025
+    chromium_chance: 0.001
+
+trommel_polgranite:
+    max: 50000
+    dirt_gravel: 0.85
+    iron_chance: 0.1
+    gold_chance: 0.05
+    lapis_chance: 0.035
+    redstone_chance: 0.025
+    diamond_chance: 0.01
+    emerald_chance: 0.005
+    chromium_chance: 0.002
 
 trommel_diorite:
-    max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
-    redstone_chance: 0.045
+    max: 10000
+    dirt_gravel: 0.85
+    iron_chance: 0.05
     gold_chance: 0.025
-    tungsten_chance: 0.00080
-    diamond_chance: 0.0055
+    lapis_chance: 0.0175
+    redstone_chance: 0.0125
+    diamond_chance: 0.005
     emerald_chance: 0.0025
-    chromium_chance: 0.00085
-    crystal_fragment_chance: 0.00025
-    refined_chromium_chance: 0.00012
-    refined_tungsten_chance: 0.00008
-    crystal_chance: 0.00004
+    chromium_chance: 0.001
+
+trommel_poldiorite:
+    max: 50000
+    dirt_gravel: 0.85
+    iron_chance: 0.1
+    gold_chance: 0.05
+    lapis_chance: 0.035
+    redstone_chance: 0.025
+    diamond_chance: 0.01
+    emerald_chance: 0.005
+    chromium_chance: 0.002
 
 trommel_andesite:
+    max: 10000
+    dirt_gravel: 0.85
+    iron_chance: 0.05
+    gold_chance: 0.025
+    lapis_chance: 0.0175
+    redstone_chance: 0.0125
+    diamond_chance: 0.005
+    emerald_chance: 0.0025
+    chromium_chance: 0.001
+
+trommel_polandesite:
+    max: 50000
+    dirt_gravel: 0.85
+    iron_chance: 0.1
+    gold_chance: 0.05
+    lapis_chance: 0.035
+    redstone_chance: 0.025
+    diamond_chance: 0.01
+    emerald_chance: 0.005
+    chromium_chance: 0.002
+
+trommel_obsidian:
     max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
+    dirt_gravel: 0.85
+    iron_chance: 0.2
+    gold_chance: 0.1
+    lapis_chance: 0.07
     redstone_chance: 0.05
-    gold_chance: 0.03
-    tungsten_chance: 0.0085
-    diamond_chance: 0.0060
-    emerald_chance: 0.0030
-    chromium_chance: 0.0009
-    crystal_fragment_chance: 0.0003
-    refined_chromium_chance: 0.00015
-    refined_tungsten_chance: 0.00010
-    crystal_chance: 0.00005
+    diamond_chance: 0.02
+    emerald_chance: 0.01
+    chromium_chance: 0.004
 
 ################# Mob Grinder Settings #################
 mobGrinder:
