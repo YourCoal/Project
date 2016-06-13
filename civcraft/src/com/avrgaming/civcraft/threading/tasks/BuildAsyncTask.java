@@ -30,6 +30,7 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.structure.Buildable;
+import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
@@ -89,7 +90,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 		
 		for (; buildable.getBuiltBlockCount() < (tpl.size_x*tpl.size_y*tpl.size_z); buildable.builtBlockCount++) {
 			speed = buildable.getBuildSpeed();
-			blocks_per_tick = buildable.getBlocksPerTick();
+			//blocks_per_tick = buildable.getBlocksPerTick();
 		
 			synchronized(aborted) {
 				if (aborted) {
@@ -106,7 +107,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (buildable.getTown().getMotherCiv() != null) {
 					CivMessage.sendTown(buildable.getTown(), CivSettings.localize.localizedString("var_buildAsync_wonderHaltedConquered",buildable.getTown().getCiv().getName()));
 					try {
-						Thread.sleep(1800000); //30 min notify.
+						Thread.sleep(900000); //15 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -116,7 +117,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (inProgress != null && inProgress != buildable) {
 					CivMessage.sendTown(buildable.getTown(), CivSettings.localize.localizedString("var_buildAsync_wonderHaltedOtherConstruction",inProgress.getDisplayName()));
 					try {
-						Thread.sleep(60000); //1 min notify.
+						Thread.sleep(45000); //45 sec notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -125,7 +126,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (buildable.getTown().getTownHall() == null) {
 					CivMessage.sendTown(buildable.getTown(), CivSettings.localize.localizedString("buildAsync_wonderHaltedNoTownHall"));
 					try {
-						Thread.sleep(600000); //10 min notify.
+						Thread.sleep(300000); //5 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -160,14 +161,19 @@ public class BuildAsyncTask extends CivAsyncTask {
 					this.percent_complete = nextPercentComplete;
 					if ((this.percent_complete % 10 == 0)) {
 						if (buildable instanceof Wonder) {
-							CivMessage.global(CivSettings.localize.localizedString("var_buildAsync_progressWonder",buildable.getDisplayName(),buildable.getTown().getName(),nextPercentComplete));
-						} else {
-														
-							CivMessage.sendTown(buildable.getTown(),
-									CivColor.Yellow+CivSettings.localize.localizedString("var_buildAsync_progressOther",buildable.getDisplayName(),nextPercentComplete));
+							CivMessage.global("The "+buildable.getDisplayName()+" in the town of "+buildable.getTown().getName()+" is now "+nextPercentComplete+"% complete.");
+							CivMessage.globalTitle(CivColor.LightBlue+buildable.getDisplayName()+CivColor.White+" - "+CivColor.Yellow+nextPercentComplete+"%", 
+									CivColor.LightGray+CivColor.ITALIC+"Wonder Progress, Town of "+buildable.getTown().getName());
+						}
+					}
+						
+					if ((this.percent_complete % 25 == 0)) {
+						if (buildable instanceof Structure) {
+							CivMessage.sendTown(buildable.getTown(), CivColor.Yellow+"The "+buildable.getDisplayName()+" is now "+nextPercentComplete+"% complete.");
 						}
 					}
 				}
+				
 				
 				int timeleft = speed;
 				while (timeleft > 0) {

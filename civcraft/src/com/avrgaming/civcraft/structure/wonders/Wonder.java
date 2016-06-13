@@ -37,6 +37,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Civilization;
+import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.template.Template;
@@ -265,6 +266,10 @@ public abstract class Wonder extends Buildable {
 		
 		// Player's center was converted to this building's corner, save it as such.
 		this.startBuildTask(tpl, centerLoc);
+		
+		//Added 1.1pre1 Alpha
+		Resident res = CivGlobal.getResident(player);
+		res.undoPreview();
 		
 		this.save();
 		CivGlobal.addWonder(this);

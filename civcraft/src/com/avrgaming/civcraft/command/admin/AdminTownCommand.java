@@ -76,6 +76,22 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("setunhappy", CivSettings.localize.localizedString("adcmd_town_setunhappyDesc"));
 		commands.put("event", CivSettings.localize.localizedString("adcmd_town_eventDesc"));
 		commands.put("rename", CivSettings.localize.localizedString("adcmd_town_renameDesc"));
+		commands.put("growth", "[town] [amount] set this town's growth rate to this amount.");
+	}
+	
+	public void growth_cmd() throws CivException {
+		if (args.length < 3) {
+			throw new CivException("Enter a town name and amount");
+		}
+		
+		Town town = getNamedTown(1);
+		try {
+			town.setGrowthRate(Double.valueOf(args[2]));
+			CivMessage.sendSuccess(sender, "Set "+args[1]+" growth rate to "+args[2]);
+		} catch (NumberFormatException e) {
+			throw new CivException(args[2]+" is not a number.");
+		}
+		town.save();
 	}
 	
 	public void rename_cmd() throws CivException, InvalidNameException {

@@ -113,8 +113,13 @@ public class Town extends SQLObject {
 	private Civilization motherCiv;
 	private int daysInDebt;
 	
+	/* World */
+	public static String overworldName;
+	
+	private double baseGrowth = 0.0;
+	
 	/* Hammers */
-	private double baseHammers = 1.0;
+	private double baseHammers = 0.0;
 	private double extraHammers;
 	public Buildable currentStructureInProgress;
 	public Buildable currentWonderInProgress;
@@ -160,7 +165,7 @@ public class Town extends SQLObject {
 	public boolean defeated = false;
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
-	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
+	/* kind of a hacky way to save level information between build undo calls */
 	public int saved_bank_level = 1;
 	public int saved_store_level = 1;
 	public int saved_library_level = 1;
@@ -192,8 +197,6 @@ public class Town extends SQLObject {
 		public AttrSource sources;
 	}
 	public HashMap<String, AttrCache> attributeCache = new HashMap<String, AttrCache>();
-	
-	private double baseGrowth = 0.0;
 	
 	public static final String TABLE_NAME = "TOWNS";
 	public static void init() throws SQLException {
@@ -348,7 +351,6 @@ public class Town extends SQLObject {
 	
 	@Override
 	public void delete() throws SQLException {
-		
 		/* Remove all our Groups */
 		for (PermissionGroup grp : this.groups.values()) {
 			grp.delete();
@@ -382,7 +384,6 @@ public class Town extends SQLObject {
 				try {
 					wonder.undoFromTemplate();
 				} catch (IOException | CivException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					wonder.fancyDestroyStructureBlocks();
 				}
@@ -432,9 +433,10 @@ public class Town extends SQLObject {
 	
 	public void loadSettings() {
 		try {
+			overworldName = CivSettings.getString(CivSettings.worldConfig, "overworld_name");
+			
 			this.baseHammers = CivSettings.getDouble(CivSettings.townConfig, "town.base_hammer_rate");
 			this.setBaseGrowth(CivSettings.getDouble(CivSettings.townConfig, "town.base_growth_rate"));
-			
 //			this.happyCoinRate = new AttributeComponent();
 //			this.happyCoinRate.setSource("Happiness");
 //			this.happyCoinRate.setAttrKey(Attribute.TypeKeys.COINS.name());
@@ -1587,8 +1589,7 @@ public class Town extends SQLObject {
 	}
 	
 	public void buildWonder(Player player, String id, Location center, Template tpl) throws CivException {
-
-		if (!center.getWorld().getName().equals("world")) {
+		if (!center.getWorld().getName().equalsIgnoreCase(overworldName)) {
 			throw new CivException(CivSettings.localize.localizedString("town_buildwonder_NotOverworld"));
 		}
 		
@@ -1629,7 +1630,6 @@ public class Town extends SQLObject {
 		}
 		
 		wonder.runCheck(center); //Throws exception if we can't build here.	
-
 		Buildable inProgress  = getCurrentStructureInProgress();
 		if (inProgress != null) {
 			throw new CivException(CivSettings.localize.localizedString("var_town_buildwonder_errorCurrentlyBuilding",inProgress.getDisplayName())+" "+CivSettings.localize.localizedString("town_buildwonder_errorOneAtATime"));
@@ -1660,10 +1660,12 @@ public class Town extends SQLObject {
 	}
 	
 	public void buildStructure(Player player, String id, Location center, Template tpl) throws CivException {
-
 //		if (!center.getWorld().getName().equals("world")) {
 //			throw new CivException("Cannot build structures in the overworld ... for now.");
 //		}
+		if (!center.getWorld().getName().equalsIgnoreCase(overworldName)) {
+			throw new CivException("Cannot build structures in this world.");
+		}
 		
 		Structure struct = Structure.newStructure(center, id, this);
 		
@@ -1699,12 +1701,9 @@ public class Town extends SQLObject {
 			throw new CivException(CivSettings.localize.localizedString("var_town_buildwonder_errorCurrentlyBuilding",inProgress.getDisplayName())+". "+CivSettings.localize.localizedString("town_buildwonder_errorOneAtATime"));
 		}
 		
-		try {
-			/*
-			 * XXX if the template is null we need to just get the template first. 
+		try {/* if the template is null we need to just get the template first. 
 			 * This should only happen for capitols and town halls since we need to 
-			 * Make them use the structure preview code and they don't yet
-			 */
+			 * Make them use the structure preview code and they don't yet */
 			if (tpl == null) {
 				try {
 					tpl = new Template();
@@ -1733,7 +1732,7 @@ public class Town extends SQLObject {
 			e.printStackTrace();
 			throw new CivException(CivSettings.localize.localizedString("internalCommandException"));
 		}
-				
+		
 		this.getTreasury().withdraw(cost);
 		CivMessage.sendTown(this, CivColor.Yellow+CivSettings.localize.localizedString("var_town_buildwonder_success",struct.getDisplayName()));
 		
@@ -1748,7 +1747,7 @@ public class Town extends SQLObject {
 				}
 			}
 			
-			//TODO fix this dependency nightmare! (the center is moved in build and needs to be resaved)
+			//fix this dependency nightmare! (the center is moved in build and needs to be resaved)
 	//	} catch (SQLException e) {
 	//		e.printStackTrace();
 	//		throw new CivException("Internal database error");
@@ -1973,6 +1972,10 @@ public class Town extends SQLObject {
 		cache.sources = as;
 		this.attributeCache.put("GROWTH", cache);
 		return as;	
+	}
+	
+	public void setGrowthRate(double growthRate) {
+		this.baseGrowth = growthRate;
 	}
 	
 	public double getCottageRate() {
@@ -2306,7 +2309,7 @@ public class Town extends SQLObject {
 	}
 
 	public int getUnitTypeCount(String id) {
-		//TODO find unit limits.
+		//todo find unit limits.
 		return 0;
 	}
 	

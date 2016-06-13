@@ -64,6 +64,9 @@ happiness:
         - level: 9
           happiness: 12.0
 
+        - level: 10
+          happiness: 101.0
+
     # Happiness States
     #
     # name - Name displayed for this happiness state

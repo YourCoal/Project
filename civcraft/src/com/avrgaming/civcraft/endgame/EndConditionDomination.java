@@ -10,7 +10,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 
-public class EndConditionConquest extends EndGameCondition {
+public class EndConditionDomination extends EndGameCondition {
 
 	int daysAfterStart;
 	double percentCaptured;
@@ -27,7 +27,7 @@ public class EndConditionConquest extends EndGameCondition {
 	}
 	
 	private void getStartDate() {
-		String key = "endcondition:conquest:startdate";
+		String key = "endcondition:domination:startdate";
 		
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(key);
 		if (entries.size() == 0) {
@@ -57,7 +57,7 @@ public class EndConditionConquest extends EndGameCondition {
 	
 	@Override
 	public String getSessionKey() {
-		return "endgame:conquer";
+		return "endgame:domination";
 	}
 	
 	@Override

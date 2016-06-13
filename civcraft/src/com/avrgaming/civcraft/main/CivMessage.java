@@ -195,7 +195,14 @@ public class CivMessage {
 	public static void global(String string) {
 		CivLog.info("[Global] "+string);
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.sendMessage(CivColor.LightBlue+CivSettings.localize.localizedString("civMsg_Globalprefix")+" "+CivColor.White+string);
+			player.sendMessage(CivColor.LightBlue+"[Global] "+CivColor.White+string);
+		}
+	}
+	
+	public static void globalWonder(String string) {
+		CivLog.info("[Global] [Wonder] "+string);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			player.sendMessage(CivColor.LightBlue+"[Global] "+CivColor.Yellow+CivColor.BOLD+"[Wonder] "+CivColor.White+string);
 		}
 	}
 	
@@ -204,7 +211,7 @@ public class CivMessage {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			Resident resident = CivGlobal.getResident(player);
 			if (CivSettings.hasTitleAPI && resident.isTitleAPI()) {
-				CivMessage.sendTitle(player, 10, 60, 10, title, subTitle);
+				CivMessage.sendTitle(player, 15, 80, 15, title, subTitle);
 			} else {
 				send(player, buildTitle(title));
 				if (!subTitle.equals("")) {

@@ -290,7 +290,6 @@ public class BlockListener implements Listener {
 			try {
 				event.setDamage(CivSettings.getInteger(CivSettings.warConfig, "tesla_tower.damage"));
 			} catch (InvalidConfiguration e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

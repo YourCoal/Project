@@ -163,10 +163,10 @@ tesla_tower:
 
 wall:
    # Maximum height walls can be built at.
-   maximum_height: 200
+   maximum_height: 150
 
    # Height of a basic wall piece
-   height: 6
+   height: 5
 
    # Cost of a vertical segment
    cost_per_segment: 50.0
@@ -177,13 +177,13 @@ wall:
 
 fortified_wall:
    # Maximum height walls can be built at.
-   maximum_height: 200
+   maximum_height: 150
 
    # Height of a basic wall piece
-   height: 10
+   height: 8
 
    # Cost of a vertical segment
-   cost_per_segment: 100.0
+   cost_per_segment: 250.0
 
    max_segment: 300
 

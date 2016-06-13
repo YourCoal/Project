@@ -1,21 +1,3 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
 package com.avrgaming.civcraft.main;
 
 import java.io.IOException;
@@ -126,26 +108,13 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTask("SQLUpdate", new SQLUpdate(), 0);
 		
 		// Sync Timers
-		TaskMaster.syncTimer(SyncBuildUpdateTask.class.getName(), 
-				new SyncBuildUpdateTask(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncUpdateChunks.class.getName(), 
-				new SyncUpdateChunks(), 0, TimeTools.toTicks(1));
-		
-		TaskMaster.syncTimer(SyncLoadChunk.class.getName(), 
-				new SyncLoadChunk(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncGetChestInventory.class.getName(),
-				new SyncGetChestInventory(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncUpdateInventory.class.getName(),
-				new SyncUpdateInventory(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncGrowTask.class.getName(),
-				new SyncGrowTask(), 0, 1);
-		
-		TaskMaster.syncTimer(PlayerLocationCacheUpdate.class.getName(), 
-				new PlayerLocationCacheUpdate(), 0, 10);
+		TaskMaster.syncTimer(SyncBuildUpdateTask.class.getName(), new SyncBuildUpdateTask(), 0, 1);
+		TaskMaster.syncTimer(SyncUpdateChunks.class.getName(), new SyncUpdateChunks(), 0, TimeTools.toTicks(1));
+		TaskMaster.syncTimer(SyncLoadChunk.class.getName(), new SyncLoadChunk(), 0, 1);
+		TaskMaster.syncTimer(SyncGetChestInventory.class.getName(),new SyncGetChestInventory(), 0, 1);
+		TaskMaster.syncTimer(SyncUpdateInventory.class.getName(),new SyncUpdateInventory(), 0, 1);
+		TaskMaster.syncTimer(SyncGrowTask.class.getName(),new SyncGrowTask(), 0, 1);
+		TaskMaster.syncTimer(PlayerLocationCacheUpdate.class.getName(), new PlayerLocationCacheUpdate(), 0, 10);
 		
 		TaskMaster.asyncTimer("RandomEventSweeper", new RandomEventSweeper(), 0, TimeTools.toTicks(10));
 		
@@ -172,8 +141,7 @@ public final class CivCraft extends JavaPlugin {
 		// Global Event timers		
 		TaskMaster.syncTimer("FarmCropCache", new FarmPreCachePopulateTimer(), TimeTools.toTicks(30));
 	
-		TaskMaster.asyncTimer("FarmGrowthTimer",
-				new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
+		TaskMaster.asyncTimer("FarmGrowthTimer", new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
 
 		TaskMaster.asyncTimer("announcer", new AnnouncementTimer("tips.txt", 5), 0, TimeTools.toTicks(60*60));
 		TaskMaster.asyncTimer("announcerwar", new AnnouncementTimer("war.txt", 60), 0, TimeTools.toTicks(60*60));
@@ -181,8 +149,7 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("ChangeGovernmentTimer", new ChangeGovernmentTimer(), TimeTools.toTicks(60));
 		TaskMaster.asyncTimer("CalculateScoreTimer", new CalculateScoreTimer(), 0, TimeTools.toTicks(60));
 		
-		TaskMaster.asyncTimer(PlayerProximityComponentTimer.class.getName(), 
-				new PlayerProximityComponentTimer(), TimeTools.toTicks(1));
+		TaskMaster.asyncTimer(PlayerProximityComponentTimer.class.getName(), new PlayerProximityComponentTimer(), TimeTools.toTicks(1));
 		
 		TaskMaster.asyncTimer(EventTimerTask.class.getName(), new EventTimerTask(), TimeTools.toTicks(5));
 
@@ -347,8 +314,4 @@ public final class CivCraft extends JavaPlugin {
 	public static void setPlugin(JavaPlugin plugin) {
 		CivCraft.plugin = plugin;
 	}
-
-
-	
-	
 }

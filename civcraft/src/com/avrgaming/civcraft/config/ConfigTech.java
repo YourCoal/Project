@@ -76,16 +76,13 @@ public class ConfigTech {
 	public double getAdjustedTechCost(Civilization civ) {
 		double rate = 1.0;
 		
-		for (Town town : civ.getTowns())
-		{
-			if (town.getBuffManager().hasBuff("buff_profit_sharing"))
-			{
+		for (Town town : civ.getTowns()) {
+			if (town.getBuffManager().hasBuff("buff_profit_sharing")) {
 				rate -= town.getBuffManager().getEffectiveDouble("buff_profit_sharing");
 			}
 		}
 		rate = Math.max(rate, 0.75);
 		rate -= eraRate(civ);
-		
 		return Math.floor(this.cost * Math.max(rate, .01));
 	}
 	

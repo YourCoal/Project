@@ -18,7 +18,6 @@
  */
 package com.avrgaming.civcraft.threading.timers;
 
-import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Civilization;
@@ -43,19 +42,19 @@ public class BeakerTimer extends CivAsyncTask {
 		for (Civilization civ : CivGlobal.getCivs()) {
 			
 			if (civ.getCapitolName() == null) {
-				CivMessage.sendCiv(civ, CivSettings.localize.localizedString("beaker_ErrorNoCapitol"));
+				CivMessage.sendCiv(civ, "ERROR: your capitol name is not set right! No research is progressing. Contact an admin.");
 				continue;
 			}
 			
 			Town town = CivGlobal.getTown(civ.getCapitolName());
 			if (town == null) {
-				CivMessage.sendCiv(civ, CivSettings.localize.localizedString("var_beaker_noCapitol",civ.getCapitolName()));
+				CivMessage.sendCiv(civ, "ERROR: Couldn't find your capitol town named "+civ.getCapitolName()+"! No research is progressing. Contact an admin.");
 				continue;
 			}
 			
 			TownHall townhall = town.getTownHall();
 			if (townhall == null) {
-				CivMessage.sendCiv(civ, CivSettings.localize.localizedString("beaker_noCapitolHall"));
+				CivMessage.sendCiv(civ, "Your captial doesn't have a town hall! You are not generating any beakers.");
 			}
 			
 			try {
@@ -73,8 +72,5 @@ public class BeakerTimer extends CivAsyncTask {
 				e.printStackTrace();
 			}
 		}
-		
-		
 	}
-
 }

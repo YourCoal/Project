@@ -95,14 +95,12 @@ town_levels:
       plot_cost: 5000.0
       tile_improvements: 15
 
-
     - level: 6
       title: 'Large Town'
       upkeep: 5500.0
       plots: 512
       plot_cost: 7500.0
       tile_improvements: 17
-
 
     - level: 7
       title: 'City'
@@ -111,14 +109,12 @@ town_levels:
       plot_cost: 15000.0
       tile_improvements: 20
 
-
     - level: 8
       title: 'Large City'
       upkeep: 8000.0
       plots: 2048
       plot_cost: 20000.0
       tile_improvements: 25
-
 
     - level: 9
       title: 'Metropolis'
@@ -127,6 +123,12 @@ town_levels:
       plot_cost: 30000.0
       tile_improvements: 30
 
+    - level: 10
+      title: 'Admin'
+      upkeep: 0.0
+      plots: 999999999
+      plot_cost: 0.0
+      tile_improvements: 999999999
 
 
 # Town Upgrades
@@ -201,6 +203,14 @@ upgrades:
       action: 'set_town_level,9'
       require_upgrade: 'upgrade_town_level_8'
       require_tech: 'tech_innovation'
+      category: 'Town'
+
+    - id: 'upgrade_town_level_10'
+      name: 'Admin'
+      cost: 1000000000000.0
+      action: 'set_town_level,10'
+      require_upgrade: 'upgrade_town_level_9'
+      require_tech: 'tech_scientific_method'
       category: 'Town'
 
    

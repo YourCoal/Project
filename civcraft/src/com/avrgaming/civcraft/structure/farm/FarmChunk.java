@@ -31,7 +31,6 @@ import org.bukkit.block.Block;
 
 import com.avrgaming.civcraft.components.ActivateOnBiome;
 import com.avrgaming.civcraft.components.Component;
-import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.InvalidBlockLocation;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivLog;
@@ -194,32 +193,31 @@ public class FarmChunk {
 		case CivData.CARROTS:
 		case CivData.POTATOES:
 			if (bs.getData() < 0x7) {
-				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock(Town.overworldName, growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}
 			break;
 		case CivData.NETHERWART:
 			if (bs.getData() < 0x3) {
-				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock(Town.overworldName, growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}
 			break;
 		case CivData.MELON_STEM:
 		case CivData.PUMPKIN_STEM:
 			if (bs.getData() < 0x7) {
-				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock(Town.overworldName, growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			} else if (bs.getData() == 0x7) {
 				spawnMelonOrPumpkin(bs, growMe, task);
 			}
 			break;
 		case CivData.COCOAPOD:	
 			if (CivData.canCocoaGrow(bs)) {
-				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(),CivData.getNextCocoaValue(bs), false);
+				addGrowBlock(Town.overworldName, growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(),CivData.getNextCocoaValue(bs), false);
 			}
 			break;
 		}
 	}
 	
 	public void processGrowth(CivAsyncTask task) throws InterruptedException {
-		
 		if (this.getStruct().isActive() == false) {
 			return;
 		}
@@ -254,9 +252,30 @@ public class FarmChunk {
 		}
 		this.getFarm().setLastEffectiveGrowth(effectiveGrowthRate);
 		
-		int crops_per_growth_tick = (int)CivSettings.getIntegerStructure("farm.grows_per_tick");
-		int numberOfCropsToGrow = (int)(effectiveGrowthRate * crops_per_growth_tick); //Since this is a double, 1.0 means 100% so int cast is # of crops
+		//int crops_per_growth_tick = (int)CivSettings.getIntegerStructure("farm.grows_per_tick");
+		//int numberOfCropsToGrow = (int)(effectiveGrowthRate * crops_per_growth_tick); //Since this is a double, 1.0 means 100% so int cast is # of crops
 		int chanceForLast = (int) (this.town.getGrowth().total % 100);
+		
+		int numberOfCropsToGrow = 0;
+		
+		if (this.town.getGrowth().total >= 0) {
+			if (this.town.getGrowth().total <= 175) {
+				numberOfCropsToGrow = 4;
+			} else if (this.town.getGrowth().total <= 350) {
+				numberOfCropsToGrow = 6;
+			} else if (this.town.getGrowth().total <= 525) {
+				numberOfCropsToGrow = 8;
+			} else if (this.town.getGrowth().total <= 700) {
+				numberOfCropsToGrow = 10;
+			} else if (this.town.getGrowth().total <= 875) {
+				numberOfCropsToGrow = 12;
+			} else if (this.town.getGrowth().total >= 1025) {
+				numberOfCropsToGrow = 16;
+			} else {
+				numberOfCropsToGrow = 2;
+			}
+		}
+		
 		
 		this.lastGrownCrops.clear();
 		this.lastGrowTickCount = numberOfCropsToGrow;
@@ -273,16 +292,15 @@ public class FarmChunk {
 		Random rand = new Random();
 		for (int i = 0; i < numberOfCropsToGrow; i++) {
 			BlockCoord growMe = this.cropLocationCache.get(rand.nextInt(this.cropLocationCache.size()));
-
 			int bsx = growMe.getX() % 16;
 			int bsy = growMe.getY();
-			int bsz  = growMe.getZ() % 16;
+			int bsz = growMe.getZ() % 16;
 			
 			BlockSnapshot bs = new BlockSnapshot(bsx, bsy, bsz, snapshot);
-
 			this.lastGrownCrops.add(growMe);
 			growBlock(bs, growMe, task);
 		}
+		
 		if (chanceForLast != 0) {
 			int randInt = rand.nextInt(100);
 			this.lastRandomInt = randInt;
@@ -290,15 +308,13 @@ public class FarmChunk {
 				BlockCoord growMe = this.cropLocationCache.get(rand.nextInt(this.cropLocationCache.size()));
 				int bsx = growMe.getX() % 16;
 				int bsy = growMe.getY();
-				int bsz  = growMe.getZ() % 16;
-
+				int bsz = growMe.getZ() % 16;
+				
 				BlockSnapshot bs = new BlockSnapshot(bsx, bsy, bsz, snapshot);
-
 				this.lastGrownCrops.add(growMe);
 				growBlock(bs, growMe, task);
 			}
 		}
-		
 		task.growBlocks(this.growBlocks, this);
 	}
 	

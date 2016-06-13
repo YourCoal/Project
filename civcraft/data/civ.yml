@@ -145,11 +145,11 @@ end_conditions:
       wonders: '1'
       days_held: '21'
 
-    - id: 'end_conquest'
-      class: 'EndConditionConquest'
-      name: 'Conquest'
-      percent_captured: '0.75'
-      percent_captured_with_wonder: '0.50'
+    - id: 'end_domination'
+      class: 'EndConditionDomination'
+      name: 'Domination'
+      percent_captured: '0.85'
+      percent_captured_with_wonder: '0.8'
       days_after_start: '28'
       days_held: '21'
     

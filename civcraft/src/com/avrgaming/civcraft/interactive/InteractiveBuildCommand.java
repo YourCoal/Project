@@ -62,7 +62,6 @@ public class InteractiveBuildCommand implements InteractiveResponse {
 			return;
 		}
 		
-		
 		if (!buildable.validated) {
 			CivMessage.sendError(player, CivSettings.localize.localizedString("interactive_build_invalid"));
 			return;
@@ -87,9 +86,7 @@ public class InteractiveBuildCommand implements InteractiveResponse {
 					player = CivGlobal.getPlayer(resident);
 				} catch (CivException e) {
 					return;
-				}
-				
-				try {
+				} try {
 					if (buildable instanceof Wonder) {
 						town.buildWonder(player, buildable.getConfigId(), center, tpl);
 					} else {
@@ -101,9 +98,6 @@ public class InteractiveBuildCommand implements InteractiveResponse {
 				}
 			}
 		}
-		
 		TaskMaster.syncTask(new SyncTask(resident));
-
 	}
-
 }

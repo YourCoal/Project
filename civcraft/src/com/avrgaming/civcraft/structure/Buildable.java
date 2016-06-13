@@ -134,7 +134,7 @@ public abstract class Buildable extends SQLObject {
 	public ArrayList<Component> attachedComponents = new ArrayList<Component>();
 	
 	private boolean valid = true;
-	public static double validPercentRequirement = 0.8;
+	public static double validPercentRequirement = 0.85;
 	public static HashSet<Buildable> invalidBuildables = new HashSet<Buildable>();
 	public HashMap<Integer, BuildableLayer> layerValidPercentages = new HashMap<Integer, BuildableLayer>();
 	public boolean validated = false;
@@ -466,8 +466,7 @@ public abstract class Buildable extends SQLObject {
 		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+CivSettings.localize.localizedString("buildable_preview_prompt2"));
 		Resident resident = CivGlobal.getResident(player);
 		
-		if (!War.isWarTime())
-		{
+		if (!War.isWarTime()) {
 			resident.startPreviewTask(tpl, centerLoc.getBlock(), player.getUniqueId());
 		}
 		
@@ -987,14 +986,22 @@ public abstract class Buildable extends SQLObject {
 	public int getBuildSpeed() {
 		// buildTime is in hours, we need to return milliseconds.
 		// We should return the number of milliseconds to wait between each block placement.
-		double hoursPerBlock = ( this.getHammerCost() / this.town.getHammers().total ) / this.totalBlockCount;
-		double millisecondsPerBlock = hoursPerBlock * 60 * 60 * 1000;
-		// Clip millisecondsPerBlock to 500 milliseconds.
-		if (millisecondsPerBlock < 500) {
-			millisecondsPerBlock = 500;
-		}
 		
-		return (int)millisecondsPerBlock;
+		//double hoursPerBlock = ( this.getHammerCost() / this.town.getHammers().total ) / this.totalBlockCount;
+		//double millisecondsPerBlock = hoursPerBlock * 60 * 60 * 1000;
+		
+		//Attempt #1 1.1pre1
+		//double count = ( this.builtBlockCount * 100 ) /  ( this.totalBlockCount * 100 );
+		//double hammers = this.town.getHammers().total / this.getHammerCost();
+		//double defaultTime = ( hammers / count ) * 100000;
+		
+		//Attempt #2 1.1pre1
+		double hoursPerBlock = ( this.getHammerCost() / this.town.getHammers().total ) / this.totalBlockCount;
+		double defaultTime = hoursPerBlock * 500000;
+		return (int)defaultTime;
+		
+		//Testing Only
+		//return (int)60;
 	}
 	
 	public double getBuiltHammers() {
@@ -1004,17 +1011,19 @@ public abstract class Buildable extends SQLObject {
 	
 	
 	public int getBlocksPerTick() {
-		// We do not want the blocks to be placed faster than 500 milliseconds.
+		// We do not want the blocks to be placed faster than 500 milliseconds (0.5 seconds).
 		// So in order to deal with speeds that are faster than that, we will
 		// increase the number of blocks given per tick. 
+		
 		double hoursPerBlock = ( this.getHammerCost() / this.town.getHammers().total ) / this.totalBlockCount;
-		double millisecondsPerBlock = hoursPerBlock * 60 * 60 * 1000;
+		//double millisecondsPerBlock = hoursPerBlock * 60 * 60 * 1000;
+		double defaultTime = hoursPerBlock * 500000;
 		
 		// Dont let this get lower than 1 just in case to prevent any crazyiness...
 		//if (millisecondsPerBlock < 1)
 			//millisecondsPerBlock = 1;
 		
-		double blocks = (500 / millisecondsPerBlock);
+		double blocks = (500 / defaultTime);
 		
 		if (blocks < 1) {
 			blocks = 1;

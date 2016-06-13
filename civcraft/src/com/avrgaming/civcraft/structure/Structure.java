@@ -667,9 +667,7 @@ public class Structure extends Buildable {
 
 	@Override
 	public void build(Player player, Location centerLoc, Template tpl) throws Exception {
-		
 		this.onPreBuild(centerLoc);
-				
 //		// Start building from the structure's template.
 //		Template tpl;
 //		try {
@@ -679,7 +677,6 @@ public class Structure extends Buildable {
 //			unbind();
 //			throw e;
 //		}
-
 		doBuild(player, centerLoc, tpl);
 	}
 
@@ -712,11 +709,11 @@ public class Structure extends Buildable {
 		Resident resident = CivGlobal.getResident(player);
 		resident.undoPreview();
 		this.startBuildTask(tpl, centerLoc);
-
-
 		bind();
 		this.getTown().addStructure(this);
-		
+		//Added 1.1pre1 Alpha
+		Resident res = CivGlobal.getResident(player);
+		res.undoPreview();
 	}
 	
 	

@@ -93,6 +93,9 @@ public class CivSettings {
 	public static float normal_speed;
 	public static double highjump;
 	
+	//Added 1.1pre1 alpha
+	public static FileConfiguration worldConfig; /* world.yml */
+	
 	public static FileConfiguration townConfig; /* town.yml */
 	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
 	public static Map<String, ConfigTownUpgrade> townUpgrades = new TreeMap<String, ConfigTownUpgrade>();
@@ -400,6 +403,7 @@ public class CivSettings {
 	}
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
+		worldConfig = loadCivConfig("world.yml");
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
 		cultureConfig = loadCivConfig("culture.yml");
@@ -868,8 +872,4 @@ public class CivSettings {
 		
 		return biomeInfo;
 	}
-
-	
-	
-	
 }
