@@ -56,30 +56,25 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 	}
 	
 	public static String getNotifyColor(CultureChunk toCc, Relation.Status status, Player player) {
-
 		String color = CivColor.White;
 		switch (status) {
 		case NEUTRAL:
 			if (toCc.getTown().isOutlaw(player.getName())) {
 				color = CivColor.Yellow;
 			}
-			
 			break;
 		case HOSTILE:
 			color = CivColor.Yellow;
 			break;
 		case WAR:
 			color = CivColor.Rose;
-
 			break;
 		case PEACE:
 			color = CivColor.LightBlue;
-
 			break;
 		case ALLY:
 			color = CivColor.Green;
 		}
-		
 		return color;
 	}
 	

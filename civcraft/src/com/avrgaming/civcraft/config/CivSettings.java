@@ -93,6 +93,10 @@ public class CivSettings {
 	public static float normal_speed;
 	public static double highjump;
 	
+	//Added 1.2pre1 alpha
+	public static FileConfiguration residentConfig; /* culture.yml */
+	public static Map<Integer, ConfigCitizenLevel> citizenLevels = new HashMap<Integer, ConfigCitizenLevel>();
+	
 	//Added 1.1pre1 alpha
 	public static FileConfiguration worldConfig; /* world.yml */
 	
@@ -123,6 +127,9 @@ public class CivSettings {
 	public static Map<String, ConfigTech> techs = new HashMap<String, ConfigTech>();
 	public static Map<Integer, ConfigTechItem> techItems = new HashMap<Integer, ConfigTechItem>();
 	public static Map<Integer, ConfigTechPotion> techPotions = new HashMap<Integer, ConfigTechPotion>();
+	
+	public static FileConfiguration policyConfig; /* policy.yml */
+	public static Map<String, ConfigPolicy> policies = new HashMap<String, ConfigPolicy>();
 
 	public static FileConfiguration goodsConfig; /* goods.yml */
 	public static Map<String, ConfigTradeGood> goods = new HashMap<String, ConfigTradeGood>();
@@ -395,20 +402,21 @@ public class CivSettings {
 		return cfg;
 	}
 	
-	public static void reloadGovConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration
-	{
+	public static void reloadGovConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
 		CivSettings.governments.clear();
 		governmentConfig = loadCivConfig("governments.yml");
 		ConfigGovernment.loadConfig(governmentConfig, governments);
 	}
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
+		residentConfig = loadCivConfig("resident.yml");
 		worldConfig = loadCivConfig("world.yml");
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
 		cultureConfig = loadCivConfig("culture.yml");
 		structureConfig = loadCivConfig("structures.yml");
 		techsConfig = loadCivConfig("techs.yml");
+		policyConfig = loadCivConfig("policy.yml");
 		goodsConfig = loadCivConfig("goods.yml");
 		buffConfig = loadCivConfig("buffs.yml");
 		governmentConfig = loadCivConfig("governments.yml");
@@ -442,6 +450,8 @@ public class CivSettings {
 	}
 
 	private static void loadConfigObjects() throws InvalidConfiguration {
+		ConfigCitizenLevel.loadConfig(residentConfig, citizenLevels);
+		ConfigPolicy.loadConfig(policyConfig, policies);
 		ConfigTownLevel.loadConfig(townConfig, townLevels);
 		ConfigTownUpgrade.loadConfig(townConfig, townUpgrades);
 		ConfigCultureLevel.loadConfig(cultureConfig, cultureLevels);
@@ -806,10 +816,9 @@ public class CivSettings {
 				return sinfo;
 			}
 		}
-		
 		return null;
 	}
-
+	
 	public static ConfigTech getTechByName(String techname) {
 		for (ConfigTech tech : techs.values()) {
 			if (tech.name.equalsIgnoreCase(techname)) {
@@ -818,7 +827,16 @@ public class CivSettings {
 		}
 		return null;
 	}
-
+	
+	public static ConfigPolicy getPolicyByName(String policyname) {
+		for (ConfigPolicy policy : policies.values()) {
+			if (policy.name.equalsIgnoreCase(policyname)) {
+				return policy;
+			}
+		}
+		return null;
+	}
+	
 	public static int getCottageMaxLevel() {
 		int returnLevel = 0;
 		for (Integer level : cottageLevels.keySet()) {
@@ -826,7 +844,6 @@ public class CivSettings {
 				returnLevel = level;
 			}
 		}
-		
 		return returnLevel;
 	}
 	
@@ -839,7 +856,7 @@ public class CivSettings {
 		}
 		return returnLevel;
 	}
-
+	
 	public static int getMineMaxLevel() {
 		int returnLevel = 0;
 		for (Integer level : mineLevels.keySet()) {
@@ -847,10 +864,9 @@ public class CivSettings {
 				returnLevel = level;
 			}
 		}
-		
 		return returnLevel;
 	}
-
+	
 	public static int getMaxCultureLevel() {
 		int returnLevel = 0;
 		for (Integer level : cultureLevels.keySet()) {
@@ -858,18 +874,24 @@ public class CivSettings {
 				returnLevel = level;
 			}
 		}
-		
 		return returnLevel;
-		
 	}
-
+	
+	public static int getMaxCitizenLevel() {
+		int returnLevel = 0;
+		for (Integer level : citizenLevels.keySet()) {
+			if (returnLevel < level) {
+				returnLevel = level;
+			}
+		}
+		return returnLevel;
+	}
 	
 	public static ConfigCultureBiomeInfo getCultureBiome(String name) {
 		ConfigCultureBiomeInfo biomeInfo = cultureBiomes.get(name);
 		if (biomeInfo == null) {
 			biomeInfo = cultureBiomes.get("UNKNOWN");
 		}
-		
 		return biomeInfo;
 	}
 }

@@ -155,7 +155,7 @@ public class FortifiedWall extends Wall {
 	}
 	
 	@Override
-	protected Location repositionCenter(Location center, String dir, double x_size, double z_size)  {
+	protected Location repositionCenterBlockAlign(Location center, String dir, double x_size, double z_size)  {
 		return center;
 	}
 	

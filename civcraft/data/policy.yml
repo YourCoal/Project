@@ -1,0 +1,25 @@
+#Ancient era = 0
+policies:
+# Aristocracy Branch
+  - id: 'policy_aristocracy'
+    name: 'Aristocracy'
+    beaker_cost: 100.0
+    cost: 1000.0
+    points: 10
+    required_policies:
+    required_era: 0
+    tree: 'Aristocracy'
+
+#Classical era = 1
+
+#Medieval era = 2
+
+#Renaissance era = 3
+
+#Industrial era = 4
+
+#Modern era = 5
+
+#Atomic era = 6
+
+#Information era = 7

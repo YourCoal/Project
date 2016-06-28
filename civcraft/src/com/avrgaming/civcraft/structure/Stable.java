@@ -55,7 +55,7 @@ import com.avrgaming.civcraft.util.SimpleBlock;
 public class Stable extends Structure {
 
 	public static Integer FEE_MIN = 5;
-	public static Integer FEE_MAX = 100;
+	public static Integer FEE_MAX = 15;
 	private HashMap<Integer, SignSelectionComponent> signSelectors = new HashMap<Integer, SignSelectionComponent>();
 	private BlockCoord horseSpawnCoord;
 	private BlockCoord muleSpawnCoord;

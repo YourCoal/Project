@@ -25,7 +25,6 @@ public class BuildWithDefaultPersonalTemplate implements GuiAction {
 		Player player = (Player)event.getWhoClicked();
 		Resident resident = CivGlobal.getResident(player);
 		ConfigBuildableInfo info = resident.pendingBuildableInfo;
-		
 		try {
 			String path = Template.getTemplateFilePath(info.template_base_name, Template.getDirection(player.getLocation()), TemplateType.STRUCTURE, "default");
 			Template tpl;
@@ -37,11 +36,19 @@ public class BuildWithDefaultPersonalTemplate implements GuiAction {
 				return;
 			}
 			
-			Location centerLoc = Buildable.repositionCenterStatic(player.getLocation(), info, Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);	
+			Resident res = CivGlobal.getResident(player);
+			if (res.chunkAlign == true || Buildable.isForceChunkAlign()) {
+				Location centerLoc = Buildable.repositionCenterStaticChunkAlign(player.getLocation(), info, Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
+				TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, resident.pendingCallback), 0);
+				player.closeInventory();
+			} else {
+				Location centerLoc = Buildable.repositionCenterStaticBlockAlign(player.getLocation(), info, Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
+				TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, resident.pendingCallback), 0);
+				player.closeInventory();
+			}
 			//Buildable.validate(player, null, tpl, centerLoc, resident.pendingCallback);
-			TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, resident.pendingCallback), 0);
+			//TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, resident.pendingCallback), 0);
 			player.closeInventory();
-
 		} catch (CivException e) {
 			CivMessage.sendError(player, e.getMessage());
 		}		

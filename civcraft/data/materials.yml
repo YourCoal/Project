@@ -5599,6 +5599,8 @@ removed_recipes:
 
       
 # Amount of tungston to drop
-tungsten_min_drop: 0
+tungsten_min_drop: 1
 tungsten_max_drop: 1
 tungsten_max_drop_with_fortune: 3
+tungsten_minXP: 1
+tungsten_maxXP: 3

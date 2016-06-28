@@ -94,10 +94,20 @@ public class SLSManager implements Runnable {
 	public static void sendHeartbeat() {
 		try {
 			InetAddress address = InetAddress.getByName("atlas.civcraft.net");
-			String message = gen_id+";<a href=\""+serverURL+"\" title=\""+serverURLDescription+"\" target=\"_blank\" style=\"color:black\"><strong>"+
-					serverName+"</strong></a>;<strong>"+serverDescription+"</strong>;<strong>"+serverTimezone+"</strong>;<strong>"+serverAddress+"</strong>;"+
-					
-					Bukkit.getOnlinePlayers().size()+";"+Bukkit.getMaxPlayers()+";"+getParsedVersion();
+			String message = gen_id+";"
+				
+//				+ "<a href=\""+serverNameURL+"\" title=\""+serverNameURLDescription+"\" target=\"_blank\" style=\"color:red\"><strong>"+serverName+"</strong></a>;"
+				+ "<a href=\""+serverURL+"\" title=\""+serverURLDescription+"\" target=\"_blank\" style=\"color:blue\"><strong>"+serverName+"</strong></a>;"
+				
+				+ "<strong>"+serverDescription+"</strong>;"
+				
+//				+ "<strong>"+serverTimezone+"</strong>;"
+				+ "<a href=\""+serverURL+"\" title=\""+serverURLDescription+"\" target=\"_blank\" style=\"color:red\"><strong>"+serverTimezone+"</strong></a>;"
+				
+//				+ "<a href=\""+serverAddressURL+"\" title=\""+serverAddressURLDescription+"\" target=\"_blank\" style=\"color:navy\"><strong>"+serverAddress+"</strong></a>;"
+				+ "<a href=\""+serverURL+"\" title=\""+serverURLDescription+"\" target=\"_blank\" style=\"color:green\"><strong>"+serverAddress+"</strong></a>;"
+				
+				+ "666"+";"+"666"+";"+getParsedVersion();
 			
 			try {
 				if (CivSettings.getStringBase("debug_heartbeat").equalsIgnoreCase("true")) {

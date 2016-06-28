@@ -704,3 +704,39 @@ upgrades:
       require_tech: 'tech_innovation'
       require_structure: 'ti_trade_ship'
       category: 'TradeShip'
+# Farm upgrades
+    - id: 'upgrade_farm_level_2'
+      name: 'Upgrade Farm Level 2' 
+      action: 'set_farm_level, 2'
+      cost: 10000.0
+      require_upgrade:
+      require_tech: 'tech_agriculture'
+      require_structure: 'ti_farm'
+      category: 'farm'
+#
+    - id: 'upgrade_farm_level_3'
+      name: 'Upgrade Farm Level 3' 
+      action: 'set_farm_level, 3'
+      cost: 25000.0
+      require_upgrade: 'upgrade_farm_level_2'
+      require_tech: 'tech_agriculture'
+      require_structure: 'ti_farm'
+      category: 'farm'
+#
+    - id: 'upgrade_farm_level_4'
+      name: 'Upgrade Farm Level 4' 
+      action: 'set_farm_level, 4'
+      cost: 50000.0
+      require_upgrade: 'upgrade_farm_level_3'
+      require_tech: 'tech_agriculture'
+      require_structure: 'ti_farm'
+      category: 'farm'
+#
+    - id: 'upgrade_farm_level_5'
+      name: 'Upgrade Farm Level 5' 
+      action: 'set_farm_level, 5'
+      cost: 100000.0
+      require_upgrade: 'upgrade_farm_level_4'
+      require_tech: 'tech_agriculture'
+      require_structure: 'ti_farm'
+      category: 'farm'

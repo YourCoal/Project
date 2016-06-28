@@ -194,9 +194,14 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 			e.printStackTrace();
 			throw new CivException("Internal Error.");
 		}
-	
-				
-		corner.setFromLocation(this.repositionCenter(center, tpl.dir(), tpl.size_x, tpl.size_z));
+		
+		Resident res = CivGlobal.getResident(player);
+		if (res.chunkAlign == true) {
+			corner.setFromLocation(this.repositionCenterChunkAlign(center, tpl.dir(), tpl.size_x, tpl.size_z));
+		} else {
+			corner.setFromLocation(this.repositionCenterBlockAlign(center, tpl.dir(), tpl.size_x, tpl.size_z));
+		}
+		
 		checkBlockPermissionsAndRestrictions(player, corner.getBlock(), tpl.size_x, tpl.size_y, tpl.size_z);
 		buildWarCampFromTemplate(tpl, corner);
 		processCommandSigns(tpl, corner);

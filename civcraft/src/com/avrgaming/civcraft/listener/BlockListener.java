@@ -1,21 +1,3 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
 package com.avrgaming.civcraft.listener;
 
 import gpl.HorseModifier;
@@ -127,15 +109,14 @@ import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
 
 public class BlockListener implements Listener {
-
+	
 	/* Experimental, reuse the same object because it is single threaded. */
 	public static ChunkCoord coord = new ChunkCoord("", 0, 0);
 	public static BlockCoord bcoord = new BlockCoord("", 0,0,0);
-
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockIgniteEvent(BlockIgniteEvent event) {
 	//	CivLog.debug("block ignite event");
-
 		for (int x = -1; x <= 1; x++) {
 			for (int y = -1; y <= 1; y++) {
 				for (int z = -1; z <= 1; z++) {
@@ -175,7 +156,6 @@ public class BlockListener implements Listener {
 				}
 			}
 	    }
-
 
 		coord.setFromLocation(event.getBlock().getLocation());
 		TownChunk tc = CivGlobal.getTownChunk(coord);
@@ -509,31 +489,69 @@ public class BlockListener implements Listener {
 		}
 
 	}
-
-     private final BlockFace[] faces = new BlockFace[] {
-			        BlockFace.DOWN,
-		            BlockFace.NORTH,
-		            BlockFace.EAST,
-		            BlockFace.SOUTH,
-		            BlockFace.WEST,		            
-		            BlockFace.SELF,
-		            BlockFace.UP
+	
+	//XXX Added all blockfaces there were 1.1pre6
+	private final BlockFace[] faces = new BlockFace[] {
+			BlockFace.EAST_NORTH_EAST,
+			BlockFace.EAST_SOUTH_EAST,
+			BlockFace.WEST_NORTH_WEST,
+			BlockFace.WEST_SOUTH_WEST,
+			
+			BlockFace.NORTH_NORTH_EAST,
+			BlockFace.NORTH_NORTH_WEST,
+			BlockFace.SOUTH_SOUTH_EAST,
+			BlockFace.SOUTH_SOUTH_WEST,
+			
+			BlockFace.UP,
+			BlockFace.DOWN,
+			BlockFace.SELF,
+			
+			BlockFace.NORTH,
+			BlockFace.EAST,
+			BlockFace.SOUTH,
+			BlockFace.WEST
 	  };
-
-    public BlockCoord generatesCobble(int id, Block b)
-    {
-        int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
-        int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER);
-        for(BlockFace face : faces)
-        {
+	
+	//XXX Attempting to fix cobble generators 1.1pre6
+/*	public BlockCoord generatesCobble(int id, Block b) {
+		int mirrorID1a = (id == CivData.WATER_RUNNING ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
+		int mirrorID1b = (id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
+		
+		int mirrorID2a = (id == CivData.WATER_RUNNING ? CivData.LAVA : CivData.WATER_RUNNING);
+		int mirrorID2b = (id == CivData.WATER ? CivData.LAVA : CivData.WATER_RUNNING);
+		
+		int mirrorID3a = (id == CivData.WATER_RUNNING ? CivData.LAVA_RUNNING : CivData.WATER);
+		int mirrorID3b = (id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER);
+		
+		int mirrorID4a = (id == CivData.WATER_RUNNING ? CivData.LAVA : CivData.WATER);
+		int mirrorID4b = (id == CivData.WATER ? CivData.LAVA : CivData.WATER);
+		
+        for (BlockFace face : faces) {
             Block r = b.getRelative(face, 1);
-            if(ItemManager.getId(r) == mirrorID1 || ItemManager.getId(r) == mirrorID2)
-            {
-            	
+            if(ItemManager.getId(r) == mirrorID1a || ItemManager.getId(r) == mirrorID1b ||
+            		ItemManager.getId(r) == mirrorID2a || ItemManager.getId(r) == mirrorID2b ||
+            		ItemManager.getId(r) == mirrorID3a || ItemManager.getId(r) == mirrorID3b ||
+            		ItemManager.getId(r) == mirrorID4a || ItemManager.getId(r) == mirrorID4b) {
             	return new BlockCoord(r);
             }
         }
-        
+        return null;
+    }*/
+	
+	public BlockCoord generatesCobble(int id, Block b) {
+		int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
+		int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER);
+		
+		int mirrorID3 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER_RUNNING);
+		int mirrorID4 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER);
+		
+        for (BlockFace face : faces) {
+            Block r = b.getRelative(face, 1);
+            if (ItemManager.getId(r) == mirrorID1 || ItemManager.getId(r) == mirrorID2 ||
+            		ItemManager.getId(r) == mirrorID3 || ItemManager.getId(r) == mirrorID4) {
+            	return new BlockCoord(r);
+            }
+        }
         return null;
     }
 
@@ -565,17 +583,14 @@ public class BlockListener implements Listener {
 	public void OnBlockFromToEvent(BlockFromToEvent event) {
 		/* Disable cobblestone generators. */
 		int id = ItemManager.getId(event.getBlock());
-	    if(id >= CivData.WATER && id <= CivData.LAVA)
-	    {
+	    if(id >= CivData.WATER && id <= CivData.LAVA) {
 	        Block b = event.getToBlock();
 	        bcoord.setFromLocation(b.getLocation());
 
 	        int toid = ItemManager.getId(b);
-	        if(toid == 0)
-	        {
+	        if(toid == 0) {
 	            BlockCoord other = generatesCobble(id, b);
-	        	if(other != null)
-	            {
+	        	if(other != null) {
 	            	//BlockCoord d = new BlockCoord(event.getToBlock());
 //	            	BlockCoord fromCoord = new BlockCoord(event.getBlock());
 	            	event.setCancelled(true);
@@ -589,7 +604,7 @@ public class BlockListener implements Listener {
 
 						@Override
 						public void run() {
-							ItemManager.setTypeIdAndData(block.getBlock(), CivData.NETHERRACK, (byte)0, true);
+							ItemManager.setTypeIdAndData(block.getBlock(), CivData.SANDSTONE, (byte)0, true);
 							stopCobbleTasks.remove(block);
 						}
 	            	}
@@ -897,8 +912,7 @@ public class BlockListener implements Listener {
 				}
 
 				/* A non-player entity is trying to trigger something, if interact permission is
-				 * off for others then disallow it.
-				 */
+				 * off for others then disallow it. */
 				if (tc.perms.interact.isPermitOthers()) {
 					return;
 				}
@@ -906,11 +920,25 @@ public class BlockListener implements Listener {
 				if (event.getEntity() instanceof Player) {
 					CivMessage.sendErrorNoRepeat((Player)event.getEntity(), CivSettings.localize.localizedString("blockUse_errorPermission"));
 				}
-
 				event.setCancelled(true);
 			}
 		}
-
+		
+		//XXX Changed so farms don't get trampled by all entities 1.1pre6
+		if (event.getBlock().getType() == Material.SOIL || event.getBlock().getType() == Material.CROPS) {
+			//Wasn't working, going to enable it where it was originally.
+/*			if (event.getEntity() instanceof Player) {
+				Player p = (Player) event.getEntity();
+				CivMessage.send(p, "You are not allowed to destroy farm land!");
+				event.setCancelled(true); 
+			} else {
+				event.setCancelled(true);
+			}*/
+			CivLog.debug("Entity ("+event.getEntity().getName()+") tried to trample crop - "+event.getEntity().getLocation().getBlockX()+","+
+						event.getEntity().getLocation().getBlockY()+","+event.getEntity().getLocation().getBlockZ());
+			event.setCancelled(true); 
+			return;
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -949,10 +977,10 @@ public class BlockListener implements Listener {
 			}
 
 			if (event.getItem().getType().equals(Material.INK_SACK)) {
-				//if (event.getItem().getDurability() == 15) { 
+				if (event.getItem().getDurability() == 15) { 
 					event.setCancelled(true);
 					return;
-				//}
+				}
 			}
 		}
 	}
@@ -1002,15 +1030,18 @@ public class BlockListener implements Listener {
 		}
 
 		Block soilBlock = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
-
 		// prevent players trampling crops
 		if ((event.getAction() == Action.PHYSICAL)) {
 			if ((soilBlock.getType() == Material.SOIL) || (soilBlock.getType() == Material.CROPS)) {
 				//CivLog.debug("no crop cancel.");
-				event.setCancelled(true);
+				CivMessage.send(event.getPlayer(), "You cannot trample farmland!");
+				CivLog.debug("Player ("+event.getPlayer().getName()+") tried to trample crop - "+event.getPlayer().getLocation().getBlockX()+","+
+							event.getPlayer().getLocation().getBlockY()+","+event.getPlayer().getLocation().getBlockZ());
+				event.setCancelled(true); 
 				return;	
 			}
 		}
+		
 		/* 
 		 * Right clicking causes some dupe bugs for some reason with items that have "actions" such as swords.
 		 * It also causes block place events on top of signs. So we'll just only allow signs to work with left click.

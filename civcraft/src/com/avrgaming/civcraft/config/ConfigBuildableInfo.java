@@ -52,6 +52,7 @@ public class ConfigBuildableInfo {
 	public Boolean isWonder = false;
 	public Integer regenRate = 0;
 	public Boolean tile_improvement = false;
+	public static Boolean force_chunk_align = false;
 	public Integer points = 0;
 	public boolean allow_demolish = false;
 	public boolean strategic = false;
@@ -123,20 +124,24 @@ public class ConfigBuildableInfo {
 			sinfo.isWonder = isWonder;
 			sinfo.points = (Integer)obj.get("points");
 			
-				@SuppressWarnings("unchecked")
-				List<Map<?, ?>> comps = (List<Map<?, ?>>) obj.get("components");
-				if (comps != null) {
-					for (Map<?, ?> compObj : comps) {
-						
-						HashMap<String, String> compMap = new HashMap<String, String>();
-						for (Object key : compObj.keySet()) {
-							compMap.put((String)key, (String)compObj.get(key));
-						}
-				
-						sinfo.components.add(compMap);	
+			@SuppressWarnings("unchecked")
+			List<Map<?, ?>> comps = (List<Map<?, ?>>) obj.get("components");
+			if (comps != null) {
+				for (Map<?, ?> compObj : comps) {
+					HashMap<String, String> compMap = new HashMap<String, String>();
+					for (Object key : compObj.keySet()) {
+						compMap.put((String)key, (String)compObj.get(key));
 					}
+					sinfo.components.add(compMap);	
 				}
+			}
 			
+			Boolean forceChunkAlign = (Boolean)obj.get("force_chunk_align");
+				if (forceChunkAlign != null && forceChunkAlign == true) {
+				ConfigBuildableInfo.force_chunk_align = true;
+			} else {
+				ConfigBuildableInfo.force_chunk_align = false;
+			}
 			
 			Boolean tileImprovement = (Boolean)obj.get("tile_improvement");
 			if (tileImprovement != null && tileImprovement == true) {
