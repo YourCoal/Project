@@ -1,21 +1,3 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
 package com.avrgaming.civcraft.listener;
 
 import gpl.AttributeUtil;
@@ -28,6 +10,7 @@ import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.LightningStrike;
 import org.bukkit.entity.LivingEntity;
@@ -97,20 +80,74 @@ public class CustomItemManager implements Listener {
 	//	this.onItemDurabilityChange(event.getPlayer(), event.getPlayer().getItemInHand());
 	}
 	
+	//XXX Control ores dropping stuff.
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onBlockBreakSpawnItems(BlockBreakEvent event) {
-		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
+	public void onEmeraldOreBreak(BlockBreakEvent event) {
+//		Resident res = CivGlobal.getResident(event.getPlayer());
+		if (event.getBlock().getType().equals(Material.EMERALD_ORE)) {
 			if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
 				return;
 			}
 			
 			event.setCancelled(true);
-			
 			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-			
 			try {
 				Random rand = new Random();
-
+				int min = CivSettings.getInteger(CivSettings.worldConfig, "emerald_ore.min");
+				int max;
+				if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+					max = CivSettings.getInteger(CivSettings.worldConfig, "emerald_ore.max_fortune")+1;
+				} else {
+					max = CivSettings.getInteger(CivSettings.worldConfig, "emerald_ore.max");
+				}
+				
+				int randAmt = rand.nextInt(min + max);
+				randAmt -= min;
+				if (randAmt <= 0) {
+					randAmt = 1;
+				}
+				
+				for (int i = 0; i < randAmt; i++) {
+//					if (res.getCiv().hasTechnology("tech_civil_service")) {
+//						ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:common_emerald_ore_rock"), 
+//									randAmt*CivSettings.getInteger(CivSettings.techsConfig, "player_buffs.civil_service_ore_drops"));
+//						event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), stack);
+//					} else {
+						ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:common_emerald_ore_rock"), randAmt);
+						event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), stack);
+//					}
+					
+					int minXP; int maxXP;
+					minXP = CivSettings.getInteger(CivSettings.worldConfig, "emerald_ore.minXP");
+					if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS) ||
+							event.getPlayer().getItemInHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS) >= 1) {
+						maxXP = CivSettings.getInteger(CivSettings.worldConfig, "emerald_ore.maxXP_fortune")+1;
+					} else {
+						maxXP = CivSettings.getInteger(CivSettings.worldConfig, "emerald_ore.maxXP")+1;
+					}
+					Random expRand = new Random();
+					int dropXP = expRand.nextInt((maxXP - minXP)) + minXP;
+					ExperienceOrb exp = event.getPlayer().getWorld().spawn(event.getPlayer().getLocation(), ExperienceOrb.class);
+					exp.setExperience(dropXP);
+				}
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onLapisOreBreak(BlockBreakEvent event) {
+		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
+//			if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+//				return;
+//			}
+			
+			event.setCancelled(true);
+			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
+			try {
+				Random rand = new Random();
 				int min = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_min_drop");
 				int max;
 				if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
@@ -127,9 +164,15 @@ public class CustomItemManager implements Listener {
 				
 				for (int i = 0; i < randAmount; i++) {
 					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_tungsten_ore"));
-					event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
+					event.getPlayer().getWorld().dropItemNaturally(event.getPlayer().getLocation(), stack);
+					
+					int minXP = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_minXP");
+					int maxXP = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_maxXP")+1;
+					Random expRand = new Random();
+					int dropXP = expRand.nextInt((maxXP - minXP)) + minXP;
+					ExperienceOrb exp = event.getPlayer().getWorld().spawn(event.getPlayer().getLocation(), ExperienceOrb.class);
+					exp.setExperience(dropXP);
 				}
-				
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				return;
@@ -272,7 +315,6 @@ public class CustomItemManager implements Listener {
 				event.setDamage(CivSettings.getInteger(CivSettings.warConfig, "tesla_tower.damage"));
 				return;
 			} catch (InvalidConfiguration e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -787,6 +829,7 @@ public class CustomItemManager implements Listener {
 		craftMat.onItemDurabilityChange(event);
 	}
 	
+	//XXX Sets enchantment limits.
 	private static boolean isUnwantedVanillaItem(ItemStack stack) {
 		if (stack == null) {
 			return false;

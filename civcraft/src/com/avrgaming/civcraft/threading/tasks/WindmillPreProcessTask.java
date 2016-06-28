@@ -53,8 +53,8 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 		try {
 			plant_max = CivSettings.getInteger(CivSettings.structureConfig, "windmill.plant_max");
 			
-			if (windmill.getCiv().hasTechnology("tech_machinery")) {
-				plant_max *= 2;
+			if (windmill.getCiv().hasTechnology("tech_combustion")) {
+				plant_max *= CivSettings.getInteger(CivSettings.techsConfig, "windmill_buffs.combustion_more_crops");
 			}
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
@@ -120,15 +120,13 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 				for (int z = 0; z < 16; z++) {
 					for (int y = 0; y < 255; y++) {
 						
-						
 						if (ItemManager.getBlockTypeId(snapshot, x, y, z) == CivData.FARMLAND) {
 							if (ItemManager.getBlockTypeId(snapshot, x, y+1, z) == CivData.AIR) {
 								int blockx = (snapshot.getX()*16) + x;
 								int blocky = y+1;
 								int blockz = (snapshot.getZ()*16) + z;
 								
-								blocks.add(new BlockCoord(this.windmill.getCorner().getWorldname(),
-										blockx, blocky, blockz));
+								blocks.add(new BlockCoord(this.windmill.getCorner().getWorldname(), blockx, blocky, blockz));
 							}
 						}
 					}
@@ -150,9 +148,6 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 		}
 				
 		// Fire off a sync task to complete the operation.
-		TaskMaster.syncTask(new WindmillPostProcessSyncTask(windmill, plantBlocks,
-				breadCount, carrotCount, potatoCount, source_inv));
-
+		TaskMaster.syncTask(new WindmillPostProcessSyncTask(windmill, plantBlocks, breadCount, carrotCount, potatoCount, source_inv));
 	}
-
 }

@@ -119,8 +119,8 @@ public class CivGlobal {
 
 	public static final double MIN_FRAME_DISTANCE = 3.0;
 	
-	public static double LIGHTHOUSE_WATER_PLAYER_SPEED = 1.5;
-	public static double LIGHTHOUSE_WATER_BOAT_SPEED = 1.1;
+	public static double LIGHTHOUSE_WATER_PLAYER_SPEED = 1.4;
+	public static double LIGHTHOUSE_WATER_BOAT_SPEED = 1.2;
 	
 	public static Economy econ;
 	
@@ -159,6 +159,7 @@ public class CivGlobal {
 	public static HashSet<BlockCoord> vanillaGrowthLocations = new HashSet<BlockCoord>();
 	private static Map<BlockCoord, Market> markets = new ConcurrentHashMap<BlockCoord, Market>();
 	public static HashSet<String> researchedTechs = new HashSet<String>();
+	public static HashSet<String> researchedPolicies = new HashSet<String>();
 	
 	/* TODO change this to true for MC 1.8 */
 	public static boolean useUUID = true;
@@ -380,44 +381,51 @@ public class CivGlobal {
 		}
 	}
 	
-	public static String localizedEraString(int era) {
+	public static String EraString(int era) {
 		String newEra = "";
 		switch (era) {
-		case 0: //ANCIENT
-			newEra = "announce_ancientEra";
+		case 0: //Ancient
+			newEra = "The Ancient Era";
 			break;
-		case 1: //CLASSICAL
-			newEra = "announce_classicalEra";
+		case 1: //Classical
+			newEra = "The Classical Era";
 			break;
-		case 2: //MEDIEVAL
-			newEra = "announce_medievalEra";
+		case 2: //Medieval
+			newEra = "The Medieval Era";
 			break;
-		case 3: //RENAISSANCE
-			newEra = "announce_renaissanceEra";
+		case 3: //Renaissance
+			newEra = "The Renaissance Era";
 			break;
-		case 4: //INDUSTRIAL
-			newEra = "announce_industrialEra";
+		case 4: //Industrial
+			newEra = "The Industrial Era";
 			break;
-		case 5: //MODERN
-			newEra = "announce_modernEra";
+		case 5: //Modern
+			newEra = "The Modern Era";
 			break;
-		case 6: //ATOMIC
-			newEra = "announce_atomicEra";
+		case 6: //Atomic
+			newEra = "The Atomic Era";
 			break;
-		case 7: //INFORMATION
-			newEra = "announce_informationEra";
+		case 7: //Information
+			newEra = "The Information Era";
+			break;
+		case 8: //Future
+			newEra = "The Future Era";
+			break;
+		case 9: //Victory
+			newEra = "The Victory Era";
 			break;
 		default:
 			break;
 		}
-		return CivSettings.localize.localizedString(newEra);
+		return newEra;
 	}
 	
 	public static void setCurrentEra(int era, Civilization civ) {
 		if (era > highestCivEra && !civ.isAdminCiv()) {
 			highestCivEra = era;
-			CivMessage.globalTitle(CivColor.Green+ localizedEraString(highestCivEra) , CivColor.LightGreen+CivSettings.localize.localizedString("var_announce_newEraCiv", civ.getName()));
-			
+			CivMessage.globalTitle(CivColor.Green+"1st in "+EraString(highestCivEra) , CivColor.LightPurple+CivColor.ITALIC+"Civilization of "+civ.getName());
+		} else {
+			CivMessage.globalTitle(CivColor.Green+"Reached "+EraString(highestCivEra) , CivColor.LightPurple+CivColor.ITALIC+"Civilization of "+civ.getName());
 		}
 	}
 

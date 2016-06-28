@@ -1,0 +1,22 @@
+# Citizen levels for residents
+# level: - citizen level number
+# amount - amount of XP needed for this level
+# displayName - what others see as the citizen level name
+# resExchangeRate - sets rate using /res exchange
+
+culture_levels:
+  - level: 0
+    amount: 0
+    displayName: 'Noob'
+    resExchangeRate: 0.0
+#
+  - level: 1
+    amount: 500
+    displayName: 'Settler I'
+    resExchangeRate: 0.2
+#
+  - level: 0
+    amount: 10000
+    displayName: 'Settler II'
+    resExchangeRate: 0.3
+#

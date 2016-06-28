@@ -1,3 +1,63 @@
 overworld_name: "World"
 netherworld_name: World_nether
 endworld_name: World_end
+
+#=================================================#
+#================> Ore Settings <=================#
+#=================================================#
+coal_ore:
+   min: 1
+   max: 1
+   max_fortune: 2
+   minXP: 0
+   maxXP: 1
+   maxXP_fortune: 2
+#
+iron_ore:
+   min: 1
+   max: 1
+   max_fortune: 2
+   minXP: 1
+   maxXP: 2
+   maxXP_fortune: 3
+#
+gold_ore:
+   min: 1
+   max: 1
+   max_fortune: 2
+   minXP: 1
+   maxXP: 3
+   maxXP_fortune: 5
+#
+redstone_ore:
+   min: 2
+   max: 4
+   max_fortune: 6
+   minXP: 2
+   maxXP: 5
+   maxXP_fortune: 7
+#
+lapis_ore:
+   min: 2
+   max: 4
+   max_fortune: 6
+   minXP: 2
+   maxXP: 5
+   maxXP_fortune: 7
+#
+diamond_ore:
+   min: 1
+   max: 1
+   max_fortune: 2
+   minXP: 3
+   maxXP: 7
+   maxXP_fortune: 10
+#
+emerald_ore:
+   min: 1
+   max: 1
+   max_fortune: 2
+   minXP: 3
+   maxXP: 7
+   maxXP_fortune: 10
+#

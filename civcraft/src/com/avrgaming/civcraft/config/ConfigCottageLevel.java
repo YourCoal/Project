@@ -31,7 +31,8 @@ public class ConfigCottageLevel {
 	public int level;			/* Current level number */
 	public Map<Integer, Integer> consumes; /* A map of block ID's and amounts required for this level to progress */
 	public int count; /* Number of times that consumes must be met to level up */
-	public double coins; /* Coins generated each time for the cottage */
+	public double coins_min; /* Coins generated each time for the cottage */
+	public double coins_max; /* Coins generated each time for the cottage */
 	
 	public ConfigCottageLevel() {
 		
@@ -40,7 +41,8 @@ public class ConfigCottageLevel {
 	public ConfigCottageLevel(ConfigCottageLevel currentlvl) {
 		this.level = currentlvl.level;
 		this.count = currentlvl.count;
-		this.coins = currentlvl.coins;
+		this.coins_min = currentlvl.coins_min;
+		this.coins_max = currentlvl.coins_max;
 		
 		this.consumes = new HashMap<Integer, Integer>();
 		for (Entry<Integer, Integer> entry : currentlvl.consumes.entrySet()) {
@@ -71,7 +73,8 @@ public class ConfigCottageLevel {
 			cottagelevel.level = (Integer)cl.get("level");
 			cottagelevel.consumes = consumes_list;
 			cottagelevel.count = (Integer)cl.get("count");
-			cottagelevel.coins = (Double)cl.get("coins");
+			cottagelevel.coins_min = (Double)cl.get("coins_min");
+			cottagelevel.coins_max = (Double)cl.get("coins_max");
 			
 			cottage_levels.put(cottagelevel.level, cottagelevel);
 			

@@ -140,10 +140,9 @@ public class PlayerListener implements Listener {
 						 * Deny telportation into Civ if not allied.
 						 */
 						event.setTo(event.getFrom());
-						if (!event.isCancelled())
-						{
+						if (!event.isCancelled()) {
 							CivLog.debug("Cancelled Event "+event.getEventName()+" with cause: "+event.getCause());
-						event.setCancelled(true);
+							event.setCancelled(true);
 							CivMessage.send(resident, CivColor.Red+CivSettings.localize.localizedString("teleportDeniedPrefix")+" "+CivColor.White+CivSettings.localize.localizedString("var_teleportDeniedCiv",CivColor.Green+cc.getCiv().getName()+CivColor.White));
 							return;
 						}
@@ -155,14 +154,12 @@ public class PlayerListener implements Listener {
 						 * Deny telportation into Civ if not allied.
 						 */
 					event.setTo(event.getFrom());
-						if (!event.isCancelled())
-						{
+						if (!event.isCancelled()) {
 							CivLog.debug("Cancelled Event "+event.getEventName()+" with cause: "+event.getCause());
 						event.setCancelled(true);
 							CivMessage.send(resident, CivColor.Red+CivSettings.localize.localizedString("teleportDeniedPrefix")+" "+CivColor.White+CivSettings.localize.localizedString("var_teleportDeniedCamp",CivColor.Green+toCamp.getName()+CivColor.White));
 							return;
 						}
-					
 				}
 				
 //				if (War.isWarTime()) {
@@ -184,7 +181,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
-		
+	
 	private void setModifiedMovementSpeed(Player player) {
 		/* Change move speed based on armor. */
 		double speed;
@@ -289,7 +286,6 @@ public class PlayerListener implements Listener {
 	public void onEntityDeath(EntityDeathEvent event) {
 		if (event.getEntity() instanceof Player) {
 			//Unit.removeUnit(((Player)event.getEntity()));
-			
 			ArrayList<ItemStack> stacksToRemove = new ArrayList<ItemStack>();
 			for (ItemStack stack : event.getDrops()) {
 				if (stack != null) {
@@ -325,6 +321,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 	
+	//XXX Controls portal create
 	@EventHandler(priority = EventPriority.HIGHEST) 
 	public void onPortalCreate(PortalCreateEvent event) {
 		event.setCancelled(true);
@@ -346,7 +343,7 @@ public class PlayerListener implements Listener {
 //			return;
 //		}
 //
-//		//XXX Replaced via materials system.
+//		//Replaced via materials system.
 ////		ConfigTechItem item = CivSettings.techItems.get(resultStack.getTypeId());
 ////		if (item != null) {
 ////			Resident resident = CivGlobal.getResident(event.getWhoClicked().getName());
@@ -360,6 +357,7 @@ public class PlayerListener implements Listener {
 ////		}
 //	}
 	
+	//XXX controls portal interactions
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerPortalEvent(PlayerPortalEvent event) {
 		if(event.getCause().equals(TeleportCause.END_PORTAL)) {
@@ -449,6 +447,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 	
+	//XXX Prevents golden apple use
 	@EventHandler(priority = EventPriority.LOW) 
 	public void onConsume(PlayerItemConsumeEvent event) {
 		if (ItemManager.getId(event.getItem()) == CivData.GOLDEN_APPLE) {
@@ -540,7 +539,7 @@ public class PlayerListener implements Listener {
 			Resident defenderResident = CivGlobal.getResident(defender);
 			if (defenderResident.isCombatInfo()) {	
 				if (attacker != null) {
-					CivMessage.send(defender, CivColor.LightGray+"   "+CivSettings.localize.localizedString("playerListen_combatHeading")+" "+CivSettings.localize.localizedString("var_playerListen_combatDefend",CivColor.LightPurple+attacker.getName()+CivColor.LightGray,CivColor.Rose+damage+CivColor.LightGray));				
+					CivMessage.send(defender, CivColor.LightGray+"  "+CivSettings.localize.localizedString("playerListen_combatHeading")+" "+CivSettings.localize.localizedString("var_playerListen_combatDefend",CivColor.LightPurple+attacker.getName()+CivColor.LightGray,CivColor.Rose+damage+CivColor.LightGray));				
 				} else {
 					String entityName = null;
 					
@@ -551,7 +550,6 @@ public class PlayerListener implements Listener {
 					if (entityName == null) {
 						entityName = event.getDamager().getType().toString();
 					}
-					
 					CivMessage.send(defender, CivColor.LightGray+"   "+CivSettings.localize.localizedString("playerListen_combatHeading")+" "+CivSettings.localize.localizedString("var_playerListen_combatDefend",CivColor.LightPurple+entityName+CivColor.LightGray,CivColor.Rose+damage+CivColor.LightGray));
 				}
 			}
@@ -577,9 +575,5 @@ public class PlayerListener implements Listener {
 				}
 			}
 		}
-		
-		
-		
-		
 	}
 }

@@ -238,15 +238,19 @@ public abstract class Wonder extends Buildable {
 
 	@Override
 	public void build(Player player, Location centerLoc, Template tpl) throws Exception {
-
 		// We take the player's current position and make it the 'center' by moving the center location
 		// to the 'corner' of the structure.
 		Location savedLocation = centerLoc.clone();
-
-		centerLoc = this.repositionCenter(centerLoc, tpl.dir(), (double)tpl.size_x, (double)tpl.size_z);
+		
+		Resident res = CivGlobal.getResident(player);
+		if (res.chunkAlign == true) {
+			centerLoc = this.repositionCenterChunkAlign(centerLoc, tpl.dir(), (double)tpl.size_x, (double)tpl.size_z);
+		} else {
+			centerLoc = this.repositionCenterBlockAlign(centerLoc, tpl.dir(), (double)tpl.size_x, (double)tpl.size_z);
+		}
+		
 		Block centerBlock = centerLoc.getBlock();
 		// Before we place the blocks, give our build function a chance to work on it
-		
 		this.setTotalBlockCount(tpl.size_x*tpl.size_y*tpl.size_z);
 		// Save the template x,y,z for later. This lets us know our own dimensions.
 		// this is saved in the db so it remains valid even if the template changes.
@@ -268,7 +272,6 @@ public abstract class Wonder extends Buildable {
 		this.startBuildTask(tpl, centerLoc);
 		
 		//Added 1.1pre1 Alpha
-		Resident res = CivGlobal.getResident(player);
 		res.undoPreview();
 		
 		this.save();

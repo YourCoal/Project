@@ -1,21 +1,3 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
 package com.avrgaming.civcraft.structure;
 
 import java.sql.ResultSet;
@@ -51,7 +33,7 @@ public class Farm extends Structure {
 	protected Farm(Location center, String id, Town town) throws CivException {
 		super(center, id, town);
 	}
-
+	
 	public Farm(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 		build_farm(this.getCorner().getLocation());
@@ -76,13 +58,14 @@ public class Farm extends Structure {
 	}
 	
 	@Override
-	public String getDynmapDescription() {
-		return null;
-	}
-	
-	@Override
 	public boolean canRestoreFromTemplate() {
 		return false;
+	}
+	
+	//Added 1.1pre5
+	@Override
+	public String getDynmapDescription() {
+		return null;
 	}
 	
 	@Override
@@ -99,7 +82,6 @@ public class Farm extends Structure {
 	}
 
 	public static boolean isBlockControlled(Block b) {
-		
 		switch (ItemManager.getId(b)) {
 		//case CivData.BROWNMUSHROOM:
 		//case CivData.REDMUSHROOM:
@@ -115,14 +97,11 @@ public class Farm extends Structure {
 	//	case CivData.SUGARCANE:
 			return true;
 		}
-		
 		return false;
 	}
 
 	public void saveMissedGrowths() {
-		
 		class AsyncSave implements Runnable {
-
 			Farm farm;
 			int missedTicks;
 			
@@ -150,7 +129,6 @@ public class Farm extends Structure {
 			}
 			
 		}
-	
 		TaskMaster.asyncTask(new AsyncSave(this, this.fc.getMissedGrowthTicks()), 0);
 	}
 	
@@ -163,7 +141,6 @@ public class Farm extends Structure {
 		ArrayList<SessionEntry> entries = new ArrayList<SessionEntry>();
 		entries = CivGlobal.getSessionDB().lookup(getSessionKey());
 		int missedGrowths = 0;
-		
 		if (entries.size() > 0) {
 			missedGrowths = Integer.valueOf(entries.get(0).value);
 		} 
@@ -175,7 +152,6 @@ public class Farm extends Structure {
 				this.missedGrowths = missedGrowths;
 			}
 			
-			
 			@Override
 			public void run() {
 				fc.setMissedGrowthTicks(missedGrowths);
@@ -183,7 +159,6 @@ public class Farm extends Structure {
 				saveMissedGrowths();
 			}
 		}
-
 		TaskMaster.asyncTask(new AsyncTask(missedGrowths), 0);
 	}
 
