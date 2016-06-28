@@ -147,7 +147,7 @@ public class Wall extends Structure {
 	}
 	
 	@Override
-	protected Location repositionCenterBlockAlign(Location center, String dir, double x_size, double z_size)  {
+	protected Location repositionCenter(Location center, String dir, double x_size, double z_size)  {
 		return center;
 	}
 	

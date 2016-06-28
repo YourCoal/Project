@@ -49,8 +49,10 @@ public class DebugFarmCommand extends CommandBase {
 	}
 
 	public void unloadchunk_cmd() throws CivException {
+		
 		int x = getNamedInteger(1);
 		int z = getNamedInteger(2);
+		
 		Bukkit.getWorld("world").unloadChunk(x, z);
 		CivMessage.sendSuccess(sender, "Chunk "+x+","+z+" unloaded");
 	}
@@ -88,6 +90,7 @@ public class DebugFarmCommand extends CommandBase {
 	}
 	
 	public void grow_cmd() throws CivException {
+		
 		int count = getNamedInteger(1);
 		for (int i = 0; i < count; i++) {
 			TaskMaster.asyncTask(new FarmGrowthSyncTask(), 0);

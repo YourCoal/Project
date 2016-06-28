@@ -60,6 +60,9 @@ public class Library extends Structure {
 		if (name.equalsIgnoreCase("fire_protection")) {
 			return Enchantment.PROTECTION_FIRE;
 		}
+		if (name.equalsIgnoreCase("feather_falling")) {
+			return Enchantment.PROTECTION_FALL;
+		}
 		if (name.equalsIgnoreCase("blast_protection")) {
 			return Enchantment.PROTECTION_EXPLOSIONS;
 		}
@@ -71,12 +74,6 @@ public class Library extends Structure {
 		}
 		if (name.equalsIgnoreCase("aqua_affinity")) {
 			return Enchantment.WATER_WORKER;
-		}
-		if (name.equalsIgnoreCase("feather_falling")) {
-			return Enchantment.PROTECTION_FALL;
-		}
-		if (name.equalsIgnoreCase("depth_strider")) {
-			return Enchantment.DEPTH_STRIDER;
 		}
 		
 		// Sword Enchantments
@@ -103,11 +100,11 @@ public class Library extends Structure {
 		if (name.equalsIgnoreCase("efficiency")) {
 			return Enchantment.DIG_SPEED;
 		}
-		if (name.equalsIgnoreCase("unbreaking")) {
-			return Enchantment.DURABILITY;
-		}
 		if (name.equalsIgnoreCase("silk_touch")) {
 			return Enchantment.SILK_TOUCH;
+		}
+		if (name.equalsIgnoreCase("unbreaking")) {
+			return Enchantment.DURABILITY;
 		}
 		if (name.equalsIgnoreCase("fortune")) {
 			return Enchantment.LOOT_BONUS_BLOCKS;
@@ -126,7 +123,9 @@ public class Library extends Structure {
 		if (name.equalsIgnoreCase("infinity")) {
 			return Enchantment.ARROW_INFINITE;
 		}
+		
 		return null;
+		
 	}
 
 	public double getNonResidentFee() {

@@ -24,6 +24,7 @@ public class BuildWithPersonalTemplate implements GuiAction {
 	public void performAction(InventoryClickEvent event, ItemStack stack) {
 		Player player = (Player)event.getWhoClicked();
 		Resident resident = CivGlobal.getResident(player);
+		
 		ConfigBuildableInfo info = resident.pendingBuildableInfo;
 		try {
 			/* get the template name from the perk's CustomTemplate component. */
@@ -31,23 +32,13 @@ public class BuildWithPersonalTemplate implements GuiAction {
 			Perk perk = Perk.staticPerks.get(perk_id);
 			CustomPersonalTemplate customTemplate = (CustomPersonalTemplate)perk.getComponent("CustomPersonalTemplate");
 			Template tpl = customTemplate.getTemplate(player, resident.pendingBuildableInfo);
-			
-			Resident res = CivGlobal.getResident(player);
-			if (res.chunkAlign == true || Buildable.isForceChunkAlign()) {
-				Location centerLoc = Buildable.repositionCenterStaticChunkAlign(player.getLocation(), info, Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
-				TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, resident.pendingCallback), 0);
-				player.closeInventory();
-			} else {
-				Location centerLoc = Buildable.repositionCenterStaticBlockAlign(player.getLocation(), info, Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
-				TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, resident.pendingCallback), 0);
-				player.closeInventory();
-			}
-			//Location centerLoc = Buildable.repositionCenterStatic(player.getLocation(), info, Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
-			//TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, resident.pendingCallback), 0);
+			Location centerLoc = Buildable.repositionCenterStatic(player.getLocation(), info, Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);	
+			TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, resident.pendingCallback), 0);
 			resident.desiredTemplate = tpl;
 			player.closeInventory();
 		} catch (CivException e) {
 			CivMessage.sendError(player, e.getMessage());
 		}
 	}
+
 }

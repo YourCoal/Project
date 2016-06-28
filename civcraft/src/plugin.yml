@@ -1,7 +1,7 @@
 name: CivCraft
 main: com.avrgaming.civcraft.main.CivCraft
 softdepends: [TitleAPI]
-version: 3.0.alpha.1.1pre6
+version: 1.76.5
 
 commands:
     town:
@@ -17,7 +17,7 @@ commands:
     deny:
         aliases: [no]
     civ:
-        aliases: [c]
+        aliases:
     tc:
         aliases:
     cc:

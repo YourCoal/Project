@@ -44,7 +44,7 @@ public class WaterStructure extends Structure {
 	}
 	
 	@Override
-	protected Location repositionCenterChunkAlign(Location center, String dir, double x_size, double z_size) {
+	protected Location repositionCenter(Location center, String dir, double x_size, double z_size) {
 		Location loc = new Location(center.getWorld(), 
 				center.getX(), center.getY(), center.getZ(), 
 				center.getYaw(), center.getPitch());

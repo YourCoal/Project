@@ -161,7 +161,7 @@ public class Cannon extends Buildable {
 		}
 		
 		corner = new BlockCoord(center);
-		corner.setFromLocation(this.repositionCenterBlockAlign(center, tpl.dir(), tpl.size_x, tpl.size_z));
+		corner.setFromLocation(this.repositionCenter(center, tpl.dir(), tpl.size_x, tpl.size_z));
 		checkBlockPermissionsAndRestrictions(player, corner.getBlock(), tpl.size_x, tpl.size_y, tpl.size_z);
 		buildCannonFromTemplate(tpl, corner);
 		processCommandSigns(tpl, corner);
@@ -467,21 +467,28 @@ public class Cannon extends Buildable {
 	}
 	
 	@Override
-	protected Location repositionCenterBlockAlign(Location center, String dir, double x_size, double z_size) throws CivException {
+	protected Location repositionCenter(Location center, String dir, double x_size, double z_size) throws CivException {
 		Location loc = center.clone();
+		
 		if (dir.equalsIgnoreCase("east")) {
 			loc.setZ(loc.getZ() - (z_size / 2));
 			loc.setX(loc.getX() + SHIFT_OUT);
-		} else if (dir.equalsIgnoreCase("west")) {
+		}
+		else if (dir.equalsIgnoreCase("west")) {
 			loc.setZ(loc.getZ() - (z_size / 2));
 			loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-		} else if (dir.equalsIgnoreCase("north")) {
+
+		}
+		else if (dir.equalsIgnoreCase("north")) {
 			loc.setX(loc.getX() - (x_size / 2));
 			loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-		} else if (dir.equalsIgnoreCase("south")) {
+		}
+		else if (dir.equalsIgnoreCase("south")) {
 			loc.setX(loc.getX() - (x_size / 2));
 			loc.setZ(loc.getZ() + SHIFT_OUT);
+
 		}
+		
 		return loc;
 	}
 

@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.command.resident;
 
 import com.avrgaming.civcraft.command.CommandBase;
@@ -13,22 +31,16 @@ public class ResidentToggleCommand extends CommandBase {
 		command = "/resident toggle";
 		displayName = CivSettings.localize.localizedString("cmd_res_toggle_name");	
 		
-		commands.put("map", "Toggles a ASCII map which shows town locations of claimed town chunks.");
-		commands.put("info", "Toggles a message displayed as you enter each culture chunk. Tells you what it would generate the town.");
-		commands.put("showtown", "Toggles displaying of [Town] messages.");
-		commands.put("showciv", "Toggles displaying of [Civ] messages.");
-		commands.put("showscout", "Toggles displaying of scout tower messages.");
-		commands.put("combatinfo", "Toggles displaying of combat information.");
-		commands.put("itemdrops", "Toggles displaying of item drops.");
+		commands.put("map", CivSettings.localize.localizedString("cmd_res_toggle_mapDesc"));
+		commands.put("info", CivSettings.localize.localizedString("cmd_res_toggle_infoDesc"));
+		commands.put("showtown", CivSettings.localize.localizedString("cmd_res_toggle_showtownDesc"));
+		commands.put("showciv", CivSettings.localize.localizedString("cmd_res_toggle_showcivDesc"));
+		commands.put("showscout", CivSettings.localize.localizedString("cmd_res_toggle_showscoutDesc"));
+		commands.put("combatinfo", CivSettings.localize.localizedString("cmd_res_toggle_combatinfoDesc"));
+		commands.put("itemdrops", CivSettings.localize.localizedString("cmd_res_toggle_itemdropsDesc"));
 		commands.put("titles", CivSettings.localize.localizedString("cmd_res_toggle_titleAPIDesc"));
-		commands.put("chunkalign", "Toggles structures being chunk or block aligned.");
 		
 	}
-	
-	public void chunkalign_cmd() throws CivException {
-		toggle();
-	}
-	
 	public void itemdrops_cmd() throws CivException {
 		toggle();
 	}
@@ -92,10 +104,6 @@ public class ResidentToggleCommand extends CommandBase {
 		case "titles":
 			resident.setTitleAPI(!resident.isTitleAPI());
 			result = resident.isTitleAPI();
-			break;
-		case "chunkalign":
-			resident.setChunkAlign(!resident.isChunkAlign());
-			result = resident.isChunkAlign();
 			break;
 		case "itemdrops":
 			resident.toggleItemMode();

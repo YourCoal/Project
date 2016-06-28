@@ -119,7 +119,7 @@ public abstract class Buildable extends SQLObject {
 	private int templateZ;
 	
 	// Number of blocks to shift the structure away from us when built.
-	public static final double SHIFT_OUT = 0; //Changed due to suffication in bedrock possibly
+	public static final double SHIFT_OUT = 0;
 	public static final int MIN_DISTANCE = 7;
 	
 	private Map<BlockCoord, StructureSign> structureSigns = new ConcurrentHashMap<BlockCoord, StructureSign>();
@@ -129,7 +129,7 @@ public abstract class Buildable extends SQLObject {
 	protected Map<BlockCoord, Boolean> structureBlocks = new ConcurrentHashMap<BlockCoord, Boolean>();
 	private BlockCoord centerLocation;
 	
-	// this is a bad hack to get the townchunks to load in the proper order when saving asynchronously
+	// XXX this is a bad hack to get the townchunks to load in the proper order when saving asynchronously
 	public ArrayList<TownChunk> townChunksToSave = new ArrayList<TownChunk>();
 	public ArrayList<Component> attachedComponents = new ArrayList<Component>();
 	
@@ -257,10 +257,6 @@ public abstract class Buildable extends SQLObject {
 	
 	public boolean isTileImprovement() {
 		return info.tile_improvement;
-	}
-	
-	public static boolean isForceChunkAlign() {
-		return ConfigBuildableInfo.force_chunk_align;
 	}
 	
 	public boolean isActive() {
@@ -454,19 +450,15 @@ public abstract class Buildable extends SQLObject {
 			e.printStackTrace();
 			throw e;
 		}
+		
 		buildPlayerPreview(player, centerLoc, tpl);
 	}
 	
 	
 	public void buildPlayerPreview(Player player, Location centerLoc, Template tpl) throws CivException, IOException {
-		Resident res = CivGlobal.getResident(player);
-		if (res.chunkAlign == true) {
-			centerLoc = repositionCenterChunkAlign(centerLoc, tpl.dir(), tpl.size_x, tpl.size_z);
-		} else {
-			centerLoc = repositionCenterBlockAlign(centerLoc, tpl.dir(), tpl.size_x, tpl.size_z);
-		}
-		
+		centerLoc = repositionCenter(centerLoc, tpl.dir(), tpl.size_x, tpl.size_z);
 		tpl.buildPreviewScaffolding(centerLoc, player);
+		
 		this.setCorner(new BlockCoord(centerLoc));
 		
 		CivMessage.sendHeading(player, CivSettings.localize.localizedString("buildable_preview_heading"));
@@ -491,6 +483,7 @@ public abstract class Buildable extends SQLObject {
 	 */
 	
 	public static void buildVerifyStatic(Player player, ConfigBuildableInfo info, Location centerLoc, CallbackInterface callback) throws CivException {
+	
 		Resident resident = CivGlobal.getResident(player);
 		/* Look for any custom template perks and ask the player if they want to use them. */
 		LinkedList<Perk> perkList = resident.getPersonalTemplatePerks(info);
@@ -533,12 +526,7 @@ public abstract class Buildable extends SQLObject {
 			return;
 		}
 		
-		Resident res = CivGlobal.getResident(player);
-		if (res.chunkAlign == true) {
-			centerLoc = repositionCenterStaticChunkAlign(centerLoc, info, tpl.dir(), tpl.size_x, tpl.size_z);
-		} else {
-			centerLoc = repositionCenterStaticBlockAlign(centerLoc, info, tpl.dir(), tpl.size_x, tpl.size_z);
-		}
+		centerLoc = repositionCenterStatic(centerLoc, info, tpl.dir(), tpl.size_x, tpl.size_z);	
 		//validate(player, null, tpl, centerLoc, callback);
 		TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, callback), 0);
 	}
@@ -566,223 +554,102 @@ public abstract class Buildable extends SQLObject {
 		}
 	}
 	
-	/* this is called only on structures which do not have towns yet.
-	 * For Example Capitols, Camps and Town Halls. */
-	//XXX Chunk Align like normal
-	public static Location repositionCenterStaticChunkAlign(Location center, ConfigBuildableInfo info, String dir, double x_size, double z_size) throws CivException {
-		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
-		// Reposition tile improvements
-		if (ConfigBuildableInfo.force_chunk_align == true) {
-			if (dir.equalsIgnoreCase("east")) {				
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);				
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		} else {
-			if (dir.equalsIgnoreCase("east")) {				
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);				
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		}
+	/*
+	 * XXX this is called only on structures which do not have towns yet.
+	 * For Example Capitols, Camps and Town Halls.
+	 */
+	public static Location repositionCenterStatic(Location center, ConfigBuildableInfo info, String dir, double x_size, double z_size) throws CivException {
+		Location loc = new Location(center.getWorld(), 
+				center.getX(), center.getY(), center.getZ(), 
+				center.getYaw(), center.getPitch());
 		
+		
+		// Reposition tile improvements
+		if (info.tile_improvement) {
+			// just put the center at 0,0 of this chunk?
+			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+		} else { 
+			if (dir.equalsIgnoreCase("east")) {				
+				loc.setZ(loc.getZ() - (z_size / 2));
+				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+				loc.setX(loc.getX() + SHIFT_OUT);				
+			}
+			else if (dir.equalsIgnoreCase("west")) {
+				loc.setZ(loc.getZ() - (z_size / 2));
+				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
+			}
+			else if (dir.equalsIgnoreCase("north")) {
+				loc.setX(loc.getX() - (x_size / 2));
+				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
+			}
+			else if (dir.equalsIgnoreCase("south")) {
+				loc.setX(loc.getX() - (x_size / 2));
+				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+				loc.setZ(loc.getZ() + SHIFT_OUT);
+			}
+		}   
 		if (info.templateYShift != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
 			loc.setY(loc.getY() + info.templateYShift);
+			
 			if (loc.getY() < 1) {
 				throw new CivException(CivSettings.localize.localizedString("buildable_TooCloseToBedrock"));
 			}
 		}
+				
 		return loc;
 	}
 	
-	//XXX New option for players to block align, 1.2pre1
-	public static Location repositionCenterStaticBlockAlign(Location center, ConfigBuildableInfo info, String dir, double x_size, double z_size) throws CivException {
-		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
-		// Reposition tile improvements
-		if (ConfigBuildableInfo.force_chunk_align == true) {
-			if (dir.equalsIgnoreCase("east")) {				
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);				
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		} else {
-			if (dir.equalsIgnoreCase("east")) {				
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);				
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		}
+	protected Location repositionCenter(Location center, String dir, double x_size, double z_size) throws CivException {
+		Location loc = new Location(center.getWorld(), 
+				center.getX(), center.getY(), center.getZ(), 
+				center.getYaw(), center.getPitch());
 		
-		if (info.templateYShift != 0) {
+		
+		// Reposition tile improvements
+		if (this.isTileImprovement()) {
+			// just put the center at 0,0 of this chunk?
+			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+		} else {  
+			if (dir.equalsIgnoreCase("east")) {
+				loc.setZ(loc.getZ() - (z_size / 2));
+				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+				loc.setX(loc.getX() + SHIFT_OUT);
+			}
+			else if (dir.equalsIgnoreCase("west")) {
+				loc.setZ(loc.getZ() - (z_size / 2));
+				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
+			}
+			else if (dir.equalsIgnoreCase("north")) {
+				loc.setX(loc.getX() - (x_size / 2));
+				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
+			}
+			else if (dir.equalsIgnoreCase("south")) {
+				loc.setX(loc.getX() - (x_size / 2));
+				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+				loc.setZ(loc.getZ() + SHIFT_OUT);
+			}
+		}  
+		if (this.getTemplateYShift() != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
-			loc.setY(loc.getY() + info.templateYShift);
+			loc.setY(loc.getY() + this.getTemplateYShift());
+			
 			if (loc.getY() < 1) {
 				throw new CivException(CivSettings.localize.localizedString("buildable_TooCloseToBedrock"));
 			}
 		}
+				
 		return loc;
 	}
 	
-	//XXX Chunk Align like normal
-	protected Location repositionCenterChunkAlign(Location center, String dir, double x_size, double z_size) throws CivException {
-		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
-		
-//		if ((info.id.equals("ti_farm")) {
-//		centerLoc = repositionCenterStaticChunkAlign(centerLoc, info, tpl.dir(), tpl.size_x, tpl.size_z);
-//	}
-		
-		if (ConfigBuildableInfo.force_chunk_align == true) {
-			if (dir.equalsIgnoreCase("east")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		} else {
-			if (dir.equalsIgnoreCase("east")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		}
-		
-		if (this.getTemplateYShift() != 0) {
-			// Y-Shift based on the config, this allows templates to be built underground.
-			loc.setY(loc.getY() + this.getTemplateYShift());
-			if (loc.getY() < 20) {
-				throw new CivException("You are too close to bedrock! Please go higher.");
-			}
-		}	
-		return loc;
-	}
-	
-	//XXX New option for players to block align, 1.2pre1
-	//ALL tile improvements need to be chunk aligned? maybe toggle for things like farm/windmill only.
-	protected Location repositionCenterBlockAlign(Location center, String dir, double x_size, double z_size) throws CivException {
-		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
-		
-		if (ConfigBuildableInfo.force_chunk_align == true) {
-			if (dir.equalsIgnoreCase("east")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		} else {
-			if (dir.equalsIgnoreCase("east")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		}
-		
-		if (this.getTemplateYShift() != 0) {
-			// Y-Shift based on the config, this allows templates to be built underground.
-			loc.setY(loc.getY() + this.getTemplateYShift());
-			if (loc.getY() < 20) {
-				throw new CivException("You are too close to bedrock! Please go higher.");
-			}
-		}	
-		return loc;
-	}
-	
-	public void resumeBuildFromTemplate() throws Exception {
+	public void resumeBuildFromTemplate() throws Exception
+	{
 		Template tpl;
+		
 		Location corner = getCorner().getLocation();
 
 		try {
@@ -958,7 +825,7 @@ public abstract class Buildable extends SQLObject {
 		}
 		
 		/* Check that we're not overlapping with another structure's template outline. */
-		/* this needs to check actual blocks, not outlines cause thats more annoying than actual problems caused by building into each other. */
+		/* XXX this needs to check actual blocks, not outlines cause thats more annoying than actual problems caused by building into each other. */
 //		Iterator<Entry<BlockCoord, Structure>> iter = CivGlobal.getStructureIterator();
 //		while(iter.hasNext()) {
 //			Entry<BlockCoord, Structure> entry = iter.next();
@@ -1055,7 +922,7 @@ public abstract class Buildable extends SQLObject {
 		
 		for (ChunkCoord c : claimCoords) {
 			try {
-				// These will be added to the array list of objects to save in town.buildStructure();
+				//XXX These will be added to the array list of objects to save in town.buildStructure();
 				this.townChunksToSave.add(TownChunk.townHallClaim(this.getTown(), c));
 			} catch (Exception e) {
 			}
@@ -1167,17 +1034,22 @@ public abstract class Buildable extends SQLObject {
 	
 	/* Checks to see if the area is covered by another structure */
 	public void canBuildHere(Location center, double distance) throws CivException {
+		
 		// Do not let tile improvements be built on top of each other.
 		//String chunkHash = Civ.chunkHash(center.getChunk());
 		
 		//TODO Revisit for walls and farms?
 //		if (Civ.getWallChunk(chunkHash) != null) {
 //			throw new CivException("Cannot build here, another tile improvement is in this chunk.");
+//			
 //		}
 //		
 //		if (Civ.getFarmChunk(chunkHash) != null) {
 //			throw new CivException("Cannot build here, another tile improvement is in this chunk.");
-//		}	
+//		}
+		
+
+				
 		return;
 	}
 	
@@ -1472,9 +1344,6 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	public void onTechUpdate() {
-	}
-	
-	public void onPolicyUpdate() {
 	}
 	
 	public void processRegen() {

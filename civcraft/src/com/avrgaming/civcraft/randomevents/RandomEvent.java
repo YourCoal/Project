@@ -343,6 +343,7 @@ public class RandomEvent extends SQLObject {
 
 	public static double getUnhappiness(Town town) {
 	//	CivGlobal.getSessionDB().add("randomevent:unhappiness", unhappiness+":"+duration, this.getParentTown().getCiv().getId(), this.getParentTown().getId(), 0);	
+
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(Unhappiness.getKey(town));
 		double unhappy = 0.0;
 		
@@ -351,6 +352,7 @@ public class RandomEvent extends SQLObject {
 			String[] split = entry.value.split(":");
 			int unhappiness = Integer.valueOf(split[0]);
 			int duration = Integer.valueOf(split[1]);
+
 			
 			Date start = new Date(entry.time);
 			Date now = new Date();
@@ -406,11 +408,13 @@ public class RandomEvent extends SQLObject {
 	public static double getHammerRate(Town town) {
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(HammerRate.getKey(town));
 		double hammerrate = 1.0;
+		
 		ArrayList<SessionEntry> removed = new ArrayList<SessionEntry>();
 		for (SessionEntry entry : entries) {
 			String[] split = entry.value.split(":");
 			double rate = Double.valueOf(split[0]);
 			int duration = Integer.valueOf(split[1]);
+
 			
 			Date start = new Date(entry.time);
 			Date now = new Date();
@@ -420,6 +424,7 @@ public class RandomEvent extends SQLObject {
 				removed.add(entry);
 				continue;
 			}
+			
 			hammerrate *= rate;
 		}
 		
@@ -427,6 +432,7 @@ public class RandomEvent extends SQLObject {
 		for (SessionEntry entry : removed) {
 			CivGlobal.getSessionDB().delete(entry.request_id, entry.key);
 		}
+		
 		return hammerrate;	
 	}
 

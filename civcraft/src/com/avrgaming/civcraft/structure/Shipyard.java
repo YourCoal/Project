@@ -11,13 +11,13 @@ import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.object.Buff;
 import com.avrgaming.civcraft.object.Town;
 
-public class Harbor extends WaterStructure {
+public class Shipyard extends WaterStructure {
 	
-	protected Harbor(Location center, String id, Town town) throws CivException {
+	protected Shipyard(Location center, String id, Town town) throws CivException {
 		super(center, id, town);
 	}
 
-	public Harbor(ResultSet rs) throws SQLException, CivException {
+	public Shipyard(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
 		

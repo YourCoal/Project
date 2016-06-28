@@ -18,28 +18,24 @@ public class Forge extends Structure {
 	//We will set this default as COMMON materials, make RARE materials /10
 	//Coal Rocks
 	public static final int C_COAL_ORE_ROCK_CHANCE = CivSettings.getIntegerStructure("forge_c_coal_ore_rock.max");
+	private static final double C_COAL_ORE_CRYSTAL_CHANCE = CivSettings.getDoubleStructure("forge_c_coal_ore_rock.crystal_chance");
 	private static final double C_COAL_ORE_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("forge_c_coal_ore_rock.fragment_chance");
 	private static final double C_COAL_ORE_INGOT_CHANCE = CivSettings.getDoubleStructure("forge_c_coal_ore_rock.ingot_chance");
 	//----------------------------------------------------------------\\
 	public static final int R_COAL_ORE_ROCK_CHANCE = CivSettings.getIntegerStructure("forge_r_coal_ore_rock.max");
+	private static final double R_COAL_ORE_CRYSTAL_CHANCE = CivSettings.getDoubleStructure("forge_r_coal_ore_rock.crystal_chance");
 	private static final double R_COAL_ORE_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("forge_r_coal_ore_rock.fragment_chance");
 	private static final double R_COAL_ORE_INGOT_CHANCE = CivSettings.getDoubleStructure("forge_r_coal_ore_rock.ingot_chance");
 	//Iron Rocks
 	public static final int C_IRON_ORE_ROCK_CHANCE = CivSettings.getIntegerStructure("forge_c_iron_ore_rock.max");
+	private static final double C_IRON_ORE_CRYSTAL_CHANCE = CivSettings.getDoubleStructure("forge_c_iron_ore_rock.crystal_chance");
 	private static final double C_IRON_ORE_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("forge_c_iron_ore_rock.fragment_chance");
 	private static final double C_IRON_ORE_INGOT_CHANCE = CivSettings.getDoubleStructure("forge_c_iron_ore_rock.ingot_chance");
 	//----------------------------------------------------------------\\
 	public static final int R_IRON_ORE_ROCK_CHANCE = CivSettings.getIntegerStructure("forge_r_iron_ore_rock.max");
+	private static final double R_IRON_ORE_CRYSTAL_CHANCE = CivSettings.getDoubleStructure("forge_r_iron_ore_rock.crystal_chance");
 	private static final double R_IRON_ORE_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("forge_r_iron_ore_rock.fragment_chance");
 	private static final double R_IRON_ORE_INGOT_CHANCE = CivSettings.getDoubleStructure("forge_r_iron_ore_rock.ingot_chance");
-	//Gold Rocks
-	public static final int C_GOLD_ORE_ROCK_CHANCE = CivSettings.getIntegerStructure("forge_c_gold_ore_rock.max");
-	private static final double C_GOLD_ORE_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("forge_c_gold_ore_rock.fragment_chance");
-	private static final double C_GOLD_ORE_INGOT_CHANCE = CivSettings.getDoubleStructure("forge_c_gold_ore_rock.ingot_chance");
-	//----------------------------------------------------------------\\
-	public static final int R_GOLD_ORE_ROCK_CHANCE = CivSettings.getIntegerStructure("forge_r_gold_ore_rock.max");
-	private static final double R_GOLD_ORE_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("forge_r_gold_ore_rock.fragment_chance");
-	private static final double R_GOLD_ORE_INGOT_CHANCE = CivSettings.getDoubleStructure("forge_r_gold_ore_rock.ingot_chance");
 	
 	
 	private int level = 1;
@@ -48,6 +44,7 @@ public class Forge extends Structure {
 	
 	public enum Mineral {
 		FRAGMENT,
+		CRYSTAL,
 		INGOT
 	}
 	
@@ -78,6 +75,9 @@ public class Forge extends Structure {
 		case FRAGMENT:
 			chance = C_COAL_ORE_FRAGMENT_CHANCE;
 			break;
+		case CRYSTAL:
+			chance = C_COAL_ORE_CRYSTAL_CHANCE;
+			break;
 		case INGOT:
 			chance = C_COAL_ORE_INGOT_CHANCE;
 			break;
@@ -90,6 +90,9 @@ public class Forge extends Structure {
 		switch (mineral) {
 		case FRAGMENT:
 			chance = R_COAL_ORE_FRAGMENT_CHANCE;
+			break;
+		case CRYSTAL:
+			chance = R_COAL_ORE_CRYSTAL_CHANCE;
 			break;
 		case INGOT:
 			chance = R_COAL_ORE_INGOT_CHANCE;
@@ -104,6 +107,9 @@ public class Forge extends Structure {
 		case FRAGMENT:
 			chance = C_IRON_ORE_FRAGMENT_CHANCE;
 			break;
+		case CRYSTAL:
+			chance = C_IRON_ORE_CRYSTAL_CHANCE;
+			break;
 		case INGOT:
 			chance = C_IRON_ORE_INGOT_CHANCE;
 			break;
@@ -117,34 +123,11 @@ public class Forge extends Structure {
 		case FRAGMENT:
 			chance = R_IRON_ORE_FRAGMENT_CHANCE;
 			break;
+		case CRYSTAL:
+			chance = R_IRON_ORE_CRYSTAL_CHANCE;
+			break;
 		case INGOT:
 			chance = R_IRON_ORE_INGOT_CHANCE;
-			break;
-		}
-		return this.modifyChance(chance);
-	}
-	
-	public double getComnGoldOreChance(Mineral mineral) {
-		double chance = 0;
-		switch (mineral) {
-		case FRAGMENT:
-			chance = C_GOLD_ORE_FRAGMENT_CHANCE;
-			break;
-		case INGOT:
-			chance = C_GOLD_ORE_INGOT_CHANCE;
-			break;
-		}
-		return this.modifyChance(chance);
-	}
-	
-	public double getRareGoldOreChance(Mineral mineral) {
-		double chance = 0;
-		switch (mineral) {
-		case FRAGMENT:
-			chance = R_GOLD_ORE_FRAGMENT_CHANCE;
-			break;
-		case INGOT:
-			chance = R_GOLD_ORE_INGOT_CHANCE;
 			break;
 		}
 		return this.modifyChance(chance);
@@ -178,4 +161,5 @@ public class Forge extends Structure {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+
 }

@@ -211,7 +211,7 @@ public class CivMessage {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			Resident resident = CivGlobal.getResident(player);
 			if (CivSettings.hasTitleAPI && resident.isTitleAPI()) {
-				CivMessage.sendTitle(player, 20, 100, 20, title, subTitle);
+				CivMessage.sendTitle(player, 15, 80, 15, title, subTitle);
 			} else {
 				send(player, buildTitle(title));
 				if (!subTitle.equals("")) {

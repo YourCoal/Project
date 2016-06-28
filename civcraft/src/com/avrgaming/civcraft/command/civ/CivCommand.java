@@ -59,7 +59,7 @@ public class CivCommand extends CommandBase {
 		commands.put("info", CivSettings.localize.localizedString("cmd_civ_infoDesc"));
 		commands.put("show", CivSettings.localize.localizedString("cmd_civ_showDesc"));
 		commands.put("list", CivSettings.localize.localizedString("cmd_civ_listDesc"));
-		commands.put("research", "Manage civilization's research.");
+		commands.put("research", CivSettings.localize.localizedString("cmd_civ_researchDesc"));
 		commands.put("gov", CivSettings.localize.localizedString("cmd_civ_govDesc"));
 		commands.put("time", CivSettings.localize.localizedString("cmd_civ_timeDesc"));
 		commands.put("set", CivSettings.localize.localizedString("cmd_civ_setDesc"));
@@ -74,12 +74,6 @@ public class CivCommand extends CommandBase {
 		commands.put("claimleader", CivSettings.localize.localizedString("cmd_civ_claimleaderDesc"));
 		commands.put("motd", CivSettings.localize.localizedString("cmd_civ_motdDesc"));
 		commands.put("location", CivSettings.localize.localizedString("cmd_civ_locationDesc"));
-		commands.put("policy", "Manage civilization's social policies.");
-	}
-	
-	public void policy_cmd() {
-		CivPolicyCommand cmd = new CivPolicyCommand();	
-		cmd.onCommand(sender, null, "research", this.stripArgs(args, 1));	
 	}
 
 	public void location_cmd() throws CivException {

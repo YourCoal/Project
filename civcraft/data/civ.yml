@@ -129,9 +129,9 @@ ore_rates:
     coal: 10.0
     iron: 20.0
     gold: 200.0
-    diamond: 400.0
-    emerald: 500.0
-    quartz: 300.0
+    diamond: 500.0
+    emerald: 1000.0
+    quartz: 400.0
     lapis: 100.0
     redstone: 100.0
 

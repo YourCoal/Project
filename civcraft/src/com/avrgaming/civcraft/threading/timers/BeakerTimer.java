@@ -58,13 +58,13 @@ public class BeakerTimer extends CivAsyncTask {
 			}
 			
 			try {
-				/* The base_beakers defines the number of beakers per hour to give.
+				/* 
+				 * The base_beakers defines the number of beakers per hour to give.
 				 * This timer runs every min, so dividing my 60 will give us the number
-				 * of beakers per min. */
+				 * of beakers per min.
+				 */
 				if (civ.getResearchTech() != null) {
 					civ.addBeakers(civ.getBeakers() / BEAKER_PERIOD);
-				} else if (civ.getResearchPolicy() != null) {
-					civ.addPolicyBeakers(civ.getBeakers() / BEAKER_PERIOD);
 				} else {
 					civ.processUnusedBeakers();
 				}

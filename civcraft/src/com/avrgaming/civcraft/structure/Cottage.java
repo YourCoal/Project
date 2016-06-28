@@ -21,7 +21,6 @@ package com.avrgaming.civcraft.structure;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
@@ -46,8 +45,7 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.MultiInventory;
 
 public class Cottage extends Structure {
-	
-	double total_coins;
+
 	private ConsumeLevelComponent consumeComp = null;
 	
 	protected Cottage(Location center, String id, Town town) throws CivException {
@@ -211,25 +209,8 @@ public class Cottage extends Structure {
 		} else {
 			lvl = CivSettings.cottageLevels.get(getConsumeComponent().getLevel());
 		}
-		
-//		int total_coins = (int)Math.round(lvl.coins*this.getTown().getCottageRate());
-		
-		
-		double min = lvl.coins_min;
-		double max = lvl.coins_max;
-		
-		Random rand = new Random();
-		
-		double coins = min + (max - min) * rand.nextDouble();
-		double total_coins = ((int)Math.round(coins*this.getTown().getCottageRate())) / 3; //Has to be rounded as INT or else decimals.
-		
-		this.total_coins = total_coins;
-		
-//		int random_coins = rand.nextInt((max -min)) + min;
-//		int total_coins = random_coins*this.getTown().getCottageRate();
-//		String value = ""+posion_ticks;
-		
-		
+				
+		int total_coins = (int)Math.round(lvl.coins*this.getTown().getCottageRate());
 		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
 			total_coins *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 		}
@@ -294,14 +275,13 @@ public class Cottage extends Structure {
 	}
 
 	public double getCoinsGenerated() {
-/*		int level = getLevel();
+		int level = getLevel();
 		
 		ConfigCottageLevel lvl = CivSettings.cottageLevels.get(level);
 		if (lvl == null) {
 			return 0;
 		}
-		return lvl.coins;*/
-		return total_coins;
+		return lvl.coins;
 	}
 
 	public void delevel() {
@@ -324,6 +304,7 @@ public class Cottage extends Structure {
 	
 	public void onDestroy() {
 		super.onDestroy();
+		
 		getConsumeComponent().setLevel(1);
 		getConsumeComponent().setCount(0);
 		getConsumeComponent().onSave();

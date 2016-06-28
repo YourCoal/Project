@@ -1,3 +1,21 @@
+/*************************************************************************
+ * 
+ * AVRGAMING LLC
+ * __________________
+ * 
+ *  [2013] AVRGAMING LLC
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  All information contained herein is, and remains
+ * the property of AVRGAMING LLC and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to AVRGAMING LLC
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from AVRGAMING LLC.
+ */
 package com.avrgaming.civcraft.object;
 
 import gpl.InventorySerializer;
@@ -42,7 +60,6 @@ import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
-import com.avrgaming.civcraft.config.ConfigCitizenLevel;
 import com.avrgaming.civcraft.config.ConfigPerk;
 import com.avrgaming.civcraft.database.SQL;
 import com.avrgaming.civcraft.database.SQLUpdate;
@@ -80,16 +97,7 @@ import com.avrgaming.global.perks.components.CustomPersonalTemplate;
 import com.avrgaming.global.perks.components.CustomTemplate;
 
 public class Resident extends SQLObject {
-	
-	/* XXX As part of 1.1pre6, we are going to let a player create a custom name for their 'helper'.
-	 * The helper will be used when the game talks to them, and make them feel as if they were in
-	 * a real conversation. We are only beginning this as a test on very few things, but we wish
-	 * that we will be able to expand it to the whole game. One of the initial thoughts is that
-	 * people may think this sounds like an actor in a kid's show, but I think that many people
-	 * will like it. */
-	@SuppressWarnings({ "unused" })
-	private String botName = null;
-	
+
 	private Town town = null;
 	private Camp camp = null;
 	private boolean townChat = false;
@@ -97,10 +105,6 @@ public class Resident extends SQLObject {
 	private boolean adminChat = false;
 	private boolean combatInfo = false;
 	private boolean titleAPI = true;
-	
-	//new 1.2pre1, decided to make true since players may get confused.
-	public boolean chunkAlign = true;
-	private int citizenXP;
 	
 	private boolean usesAntiCheat = false;
 	
@@ -147,10 +151,12 @@ public class Resident extends SQLObject {
 	
 	public boolean allchat = false; 
 	
-	/* This buildable is used as place to store which buildable we're working on when interacting 
+	/* XXX 
+	 * This buildable is used as place to store which buildable we're working on when interacting 
 	 * with GUI items. We want to be able to pass the buildable object to the GUI's action function,
 	 * but there isn't a good way to do this ATM. If we had a way to send arbitary objects it would
-	 * be better. Could we store it here on the resident object? */
+	 * be better. Could we store it here on the resident object?
+	 */
 	public Buildable pendingBuildable;
 	public ConfigBuildableInfo pendingBuildableInfo;
 	public CallbackInterface pendingCallback;
@@ -178,7 +184,6 @@ public class Resident extends SQLObject {
 		this.setName(name);
 		this.uid = uid;		
 		this.treasury = new EconObject(this);
-		this.setAccumulatedCitizenXP(0);
 		setTimezoneToServerDefault();
 		loadSettings();
 	}
@@ -206,9 +211,6 @@ public class Resident extends SQLObject {
 					"`friends` mediumtext," + 
 					"`debt` double DEFAULT 0," +
 					"`coins` double DEFAULT 0," +
-					//
-					"`citizenXP` int(11) DEFAULT 0," +
-					//
 					"`daysTilEvict` mediumint DEFAULT NULL," +
 					"`givenKit` bool NOT NULL DEFAULT '0'," +
 					"`camp_id` int(11)," +
@@ -297,7 +299,6 @@ public class Resident extends SQLObject {
 			this.uid = UUID.fromString(rs.getString("uuid"));
 		}
 		
-		this.setAccumulatedCitizenXP(rs.getInt("citizenXP"));
 		this.treasury = new EconObject(this);
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
 		this.setGivenKit(rs.getBoolean("givenKit"));
@@ -387,13 +388,8 @@ public class Resident extends SQLObject {
 		if (this.combatInfo) {
 			flagString += "combatinfo,";
 		}
-		
 		if (this.isTitleAPI()) {
 			flagString += "titleapi,";
-		}
-		
-		if (this.isChunkAlign()) {
-			flagString += "chunkalign,";
 		}
 		
 		if (this.itemMode.equals("rare")) {
@@ -433,14 +429,12 @@ public class Resident extends SQLObject {
 				this.setCombatInfo(true);
 				break;
 			case "titleapi":
-				if (CivSettings.hasTitleAPI) {
+				if (CivSettings.hasTitleAPI)
+				{
 				this.setTitleAPI(true);
 				} else {
 					this.setTitleAPI(false);
 				}
-				break;
-			case "chunkalign":
-				this.setChunkAlign(true);
 				break;
 			case "itemmoderare":
 				this.itemMode = "rare";
@@ -459,7 +453,9 @@ public class Resident extends SQLObject {
 	
 	@Override
 	public void saveNow() throws SQLException {
+		
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
+		
 		hashmap.put("name", this.getName());
 		hashmap.put("uuid", this.getUUIDString());
 		if (this.getTown() != null) {
@@ -476,14 +472,13 @@ public class Resident extends SQLObject {
 			hashmap.put("camp_id", null);
 		}
 		
-		hashmap.put("citizenXP", this.getAccumulatedCitizenXP());
-		hashmap.put("coins", this.getTreasury().getBalance());
-		hashmap.put("debt", this.getTreasury().getDebt());
 		hashmap.put("lastOnline", this.getLastOnline());
 		hashmap.put("registered", this.getRegistered());
+		hashmap.put("debt", this.getTreasury().getDebt());
 		hashmap.put("daysTilEvict", this.getDaysTilEvict());
 		hashmap.put("friends", this.getFriendsSaveString());
 		hashmap.put("givenKit", this.isGivenKit());
+		hashmap.put("coins", this.getTreasury().getBalance());
 		hashmap.put("timezone", this.getTimezone());
 		hashmap.put("flags", this.getFlagSaveString());
 		hashmap.put("last_ip", this.getLastIP());
@@ -1601,7 +1596,7 @@ public class Resident extends SQLObject {
 				player.teleport(coord.getLocation());
 			}
 		} else {
-			World world = Bukkit.getWorld(Town.overworldName);
+			World world = Bukkit.getWorld("world");
 			player.teleport(world.getSpawnLocation());
 		}
 	}
@@ -1857,74 +1852,12 @@ public class Resident extends SQLObject {
 		}
 		this.walkingModifier = speed;
 	}
-	
+
 	public boolean isTitleAPI() {
 		return titleAPI;
 	}
-	
+
 	public void setTitleAPI(boolean titleAPI) {
 		this.titleAPI = titleAPI;
-	}
-	
-	//1.2pre1
-	public boolean isChunkAlign() {
-		return chunkAlign;
-	}
-	
-	public void setChunkAlign(boolean chunkAlign) {
-		this.chunkAlign = chunkAlign;
-	}
-	
-	//1.2.pre1
-	public int getAccumulatedCitizenXP() {
-		return citizenXP;
-	}
-
-	public void setAccumulatedCitizenXP(int citizenXP) {
-		this.citizenXP = citizenXP;
-	}
-	
-	public void addAccumulatedCitizenXP(int generated) {
-		ConfigCitizenLevel clc = CivSettings.citizenLevels.get(this.getCitizenLevel());
-				
-		this.citizenXP += generated;
-		this.save();
-		if (this.getCitizenLevel() != CivSettings.getMaxCitizenLevel()) {
-			if (this.citizenXP >= clc.amount) {
-				CivMessage.send(this.getName(), "Your citizen level has risen!");
-//				CivGlobal.processCulture();
-//				CivMessage.sendCiv(this.civ, CivSettings.localize.localizedString("var_town_bordersExpanded",this.getName()));
-			}
-		}
-		try {
-			this.saveNow();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-/*	public int getCitizenLevel() {
-		// Get the first level
-		int bestLevel = 0;
-		ConfigCitizenLevel level = CivSettings.citizenLevels.get(0);
-		
-		while (this.citizenXP >= level.amount) {
-			level = CivSettings.citizenLevels.get(bestLevel+1);
-			if (level == null) {
-				level = CivSettings.citizenLevels.get(bestLevel);
-				break;
-			}
-			bestLevel++;
-		}
-		return level.level;
-	}*/
-	
-	public int getCitizenLevel() {
-		ConfigCitizenLevel level = CivSettings.citizenLevels.get(this.citizenXP);
-		if (level == null) {
-			return 0;
-		} else {
-			return level.level;
-		}
 	}
 }

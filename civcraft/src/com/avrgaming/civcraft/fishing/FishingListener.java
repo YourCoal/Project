@@ -14,12 +14,9 @@ import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigFishing;
-import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
-import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
@@ -41,55 +38,46 @@ public class FishingListener implements Listener {
 	
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerFish (PlayerFishEvent event) throws InvalidConfiguration {
-		Resident res = CivGlobal.getResident(event.getPlayer());
-		if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-			CivLog.debug("NOT cancelling player fish event...");
+	 public void onPlayerFish (PlayerFishEvent event) {
+		 if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
+			 CivLog.debug("NOT cancelling player fish event...");
 			// event.getPlayer().
 			// event.setCancelled(true);
-			Player player = event.getPlayer();
-			ItemStack stack = null;
-			
-			ArrayList<ConfigFishing> dropped = getRandomDrops();
-			event.getCaught().remove();
+			 Player player = event.getPlayer();
+			 ItemStack stack = null;
+			 
+			 ArrayList<ConfigFishing> dropped = getRandomDrops();
+			 event.getCaught().remove();
 
-			if (dropped.size() == 0) {
-				stack = ItemManager.createItemStack(ItemManager.getId(Material.RAW_FISH), 1);
-				HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(stack);
-				for (ItemStack is : leftovers.values()) {
-					player.getWorld().dropItem(player.getLocation(), is);
-				}
-				CivMessage.send(event.getPlayer(), CivColor.LightGreen+CivColor.LightGreen+"You've fished up "+CivColor.LightPurple+"Raw Fish");
-			} else {
-				for (ConfigFishing d : dropped) {
-					if (d.craftMatId == null) {
-						if (res.getCiv().hasTechnology("tech_trapping")) {
-							stack = ItemManager.createItemStack(d.type_id, 1*CivSettings.getInteger(CivSettings.techsConfig, "player_buffs.trapping_fishing_drops"));
-							CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've fished up "+CivColor.LightPurple+stack.getType().name().replace("_", " ").toLowerCase());
-						} else {
-							stack = ItemManager.createItemStack(d.type_id, 1);
-							CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've fished up "+CivColor.LightPurple+stack.getType().name().replace("_", " ").toLowerCase());
-						}
-					} else {
-						LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(d.craftMatId);
-						if (craftMat != null) {
-							if (res.getCiv().hasTechnology("tech_trapping")) {
-								stack = LoreCraftableMaterial.spawn(craftMat, 1*CivSettings.getInteger(CivSettings.techsConfig, "player_buffs.trapping_fishing_drops"));
-								CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've fished up "+CivColor.LightPurple+craftMat.getName());
-							} else {
-								stack = LoreCraftableMaterial.spawn(craftMat, 1);
-								CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've fished up "+CivColor.LightPurple+craftMat.getName());
-							}
-						}
-					}
-					
-					HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(stack);
-					for (ItemStack is : leftovers.values()) {
-						player.getWorld().dropItem(player.getLocation(), is);
-					}
-				}
-			}
-			player.updateInventory();
-		}
-	}
+			 if (dropped.size() == 0) {
+				 stack = ItemManager.createItemStack(ItemManager.getId(Material.RAW_FISH), 1);
+				 HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(stack);
+				 for (ItemStack is : leftovers.values()) {
+					 player.getWorld().dropItem(player.getLocation(), is);
+				 }
+				 CivMessage.send(event.getPlayer(), CivColor.LightGreen+CivSettings.localize.localizedString("var_fishing_success",CivColor.LightPurple+CivSettings.localize.localizedString("fishing_rawFish")));
+
+			 } else {
+				 for (ConfigFishing d : dropped) {
+					 if (d.craftMatId == null) {
+						 stack = ItemManager.createItemStack(d.type_id, 1);
+						 CivMessage.send(event.getPlayer(), CivColor.LightGreen+CivSettings.localize.localizedString("var_fishing_success",CivColor.LightPurple+stack.getType().name().replace("_", " ").toLowerCase()));	
+					 } else {
+						 LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(d.craftMatId);
+						 if (craftMat != null) {
+							 stack = LoreCraftableMaterial.spawn(craftMat);
+							 CivMessage.send(event.getPlayer(), CivColor.LightGreen+CivSettings.localize.localizedString("var_fishing_success",CivColor.LightPurple+craftMat.getName()));
+						 }
+					 }
+					 
+					 HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(stack);
+					 for (ItemStack is : leftovers.values()) {
+						 player.getWorld().dropItem(player.getLocation(), is);
+					 }
+				 }
+			 }
+			 
+			 player.updateInventory();
+		 }
+	 }
 }

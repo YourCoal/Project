@@ -152,8 +152,8 @@ public class CivResearchCommand extends CommandBase {
 		Civilization civ = getSenderCiv();
 		
 		CivMessage.sendHeading(sender, CivSettings.localize.localizedString("cmd_civ_research_era"));
-		CivMessage.send(sender, CivColor.White+CivSettings.localize.localizedString("var_cmd_civ_research_currentEra", CivColor.LightBlue+CivGlobal.EraString(civ.getCurrentEra())));
-		CivMessage.send(sender, CivColor.White+CivSettings.localize.localizedString("var_cmd_civ_research_highestEra", CivColor.LightBlue+CivGlobal.EraString(CivGlobal.highestCivEra)));
+		CivMessage.send(sender, CivColor.White+CivSettings.localize.localizedString("var_cmd_civ_research_currentEra", CivColor.LightBlue+CivGlobal.localizedEraString(civ.getCurrentEra())));
+		CivMessage.send(sender, CivColor.White+CivSettings.localize.localizedString("var_cmd_civ_research_highestEra", CivColor.LightBlue+CivGlobal.localizedEraString(CivGlobal.highestCivEra)));
 		
 		double eraRate = ConfigTech.eraRate(civ);
 		if (eraRate == 0.0) {

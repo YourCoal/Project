@@ -411,8 +411,7 @@ public class DebugCommand extends CommandBase {
 						ConfigBuildableInfo info = new ConfigBuildableInfo();
 						info.tile_improvement = false;
 						info.templateYShift = 0;
-						//XXX Make this configurable?
-						Location center = Buildable.repositionCenterStaticChunkAlign(player.getLocation(), info, 
+						Location center = Buildable.repositionCenterStatic(player.getLocation(), info, 
 								Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
 
 						CivMessage.send(sender, "Building from "+start_x+","+start_y+","+start_z);

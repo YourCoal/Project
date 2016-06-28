@@ -329,11 +329,11 @@ public class Structure extends Buildable {
 				struct = (ScoutTower) new ScoutTower(rs);
 			}
 			break;
-		case "s_harbor":
+		case "s_shipyard":
 			if (rs == null) {
-				struct = (Structure) new Harbor(center, id, town);
+				struct = (Structure) new Shipyard(center, id, town);
 			} else {
-				struct = (Structure) new Harbor(rs);
+				struct = (Structure) new Shipyard(rs);
 			}
 			break;
 		case "ti_wall":
@@ -684,14 +684,8 @@ public class Structure extends Buildable {
 		// We take the player's current position and make it the 'center' by moving the center location
 		// to the 'corner' of the structure.
 		Location savedLocation = centerLoc.clone();
+		centerLoc = repositionCenter(centerLoc, tpl.dir(), (double)tpl.size_x, (double)tpl.size_z);
 		Block centerBlock = centerLoc.getBlock();
-		
-		Resident res = CivGlobal.getResident(player);
-		if (res.chunkAlign == true) {
-			centerLoc = repositionCenterChunkAlign(centerLoc, tpl.dir(), (double)tpl.size_x, (double)tpl.size_z);
-		} else {
-			centerLoc = repositionCenterBlockAlign(centerLoc, tpl.dir(), (double)tpl.size_x, (double)tpl.size_z);
-		}
 
 		this.setTotalBlockCount(tpl.size_x*tpl.size_y*tpl.size_z);
 		// Save the template x,y,z for later. This lets us know our own dimensions.
@@ -718,6 +712,7 @@ public class Structure extends Buildable {
 		bind();
 		this.getTown().addStructure(this);
 		//Added 1.1pre1 Alpha
+		Resident res = CivGlobal.getResident(player);
 		res.undoPreview();
 	}
 	
