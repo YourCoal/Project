@@ -461,12 +461,10 @@ public class MobGrinderAsyncTask extends CivAsyncTask {
 				} else {
 					continue;
 				}
-				if (newItems.size() >= 1)
-				{
+				if (newItems.size() >= 1) {
 					//Try to add the new item to the dest chest, if we cant, oh well.
 					try {
-						for (ItemStack item : newItems)
-						{
+						for (ItemStack item : newItems) {
 							debug(mobGrinder, "Updating inventory:"+item);
 							this.updateInventory(Action.ADD, dest_inv, item);
 						}
@@ -474,7 +472,6 @@ public class MobGrinderAsyncTask extends CivAsyncTask {
 						return;
 					}
 				} else {
-
 					debug(mobGrinder, "Didn't add any items. Perhaps ["+itemID+"] is an invalid item name?");
 				}
 				break;

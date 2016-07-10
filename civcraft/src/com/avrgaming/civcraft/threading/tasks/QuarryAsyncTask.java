@@ -1,3 +1,7 @@
+/**
+ * CivCraft Created by - AVRGAMING LLC
+ * This Code Modified by - https://www.youtube.com/user/cpcole556
+ **/
 package com.avrgaming.civcraft.threading.tasks;
 
 import java.util.ArrayList;

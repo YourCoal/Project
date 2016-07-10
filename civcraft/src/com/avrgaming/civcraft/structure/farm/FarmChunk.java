@@ -1,3 +1,7 @@
+/**
+ * CivCraft Created by - AVRGAMING LLC
+ * This Code Modified by - https://www.youtube.com/user/cpcole556
+ **/
 package com.avrgaming.civcraft.structure.farm;
 
 import java.util.ArrayList;
@@ -16,7 +20,6 @@ import com.avrgaming.civcraft.components.ActivateOnBiome;
 import com.avrgaming.civcraft.components.Component;
 import com.avrgaming.civcraft.exception.InvalidBlockLocation;
 import com.avrgaming.civcraft.main.CivData;
-import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Farm;
 import com.avrgaming.civcraft.structure.Structure;
@@ -38,7 +41,7 @@ public class FarmChunk {
 	public ReentrantLock lock = new ReentrantLock();
 	
 	private ArrayList<BlockCoord> lastGrownCrops = new ArrayList<BlockCoord>();
-	private LinkedList<GrowBlock> growBlocks;
+	private LinkedList<GrowBlock> growBlocks;	
 	private Date lastGrowDate;
 	private int lastGrowTickCount;
 	private double lastChanceForLast;
@@ -94,56 +97,30 @@ public class FarmChunk {
 		return block.getLightLevel();
 	}
 	
-	public void spawnMelonOrPumpkin(BlockSnapshot bs, BlockCoord growMe, CivAsyncTask task) throws InterruptedException {
+	public void spawnMelonOrPumpkin(BlockSnapshot bs, CivAsyncTask task) throws InterruptedException {
 		//search for a free spot
 		int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
 		BlockSnapshot freeBlock = null;
-		BlockSnapshot nextBlock = null;
-		int xOff = 0;
-		int zOff = 0;
-		
-		Random rand = new Random();
-		int randChance = rand.nextInt(10);
-		if (randChance<= 7)
-			return;
-		
-		int randInt = rand.nextInt(4);
-		xOff = offset[randInt][0];
-		zOff = offset[randInt][1];
-		try {
-			switch (randInt) {
-			case 0:
-				nextBlock = bs.getRelative(xOff, 0, zOff);
-				break;
-			case 1:
-				nextBlock = bs.getRelative(xOff, 0, zOff);
-				break;
-			case 2:
-				nextBlock = bs.getRelative(xOff, 0, zOff);
-				break;
-			case 3:
-				nextBlock = bs.getRelative(xOff, 0, zOff);
-				break;
+		for (int i = 0; i < 4; i++) {
+			BlockSnapshot nextBlock;
+			try {
+				nextBlock = bs.getRelative(offset[i][0], 0, offset[i][1]);
+			} catch (InvalidBlockLocation e) {
+				// An invalid block location can occur if we try to grow 'off the chunk'
+				// this kind of growth is not valid, simply continue onward.
+				continue;
 			}
-		} catch (InvalidBlockLocation e) {
-			// An invalid block location can occur if we try to grow 'off the chunk'
-			// this kind of growth is not valid, simply continue onward.
-			return;
-		}
-		
-		if (nextBlock == null) {
-			return;
-		}
-		
-		if (nextBlock.getTypeId() == CivData.AIR) {
-			freeBlock = nextBlock;
-		}
-		
-		if ((nextBlock.getTypeId() == CivData.MELON && 
-				bs.getTypeId() == CivData.MELON_STEM) ||
-				(nextBlock.getTypeId() == CivData.PUMPKIN &&
-				bs.getTypeId() == CivData.PUMPKIN_STEM)) {
-			return;
+			
+			if (nextBlock.getTypeId() == CivData.AIR) {
+				freeBlock = nextBlock;
+			}
+			
+			if ((nextBlock.getTypeId() == CivData.MELON && 
+					bs.getTypeId() == CivData.MELON_STEM) ||
+					(nextBlock.getTypeId() == CivData.PUMPKIN &&
+					bs.getTypeId() == CivData.PUMPKIN_STEM)) {
+				return;
+			}
 		}
 		
 		if (freeBlock == null) {
@@ -151,19 +128,14 @@ public class FarmChunk {
 		}
 		
 		if (bs.getTypeId() == CivData.MELON_STEM) {
-			addGrowBlock("world", growMe.getX()+xOff, growMe.getY(), growMe.getZ()+zOff, CivData.MELON, 0x0, true);
+			addGrowBlock(Town.overworldName, freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.MELON, 0x0, true);
 		} else {
-			addGrowBlock("world", growMe.getX()+xOff, growMe.getY(), growMe.getZ()+zOff, CivData.PUMPKIN, 0x0, true);
+			addGrowBlock(Town.overworldName, freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.PUMPKIN, 0x0, true);
 		}
 		return;
 	}
 	
 	public void addGrowBlock(String world, int x, int y, int z, int typeid, int data, boolean spawn) {
-		if ((x > -64 && x < 64) && ((z > -64 && z < 64))) {
-			CivLog.debug("Didn't grow in town "+this.town.getName()+": "+x+" "+y+" "+z);
-			//Don't grow in spawn, gosh
-			return;
-		}
 		this.growBlocks.add(new GrowBlock(world, x, y, z, typeid, data, spawn));
 	}
 	
@@ -188,7 +160,7 @@ public class FarmChunk {
 			if (bs.getData() < 0x7) {
 				addGrowBlock(Town.overworldName, growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			} else if (bs.getData() == 0x7) {
-				spawnMelonOrPumpkin(bs, growMe, task);
+				spawnMelonOrPumpkin(bs, task);
 			}
 			break;
 		case CivData.COCOAPOD:	
@@ -208,21 +180,7 @@ public class FarmChunk {
 			return;
 		}
 		
-		if (this.town == null) {
-			return;
-		}
-		// Lets let a growth rate of 100% mean 1 crop grows every 10 ticks(1/2 second)
-		// Over 100% means we do more than 1 crop, under 100% means we check that probability.
-		// So for example, if we have a 120% growth rate, every 10 ticks 1 crop *always* grows,
-		// and another has a 20% chance to grow.
-		double effectiveGrowthRate = 1.0;
-		try {
-			effectiveGrowthRate = (double)this.town.getGrowth().total / (double)100;
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			CivLog.debug("Farm at location" +this.getCoord()+" in town "+this.getTown().getName()+" Growth Error");
-		}
-		
+		double effectiveGrowthRate = (double)this.town.getGrowth().total / (double)100;
 		for (Component comp : this.getFarm().attachedComponents) {
 			if (comp instanceof ActivateOnBiome) {
 				ActivateOnBiome ab = (ActivateOnBiome)comp;
@@ -233,89 +191,62 @@ public class FarmChunk {
 		}
 		
 		this.getFarm().setLastEffectiveGrowth(effectiveGrowthRate);
-		//int crops_per_growth_tick = (int)CivSettings.getIntegerStructure("farm.grows_per_tick");
-		//int numberOfCropsToGrow = (int)(effectiveGrowthRate * crops_per_growth_tick); //Since this is a double, 1.0 means 100% so int cast is # of crops
-		//XXX New method of growing crops now.
 		int chanceForLast = (int) (this.town.getGrowth().total % 100);
-		int numberOfCropsToGrow = 0;
+		int cropsToGrow = 0;
 		
-		//Original method 1.1pre3/4
+		//XXX New Method 1.1pre3/4
 		if (this.town.getGrowth().total >= 0) {
-			if (this.town.getGrowth().total <= 200) {
-				numberOfCropsToGrow = 4;
-			} else if (this.town.getGrowth().total <= 400) {
-				numberOfCropsToGrow = 6;
-			} else if (this.town.getGrowth().total <= 600) {
-				numberOfCropsToGrow = 8;
-			} else if (this.town.getGrowth().total <= 800) {
-				numberOfCropsToGrow = 10;
+			if (this.town.getGrowth().total <= 250) {
+				cropsToGrow = 4;
+			} else if (this.town.getGrowth().total <= 500) {
+				cropsToGrow = 5;
+			} else if (this.town.getGrowth().total <= 750) {
+				cropsToGrow = 6;
 			} else if (this.town.getGrowth().total <= 1000) {
-				numberOfCropsToGrow = 12;
-			} else if (this.town.getGrowth().total >= 1200) {
-				numberOfCropsToGrow = 16;
+				cropsToGrow = 7;
+			} else if (this.town.getGrowth().total <= 1500) {
+				cropsToGrow = 8;
+			} else if (this.town.getGrowth().total <= 2000) {
+				cropsToGrow = 9;
+			} else if (this.town.getGrowth().total <= 2500) {
+				cropsToGrow = 10;
 			} else {
-				numberOfCropsToGrow = 2;
+				cropsToGrow = 4;
 			}
 		}
 		
-/*		//Method #2 1.1pre5 (DOESN'T LIKE LEVELS)
-		if (this.farm.getLevel() >= 1) { //Town lvl 1
-			int min = 1;
-			int max = 4;
-			Random rand = new Random();
-			int toGrow = rand.nextInt((max - min)) + min;
-			numberOfCropsToGrow = toGrow;
-		} else if (this.farm.getLevel() >= 2) { //Town lvl 3
-			int min = 2;
-			int max = 5;
-			Random rand = new Random();
-			int toGrow = rand.nextInt((max - min)) + min;
-			numberOfCropsToGrow = toGrow;
-		} else if (this.farm.getLevel() >= 3) { //Town lvl 5
-			int min = 3;
-			int max = 6;
-			Random rand = new Random();
-			int toGrow = rand.nextInt((max - min)) + min;
-			numberOfCropsToGrow = toGrow;
-		} else if (this.farm.getLevel() >= 4) { //Town lvl 7
-			int min = 4;
-			int max = 7;
-			Random rand = new Random();
-			int toGrow = rand.nextInt((max - min)) + min;
-			numberOfCropsToGrow = toGrow;
-		} else if (this.farm.getLevel() >= 5) { //town level 9
-			int min = 5;
-			int max = 8;
-			Random rand = new Random();
-			int toGrow = rand.nextInt((max - min)) + min;
-			numberOfCropsToGrow = toGrow;
-		} else { //If level is unknown or we forgot to add a new one, return 1.
-			numberOfCropsToGrow = 1;
-		}*/
+		if (this.getTown().getCiv().hasTechnology("tech_civil_service")) {
+			cropsToGrow *=2;
+		}
 		
+		if (this.getTown().getCiv().hasTechnology("tech_fertilizer")) {
+			cropsToGrow *=2;
+		}
 		
 		this.lastGrownCrops.clear();
-		this.lastGrowTickCount = numberOfCropsToGrow;
+		this.lastGrowTickCount = cropsToGrow;
 		this.lastChanceForLast = chanceForLast;
 		Calendar c = Calendar.getInstance();
 		this.lastGrowDate = c.getTime();
 		this.growBlocks = new LinkedList<GrowBlock>();
+		
 		if (this.cropLocationCache.size() == 0) {
 			return;
 		}
 		
 		// Process number of crops that will grow this time. Select one at random
 		Random rand = new Random();
-		for (int i = 0; i < numberOfCropsToGrow; i++) {
+		for (int i = 0; i < cropsToGrow; i++) {
 			BlockCoord growMe = this.cropLocationCache.get(rand.nextInt(this.cropLocationCache.size()));
+			
 			int bsx = growMe.getX() % 16;
 			int bsy = growMe.getY();
-			int bsz = growMe.getZ() % 16;
+			int bsz  = growMe.getZ() % 16;
 			
 			BlockSnapshot bs = new BlockSnapshot(bsx, bsy, bsz, snapshot);
 			this.lastGrownCrops.add(growMe);
 			growBlock(bs, growMe, task);
-			growMe.getBlock().getWorld().playEffect(growMe.getLocation(), Effect.SMOKE, 128);
+			growMe.getBlock().getWorld().playEffect(growMe.getLocation(), Effect.SMOKE, 64);
 		}
 		
 		if (chanceForLast != 0) {
@@ -323,14 +254,10 @@ public class FarmChunk {
 			this.lastRandomInt = randInt;
 			if (randInt < chanceForLast) {
 				BlockCoord growMe = this.cropLocationCache.get(rand.nextInt(this.cropLocationCache.size()));
-				int bsx = growMe.getX() % 16;
-				int bsy = growMe.getY();
-				int bsz = growMe.getZ() % 16;
-				
-				BlockSnapshot bs = new BlockSnapshot(bsx, bsy, bsz, snapshot);
+				BlockSnapshot bs = new BlockSnapshot(growMe.getX() % 16, growMe.getY(), growMe.getZ() % 16, snapshot);
 				this.lastGrownCrops.add(growMe);
 				growBlock(bs, growMe, task);
-				growMe.getBlock().getWorld().playEffect(growMe.getLocation(), Effect.SMOKE, 128);
+				growMe.getBlock().getWorld().playEffect(growMe.getLocation(), Effect.SMOKE, 64);
 			}
 		}
 		task.growBlocks(this.growBlocks, this);
@@ -405,24 +332,24 @@ public class FarmChunk {
 		this.lastRandomInt = lastRandomInt;
 	}
 	
-//	public void addToCropLocationCache(Block b) {
-	//	this.cropLocationCache.put(new BlockCoord(b), (int) b.getData());
-	//}
-	
 	public void populateCropLocationCache() {
 		this.lock.lock();
 		try {
 			this.cropLocationCache.clear();
 			BlockSnapshot bs = new BlockSnapshot();
+			
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
-					for (int y = 0; y < 256; y++) {
+					for (int y = 0; y < 256; y++) {					
+						
 						//Block nextBlock = this.struct.getCorner().getBlock().getChunk().getBlock(x, y, z);
 						//BlockCoord bcoord = new BlockCoord(nextBlock);
 						 bs.setFromSnapshotLocation(x, y, z, snapshot);
-						 if (CivData.canGrow(bs)) {
-							this.cropLocationCache.add(new BlockCoord(snapshot.getWorldName(), (snapshot.getX() << 4) + bs.getX(),(bs.getY()),(snapshot.getZ() << 4) + bs.getZ()));
-						}				   
+						
+						if (CivData.canGrow(bs)) {
+							this.cropLocationCache.add(new BlockCoord(snapshot.getWorldName(), (snapshot.getX() << 4) + bs.getX(),
+									bs.getY(), (snapshot.getZ() << 4) + bs.getZ()));
+						}					
 					}
 				}
 			}

@@ -22,10 +22,10 @@ import com.avrgaming.civcraft.util.ItemManager;
 
 public class Farm extends Structure {
 	
-	public static final long GROW_RATE = (int)CivSettings.getIntegerStructure("farm.grow_tick_rate");
-	public static final int CROP_GROW_LIGHT_LEVEL = 9;
-	public static final int MUSHROOM_GROW_LIGHT_LEVEL = 12;
-	public static final int MAX_SUGARCANE_HEIGHT = 3;
+	public static final long GROW_TIME = (int)CivSettings.getIntegerStructure("farm.grow_time");
+//	public static final int CROP_GROW_LIGHT_LEVEL = 9;
+//	public static final int MUSHROOM_GROW_LIGHT_LEVEL = 12;
+//	public static final int MAX_SUGARCANE_HEIGHT = 3;
 	
 	private FarmChunk fc = null;
 	private double lastEffectiveGrowthRate = 0;
@@ -33,18 +33,10 @@ public class Farm extends Structure {
 	protected Farm(Location center, String id, Town town) throws CivException {
 		super(center, id, town);
 	}
-	
+
 	public Farm(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 		build_farm(this.getCorner().getLocation());
-	}
-	
-	public void removeFarmChunk() throws SQLException {
-		if (this.getCorner() != null) {
-			ChunkCoord coord = new ChunkCoord(this.getCorner().getLocation());
-			CivGlobal.removeFarmChunk(coord);
-			CivGlobal.getSessionDB().delete_all(getSessionKey());
-		}
 	}
 	
 	@Override
@@ -58,21 +50,20 @@ public class Farm extends Structure {
 	}
 	
 	@Override
-	public boolean canRestoreFromTemplate() {
-		return false;
-	}
-	
-	//Added 1.1pre5
-	@Override
 	public String getDynmapDescription() {
 		return null;
+	}
+	
+	@Override
+	public boolean canRestoreFromTemplate() {
+		return false;
 	}
 	
 	@Override
 	public String getMarkerIconName() {
 		return "basket";
 	}
-
+	
 	public void build_farm(Location centerLoc) {
 		// A new farm, add it to the farm chunk table ...
 		Chunk chunk = centerLoc.getChunk();
@@ -80,11 +71,9 @@ public class Farm extends Structure {
 		CivGlobal.addFarmChunk(fc.getCoord(), fc);
 		this.fc = fc;
 	}
-
+	
 	public static boolean isBlockControlled(Block b) {
 		switch (ItemManager.getId(b)) {
-		//case CivData.BROWNMUSHROOM:
-		//case CivData.REDMUSHROOM:
 		case CivData.COCOAPOD:
 		case CivData.MELON:
 		case CivData.MELON_STEM:
@@ -94,14 +83,14 @@ public class Farm extends Structure {
 		case CivData.CARROTS:
 		case CivData.POTATOES:
 		case CivData.NETHERWART:
-	//	case CivData.SUGARCANE:
 			return true;
 		}
 		return false;
 	}
-
+	
 	public void saveMissedGrowths() {
 		class AsyncSave implements Runnable {
+			
 			Farm farm;
 			int missedTicks;
 			
@@ -113,7 +102,6 @@ public class Farm extends Structure {
 			@Override
 			public void run() {
 				ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getSessionKey());
-				
 				if (entries == null || entries.size() == 0) {
 					if (missedTicks > 0) {
 						farm.sessionAdd(getSessionKey(), ""+missedTicks);
@@ -127,7 +115,6 @@ public class Farm extends Structure {
 					CivGlobal.getSessionDB().update(entries.get(0).request_id, getSessionKey(), ""+missedTicks);
 				}
 			}
-			
 		}
 		TaskMaster.asyncTask(new AsyncSave(this, this.fc.getMissedGrowthTicks()), 0);
 	}
@@ -161,7 +148,7 @@ public class Farm extends Structure {
 		}
 		TaskMaster.asyncTask(new AsyncTask(missedGrowths), 0);
 	}
-
+	
 	public void setLastEffectiveGrowth(double effectiveGrowthRate) {
 		this.lastEffectiveGrowthRate = effectiveGrowthRate;
 	}

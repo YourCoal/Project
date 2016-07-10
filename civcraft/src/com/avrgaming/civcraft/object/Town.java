@@ -166,6 +166,7 @@ public class Town extends SQLObject {
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
 	/* kind of a hacky way to save level information between build undo calls */
+	public int saved_lumber_mill_level = 1;
 	public int saved_forge_level = 1;
 	
 	public int saved_bank_level = 1;

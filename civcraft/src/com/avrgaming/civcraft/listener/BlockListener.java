@@ -1,11 +1,7 @@
 package com.avrgaming.civcraft.listener;
 
-import gpl.HorseModifier;
-
 import java.util.HashSet;
 import java.util.Random;
-
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -107,6 +103,9 @@ import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
+
+import gpl.HorseModifier;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
 
 public class BlockListener implements Listener {
 	
@@ -578,49 +577,40 @@ public class BlockListener implements Listener {
 //    	return (id >= CivData.WATER && id <= CivData.LAVA);
 //    }
     
-    private static HashSet<BlockCoord> stopCobbleTasks = new HashSet<BlockCoord>();
+	private static HashSet<BlockCoord> stopCobbleTasks = new HashSet<BlockCoord>();
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnBlockFromToEvent(BlockFromToEvent event) {
 		/* Disable cobblestone generators. */
 		int id = ItemManager.getId(event.getBlock());
-	    if(id >= CivData.WATER && id <= CivData.LAVA) {
-	        Block b = event.getToBlock();
-	        bcoord.setFromLocation(b.getLocation());
-
-	        int toid = ItemManager.getId(b);
-	        if(toid == 0) {
-	            BlockCoord other = generatesCobble(id, b);
-	        	if(other != null) {
-	            	//BlockCoord d = new BlockCoord(event.getToBlock());
-//	            	BlockCoord fromCoord = new BlockCoord(event.getBlock());
-	            	event.setCancelled(true);
-
-	            	class SyncTask implements Runnable {
-	            		BlockCoord block;
-
-	            		public SyncTask(BlockCoord block) {
-	            			this.block = block;
-	            		}
-
+		if(id >= CivData.WATER && id <= CivData.LAVA) {
+			Block b = event.getToBlock();
+			bcoord.setFromLocation(b.getLocation());
+			int toid = ItemManager.getId(b);
+			if(toid == 0) {
+				BlockCoord other = generatesCobble(id, b);
+				if(other != null) {
+					event.setCancelled(true);
+					class SyncTask implements Runnable {
+						BlockCoord block;
+						
+						public SyncTask(BlockCoord block) {
+							this.block = block;
+						}
+						
 						@Override
 						public void run() {
 							ItemManager.setTypeIdAndData(block.getBlock(), CivData.SANDSTONE, (byte)0, true);
 							stopCobbleTasks.remove(block);
+							}
 						}
-	            	}
-
-	            	if (!stopCobbleTasks.contains(other)) {
-	            		stopCobbleTasks.add(other);
-	            		TaskMaster.syncTask(new SyncTask(other), 2);
-	            	}
-
-//	            	if (!stopCobbleTasks.contains(fromCoord)) {
-//	            		stopCobbleTasks.add(fromCoord);
-//	            		TaskMaster.syncTask(new SyncTask(fromCoord));
-//	            	}
-	            }
-	        }
-	    }
+					
+					if (!stopCobbleTasks.contains(other)) {
+						stopCobbleTasks.add(other);
+						TaskMaster.syncTask(new SyncTask(other), 2);
+					}
+				}
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -1843,5 +1833,4 @@ public class BlockListener implements Listener {
 	public void onEntityPortalCreate(EntityCreatePortalEvent event) {
 		event.setCancelled(true);
 	}
-
 }

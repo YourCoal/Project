@@ -75,11 +75,15 @@ public class CivData {
 	public static final int COARSE_DIRT = 1;
 	public static final int PODZOL = 2;
 	
+	public static final int SAPLING = 6;
+	
 	public static final int EMERALD_ORE = 129;
 	
 	public static final int COBBLESTONE_WALL = 139;
 	
 	public static final int QUARTZ_BLOCK = 155;
+	
+	public static final int APPLE = 260;
 	
 //	public static final int LAPIS = ItemManager.getMaterialData(Material.INK_SACK, 4);
 	

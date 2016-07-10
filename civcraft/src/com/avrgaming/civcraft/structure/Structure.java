@@ -1,21 +1,7 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
+/**
+ * CivCraft Created by - AVRGAMING LLC
+ * This Code Modified by - https://www.youtube.com/user/cpcole556
+ **/
 package com.avrgaming.civcraft.structure;
 
 import java.io.IOException;
@@ -79,8 +65,15 @@ public class Structure extends Buildable {
 	 */
 	private static Structure _newStructure(Location center, String id, Town town, ResultSet rs) throws CivException, SQLException {
 		Structure struct;
-		
 		switch (id) {
+		case "im_lumber_mill":
+			if (rs == null) {
+				struct = (Structure) new LumberMill(center, id, town);
+			} else {
+				struct = (Structure) new LumberMill(rs);
+			}
+			break;
+		
 		case "s_bank":
 			if (rs == null) {
 				struct = (Structure) new Bank(center, id, town);
@@ -583,7 +576,7 @@ public class Structure extends Buildable {
 				this.unbindStructureBlocks();
 				if (this instanceof Farm) {
 					Farm farm = (Farm)this;
-					farm.removeFarmChunk();
+					farm.delete();
 				}
 			} else {
 				CivLog.debug("Delete skip Undo! "+this.getDisplayName());

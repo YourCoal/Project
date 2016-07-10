@@ -571,25 +571,10 @@ public abstract class Buildable extends SQLObject {
 	//XXX Chunk Align like normal
 	public static Location repositionCenterStaticChunkAlign(Location center, ConfigBuildableInfo info, String dir, double x_size, double z_size) throws CivException {
 		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
-		// Reposition tile improvements
-		if (ConfigBuildableInfo.force_chunk_align == true) {
-			if (dir.equalsIgnoreCase("east")) {				
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);				
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
+		
+//		if (ConfigBuildableInfo.force_chunk_align == true) {
+		if (info.tile_improvement) {
+			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else {
 			if (dir.equalsIgnoreCase("east")) {				
 				loc.setZ(loc.getZ() - (z_size / 2));
@@ -623,25 +608,10 @@ public abstract class Buildable extends SQLObject {
 	//XXX New option for players to block align, 1.2pre1
 	public static Location repositionCenterStaticBlockAlign(Location center, ConfigBuildableInfo info, String dir, double x_size, double z_size) throws CivException {
 		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
-		// Reposition tile improvements
-		if (ConfigBuildableInfo.force_chunk_align == true) {
-			if (dir.equalsIgnoreCase("east")) {				
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);				
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
+		
+//		if (ConfigBuildableInfo.force_chunk_align == true) {
+		if (info.tile_improvement) {
+			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else {
 			if (dir.equalsIgnoreCase("east")) {				
 				loc.setZ(loc.getZ() - (z_size / 2));
@@ -680,24 +650,9 @@ public abstract class Buildable extends SQLObject {
 //		centerLoc = repositionCenterStaticChunkAlign(centerLoc, info, tpl.dir(), tpl.size_x, tpl.size_z);
 //	}
 		
-		if (ConfigBuildableInfo.force_chunk_align == true) {
-			if (dir.equalsIgnoreCase("east")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
+//		if (ConfigBuildableInfo.force_chunk_align == true) {
+		if (this.isTileImprovement()) {
+			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else {
 			if (dir.equalsIgnoreCase("east")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
@@ -733,24 +688,9 @@ public abstract class Buildable extends SQLObject {
 	protected Location repositionCenterBlockAlign(Location center, String dir, double x_size, double z_size) throws CivException {
 		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
 		
-		if (ConfigBuildableInfo.force_chunk_align == true) {
-			if (dir.equalsIgnoreCase("east")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc.setZ(loc.getZ() - (z_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc.setX(loc.getX() - (x_size / 2));
-				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
+//		if (ConfigBuildableInfo.force_chunk_align == true) {
+		if (this.isTileImprovement()) {
+			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else {
 			if (dir.equalsIgnoreCase("east")) {
 				loc.setZ(loc.getZ() - (z_size / 2));

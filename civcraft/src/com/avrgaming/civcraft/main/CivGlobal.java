@@ -187,6 +187,7 @@ public class CivGlobal {
 	public static boolean trommelsEnabled = true;
 	public static boolean quarriesEnabled = true;
 	public static boolean fisheryEnabled = true;
+	public static boolean lumberMillsEnabled = true;
 	public static boolean mobGrinderEnabled = true;
 	public static boolean towersEnabled = true;
 	public static boolean growthEnabled = true;
