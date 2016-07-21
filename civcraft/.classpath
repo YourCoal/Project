@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/bonecp-0.8.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/bukkit-1.8.8-R0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/craftbukkit-1.8.8.jar"/>
@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/HeroChat.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/json.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/junit-4.11.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/MobLib-1.7.10.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/NoCheatPlus.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/slf4j-api-1.7.5.jar"/>
@@ -22,5 +21,5 @@
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/VanishNoPacket.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/Vault.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/jars/WorldBorder.jar"/>
-	<classpathentry kind="output" path="bin1"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

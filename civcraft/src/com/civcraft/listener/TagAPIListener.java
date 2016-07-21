@@ -1,0 +1,16 @@
+/** CivCraft by AVRGAMING LLC -- Modified by - https://www.youtube.com/YourCoalMC**/
+package com.civcraft.listener;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.kitteh.tag.AsyncPlayerReceiveNameTagEvent;
+
+import com.civcraft.main.CivGlobal;
+
+public class TagAPIListener implements Listener {
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onNameTag(AsyncPlayerReceiveNameTagEvent event) {
+		event.setTag(CivGlobal.updateTag(event.getNamedPlayer(), event.getPlayer()));
+	}
+}

@@ -1,14 +1,15 @@
+/** CivCraft by AVRGAMING LLC -- Modified by - https://www.youtube.com/YourCoalMC**/
 package pvptimer;
 
 import java.util.Date;
 
-import com.avrgaming.civcraft.config.CivSettings;
-import com.avrgaming.civcraft.exception.InvalidConfiguration;
-import com.avrgaming.civcraft.main.CivGlobal;
-import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.object.Resident;
-import com.avrgaming.civcraft.util.CivColor;
-import com.avrgaming.civcraft.util.DateUtil;
+import com.civcraft.config.CivSettings;
+import com.civcraft.exception.InvalidConfiguration;
+import com.civcraft.main.CivGlobal;
+import com.civcraft.main.CivMessage;
+import com.civcraft.object.Resident;
+import com.civcraft.util.CivColor;
+import com.civcraft.util.DateUtil;
 
 public class PvPTimer implements Runnable {
 
@@ -26,7 +27,7 @@ public class PvPTimer implements Runnable {
 				if (DateUtil.isAfterMins(new Date(resident.getRegistered()), mins)) {
 				//if (DateUtil.isAfterSeconds(new Date(resident.getRegistered()), mins)) {
 					resident.setisProtected(false);
-					CivMessage.send(resident, CivColor.LightGray+CivSettings.localize.localizedString("pvpTimerEnded"));
+					CivMessage.send(resident, CivColor.LightGray+"Your PvP protection has expired.");
 				}
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();

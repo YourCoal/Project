@@ -7,13 +7,8 @@ global:
    # Hour at which daily upkeep occurs.
    daily_upkeep_hour: 20
 
-   # How often the 'hourly tick' should process in 'seconds'
-   # To speed up the game, you could cut this number in half
    hourly_tick: 3600
 
-   # The Starting kit for all new players
-   # Feel free to customize as you see fit, such as removing the starting 'mat_found_camp' item.
-   # Every item in this list gets soulbound.
    start_kit:
         - '270:1'
         - '271:1'
@@ -23,7 +18,6 @@ global:
         - '366:10'
         - '345:1'
         - 'mat_tutorial_book:1'
-        - 'mat_found_camp:1'
 
    # Amount of mins PvP timer remains active after first login.
    pvp_timer: 120
@@ -32,19 +26,19 @@ global:
    regen_spawn_hour: 0
 
    # Exchange rate you get using /resident exchange instead of using a bank.
-   exchange_rate: 0.4
+   exchange_rate: 0.3
 
    starting_coins: 250.0
 
    # Number of hours that must pass before a resident can join a different civ
-   join_civ_cooldown: 12
+   join_civ_cooldown: 24
 
    # Distance things must be built away from spawn.
    distance_from_spawn: 1000.0
 
    # max distance players can be apart for trading
    max_trade_distance: 10.0
-
+    
    # catalyst free amount
    free_catalyst_amount: 3
 
@@ -62,25 +56,54 @@ global:
 
    # Casual mode, war disabled. Wonders for all. No spies.
    casual_mode: 'false'
-
+   
    # Attempt to validate structures to make sure they're not floating.
    structure_validation: 'true'
 
-   # Have speed checks only on chunk changes. Default: true
-   # This means that players on roads need to move across a chunk to gain the movement bonus
-   # This used to be false, but the performance gain was too great to leave it as such.
-   # If this feature annoys your players, turn it off at your own risk of poor performance.
-   speed_check_chunks: true
+platinum:
+### DAILY EVENTS ######
+      # amount of plat ervry day
+    - name: 'loginDaily'
+      amount: 5
+      occurs: 'daily'
 
-   # Minimum Build Height for Structures, Walls, and Roads. Default: 1
-   min_build_height: 1
+      # platinum for being in town during the upkeep tick
+    - name: 'inTownDuringUpkeep'
+      amount: 5
+      occurs: 'daily'
 
+### SPAM EVENTS (can happen whenever) ###
+
+    - name: 'winningWar'
+      amount: 25
+      occurs: 'any'
+    
+    - name: 'craft100Items'
+      amount: 1
+      occurs: 'any'
+
+    - name: 'randomEventSuccess'
+      amount: 25
+      occurs: 'any'
+    
+#### ACHEIVEMENTS (only once) ####
+     # amount of plat on first login with verification.
+    - name: 'loginFirstVerified'
+      amount: 50
+      occurs: 'once'
+    
+    - name: 'buildCamp'
+      amount: 150
+      occurs: 'once'
+    
+    - name: 'buildCiv'
+      amount: 200
+      occurs: 'once'
 civ:
     # Amount of coins required to start a civilization
-    # Unused anyways
-    # cost: 100000.0
+    cost: 100000.0
     
-    # Amount of static upkeep civ's pay for each new town(minus the capitol)
+    # Amount of static upkeep civ's pay for each new town(minus the capital)
     town_upkeep: 500.0
 
     # Formula for distance upkeep is:
@@ -109,9 +132,7 @@ civ:
     min_distance: 15
 
     # Number of days after a civilization is conquered that it must wait before declaring revolution
-    # This used to be longer. Reducing to help spur actual viability in starting a revolution!
-    # Default: 2
-    revolution_cooldown: 2
+    revolution_cooldown: 7
 
     # Number of days a leader must be inactive before being able to be reclaimed
     leader_inactive_days: 7
@@ -126,14 +147,10 @@ civ:
     gift_cooldown_hours: 48
 
 ore_rates:
-    coal: 10.0
     iron: 20.0
     gold: 200.0
     diamond: 400.0
     emerald: 500.0
-    quartz: 300.0
-    lapis: 100.0
-    redstone: 100.0
 
 # These are end condition configurations...
 end_conditions:
@@ -145,11 +162,11 @@ end_conditions:
       wonders: '1'
       days_held: '21'
 
-    - id: 'end_domination'
-      class: 'EndConditionDomination'
-      name: 'Domination'
-      percent_captured: '0.85'
-      percent_captured_with_wonder: '0.8'
+    - id: 'end_conquest'
+      class: 'EndConditionConquest'
+      name: 'Conquest'
+      percent_captured: '0.75'
+      percent_captured_with_wonder: '0.50'
       days_after_start: '28'
       days_held: '21'
     

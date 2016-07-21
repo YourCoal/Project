@@ -1,4 +1,6 @@
+/** CivCraft by AVRGAMING LLC -- Modified by - https://www.youtube.com/YourCoalMC**/
 package gpl;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +13,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
-import com.avrgaming.civcraft.util.ItemManager;
+import com.civcraft.lorestorage.LoreCraftableMaterial;
+import com.civcraft.util.ItemManager;
 
 /*
  * Original serializer by Phil2812 (https://forums.bukkit.org/threads/serialize-inventory-to-single-string-and-vice-versa.92094/)
