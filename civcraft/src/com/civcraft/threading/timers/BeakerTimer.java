@@ -55,8 +55,5 @@ public class BeakerTimer extends CivAsyncTask {
 				e.printStackTrace();
 			}
 		}
-		
-		
 	}
-
 }

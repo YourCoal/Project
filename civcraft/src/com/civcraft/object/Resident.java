@@ -1192,7 +1192,7 @@ public class Resident extends SQLObject {
 		long cooldownTime;
 		int cooldownHours;
 		try {
-			cooldownHours = CivSettings.getInteger(CivSettings.civConfig, "global.join_civ_cooldown");
+			cooldownHours = CivSettings.getInteger(CivSettings.residentConfig, "join_civ_cooldown");
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 			return;

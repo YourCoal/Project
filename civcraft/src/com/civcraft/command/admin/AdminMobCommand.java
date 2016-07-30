@@ -48,7 +48,6 @@ public class AdminMobCommand extends CommandBase {
 			mob.entity.getBukkitEntity().remove();
 			count++;
 		}
-		
 		CivMessage.sendSuccess(player, "Removed "+count+ " mobs of type "+name);
 	}
 

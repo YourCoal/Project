@@ -120,15 +120,27 @@ public class AdminCommand extends CommandBase {
 	public static Inventory spawnInventory = null; 
 	public void items_cmd() throws CivException {
 		Player player = getPlayer();
-		
 		if (spawnInventory == null) {
 			spawnInventory = Bukkit.createInventory(player, LoreGuiItem.MAX_INV_SIZE, "Admin Item Spawn");
-			
 			/* Build the Category Inventory. */
 			for (ConfigMaterialCategory cat : ConfigMaterialCategory.getCategories()) {
-				ItemStack infoRec = LoreGuiItem.build(cat.name, 
-						ItemManager.getId(Material.WRITTEN_BOOK), 
-						0, 
+				int identifier;
+				if (cat.name.contains("Fish")) {
+					identifier = ItemManager.getId(Material.RAW_FISH);
+				} else if (cat.name.contains("Catalyst")) {
+					identifier = ItemManager.getId(Material.BOOK);
+				} else if (cat.name.contains("Gear")) {
+					identifier = ItemManager.getId(Material.IRON_SWORD);
+				} else if (cat.name.contains("Materials")) {
+					identifier = ItemManager.getId(Material.WOOD_STEP);
+				} else if (cat.name.contains("Tools")) {
+					identifier = ItemManager.getId(Material.IRON_SPADE);
+				} else if (cat.name.contains("Eggs")) {
+					identifier = ItemManager.getId(Material.MONSTER_EGG);
+				} else {
+					identifier = ItemManager.getId(Material.WRITTEN_BOOK);
+				}
+				ItemStack infoRec = LoreGuiItem.build(cat.name, identifier, 0, 
 						CivColor.LightBlue+cat.materials.size()+" Items",
 						CivColor.Gold+"<Click To Open>");
 						infoRec = LoreGuiItem.setAction(infoRec, "OpenInventory");

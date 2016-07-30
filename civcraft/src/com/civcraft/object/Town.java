@@ -46,6 +46,7 @@ import com.civcraft.permission.PermissionGroup;
 import com.civcraft.randomevents.RandomEvent;
 import com.civcraft.road.Road;
 import com.civcraft.structure.Buildable;
+import com.civcraft.structure.Mine;
 import com.civcraft.structure.Structure;
 import com.civcraft.structure.TownHall;
 import com.civcraft.structure.TradeOutpost;
@@ -131,7 +132,7 @@ public class Town extends SQLObject {
 	public boolean defeated = false;
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
-	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
+	/* kind of a hacky way to save the bank's level information between build undo calls */
 	public int saved_bank_level = 1;
 	public double saved_bank_interest_amount = 0;
 	
@@ -354,7 +355,7 @@ public class Town extends SQLObject {
 		}
 		this.cultureChunks = null;
 		
-		//TODO remove protected blocks?
+		//remove protected blocks?
 		
 		/* Remove any related SessionDB entries */
 		CivGlobal.getSessionDB().deleteAllForTown(this);
@@ -641,114 +642,6 @@ public class Town extends SQLObject {
 			}
 		}
 		return;
-	}
-
-
-	public double getExtraHammers() {
-		return extraHammers;
-	}
-
-
-	public void setExtraHammers(double extraHammers) {
-		this.extraHammers = extraHammers;
-	}
-	
-	public AttrSource getHammerRate() {
-		double rate = 1.0;
-		HashMap<String, Double> rates = new HashMap<String, Double>();
-		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
-
-		/* Happiness */
-		double newRate = rate * state.hammer_rate;
-		rates.put("Happiness", newRate - rate);
-		rate = newRate;
-		
-		/* Government */
-		newRate = rate * getGovernment().hammer_rate;
-		rates.put("Government", newRate - rate);
-		rate = newRate;
-		
-		double randomRate = RandomEvent.getHammerRate(this);
-		newRate = rate * randomRate;
-		rates.put("Random Events", newRate - rate);
-		rate = newRate;
-		
-		/* Captured Town Penalty */
-		if (this.motherCiv != null) {
-			try {
-				newRate = rate * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");	
-				rates.put("Captured Penalty", newRate - rate);
-				rate = newRate;
-				
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
-		return new AttrSource(rates, rate, null);
-	}
-	
-	public AttrSource getHammers() {
-		double total = 0;
-		
-		AttrCache cache = this.attributeCache.get("HAMMERS");
-		if (cache == null) {
-			cache = new AttrCache();
-			cache.lastUpdate = new Date();
-		} else {
-			Date now = new Date();
-			if (now.getTime() > (cache.lastUpdate.getTime() + ATTR_TIMEOUT_SECONDS*1000)) {
-				cache.lastUpdate = now;
-			} else {
-				return cache.sources;
-			}
-		}
-	
-		HashMap<String, Double> sources = new HashMap<String, Double>();
-				
-		/* Wonders and Goodies. */
-		double wonderGoodies = this.getBuffManager().getEffectiveInt(Buff.CONSTRUCTION);
-		sources.put("Wonders/Goodies", wonderGoodies);
-		total += wonderGoodies;
-		
-		double cultureHammers = this.getHammersFromCulture();
-		sources.put("Culture Biomes", cultureHammers);
-		total += cultureHammers; 
-		
-		/* Grab happiness generated from structures with components. */
-		double structures = 0;
-		for (Structure struct : this.structures.values()) {
-			for (Component comp : struct.attachedComponents) {
-				if (comp instanceof AttributeBase) {
-					AttributeBase as = (AttributeBase)comp;
-					if (as.getString("attribute").equalsIgnoreCase("HAMMERS")) {
-						structures += as.getGenerated();
-					}
-				}
-			}
-		}
-
-		total += structures;
-		sources.put("Structures", structures);
-		
-		
-		sources.put("Base Hammers", this.baseHammers);
-		total += this.baseHammers;
-		
-		AttrSource rate = getHammerRate();
-		total *= rate.total;
-		
-		if (total < this.baseHammers) {
-			total = this.baseHammers;
-		}
-		
-		AttrSource as = new AttrSource(sources, total, rate);
-		cache.sources = as;
-		this.attributeCache.put("HAMMERS", cache);
-		return as;
-	}
-
-	public void setHammerRate(double hammerRate) {
-		this.baseHammers = hammerRate;
 	}
 	
 	public static Town newTown(Resident resident, String name, Civilization civ, boolean free, boolean capitol, 
@@ -1600,7 +1493,7 @@ public class Town extends SQLObject {
 		
 		try {
 			/*
-			 * XXX if the template is null we need to just get the template first. 
+			 * if the template is null we need to just get the template first. 
 			 * This should only happen for capitols and town halls since we need to 
 			 * Make them use the structure preview code and they don't yet
 			 */
@@ -1647,7 +1540,7 @@ public class Town extends SQLObject {
 				}
 			}
 			
-			//TODO fix this dependency nightmare! (the center is moved in build and needs to be resaved)
+			//fix this dependency nightmare! (the center is moved in build and needs to be resaved)
 	//	} catch (SQLException e) {
 	//		e.printStackTrace();
 	//		throw new CivException("Internal database error");
@@ -1919,7 +1812,7 @@ public class Town extends SQLObject {
 				}
 			}
 		}
-		/* XXX TODO convert this into a 'source' rate so it can be displayed properly. */
+		/* convert this into a 'source' rate so it can be displayed properly. */
 		rate += fromStructures;
 		
 		double additional = rate*this.getBuffManager().getEffectiveDouble(Buff.TRADE);
@@ -2180,7 +2073,7 @@ public class Town extends SQLObject {
 	}
 
 	public int getUnitTypeCount(String id) {
-		//TODO find unit limits.
+		//find unit limits.
 		return 0;
 	}
 	
@@ -2707,7 +2600,7 @@ public class Town extends SQLObject {
 		total += randomEvent;
 		sources.put("Random Events", randomEvent);
 		
-		//TODO Governments
+		//Governments
 
 		AttrSource as = new AttrSource(sources, total, null);
 		cache.sources = as;
@@ -2813,8 +2706,8 @@ public class Town extends SQLObject {
 		}
 		
 		
-		//TODO Spy Missions
-		//TODO Governments
+		//Spy Missions
+		//Governments
 
 		if (total < 0) {
 			total = 0;
@@ -3147,7 +3040,120 @@ public class Town extends SQLObject {
 	public Collection<Buildable> getDisabledBuildables() {
 		return this.disabledBuildables.values();
 	}
+	
+	
+	
+	
+	//XXX Hammers
+	public double getExtraHammers() {
+		return extraHammers;
+	}
 
 
-
+	public void setExtraHammers(double extraHammers) {
+		this.extraHammers = extraHammers;
+	}
+	
+	public void setHammerRate(double hammerRate) {
+		this.baseHammers = hammerRate;
+	}
+	
+	public AttrSource getHammerRate() {
+		double rate = 1.0;
+		HashMap<String, Double> rates = new HashMap<String, Double>();
+		
+		/* Happiness */
+		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
+		double hapRate = rate * state.hammer_rate;
+		rates.put("Happiness", hapRate);
+		rate += hapRate;
+		
+		/* Government */
+		double govRate = rate * getGovernment().hammer_rate;
+		rates.put("Government", govRate);
+		rate += govRate;
+		
+		double ranRate = rate * RandomEvent.getHammerRate(this);
+		rates.put("Random Events", ranRate);
+		rate += ranRate;
+		
+		/* Captured Town Penalty */
+		if (this.motherCiv != null) {
+			try {
+				double capRate = rate * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");	
+				rates.put("Captured Penalty", capRate);
+				rate += capRate;
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
+		double finRate = rate/4;
+		return new AttrSource(rates, finRate, null);
+	}
+	
+	public AttrSource getHammers() {
+		double total = 0;
+		AttrCache cache = this.attributeCache.get("HAMMERS");
+		if (cache == null) {
+			cache = new AttrCache();
+			cache.lastUpdate = new Date();
+		} else {
+			Date now = new Date();
+			if (now.getTime() > (cache.lastUpdate.getTime() + ATTR_TIMEOUT_SECONDS*1000)) {
+				cache.lastUpdate = now;
+			} else {
+				return cache.sources;
+			}
+		}
+		
+		HashMap<String, Double> sources = new HashMap<String, Double>();
+		/* Wonders and Goodies. */
+		double wonderGoodies = this.getBuffManager().getEffectiveInt(Buff.CONSTRUCTION);
+		sources.put("Wonders/Goodies", wonderGoodies);
+		total += wonderGoodies;
+		
+		double cultureHammers = this.getHammersFromCulture();
+		sources.put("Culture Biomes", cultureHammers);
+		total += cultureHammers; 
+		
+		/* Grab hammers generated from structures with components. */
+		double structures = 0;
+		double mines = 0;
+		for (Structure struct : this.structures.values()) {
+			if (struct instanceof Mine) {
+				Mine mine = (Mine)struct;
+				mines += mine.getBonusHammers(); 
+			}
+			for (Component comp : struct.attachedComponents) {
+				if (comp instanceof AttributeBase) {
+					AttributeBase as = (AttributeBase)comp;
+					if (as.getString("attribute").equalsIgnoreCase("HAMMERS")) {
+						structures += as.getGenerated();
+					}
+				}
+			}
+		}
+		
+		total += mines;
+		sources.put("Mines", mines);
+		
+		total += structures;
+		sources.put("Structures", structures);
+		
+		
+		sources.put("Base Hammers", this.baseHammers);
+		total += this.baseHammers;
+		
+		AttrSource rate = getHammerRate();
+		total *= rate.total;
+		
+		if (total < this.baseHammers) {
+			total = this.baseHammers;
+		}
+		
+		AttrSource as = new AttrSource(sources, total, rate);
+		cache.sources = as;
+		this.attributeCache.put("HAMMERS", cache);
+		return as;
+	}
 }

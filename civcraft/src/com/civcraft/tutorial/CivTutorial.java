@@ -163,24 +163,34 @@ public class CivTutorial {
 	public static void showCraftingHelp(Player player) {
 		if (craftingHelpInventory == null) {
 			craftingHelpInventory = Bukkit.getServer().createInventory(player, MAX_CHEST_SIZE*9, "CivCraft Custom Item Recipes");
-
 			/* Build the Category Inventory. */
 			for (ConfigMaterialCategory cat : ConfigMaterialCategory.getCategories()) {
 				if (cat.craftableCount == 0) {
 					continue;
 				}
+				int identifier;
+				if (cat.name.contains("Fish")) {
+					identifier = ItemManager.getId(Material.RAW_FISH);
+				} else if (cat.name.contains("Catalyst")) {
+					identifier = ItemManager.getId(Material.BOOK);
+				} else if (cat.name.contains("Gear")) {
+					identifier = ItemManager.getId(Material.IRON_SWORD);
+				} else if (cat.name.contains("Materials")) {
+					identifier = ItemManager.getId(Material.WOOD_STEP);
+				} else if (cat.name.contains("Tools")) {
+					identifier = ItemManager.getId(Material.IRON_SPADE);
+				} else if (cat.name.contains("Eggs")) {
+					identifier = ItemManager.getId(Material.MONSTER_EGG);
+				} else {
+					identifier = ItemManager.getId(Material.WRITTEN_BOOK);
+				}
 				
-				ItemStack infoRec = LoreGuiItem.build(cat.name, 
-						ItemManager.getId(Material.WRITTEN_BOOK), 
-						0, 
-						CivColor.LightBlue+cat.materials.size()+" Items",
-						CivColor.Gold+"<Click To Open>");
+				ItemStack infoRec = LoreGuiItem.build(cat.name, identifier, 0,
+						CivColor.LightBlue+cat.materials.size()+" Items", CivColor.Gold+"<Click To Open>");
 						infoRec = LoreGuiItem.setAction(infoRec, "OpenInventory");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invType", "showGuiInv");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invName", cat.name+" Recipes");
-						
 						craftingHelpInventory.addItem(infoRec);
-						
 						
 				Inventory inv = Bukkit.createInventory(player, LoreGuiItem.MAX_INV_SIZE, cat.name+" Recipes");
 				for (ConfigMaterial mat : cat.materials.values()) {
@@ -196,10 +206,8 @@ public class CivTutorial {
 				backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
 				backButton = LoreGuiItem.setActionData(backButton, "invType", "showCraftingHelp");
 				inv.setItem(LoreGuiItem.MAX_INV_SIZE-1, backButton);
-				
 				LoreGuiItemListener.guiInventories.put(inv.getName(), inv);
 			}
-			
 			LoreGuiItemListener.guiInventories.put(craftingHelpInventory.getName(), craftingHelpInventory);
 		}
 		
@@ -211,30 +219,25 @@ public class CivTutorial {
 			guiInventory = Bukkit.getServer().createInventory(player, 3*9, "CivCraft Information");
 
 			ItemStack infoRec = LoreGuiItem.build("CivCraft Info", 
-					ItemManager.getId(Material.WRITTEN_BOOK), 
-							0, CivColor.Gold+"<Click To View>");
+					ItemManager.getId(Material.WRITTEN_BOOK), 0, CivColor.Gold+"<Click To View>");
 			infoRec = LoreGuiItem.setAction(infoRec, "OpenInventory");
 			infoRec = LoreGuiItem.setActionData(infoRec, "invType", "showTutorialInventory");
 			guiInventory.addItem(infoRec);
 			
 			ItemStack craftRec = LoreGuiItem.build("Crafting Recipes", 
-					ItemManager.getId(Material.WRITTEN_BOOK), 
-					0, CivColor.Gold+"<Click To View>");
+					ItemManager.getId(Material.WRITTEN_BOOK), 0, CivColor.Gold+"<Click To View>");
 			craftRec = LoreGuiItem.setAction(craftRec, "OpenInventory");
 			craftRec = LoreGuiItem.setActionData(craftRec, "invType", "showCraftingHelp");
 			guiInventory.addItem(craftRec);
 			
-			ItemStack buildMenu = LoreGuiItem.build("Build Structure", ItemManager.getId(Material.BRICK_STAIRS), 0, CivColor.Gold+"<Click to View>");
-			buildMenu = LoreGuiItem.setAction(buildMenu, "BuildStructureList");
-			guiInventory.addItem(buildMenu);
+//			ItemStack buildMenu = LoreGuiItem.build("Build Structure", 
+//					ItemManager.getId(Material.BRICK_STAIRS), 0, CivColor.Gold+"<Click to View>");
+//			buildMenu = LoreGuiItem.setAction(buildMenu, "BuildStructureList");
+//			guiInventory.addItem(buildMenu);
 			
 			
 			LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);
 		}
-		
 		player.openInventory(guiInventory);
-
 	}
-	
-	
 }

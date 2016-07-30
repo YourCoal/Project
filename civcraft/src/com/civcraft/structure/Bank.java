@@ -53,31 +53,31 @@ public class Bank extends Structure {
 		double exchange_rate = 0.0;
 		switch (level) {
 		case 1:
-			exchange_rate = 0.40;
+			exchange_rate = 0.4;
 			break;
 		case 2:
-			exchange_rate = 0.50;
+			exchange_rate = 0.5;
 			break;
 		case 3:
-			exchange_rate = 0.60;
+			exchange_rate = 0.6;
 			break;
 		case 4:
-			exchange_rate = 0.70;
+			exchange_rate = 0.7;
 			break;
 		case 5:
-			exchange_rate = 0.80;
+			exchange_rate = 0.8;
 			break;
 		case 6:
-			exchange_rate = 0.90;
+			exchange_rate = 0.9;
 			break;
 		case 7:
 			exchange_rate = 1;
 			break;
 		case 8:
-			exchange_rate = 1.20;
+			exchange_rate = 1.2;
 			break;
 		case 9:
-			exchange_rate = 1.50;
+			exchange_rate = 1.5;
 			break;
 		case 10:
 			exchange_rate = 2;

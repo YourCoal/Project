@@ -106,78 +106,64 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTask("SQLUpdate", new SQLUpdate(), 0);
 		
 		// Sync Timers
-		TaskMaster.syncTimer(SyncBuildUpdateTask.class.getName(), 
-				new SyncBuildUpdateTask(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncUpdateChunks.class.getName(), 
-				new SyncUpdateChunks(), 0, TimeTools.toTicks(1));
-		
-		TaskMaster.syncTimer(SyncLoadChunk.class.getName(), 
-				new SyncLoadChunk(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncGetChestInventory.class.getName(),
-				new SyncGetChestInventory(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncUpdateInventory.class.getName(),
-				new SyncUpdateInventory(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncGrowTask.class.getName(),
-				new SyncGrowTask(), 0, 1);
-		
-		TaskMaster.syncTimer(PlayerLocationCacheUpdate.class.getName(), 
-				new PlayerLocationCacheUpdate(), 0, 10);
+		TaskMaster.syncTimer(SyncBuildUpdateTask.class.getName(), new SyncBuildUpdateTask(), 0, 1);
+		TaskMaster.syncTimer(SyncUpdateChunks.class.getName(), new SyncUpdateChunks(), 0, TimeTools.toTicks(1));
+		TaskMaster.syncTimer(SyncLoadChunk.class.getName(), new SyncLoadChunk(), 0, 1);
+		TaskMaster.syncTimer(SyncGetChestInventory.class.getName(),new SyncGetChestInventory(), 0, 1);
+		TaskMaster.syncTimer(SyncUpdateInventory.class.getName(),new SyncUpdateInventory(), 0, 1);
+		TaskMaster.syncTimer(SyncGrowTask.class.getName(),new SyncGrowTask(), 0, 1);
+		TaskMaster.syncTimer(PlayerLocationCacheUpdate.class.getName(), new PlayerLocationCacheUpdate(), 0, 10);
 		
 		TaskMaster.asyncTimer("RandomEventSweeper", new RandomEventSweeper(), 0, TimeTools.toTicks(10));
 		
-		// Structure event timers
-		TaskMaster.asyncTimer("UpdateEventTimer", new UpdateEventTimer(), TimeTools.toTicks(1));
+		
+		//All config timers
+		try {
+			TaskMaster.asyncTimer("UpdateEventTimer", new UpdateEventTimer(), TimeTools.toTicks(CivSettings.getInteger(CivSettings.timerConfig, "update_event")));
+			TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(CivSettings.getInteger(CivSettings.timerConfig, "reduce_exposure_timer")));
+			TaskMaster.asyncTimer("CalculateScoreTimer", new CalculateScoreTimer(), 0, TimeTools.toTicks(CivSettings.getInteger(CivSettings.timerConfig, "calculate_score_timer")));
+			TaskMaster.syncTimer("WindmillTimer", new WindmillTimer(), TimeTools.toTicks(CivSettings.getInteger(CivSettings.timerConfig, "windmill_timer")));
+			TaskMaster.asyncTimer("EndGameNotification", new EndConditionNotificationTask(), TimeTools.toTicks(CivSettings.getInteger(CivSettings.timerConfig, "endgame_notification_timer")));
+			TaskMaster.syncTimer("MobSpawner", new MobSpawnerTimer(), TimeTools.toTicks(CivSettings.getInteger(CivSettings.timerConfig, "mob_spawner_timer")));
+		} catch (InvalidConfiguration e1) {
+			e1.printStackTrace();
+		}
+		
+		
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
-
 		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
 		TaskMaster.syncTimer("UnitTrainTimer", new UnitTrainTimer(), TimeTools.toTicks(1));
-		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(5));
-
+		
 		try {
 			double arrow_firerate = CivSettings.getDouble(CivSettings.warConfig, "arrow_tower.fire_rate");
 			TaskMaster.syncTimer("arrowTower", new ProjectileComponentTimer(), (int)(arrow_firerate*20));	
 			TaskMaster.asyncTimer("ScoutTowerTask", new ScoutTowerTask(), TimeTools.toTicks(1));
-			
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 			return;
 		}
 		TaskMaster.syncTimer("arrowhomingtask", new ArrowProjectileTask(), 5);
-			
+		
 		// Global Event timers		
 		TaskMaster.syncTimer("FarmCropCache", new FarmPreCachePopulateTimer(), TimeTools.toTicks(30));
-	
-		TaskMaster.asyncTimer("FarmGrowthTimer",
-				new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
-
+		TaskMaster.asyncTimer("FarmGrowthTimer",new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
 		TaskMaster.asyncTimer("announcer", new AnnouncementTimer("tips.txt"), 0, TimeTools.toTicks(60*60));
-		
 		TaskMaster.asyncTimer("ChangeGovernmentTimer", new ChangeGovernmentTimer(), TimeTools.toTicks(60));
-		TaskMaster.asyncTimer("CalculateScoreTimer", new CalculateScoreTimer(), 0, TimeTools.toTicks(60));
-		
-		TaskMaster.asyncTimer(PlayerProximityComponentTimer.class.getName(), 
-				new PlayerProximityComponentTimer(), TimeTools.toTicks(1));
+		TaskMaster.asyncTimer(PlayerProximityComponentTimer.class.getName(), new PlayerProximityComponentTimer(), TimeTools.toTicks(1));
 		
 		TaskMaster.asyncTimer(EventTimerTask.class.getName(), new EventTimerTask(), TimeTools.toTicks(5));
-
+		
 		if (PlatinumManager.isEnabled()) {
 			TaskMaster.asyncTimer(PlatinumManager.class.getName(), new PlatinumManager(), TimeTools.toTicks(5));
 		}
 		
 		TaskMaster.syncTimer("PvPLogger", new PvPLogger(), TimeTools.toTicks(5));
-		TaskMaster.syncTimer("WindmillTimer", new WindmillTimer(), TimeTools.toTicks(60));
-		TaskMaster.asyncTimer("EndGameNotification", new EndConditionNotificationTask(), TimeTools.toTicks(3600));
 				
 		TaskMaster.asyncTask(new StructureValidationChecker(), TimeTools.toTicks(120));
 		TaskMaster.asyncTimer("StructureValidationPunisher", new StructureValidationPunisher(), TimeTools.toTicks(3600));
 		TaskMaster.asyncTimer("SessionDBAsyncTimer", new SessionDBAsyncTimer(), 10);
 		TaskMaster.asyncTimer("pvptimer", new PvPTimer(), TimeTools.toTicks(30));
 		
-		TaskMaster.syncTimer("MobSpawner", new MobSpawnerTimer(), TimeTools.toTicks(2));
 	}
 	
 	private void registerEvents() {
@@ -302,18 +288,12 @@ public final class CivCraft extends JavaPlugin {
 	public void setError(boolean isError) {
 		this.isError = isError;
 	}
-
-
+	
 	public static JavaPlugin getPlugin() {
 		return plugin;
 	}
-
-
+	
 	public static void setPlugin(JavaPlugin plugin) {
 		CivCraft.plugin = plugin;
 	}
-
-
-	
-	
 }

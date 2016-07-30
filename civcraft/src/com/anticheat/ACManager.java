@@ -39,7 +39,7 @@ import com.civcraft.war.War;
 import com.civcraft.war.WarAntiCheat;
 
 public class ACManager implements PluginMessageListener {
-
+	
 	static String versionNumber;
 	static String key;
 	static HashMap<String, Long> acceptedMods = new HashMap<String, Long>();
@@ -48,10 +48,10 @@ public class ACManager implements PluginMessageListener {
 	static boolean enabled = true;
 	
 	public static void init() {
-        Bukkit.getMessenger().registerOutgoingPluginChannel(CivCraft.getPlugin(), "CAC");
-        Bukkit.getMessenger().registerIncomingPluginChannel(CivCraft.getPlugin(), "CAC", new ACManager());
-        
-        try {
+		Bukkit.getMessenger().registerOutgoingPluginChannel(CivCraft.getPlugin(), "CAC");
+		Bukkit.getMessenger().registerIncomingPluginChannel(CivCraft.getPlugin(), "CAC", new ACManager());
+		
+		try {
 			versionNumber = CivSettings.getString(CivSettings.nocheatConfig, "civcraft_ac_version");
 			key = CivSettings.getString(CivSettings.nocheatConfig, "civcraft_ac_key");
 			
@@ -215,9 +215,9 @@ public class ACManager implements PluginMessageListener {
 		boolean validTrap = Boolean.valueOf(versionArray[2]);
 		if (validTrap) {
 			try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("anticheatbypassers.txt", true)))) {
-			    out.println(player.getName());
+				out.println(player.getName());
 			}catch (IOException e) {
-			    //exception handling left as an exercise for the reader
+				//exception handling left as an exercise for the reader
 			}
 			return;
 		}

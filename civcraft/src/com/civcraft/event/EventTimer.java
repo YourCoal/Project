@@ -50,6 +50,14 @@ public class EventTimer {
 //			e1.printStackTrace();
 //		}
 		
+		/* Setup mob clear event. */
+		try {
+			AutoClearMobEvent mobEvent = new AutoClearMobEvent();
+			new EventTimer("mobclear", mobEvent, mobEvent.getNextDate());
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+		}
+		
 		/* Setup daily upkeep event. */
 		try {
 			DailyEvent upkeepEvent = new DailyEvent();

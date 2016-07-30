@@ -77,7 +77,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 				resident.setisProtected(true);
 				int mins;
 				try {
-					mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
+					mins = CivSettings.getInteger(CivSettings.residentConfig, "pvp_timer");
 				} catch (InvalidConfiguration e1) {
 					e1.printStackTrace();
 					return;

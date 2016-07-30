@@ -963,7 +963,7 @@ public class CustomItemManager implements Listener {
 //	/*
 //	 * Checks a players inventory and inventories that are opened for items.
 //	 *   - Currently looks for old catalyst enhancements and marks them so
-//	 *     they can be refunded.
+//	 *	 they can be refunded.
 //	 *
 //	 */
 //	public AttributeUtil ItemCleanup(ItemStack stack) {

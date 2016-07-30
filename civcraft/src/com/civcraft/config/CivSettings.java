@@ -74,6 +74,9 @@ public class CivSettings {
 	public static float normal_speed;
 	public static double highjump;
 	
+	public static FileConfiguration residentConfig; /* resident.yml */
+	public static FileConfiguration timerConfig; /* timer.yml */
+	
 	public static FileConfiguration townConfig; /* town.yml */
 	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
 	public static Map<String, ConfigTownUpgrade> townUpgrades = new TreeMap<String, ConfigTownUpgrade>();
@@ -218,7 +221,7 @@ public class CivSettings {
 		CivSettings.T4_metal_speed = (float)CivSettings.getDouble(CivSettings.unitConfig, "base.T4_metal_speed");
 		CivSettings.normal_speed = 0.2f;	
 		
-		for (Object obj : civConfig.getList("global.start_kit")) {
+		for (Object obj : residentConfig.getList("start_kit")) {
 			if (obj instanceof String) {
 				kitItems.add((String)obj);
 			}
@@ -238,7 +241,7 @@ public class CivSettings {
 		gold_rate = CivSettings.getDouble(civConfig, "ore_rates.gold");
 		diamond_rate = CivSettings.getDouble(civConfig, "ore_rates.diamond");
 		emerald_rate = CivSettings.getDouble(civConfig, "ore_rates.emerald");
-		startingCoins = CivSettings.getDouble(civConfig, "global.starting_coins");
+		startingCoins = CivSettings.getDouble(residentConfig, "starting_coins");
 		
 		alwaysCrumble.add(CivData.BEDROCK);
 		alwaysCrumble.add(ItemManager.getId(Material.GOLD_BLOCK));
@@ -318,6 +321,8 @@ public class CivSettings {
 	
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
+		residentConfig = loadCivConfig("resident.yml");
+		timerConfig = loadCivConfig("timer.yml");
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
 		cultureConfig = loadCivConfig("culture.yml");
@@ -474,6 +479,10 @@ public class CivSettings {
 	
 	public static String getStringBase(String path) throws InvalidConfiguration {
 		return getString(plugin.getConfig(), path);
+	}
+	
+	public static Integer getIntegerBase(String path) throws InvalidConfiguration {
+		return getInteger(plugin.getConfig(), path);
 	}
 	
 	public static double getDoubleTown(String path) throws InvalidConfiguration {

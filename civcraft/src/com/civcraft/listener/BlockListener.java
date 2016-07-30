@@ -153,7 +153,7 @@ public class BlockListener implements Listener {
 					}
 				}
 			}
-	    }
+		}
 
 
 		coord.setFromLocation(event.getBlock().getLocation());
@@ -467,102 +467,102 @@ public class BlockListener implements Listener {
 
 	}
 
-     private final BlockFace[] faces = new BlockFace[] {
-			        BlockFace.DOWN,
-		            BlockFace.NORTH,
-		            BlockFace.EAST,
-		            BlockFace.SOUTH,
-		            BlockFace.WEST,		            
-		            BlockFace.SELF,
-		            BlockFace.UP
+	 private final BlockFace[] faces = new BlockFace[] {
+					BlockFace.DOWN,
+					BlockFace.NORTH,
+					BlockFace.EAST,
+					BlockFace.SOUTH,
+					BlockFace.WEST,					
+					BlockFace.SELF,
+					BlockFace.UP
 	  };
 
-    public BlockCoord generatesCobble(int id, Block b)
-    {
-        int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
-        int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER);
-        for(BlockFace face : faces)
-        {
-            Block r = b.getRelative(face, 1);
-            if(ItemManager.getId(r) == mirrorID1 || ItemManager.getId(r) == mirrorID2)
-            {
-            	
-            	return new BlockCoord(r);
-            }
-        }
-        
-        return null;
-    }
+	public BlockCoord generatesCobble(int id, Block b)
+	{
+		int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
+		int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER);
+		for(BlockFace face : faces)
+		{
+			Block r = b.getRelative(face, 1);
+			if(ItemManager.getId(r) == mirrorID1 || ItemManager.getId(r) == mirrorID2)
+			{
+				
+				return new BlockCoord(r);
+			}
+		}
+		
+		return null;
+	}
 
-//    private static void destroyLiquidRecursive(Block source) {
-//    	//source.setTypeIdAndData(CivData.AIR, (byte)0, false);
-//    	NMSHandler nms = new NMSHandler();
-//    	nms.setBlockFast(source.getWorld(), source.getX(), source.getY(), source.getZ(), 0, (byte)0);
-//    	
-//    	for (BlockFace face : BlockFace.values()) {
-//    		Block relative = source.getRelative(face);
-//    		if (relative == null) {
-//    			continue;
-//    		}
-//    		
-//    		if (!isLiquid(relative.getTypeId())) {
-//    			continue;
-//    		}
-//    		
-//    		destroyLiquidRecursive(relative);
-//    	}
-//    }
-    
-//    private static boolean isLiquid(int id) {
-//    	return (id >= CivData.WATER && id <= CivData.LAVA);
-//    }
-    
-    private static HashSet<BlockCoord> stopCobbleTasks = new HashSet<BlockCoord>();
+//	private static void destroyLiquidRecursive(Block source) {
+//		//source.setTypeIdAndData(CivData.AIR, (byte)0, false);
+//		NMSHandler nms = new NMSHandler();
+//		nms.setBlockFast(source.getWorld(), source.getX(), source.getY(), source.getZ(), 0, (byte)0);
+//		
+//		for (BlockFace face : BlockFace.values()) {
+//			Block relative = source.getRelative(face);
+//			if (relative == null) {
+//				continue;
+//			}
+//			
+//			if (!isLiquid(relative.getTypeId())) {
+//				continue;
+//			}
+//			
+//			destroyLiquidRecursive(relative);
+//		}
+//	}
+	
+//	private static boolean isLiquid(int id) {
+//		return (id >= CivData.WATER && id <= CivData.LAVA);
+//	}
+	
+	private static HashSet<BlockCoord> stopCobbleTasks = new HashSet<BlockCoord>();
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnBlockFromToEvent(BlockFromToEvent event) {
 		/* Disable cobblestone generators. */
 		int id = ItemManager.getId(event.getBlock());
-	    if(id >= CivData.WATER && id <= CivData.LAVA)
-	    {
-	        Block b = event.getToBlock();
-	        bcoord.setFromLocation(b.getLocation());
+		if(id >= CivData.WATER && id <= CivData.LAVA)
+		{
+			Block b = event.getToBlock();
+			bcoord.setFromLocation(b.getLocation());
 
-	        int toid = ItemManager.getId(b);
-	        if(toid == 0)
-	        {
-	            BlockCoord other = generatesCobble(id, b);
-	        	if(other != null)
-	            {
-	            	//BlockCoord d = new BlockCoord(event.getToBlock());
-//	            	BlockCoord fromCoord = new BlockCoord(event.getBlock());
-	            	event.setCancelled(true);
+			int toid = ItemManager.getId(b);
+			if(toid == 0)
+			{
+				BlockCoord other = generatesCobble(id, b);
+				if(other != null)
+				{
+					//BlockCoord d = new BlockCoord(event.getToBlock());
+//					BlockCoord fromCoord = new BlockCoord(event.getBlock());
+					event.setCancelled(true);
 
-	            	class SyncTask implements Runnable {
-	            		BlockCoord block;
+					class SyncTask implements Runnable {
+						BlockCoord block;
 
-	            		public SyncTask(BlockCoord block) {
-	            			this.block = block;
-	            		}
+						public SyncTask(BlockCoord block) {
+							this.block = block;
+						}
 
 						@Override
 						public void run() {
 							ItemManager.setTypeIdAndData(block.getBlock(), CivData.NETHERRACK, (byte)0, true);
 							stopCobbleTasks.remove(block);
 						}
-	            	}
+					}
 
-	            	if (!stopCobbleTasks.contains(other)) {
-	            		stopCobbleTasks.add(other);
-	            		TaskMaster.syncTask(new SyncTask(other), 2);
-	            	}
+					if (!stopCobbleTasks.contains(other)) {
+						stopCobbleTasks.add(other);
+						TaskMaster.syncTask(new SyncTask(other), 2);
+					}
 
-//	            	if (!stopCobbleTasks.contains(fromCoord)) {
-//	            		stopCobbleTasks.add(fromCoord);
-//	            		TaskMaster.syncTask(new SyncTask(fromCoord));
-//	            	}
-	            }
-	        }
-	    }
+//					if (!stopCobbleTasks.contains(fromCoord)) {
+//						stopCobbleTasks.add(fromCoord);
+//						TaskMaster.syncTask(new SyncTask(fromCoord));
+//					}
+				}
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)

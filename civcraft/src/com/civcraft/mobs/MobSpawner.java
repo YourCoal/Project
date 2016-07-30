@@ -66,6 +66,7 @@ public class MobSpawner {
 	public static void despawnAll() {
 		for (CommonCustomMob mob : CommonCustomMob.customMobs.values()) {
 			mob.entity.getBukkitEntity().remove();
+			CommonCustomMob.customMobs.remove(mob.entity.getUniqueID());
 		}
 	}
 	

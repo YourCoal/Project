@@ -148,5 +148,10 @@ public class Mine extends Structure {
 	public Result getLastResult() {
 		return this.getConsumeComponent().getLastResult();
 	}
-
+	
+	public double getBonusHammers() {
+		int level = getLevel();
+		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
+		return lvl.hammers;	
+	}
 }

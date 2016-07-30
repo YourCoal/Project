@@ -32,9 +32,7 @@ public class GivePlayerStartingKit implements Runnable {
 				try {
 					Integer type = Integer.valueOf(split[0]);
 					Integer amount = Integer.valueOf(split[1]);
-
 					stack = ItemManager.createItemStack(type, amount);
-
 				} catch (NumberFormatException e) {
 					String customMatID = split[0];
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(customMatID);
@@ -61,7 +59,5 @@ public class GivePlayerStartingKit implements Runnable {
 			CivLog.warning("Tried to give starting kit to offline player:"+name);
 			return;
 		}
-		
 	}
-
 }

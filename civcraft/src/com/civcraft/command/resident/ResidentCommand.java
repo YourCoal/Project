@@ -178,7 +178,6 @@ public class ResidentCommand extends CommandBase {
 		}
 		
 		type = type.toLowerCase();
-		
 		int exchangeID;
 		double rate;
 		switch (type) {
@@ -204,7 +203,7 @@ public class ResidentCommand extends CommandBase {
 
 		double exchangeRate;
 		try {
-			exchangeRate = CivSettings.getDouble(CivSettings.civConfig, "global.exchange_rate");
+			exchangeRate = CivSettings.getDouble(CivSettings.residentConfig, "exchange_rate");
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 			throw new CivException("Internal configuration error!");

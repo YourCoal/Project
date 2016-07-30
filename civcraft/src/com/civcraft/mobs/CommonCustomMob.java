@@ -179,6 +179,8 @@ public abstract class CommonCustomMob implements ICustomMob {
 	@Override
 	public void onDeath(EntityCreature arg0) {
 		dropItems();
+		entity.getBukkitEntity().remove();
+		CommonCustomMob.customMobs.remove(this.entity.getUniqueID());
 	}
 
 	public void onRangedAttack(Entity arg1) {
@@ -208,17 +210,20 @@ public abstract class CommonCustomMob implements ICustomMob {
 		TownChunk tc = CivGlobal.getTownChunk(loc);
 		if (tc != null) {
 			entity.getBukkitEntity().remove();
+			CommonCustomMob.customMobs.remove(this.entity.getUniqueID());
 		}
 		
 		Camp camp = CivGlobal.getCampFromChunk(new ChunkCoord(loc));
 		if (camp != null) {
 			entity.getBukkitEntity().remove();
+			CommonCustomMob.customMobs.remove(this.entity.getUniqueID());
 		}
 	}
 	
 	private void checkForisWarTime() {
 		if (War.isWarTime()) {
 			entity.getBukkitEntity().remove();
+			CommonCustomMob.customMobs.remove(this.entity.getUniqueID());
 		}
 	}
 
