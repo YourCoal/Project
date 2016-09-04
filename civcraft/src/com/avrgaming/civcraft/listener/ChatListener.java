@@ -29,7 +29,30 @@ import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Resident;
 
 public class ChatListener implements Listener {
-
+	
+	
+	
+	//https://bukkit.org/threads/making-a-log-file-for-your-plugins.85430/
+	//https://www.google.com/?gws_rd=ssl#safe=active&q=minecraft+bukkit+custom+log+saver
+	
+/*	public void logToFile(String message) {
+		File data = new File(CivSettings.plugin.getDataFolder().getPath()+"/logs");
+		if (!data.exists()) {
+			data.mkdirs();
+		}
+		
+		File saveTo = new File(CivSettings.plugin.getDataFolder(), "/logs/data.txt");
+		if(!saveTo.exists()) {
+			try {
+				saveTo.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}*/
+	
+	
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	void OnPlayerAsyncChatEvent(AsyncPlayerChatEvent event) {
 		

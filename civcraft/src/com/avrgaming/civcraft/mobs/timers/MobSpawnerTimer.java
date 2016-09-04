@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-import net.minecraft.server.v1_7_R4.EntityCreature;
+import net.minecraft.server.v1_8_R3.EntityCreature;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,9 +27,9 @@ public class MobSpawnerTimer implements Runnable {
 	public static int MOB_AREA_LIMIT = 5;
 	public static int MOB_AREA = 32;
 	
-	public static int MIN_SPAWN_DISTANCE = 20;
-	public static int MAX_SPAWN_DISTANCE = 50;
-	public static int MIN_SPAWN_AMOUNT = 5;
+	public static int MIN_SPAWN_DISTANCE = 16;
+	public static int MAX_SPAWN_DISTANCE = 48;
+	public static int MIN_SPAWN_AMOUNT = 2;
 	
 	public static int Y_SHIFT = 3;
 	

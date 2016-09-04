@@ -35,8 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.minecraft.util.org.apache.commons.io.FileUtils;
-
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -91,6 +90,10 @@ public class CivSettings {
 	public static float T4_metal_speed;
 	public static float normal_speed;
 	public static double highjump;
+	
+	public static FileConfiguration dropsConfig; /* drops.yml */
+	
+	public static FileConfiguration resConfig; /* resident.yml */
 	
 	public static FileConfiguration townConfig; /* town.yml */
 	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
@@ -239,7 +242,7 @@ public class CivSettings {
 		CivSettings.T4_metal_speed = (float)CivSettings.getDouble(CivSettings.unitConfig, "base.T4_metal_speed");
 		CivSettings.normal_speed = 0.2f;	
 		
-		for (Object obj : civConfig.getList("global.start_kit")) {
+		for (Object obj : resConfig.getList("start_kit")) {
 			if (obj instanceof String) {
 				kitItems.add((String)obj);
 			}
@@ -259,7 +262,7 @@ public class CivSettings {
 		gold_rate = CivSettings.getDouble(civConfig, "ore_rates.gold");
 		diamond_rate = CivSettings.getDouble(civConfig, "ore_rates.diamond");
 		emerald_rate = CivSettings.getDouble(civConfig, "ore_rates.emerald");
-		startingCoins = CivSettings.getDouble(civConfig, "global.starting_coins");
+		startingCoins = CivSettings.getDouble(resConfig, "starting_coins");
 		
 		alwaysCrumble.add(CivData.BEDROCK);
 		alwaysCrumble.add(ItemManager.getId(Material.GOLD_BLOCK));
@@ -339,6 +342,8 @@ public class CivSettings {
 	
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
+		dropsConfig = loadCivConfig("drops.yml");
+		resConfig = loadCivConfig("resident.yml");
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
 		cultureConfig = loadCivConfig("culture.yml");

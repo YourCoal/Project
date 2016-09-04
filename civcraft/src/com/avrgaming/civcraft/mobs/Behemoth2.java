@@ -39,7 +39,7 @@ import com.avrgaming.civcraft.threading.tasks.FireWorkTask;
 import com.avrgaming.mob.ICustomMob;
 import com.avrgaming.mob.MobBaseSnowman;
 
-public class Behemoth extends CommonCustomMob implements ICustomMob {
+public class Behemoth2 extends CommonCustomMob implements ICustomMob {
 	
 	private double damage;
 	
@@ -66,9 +66,10 @@ public class Behemoth extends CommonCustomMob implements ICustomMob {
 		
 		case LESSER:
 			defense = new MobComponentDefense(3.5);
-			setMaxHealth(50.0);
+			setMaxHealth(75.0);
 			modifySpeed(1.2);
-			coinDrop(5, 25);
+			damage = 15.0;
+			coinDrop(1, 25);
 			
 			this.addDrop("mat_ionic_crystal_fragment_1", 0.05);
 			this.addDrop("mat_forged_clay", 0.1);
@@ -78,9 +79,10 @@ public class Behemoth extends CommonCustomMob implements ICustomMob {
 			
 		case GREATER:
 			defense = new MobComponentDefense(10);
-			setMaxHealth(65.0);
+			setMaxHealth(100.0);
 			modifySpeed(1.2);
-			coinDrop(10, 40);
+			damage = 25.0;
+			coinDrop(10, 50);
 			
 			this.addDrop("mat_ionic_crystal_fragment_2", 0.05);
 			this.addDrop("mat_steel_plate", 0.1);
@@ -92,9 +94,10 @@ public class Behemoth extends CommonCustomMob implements ICustomMob {
 			
 		case ELITE:
 			defense = new MobComponentDefense(15);
-			setMaxHealth(80.0);
+			setMaxHealth(125.0);
 			modifySpeed(1.2);
-			coinDrop(25, 65);
+			damage = 35.0;
+			coinDrop(20, 75);
 			
 			this.addDrop("mat_ionic_crystal_fragment_3", 0.05);
 			this.addDrop("mat_carbide_steel_plate", 0.1);
@@ -106,9 +109,10 @@ public class Behemoth extends CommonCustomMob implements ICustomMob {
 			
 		case BRUTAL:
 			defense = new MobComponentDefense(20);
-			setMaxHealth(95.0);
+			setMaxHealth(150.0);
 			modifySpeed(1.2);
-			coinDrop(40, 100);
+			damage = 45.0;
+			coinDrop(35, 125);
 			
 			this.addDrop("mat_ionic_crystal_fragment_4", 0.05);
 			this.addDrop("mat_tungsten_plate", 0.1);
@@ -132,22 +136,25 @@ public class Behemoth extends CommonCustomMob implements ICustomMob {
 	
 	@Override
 	public String getClassName() {
-		return Behemoth.class.getName();
+		return Behemoth2.class.getName();
 	}
 	
 	public static void register() {
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.FROZEN_RIVER);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.FROZEN_OCEAN);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.COLD_BEACH);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.COLD_TAIGA);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.JUNGLE);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.MEGA_TAIGA);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.JUNGLE_EDGE);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.JUNGLE_EDGE_MOUNTAINS);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.SWAMPLAND);
 		
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.ICE_MOUNTAINS);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.COLD_TAIGA_HILLS);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.COLD_TAIGA_MOUNTAINS);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.GREATER, Biome.MEGA_SPRUCE_TAIGA_HILLS);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.GREATER, Biome.MEGA_SPRUCE_TAIGA_HILLS);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.GREATER, Biome.JUNGLE_HILLS);
 		
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.ELITE, Biome.ICE_PLAINS);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.ELITE, Biome.BIRCH_FOREST_HILLS_MOUNTAINS);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.ELITE, Biome.ROOFED_FOREST_MOUNTAINS);
 		
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.BRUTAL, Biome.ICE_PLAINS_SPIKES);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.BRUTAL, Biome.JUNGLE_MOUNTAINS);
+		setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.BRUTAL, Biome.SWAMPLAND_MOUNTAINS);
 	}
 	
 	@Override
@@ -274,7 +281,9 @@ public class Behemoth extends CommonCustomMob implements ICustomMob {
 			
 			private void launchExplodeFirework(Location loc) {
 				FireworkEffect fe1 = FireworkEffect.builder().withColor(Color.ORANGE).withColor(Color.YELLOW).withColor(Color.WHITE).flicker(true).with(Type.BURST).build();
+				FireworkEffect fe2 = FireworkEffect.builder().withColor(Color.ORANGE).withColor(Color.LIME).withColor(Color.RED).flicker(true).with(Type.BALL_LARGE).build();
 				TaskMaster.syncTask(new FireWorkTask(fe1, loc.getWorld(), loc, 2), 0);
+				TaskMaster.syncTask(new FireWorkTask(fe2, loc.getWorld(), loc, 2), 0);
 			}
 		}
 		

@@ -1,0 +1,10 @@
+#Crop DataValue.7 (Full Grown Wheat)
+wheatcrop:
+  #Seed Drops
+  minseeds: 1
+  maxseeds: 3
+  maxseeds_fortune: 5
+  #Wheat Drops
+  minwheat: 1
+  maxwheat: 1
+  maxwheat_fortune: 3
