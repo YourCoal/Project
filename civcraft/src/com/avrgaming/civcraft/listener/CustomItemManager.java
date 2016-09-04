@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
+import org.bukkit.CropState;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
@@ -55,6 +56,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.material.Crops;
 
 import com.avrgaming.civcraft.cache.ArrowFiredCache;
 import com.avrgaming.civcraft.cache.CivCache;
@@ -96,6 +98,69 @@ public class CustomItemManager implements Listener {
 	//	this.onItemDurabilityChange(event.getPlayer(), event.getPlayer().getItemInHand());
 	}
 	
+	//XXX Fully Grown Wheat Crop
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onWheatCropBreak(BlockBreakEvent event) {
+		if (event.getBlock().getType().equals(Material.CROPS)) {
+			Crops crops = (Crops) event.getBlock().getState().getData();
+			if (crops.getState() != CropState.RIPE) {
+				return;
+			}
+			
+			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
+			try { //Drop seeds
+				Random rand = new Random();
+				
+				int min = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.minseeds");
+				int max;
+				if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+					max = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.maxseeds_fortune");
+				} else {
+					max = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.maxseeds");
+				}
+				
+				int randAmount = rand.nextInt(min + max) + 1;
+				randAmount -= min;
+				if (randAmount <= 0) {
+					randAmount = 1;
+				}
+				
+				for (int i = 0; i < randAmount; i++) {
+					ItemStack stack = new ItemStack(Material.SEEDS);
+					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack);
+				}
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+				return;
+			} try { //Drop Wheat
+				Random rand = new Random();
+				
+				int min = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.minwheat");
+				int max;
+				if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+					max = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.maxwheat_fortune");
+				} else {
+					max = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.maxwheat");
+				}
+				
+				int randAmount = rand.nextInt(min + max) + 1;
+				randAmount -= min;
+				if (randAmount <= 0) {
+					randAmount = 1;
+				}
+				
+				for (int i = 0; i < randAmount; i++) {
+					ItemStack stack = new ItemStack(Material.WHEAT);
+					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack);
+				}
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+	
+	//XXX Lapis ore
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreakSpawnItems(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
