@@ -125,9 +125,7 @@ public class MissionBook extends UnitItemMaterial {
 	
 	@Override
 	public void onInteract(PlayerInteractEvent event) {
-		
 		try {
-			
 			if (War.isWarTime()) {
 				throw new CivException("Cannot use spy missions during war time.");
 			}
@@ -238,9 +236,7 @@ public class MissionBook extends UnitItemMaterial {
 	private static boolean processMissionResult(Player player, Town target, ConfigMission mission) {
 		return processMissionResult(player, target, mission, 1.0, 1.0);
 	}
-	private static boolean processMissionResult(Player player, Town target, ConfigMission mission, double failModifier, 
-			double compromiseModifier) {
-		
+	private static boolean processMissionResult(Player player, Town target, ConfigMission mission, double failModifier, double compromiseModifier) {
 		int fail_rate = (int)((MissionBook.getMissionFailChance(mission, target)*failModifier)*100);
 		int compromise_rate = (int)((MissionBook.getMissionCompromiseChance(mission, target)*compromiseModifier)*100);
 		Resident resident = CivGlobal.getResident(player);
@@ -255,14 +251,12 @@ public class MissionBook extends UnitItemMaterial {
 		}
 		
 		resident.getTown().getTreasury().withdraw(mission.cost);
-		
 		Random rand = new Random();
 		String result = "";
 		int failnext = rand.nextInt(100);
 		if (failnext < fail_rate) {
 			int next = rand.nextInt(100);
 			result += "Failed";
-			
 			if (next < compromise_rate) {
 				CivMessage.global(CivColor.Yellow+"INTERNATIONAL INCIDENT!"+CivColor.White+" "+
 						player.getName()+" was caught trying to perform a "+mission.name+" spy mission in "+
@@ -271,15 +265,12 @@ public class MissionBook extends UnitItemMaterial {
 				Unit.removeUnit(player);
 				result += ", COMPROMISED";
 			}
-			
 			MissionLogger.logMission(resident.getTown(), target, resident, mission.name, result);
 			CivMessage.send(player, CivColor.Rose+"Mission Failed! (Rolled "+failnext+" vs "+fail_rate+")");
 			return false;
 		}
-		
 		MissionLogger.logMission(resident.getTown(), target, resident, mission.name, "Success");
 		return true;
-
 	}
 	
 	private static void performSabotage(Player player, ConfigMission mission) throws CivException {
@@ -344,9 +335,7 @@ public class MissionBook extends UnitItemMaterial {
 					e.printStackTrace();
 				}
 			}
-			
 		}
-		
 	}
 	
 	private static void performPirate(Player player, ConfigMission mission) throws CivException {

@@ -161,22 +161,28 @@ public class War {
 			/* Delete any wartime file used to prevent reboots. */
 			File file = new File("wartime");
 			file.delete();
-		
 			CivMessage.globalHeading(CivColor.BOLD+"WarTime Has Ended");
+			
 			/* display some stats. */
-			CivMessage.global("Most Lethal: "+WarStats.getTopKiller());
+			CivMessage.global("Most Blood Thirsty: "+WarStats.getTopKiller());
+			CivMessage.global("Least Effective Newbie: "+WarStats.getTopDeaths());
 			List<String> civs = WarStats.getCapturedCivs();
 			if (civs.size() > 0) {
 				for (String str : civs) {
 					CivMessage.global(str);
 				}
 			}
-			WarStats.clearStats();
+			List<String> towns = WarStats.getCapturedTowns();
+			if (towns.size() > 0) {
+				for (String str : towns) {
+					CivMessage.global(str);
+				}
+			}
 			
+			WarStats.clearStats();
 			for (Civilization civ : CivGlobal.getCivs()) {
 				civ.onWarEnd();
 			}
-			
 		} else {
 			/* War time has started. */
 			CivMessage.globalHeading(CivColor.BOLD+"WarTime Has Started");
@@ -202,22 +208,18 @@ public class War {
 				int mins = CivSettings.getInteger(CivSettings.warConfig, "war.time_length");
 				Calendar endCal = Calendar.getInstance();
 				endCal.add(Calendar.MINUTE, mins);
-
 				War.setEnd(endCal.getTime());
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
 		}
-		
 		War.warTime = warTime;
 	}
 
-	/*
-	 * When a civ conqueres a town, then has its capitol conquered,
+	/* When a civ conqueres a town, then has its capitol conquered,
 	 * the town that it just conquered needs to go to the new owner.
 	 * If the new owner was the town's old owner, then that town is no longer
-	 * defeated.
-	 */
+	 * defeated. */
 	public static void transferDefeated(Civilization loser, Civilization winner) {
 		
 		/* Transfer any defeated towns */

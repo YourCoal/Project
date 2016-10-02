@@ -74,8 +74,7 @@ public class MobSpawnerTimer implements Runnable {
 					
 					
 					TownChunk tc = CivGlobal.getTownChunk(new ChunkCoord(loc));
-					if (tc != null) {
-						/* Dont spawn in towns. */
+					if (tc != null) { /* Dont spawn in towns. */
 						continue;
 					}
 					
@@ -93,7 +92,6 @@ public class MobSpawnerTimer implements Runnable {
 						/* Dont spawn if we've reach the mob limit. */
 						continue;
 					}
-					
 					MobSpawner.spawnRandomCustomMob(loc);
 				}
 				break;
@@ -107,5 +105,4 @@ public class MobSpawnerTimer implements Runnable {
 			}
 		}
 	}
-
 }

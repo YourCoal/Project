@@ -85,40 +85,47 @@ import com.avrgaming.global.perks.components.CustomTemplate;
 public class Town extends SQLObject {
 
 	private ConcurrentHashMap<String, Resident> residents = new ConcurrentHashMap<String, Resident>();
-	private ConcurrentHashMap<String, Resident> fakeResidents = new ConcurrentHashMap<String, Resident>();
-
-	private ConcurrentHashMap<ChunkCoord, TownChunk> townChunks = new ConcurrentHashMap<ChunkCoord, TownChunk>();
-	private ConcurrentHashMap<ChunkCoord, TownChunk> outposts = new ConcurrentHashMap<ChunkCoord, TownChunk>();
-	private ConcurrentHashMap<ChunkCoord, CultureChunk> cultureChunks = new ConcurrentHashMap<ChunkCoord, CultureChunk>();
 	
+	/* Buildings */
+	public Buildable currentWonderInProgress;
+	public Buildable currentStructureInProgress;
 	private ConcurrentHashMap<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
 	private ConcurrentHashMap<BlockCoord, Structure> structures = new ConcurrentHashMap<BlockCoord, Structure>();
 	private ConcurrentHashMap<BlockCoord, Buildable> disabledBuildables = new ConcurrentHashMap<BlockCoord, Buildable>();
 	
+	/* Borders */
+	private int culture;
+	private ConcurrentHashMap<ChunkCoord, TownChunk> townChunks = new ConcurrentHashMap<ChunkCoord, TownChunk>();
+	private ConcurrentHashMap<ChunkCoord, CultureChunk> cultureChunks = new ConcurrentHashMap<ChunkCoord, CultureChunk>();
+	
+	/* Town Stats */
 	private int level;
+	private int daysInDebt;
 	private double taxRate;
 	private double flatTax;
 	private Civilization civ;
 	private Civilization motherCiv;
-	private int daysInDebt;
+	
+	/* Structure Levels (Saved on demolish) */
+	public int saved_bank_level = 1;
+	public double saved_bank_interest_amount = 0;
 	
 	/* Hammers */
-	private double baseHammers = 1.0;
+	private double baseHammers = 0.0;
 	private double extraHammers;
-	public Buildable currentStructureInProgress;
-	public Buildable currentWonderInProgress;
-	
-	/* Culture */
-	private int culture;
-	
-	private PermissionGroup defaultGroup;
-	private PermissionGroup mayorGroup;
-	private PermissionGroup assistantGroup;
 	
 	/* Beakers */
 	private double unusedBeakers;
 	
-	// These are used to resolve reverse references after the database loads.
+	/* Happiness */
+	private double baseHappy = 0.0;
+	private double baseUnhappy = 0.0;
+	
+	/* Permission Groups */
+	private PermissionGroup defaultGroup;
+	private PermissionGroup mayorGroup;
+	private PermissionGroup assistantGroup;
+	/* These are used to resolve reverse references after the database loads. */
 	private String defaultGroupName;
 	private String mayorGroupName;
 	private String assistantGroupName;
@@ -147,14 +154,6 @@ public class Town extends SQLObject {
 	public boolean claimed = false;
 	public boolean defeated = false;
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
-	
-	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
-	public int saved_bank_level = 1;
-	public double saved_bank_interest_amount = 0;
-	
-	/* Happiness Stuff */
-	private double baseHappy = 0.0;
-	private double baseUnhappy = 0.0;
 		
 	private RandomEvent activeEvent;
 	
@@ -651,7 +650,7 @@ public class Town extends SQLObject {
 				
 		this.culture += generated;
 		this.save();
-		if (this.getCultureLevel() != CivSettings.getMaxCultureLevel()) {
+		if (this.getCultureLevel() <= CivSettings.getMaxCultureLevel()) {
 			if (this.culture >= clc.amount) {
 				CivGlobal.processCulture();
 				CivMessage.sendCiv(this.civ, "The borders of "+this.getName()+" have expanded!");
@@ -1303,7 +1302,6 @@ public class Town extends SQLObject {
 		upkeep += this.getBaseUpkeep();
 		//upkeep += this.getSpreadUpkeep();
 		upkeep += this.getStructureUpkeep();
-		upkeep += this.getOutpostUpkeep();
 		
 		upkeep *= getGovernment().upkeep_rate;
 		
@@ -1895,12 +1893,7 @@ public class Town extends SQLObject {
 		}
 		
 		ChunkCoord townHallChunk = new ChunkCoord(townHall.getCorner().getLocation());
-		
 		for (TownChunk tc : this.getTownChunks()) {
-			if (tc.isOutpost()) {
-				continue;
-			}
-			
 			if (tc.getChunkCoord().equals(townHallChunk))
 				continue;
 			
@@ -1908,17 +1901,14 @@ public class Town extends SQLObject {
 			if (distance > grace_distance) {
 				distance -= grace_distance;
 				double upkeep = base * Math.pow(distance, falloff);
-				
 				total += upkeep;
 			} 
-			
 		}
-		
 		return Math.floor(total);
 	}
 
 	public double getTotalUpkeep() throws InvalidConfiguration {
-		return this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep() + this.getOutpostUpkeep();
+		return this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep();
 	}
 
 	public double getTradeRate() {
@@ -1958,11 +1948,7 @@ public class Town extends SQLObject {
 	}
 
 	public void removeTownChunk(TownChunk tc) {
-		if (tc.isOutpost()) {
-			this.outposts.remove(tc.getChunkCoord());
-		} else {
-			this.townChunks.remove(tc.getChunkCoord());
-		}
+		this.townChunks.remove(tc.getChunkCoord());
 	}
 
 	public Double getHammersFromCulture() {
@@ -2270,7 +2256,7 @@ public class Town extends SQLObject {
 			return false;
 		}
 		
-		if (daysInDebt >= CivSettings.TOWN_DEBT_GRACE_DAYS) {
+		if (daysInDebt >= CivSettings.GRACE_DAYS_TOWN_DEBT) {
 			return true;
 		}
 		
@@ -2325,29 +2311,6 @@ public class Town extends SQLObject {
 		}
 		
 		return points;
-	}
-
-	public void addOutpostChunk(TownChunk tc) throws AlreadyRegisteredException {
-		if (outposts.containsKey(tc.getChunkCoord())) {
-			throw new AlreadyRegisteredException("Outpost at "+tc.getChunkCoord()+" already registered to town "+this.getName());
-		}
-		outposts.put(tc.getChunkCoord(), tc);	
-	}
-
-	public Collection<TownChunk> getOutpostChunks() {
-		return outposts.values();
-	}
-
-	public double getOutpostUpkeep() {
-//		double outpost_upkeep;
-//		try {
-//			outpost_upkeep = CivSettings.getDouble(CivSettings.townConfig, "town.outpost_upkeep");
-//		} catch (InvalidConfiguration e) {
-//			e.printStackTrace();
-//			return 0.0;
-//		}
-		//return outpost_upkeep*outposts.size();
-		return 0;
 	}
 
 	public boolean isOutlaw(String name) {
@@ -2443,8 +2406,8 @@ public class Town extends SQLObject {
 	public void incrementDaysInDebt() {
 		daysInDebt++;
 
-		if (daysInDebt >= CivSettings.TOWN_DEBT_GRACE_DAYS) {
-			if (daysInDebt >= CivSettings.TOWN_DEBT_SELL_DAYS) {
+		if (daysInDebt >= CivSettings.GRACE_DAYS_TOWN_DEBT) {
+			if (daysInDebt >= CivSettings.SELL_DAYS_TOWN_DEBT) {
 				this.disband();
 				CivMessage.global("The town of "+this.getName()+" could not pay its debts and has fell into ruin!");
 				return;
@@ -2455,15 +2418,13 @@ public class Town extends SQLObject {
 	}
 	
 	public String getDaysLeftWarning() {
-		
-		if (daysInDebt < CivSettings.TOWN_DEBT_GRACE_DAYS) {
-			return ""+(CivSettings.TOWN_DEBT_GRACE_DAYS-daysInDebt)+" days until town goes up for sale.";
+		if (daysInDebt < CivSettings.GRACE_DAYS_TOWN_DEBT) {
+			return ""+(CivSettings.GRACE_DAYS_TOWN_DEBT-daysInDebt)+" days until town goes up for sale.";
 		}
 		
-		if (daysInDebt < CivSettings.TOWN_DEBT_SELL_DAYS) {
-			return this.getName()+" is up for sale, "+(CivSettings.TOWN_DEBT_SELL_DAYS-daysInDebt)+" days until the town is deleted!";
+		if (daysInDebt < CivSettings.SELL_DAYS_TOWN_DEBT) {
+			return this.getName()+" is up for sale, "+(CivSettings.SELL_DAYS_TOWN_DEBT-daysInDebt)+" days until the town is deleted!";
 		}
-		
 		return "";
 	}
 
@@ -2522,11 +2483,6 @@ public class Town extends SQLObject {
 				//player offline
 			}
 		}
-		
-		for (Resident resident : this.fakeResidents.values()) {
-			residents.add(resident);
-		}
-		
 		return residents;
 	}
 
@@ -2547,19 +2503,17 @@ public class Town extends SQLObject {
 	}
 	
 	public ConfigGovernment getGovernment() {
-		if (this.getCiv().getGovernment().id.equals("gov_anarchy")) {	
-			if (this.motherCiv != null && !this.motherCiv.getGovernment().id.equals("gov_anarchy")) {
-				return this.motherCiv.getGovernment();
-			}
-			
-			if (this.motherCiv != null) {
-				return CivSettings.governments.get("gov_tribalism");
-			}
-		}
-			
+//		if (this.getCiv().getGovernment().id.equals("gov_anarchy")) {	
+//			if (this.motherCiv != null && !this.motherCiv.getGovernment().id.equals("gov_anarchy")) {
+//				return this.motherCiv.getGovernment();
+//			}
+//			
+//			if (this.motherCiv != null) {
+//				return CivSettings.governments.get("gov_tribalism");
+//			}
+//		}
 		return this.getCiv().getGovernment();
 	}
-	
 	
 	public AttrSource getBeakerRate() {
 		double rate = 1.0;
@@ -2892,10 +2846,6 @@ public class Town extends SQLObject {
 
 	public void setCurrentWonderInProgress(Buildable currentWonderInProgress) {
 		this.currentWonderInProgress = currentWonderInProgress;
-	}
-
-	public void addFakeResident(Resident fake) {
-		this.fakeResidents.put(fake.getName(), fake);
 	}
 
 	private static String lastMessage = null;

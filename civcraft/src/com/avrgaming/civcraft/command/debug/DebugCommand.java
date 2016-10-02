@@ -21,8 +21,6 @@ package com.avrgaming.civcraft.command.debug;
 import gpl.AttributeUtil;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,7 +28,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -169,7 +166,6 @@ public class DebugCommand extends CommandBase {
 		commands.put("camp", "Debugs camps.");
 		commands.put("blockinfo", "[x] [y] [z] shows block info for this block.");
 		commands.put("trommel", "[name] - turn on this town's trommel debugging.");
-		commands.put("fakeresidents", "[town] [count] - Adds this many fake residents to a town.");
 		commands.put("clearresidents", "[town] - clears this town of it's random residents.");
 		commands.put("biomehere", "- shows you biome info where you're standing.");
 		commands.put("scout", "[civ] - enables debugging for scout towers in this civ.");
@@ -791,28 +787,6 @@ public class DebugCommand extends CommandBase {
 		for (Resident resident : removeUs) {
 			town.removeResident(resident);
 		}
-	}
-	
-	public void fakeresidents_cmd() throws CivException {
-		Town town = getNamedTown(1);
-		Integer count = getNamedInteger(2);
-		
-		for (int i = 0; i < count; i++) {
-			SecureRandom random = new SecureRandom();
-			String name = (new BigInteger(130, random).toString(32));
-			
-			try {
-				
-				Resident fake = new Resident(UUID.randomUUID(), "RANDOM_"+name);
-				town.addResident(fake);
-				town.addFakeResident(fake);
-			} catch (AlreadyRegisteredException e) {
-				//ignore
-			} catch (InvalidNameException e) {
-				//ignore
-			}
-		}
-		CivMessage.sendSuccess(sender, "Added "+count+" residents.");
 	}
 	
 	public void trommel_cmd() throws CivException {

@@ -75,8 +75,6 @@ public class AsciiMap {
 					
 					if (tc.isForSale()) {
 						outRow += CivColor.Yellow+"$";
-					} else if (tc.isOutpost()) { 
-						outRow += CivColor.Yellow+"O";
 					} else {
 						outRow += color+"T";
 					}

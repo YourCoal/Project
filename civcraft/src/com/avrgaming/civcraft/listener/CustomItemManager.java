@@ -34,6 +34,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -160,16 +161,67 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
+	@EventHandler (ignoreCancelled = true)
+	public void onWaterBreaksWheatEvent(BlockFromToEvent event) {
+		if (event.getBlock().getType().equals(Material.WATER) || event.getBlock().getType().equals(Material.STATIONARY_WATER)
+					&& event.getToBlock().getType().equals(Material.CROPS)) {
+			if (event.getToBlock().getType().equals(Material.CROPS)) {
+				Crops crops = (Crops) event.getToBlock().getState().getData();
+				if (crops.getState() != CropState.RIPE) {
+					return;
+				}
+				
+				ItemManager.setTypeIdAndData(event.getToBlock(), CivData.AIR, (byte)0, true);
+				try { //Drop seeds
+					Random rand = new Random();
+					int min = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.minseeds_water");
+					int max = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.maxseeds_water");
+					int randAmount = rand.nextInt(min + max) + 1;
+					randAmount -= min;
+					if (randAmount <= 0) {
+						randAmount = 1;
+					}
+					
+					for (int i = 0; i < randAmount; i++) {
+						ItemStack stack = new ItemStack(Material.SEEDS);
+						event.getToBlock().getWorld().dropItem(event.getBlock().getLocation(), stack);
+					}
+				} catch (InvalidConfiguration e) {
+					e.printStackTrace();
+					return;
+				} try { //Drop Wheat
+					Random rand = new Random();
+					int min = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.minwheat_water");
+					int max = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.maxwheat_water");
+					int randAmount = rand.nextInt(min + max) + 1;
+					randAmount -= min;
+					if (randAmount <= 0) {
+						randAmount = 1;
+					}
+					
+					for (int i = 0; i < randAmount; i++) {
+						ItemStack stack = new ItemStack(Material.WHEAT);
+						event.getToBlock().getWorld().dropItem(event.getBlock().getLocation(), stack);
+					}
+				} catch (InvalidConfiguration e) {
+					e.printStackTrace();
+					return;
+				}
+			}
+		}
+	}
+	
 	//XXX Lapis ore
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreakSpawnItems(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
 			if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
-				return;
+				event.getBlock().breakNaturally();
+//				ItemStack stack = new ItemStack(Material.LAPIS_ORE, 1);
+//				event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 			}
 			
 			event.setCancelled(true);
-			
 			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
 			
 			try {
@@ -270,21 +322,35 @@ public class CustomItemManager implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
+		
 		ItemStack stack = event.getItemDrop().getItemStack();
-
 		if (LoreMaterial.isCustom(stack)) {
 			LoreMaterial.getMaterial(stack).onItemDrop(event);
+			return;
 		}
-	}	
+		
+		String custom = isCustomDrop(stack);
+		if (custom != null) {
+			event.setCancelled(true);
+		}
+	}
 	
-	/*
-	 * Prevent the player from using goodies in crafting recipies.
-	 */
+	private static String isCustomDrop(ItemStack stack) {
+		if (stack == null || ItemManager.getId(stack) != 166) {
+			return null;
+		}
+		
+		if(LoreGuiItem.isGUIItem(stack)) {
+			return null;
+		}
+		return stack.getItemMeta().getDisplayName();
+	}
+	
+	/* Prevent the player from using goodies in crafting recipies. */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnCraftItemEvent(CraftItemEvent event) {	
 		for (ItemStack stack : event.getInventory().getMatrix()) {
 			if (stack != null) {
-
 				if (LoreMaterial.isCustom(stack)) {
 					LoreMaterial.getMaterial(stack).onItemCraft(event);
 				}
@@ -301,12 +367,21 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
+	//XXX Controls breaking items for blocks.
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnItemSpawn(ItemSpawnEvent event) {
 		ItemStack stack = event.getEntity().getItemStack();
-
 		if (LoreMaterial.isCustom(stack)) {
 			LoreMaterial.getMaterial(stack).onItemSpawn(event);
+			return;
+		}
+		
+		String custom = isCustomDrop(stack);
+		if (custom != null) {
+			ItemStack newStack = LoreMaterial.spawn(LoreMaterial.materialMap.get(custom), stack.getAmount());
+			event.getEntity().getWorld().dropItemNaturally(event.getLocation(), newStack);
+			event.setCancelled(true);
+			return;
 		}
 		
 		if (isUnwantedVanillaItem(stack)) {
@@ -365,7 +440,8 @@ public class CustomItemManager implements Listener {
 				craftMat.onAttack(event, inHand);
 			} else {
 				/* Non-civcraft items only do 0.5 damage. */
-				event.setDamage(0.5);
+				//XXX Setting to 1.0 since that is minecraft's default. Will need to adjust armor and sword stats.
+				event.setDamage(1.0);
 			}
 		}
 		

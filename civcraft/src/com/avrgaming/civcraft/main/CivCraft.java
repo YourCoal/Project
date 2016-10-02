@@ -26,9 +26,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import pvptimer.PvPListener;
-import pvptimer.PvPTimer;
-
 import com.avrgaming.anticheat.ACManager;
 import com.avrgaming.civcraft.arena.ArenaListener;
 import com.avrgaming.civcraft.arena.ArenaManager;
@@ -68,7 +65,7 @@ import com.avrgaming.civcraft.listener.BonusGoodieManager;
 import com.avrgaming.civcraft.listener.ChatListener;
 import com.avrgaming.civcraft.listener.CustomItemManager;
 import com.avrgaming.civcraft.listener.DebugListener;
-import com.avrgaming.civcraft.listener.DisableXPListener;
+import com.avrgaming.civcraft.listener.ExpListener;
 import com.avrgaming.civcraft.listener.HeroChatListener;
 import com.avrgaming.civcraft.listener.MarkerPlacementManager;
 import com.avrgaming.civcraft.listener.PlayerListener;
@@ -120,10 +117,14 @@ import com.avrgaming.global.scores.CalculateScoreTimer;
 import com.avrgaming.moblib.MobLib;
 import com.avrgaming.sls.SLSManager;
 
+import pvptimer.PvPListener;
+import pvptimer.PvPTimer;
+
 public final class CivCraft extends JavaPlugin {
 
-	private boolean isError = false;	
-	private static JavaPlugin plugin;	
+	private boolean isError = false;
+	public static JavaPlugin plugin;
+	public static boolean isDisable = false;
 	
 	private void startTimers() {
 		
@@ -156,8 +157,14 @@ public final class CivCraft extends JavaPlugin {
 		// Structure event timers
 		TaskMaster.asyncTimer("UpdateEventTimer", new UpdateEventTimer(), TimeTools.toTicks(1));
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
-
-		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
+		
+		try {
+			int beakerTimer = CivSettings.getInteger(CivSettings.timerConfig, "beaker_timer");
+			TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(beakerTimer), TimeTools.toTicks(beakerTimer));
+		} catch (InvalidConfiguration e1) {
+			e1.printStackTrace();
+		}
+		
 		TaskMaster.syncTimer("UnitTrainTimer", new UnitTrainTimer(), TimeTools.toTicks(1));
 		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(5));
 
@@ -218,7 +225,7 @@ public final class CivCraft extends JavaPlugin {
 		pluginManager.registerEvents(new DebugListener(), this);
 		pluginManager.registerEvents(new LoreCraftableMaterialListener(), this);
 		pluginManager.registerEvents(new LoreGuiItemListener(), this);
-		pluginManager.registerEvents(new DisableXPListener(), this);
+		pluginManager.registerEvents(new ExpListener(), this);
 		pluginManager.registerEvents(new PvPLogger(), this);
 		pluginManager.registerEvents(new TradeInventoryListener(), this);
 		pluginManager.registerEvents(new MobListener(), this);
@@ -326,27 +333,25 @@ public final class CivCraft extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		MobSpawner.despawnAll();
+		
+		super.onDisable();
+		isDisable = true;
+		SQLUpdate.save();
 	}
-
+	
 	public boolean isError() {
 		return isError;
 	}
-
+	
 	public void setError(boolean isError) {
 		this.isError = isError;
 	}
-
-
+	
 	public static JavaPlugin getPlugin() {
 		return plugin;
 	}
-
-
+	
 	public static void setPlugin(JavaPlugin plugin) {
 		CivCraft.plugin = plugin;
 	}
-
-
-	
-	
 }

@@ -116,44 +116,50 @@ import com.avrgaming.civcraft.war.WarRegen;
 import com.avrgaming.global.perks.PerkManager;
 
 public class CivGlobal {
-
+	
 	public static final double MIN_FRAME_DISTANCE = 3.0;
 	
 	public static Economy econ;
 	
 	private static Map<String, QuestionBaseTask> questions = new ConcurrentHashMap<String, QuestionBaseTask>();
 	public static Map<String, CivQuestionTask> civQuestions = new ConcurrentHashMap<String, CivQuestionTask>();
+	
 	private static Map<String, Resident> residents = new ConcurrentHashMap<String, Resident>();
 	private static Map<UUID, Resident> residentsViaUUID = new ConcurrentHashMap<UUID, Resident>();
-
+	
+	private static Map<String, Camp> camps = new ConcurrentHashMap<String, Camp>();
 	private static Map<String, Town> towns = new ConcurrentHashMap<String, Town>();
 	private static Map<String, Civilization> civs = new ConcurrentHashMap<String, Civilization>();
-	private static Map<String, Civilization> conqueredCivs = new ConcurrentHashMap<String, Civilization>();
 	private static Map<String, Civilization> adminCivs = new ConcurrentHashMap<String, Civilization>();
+	private static Map<String, Civilization> conqueredCivs = new ConcurrentHashMap<String, Civilization>();
+	
+	private static Map<ChunkCoord, Camp> campChunks = new ConcurrentHashMap<ChunkCoord, Camp>();
 	private static Map<ChunkCoord, TownChunk> townChunks = new ConcurrentHashMap<ChunkCoord, TownChunk>();
 	private static Map<ChunkCoord, CultureChunk> cultureChunks = new ConcurrentHashMap<ChunkCoord, CultureChunk>();
 	private static Map<ChunkCoord, Boolean> persistChunks = new ConcurrentHashMap<ChunkCoord, Boolean>();
-	private static Map<BlockCoord, Structure> structures = new ConcurrentHashMap<BlockCoord, Structure>();
+	
 	private static Map<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
-	private static Map<BlockCoord, StructureBlock> structureBlocks = new ConcurrentHashMap<BlockCoord, StructureBlock>();
-	//private static Map<BlockCoord, LinkedList<StructureBlock>> structureBlocksIn2D = new ConcurrentHashMap<BlockCoord, LinkedList<StructureBlock>>();
-	private static Map<String, HashSet<Buildable>> buildablesInChunk = new ConcurrentHashMap<String, HashSet<Buildable>>();
-	private static Map<BlockCoord, CampBlock> campBlocks = new ConcurrentHashMap<BlockCoord, CampBlock>();
+	private static Map<BlockCoord, Structure> structures = new ConcurrentHashMap<BlockCoord, Structure>();
 	private static Map<BlockCoord, StructureSign> structureSigns = new ConcurrentHashMap<BlockCoord, StructureSign>();
 	private static Map<BlockCoord, StructureChest> structureChests = new ConcurrentHashMap<BlockCoord, StructureChest>();
-	private static Map<BlockCoord, TradeGood> tradeGoods = new ConcurrentHashMap<BlockCoord, TradeGood>();
+	
+	private static Map<BlockCoord, CampBlock> campBlocks = new ConcurrentHashMap<BlockCoord, CampBlock>();
+	private static Map<BlockCoord, RoadBlock> roadBlocks = new ConcurrentHashMap<BlockCoord, RoadBlock>();
+	private static Map<ChunkCoord, HashSet<Wall>> wallChunks = new ConcurrentHashMap<ChunkCoord, HashSet<Wall>>();
+	private static Map<BlockCoord, StructureBlock> structureBlocks = new ConcurrentHashMap<BlockCoord, StructureBlock>();
 	private static Map<BlockCoord, ProtectedBlock> protectedBlocks = new ConcurrentHashMap<BlockCoord, ProtectedBlock>();
+	
+	private static Map<BlockCoord, TradeGood> tradeGoods = new ConcurrentHashMap<BlockCoord, TradeGood>();
+	private static Map<BlockCoord, BonusGoodie> bonusGoodies = new ConcurrentHashMap<BlockCoord, BonusGoodie>();
+	private static Map<UUID, ItemFrameStorage> protectedItemFrames = new ConcurrentHashMap<UUID, ItemFrameStorage>();
+	
 	private static Map<ChunkCoord, FarmChunk> farmChunks = new ConcurrentHashMap<ChunkCoord, FarmChunk>();
+	public static HashSet<BlockCoord> vanillaGrowthLocations = new HashSet<BlockCoord>();
 	private static Queue<FarmChunk> farmChunkUpdateQueue = new LinkedList<FarmChunk>();
 	private static Queue<FarmChunk> farmGrowQueue = new LinkedList<FarmChunk>();
-	private static Map<UUID, ItemFrameStorage> protectedItemFrames = new ConcurrentHashMap<UUID, ItemFrameStorage>();
-	private static Map<BlockCoord, BonusGoodie> bonusGoodies = new ConcurrentHashMap<BlockCoord, BonusGoodie>();
-	private static Map<ChunkCoord, HashSet<Wall>> wallChunks = new ConcurrentHashMap<ChunkCoord, HashSet<Wall>>();
-	private static Map<BlockCoord, RoadBlock> roadBlocks = new ConcurrentHashMap<BlockCoord, RoadBlock>();
+	
+	private static Map<String, HashSet<Buildable>> buildablesInChunk = new ConcurrentHashMap<String, HashSet<Buildable>>();
 	private static Map<BlockCoord, CustomMapMarker> customMapMarkers = new ConcurrentHashMap<BlockCoord, CustomMapMarker>();
-	private static Map<String, Camp> camps = new ConcurrentHashMap<String, Camp>();
-	private static Map<ChunkCoord, Camp> campChunks = new ConcurrentHashMap<ChunkCoord, Camp>();
-	public static HashSet<BlockCoord> vanillaGrowthLocations = new HashSet<BlockCoord>();
 	private static Map<BlockCoord, Market> markets = new ConcurrentHashMap<BlockCoord, Market>();
 	public static HashSet<String> researchedTechs = new HashSet<String>();
 	
@@ -164,8 +170,8 @@ public class CivGlobal {
 	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
 	
 	//TODO fix the duplicate score issue...
-	public static TreeMap<Integer, Civilization> civilizationScores = new TreeMap<Integer, Civilization>();
 	public static TreeMap<Integer, Town> townScores = new TreeMap<Integer, Town>();
+	public static TreeMap<Integer, Civilization> civilizationScores = new TreeMap<Integer, Civilization>();
 
 	public static HashMap<String, Date> playerFirstLoginMap = new HashMap<String, Date>();
 	public static HashSet<String> banWords = new HashSet<String>();
@@ -1536,14 +1542,13 @@ public class CivGlobal {
 			try {
 				relation.delete();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-
+	
 	public static boolean willInstantBreak(Material type) {
-
+		//TODO update for 1.8
 		switch (type) {
 		case BED_BLOCK:
 		case BROWN_MUSHROOM:

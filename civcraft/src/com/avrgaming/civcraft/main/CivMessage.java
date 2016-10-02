@@ -68,6 +68,10 @@ public class CivMessage {
 		send(sender, CivColor.Rose+line);
 	}
 	
+	public static void sendEnch(Object sender, String line) {		
+		send(sender, CivColor.LightBlue+CivColor.ITALIC+"[Enchanting] "+CivColor.RESET+line);		
+	}
+	
 	/*
 	 * Sends message to playerName(if online) AND console. 
 	 */
@@ -94,6 +98,7 @@ public class CivMessage {
 			}
 		}
 	}
+	
 	public static void send(Object sender, String[] lines) {
 		boolean isPlayer = false;
 		if (sender instanceof Player)

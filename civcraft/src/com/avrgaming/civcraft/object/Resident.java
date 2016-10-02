@@ -531,7 +531,7 @@ public class Resident extends SQLObject {
 	}
 
 	public void onEnterDebt() {
-		this.daysTilEvict = CivSettings.GRACE_DAYS;
+		this.daysTilEvict = CivSettings.GRACE_DAYS_DEBT;
 	}
 
 	public void warnDebt() {

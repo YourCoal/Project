@@ -21,6 +21,7 @@ package com.avrgaming.civcraft.threading.tasks;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
@@ -33,12 +34,20 @@ public class PlayerReviveTask implements Runnable {
 	String playerName;
 	int timeout;
 	TownHall townhall;
+	Camp camp;
 	Location alternativeLocation;
 	
 	public PlayerReviveTask(Player player, int timeout, TownHall townhall, Location alt) {
 		this.playerName = player.getName();
 		this.timeout = timeout;
 		this.townhall = townhall;
+		this.alternativeLocation = alt;
+	}
+	
+	public PlayerReviveTask(Player player, int timeout, Camp camp, Location alt) {
+		this.playerName = player.getName();
+		this.timeout = timeout;
+		this.camp = camp;
 		this.alternativeLocation = alt;
 	}
 	
@@ -93,11 +102,6 @@ public class PlayerReviveTask implements Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-		player.teleport(loc);		
-		
+		player.teleport(loc);
 	}
-
-	
-	
 }
