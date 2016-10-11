@@ -505,14 +505,10 @@ public class TownCommand extends CommandBase {
 		}
 		
 		if (!residentToKick.isLandOwner()) {
-//			town.removeResident(residentToKick);
-			residentToKick.setDaysTilEvict(CivSettings.GRACE_DAYS_EVICT1);
-			residentToKick.warnEvict();
-			residentToKick.save();
-			CivMessage.sendSuccess(sender, args[1]+" will be evicted from town in "+CivSettings.GRACE_DAYS_EVICT1+" days.");
+			town.removeResident(residentToKick);
 
 			try {
-				CivMessage.send(CivGlobal.getPlayer(residentToKick), CivColor.Yellow+"You are being evicted from the town in "+CivSettings.GRACE_DAYS_EVICT1+" days!");
+				CivMessage.send(CivGlobal.getPlayer(residentToKick), CivColor.Yellow+"You have been evicted from town!");
 			} catch (CivException e) {
 				//Player not online.
 			}
@@ -520,10 +516,10 @@ public class TownCommand extends CommandBase {
 			return;
 		}
 		
-		residentToKick.setDaysTilEvict(CivSettings.GRACE_DAYS_EVICT2);
+		residentToKick.setDaysTilEvict(CivSettings.GRACE_DAYS);
 		residentToKick.warnEvict();
 		residentToKick.save();
-		CivMessage.sendSuccess(sender, args[1]+" will be evicted from town in "+CivSettings.GRACE_DAYS_EVICT2+" days.");
+		CivMessage.sendSuccess(sender, args[1]+" will be evicted from town in "+CivSettings.GRACE_DAYS+" days.");
 	}
 	
 	public void show_cmd() throws CivException {
@@ -793,8 +789,14 @@ public class TownCommand extends CommandBase {
 		if (tc.perms.getOwner() != null && tc.perms.getOwner() != resident) {
 			throw new CivException("You cannot unclaim a chunk that belongs to another resident.");
 		}
+		
 		TownChunk.unclaim(tc);
-		CivMessage.sendSuccess(sender, "Unclaimed "+tc.getCenterString());
+		if (tc.isOutpost()) {
+			CivMessage.sendSuccess(sender, "Unclaimed Outpost at "+tc.getCenterString());
+		} else {
+			CivMessage.sendSuccess(sender, "Unclaimed "+tc.getCenterString());
+		}
+		
 	}
 	
 	public void group_cmd() throws CivException {

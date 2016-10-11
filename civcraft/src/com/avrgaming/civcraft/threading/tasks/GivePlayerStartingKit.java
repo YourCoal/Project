@@ -41,29 +41,28 @@ public class GivePlayerStartingKit implements Runnable {
 	public void run() {
 		try {
 			Player player = CivGlobal.getPlayer(name);
+			
 			for (String kitItems : CivSettings.kitItems) {
 				String[] split = kitItems.split(":");
+				
 				ItemStack stack;
 				try {
 					Integer type = Integer.valueOf(split[0]);
 					Integer amount = Integer.valueOf(split[1]);
-//					Short damage = Short.valueOf(split[2]);
-					
-//					if (damage != null) {
-//						stack = ItemManager.createItemStack(type, amount, damage);
-//					} else {
-						stack = ItemManager.createItemStack(type, amount);
-//					}
+
+					stack = ItemManager.createItemStack(type, amount);
+
 				} catch (NumberFormatException e) {
 					String customMatID = split[0];
-					Integer amount = Integer.valueOf(split[1]);
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(customMatID);
 					if (craftMat == null) {
 						CivLog.warning("Couldn't find custom material:"+customMatID+" to give to player on first join.");
 						continue;
 					}
-					stack = LoreCraftableMaterial.spawn(craftMat, amount);
+					
+					stack = LoreCraftableMaterial.spawn(craftMat);
 				}
+				
 				player.getInventory().addItem(stack);
 			}
 			
@@ -72,9 +71,14 @@ public class GivePlayerStartingKit implements Runnable {
 				resident.getTreasury().deposit(CivSettings.startingCoins);
 				resident.setGivenKit(true);
 			}
+			
+		
 		} catch (CivException e) {
+		//	e.printStackTrace();
 			CivLog.warning("Tried to give starting kit to offline player:"+name);
 			return;
 		}
+		
 	}
+
 }

@@ -30,7 +30,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.BlockCoord;
 
 public class ArrowTower extends Structure {
-	
+
 	ProjectileArrowComponent arrowComponent;
 	
 	protected ArrowTower(Location center, String id, Town town)
@@ -49,7 +49,10 @@ public class ArrowTower extends Structure {
 		arrowComponent = new ProjectileArrowComponent(this, this.getCenterLocation().getLocation());
 		arrowComponent.createComponent(this);
 	}
-	
+
+	/**
+	 * @return the damage
+	 */
 	public int getDamage() {
 		double rate = 1;
 		rate += this.getTown().getBuffManager().getEffectiveDouble(Buff.FIRE_BOMB);
@@ -59,26 +62,36 @@ public class ArrowTower extends Structure {
 	@Override
 	public int getMaxHitPoints() {
 		double rate = 1;
-		rate += this.getTown().getBuffManager().getEffectiveDouble(Buff.BARRICADE);
 		if (this.getTown().getBuffManager().hasBuff("buff_chichen_itza_tower_hp")) {
 			rate += this.getTown().getBuffManager().getEffectiveDouble("buff_chichen_itza_tower_hp");
+			rate += this.getTown().getBuffManager().getEffectiveDouble(Buff.BARRICADE);
 		}
 		return (int) (info.max_hitpoints * rate);
 	}
-	
+
+	/**
+	 * @param damage the damage to set
+	 */
 	public void setDamage(int damage) {
 		arrowComponent.setDamage(damage);
 	}
 	
+	/**
+	 * @return the power
+	 */
 	public double getPower() {
 		return arrowComponent.getPower();
 	}
-	
+
+	/**
+	 * @param power the power to set
+	 */
 	public void setPower(double power) {
 		arrowComponent.setPower(power);
 	}
-	
+
 	public void setTurretLocation(BlockCoord absCoord) {
 		arrowComponent.setTurretLocation(absCoord);
 	}	
+
 }

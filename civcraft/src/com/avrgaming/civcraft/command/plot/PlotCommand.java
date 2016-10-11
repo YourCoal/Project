@@ -35,7 +35,7 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 
 public class PlotCommand extends CommandBase {
-	
+
 	@Override
 	public void init() {
 		command = "/plot";
@@ -186,6 +186,11 @@ public class PlotCommand extends CommandBase {
 	public void buy_cmd() throws CivException {
 		TownChunk tc = this.getStandingTownChunk();
 		Resident resident = getResident();
+		
+		if (tc.isOutpost()) {
+			throw new CivException("Cannot buy outposts.");
+		}
+		
 		if (resident.getTown() != tc.getTown()) {
 			throw new CivException("You cannot buy this plot, you are not a member of this town.");
 		}
@@ -193,6 +198,7 @@ public class PlotCommand extends CommandBase {
 		if (tc.isForSale() == false) {
 			throw new CivException("This plot is not for sale.");
 		}
+		
 		tc.purchase(resident);
 		CivMessage.sendSuccess(sender, "Purchased plot "+tc.getChunkCoord()+" for "+tc.getValue()+" coins.");
 	}
@@ -200,6 +206,11 @@ public class PlotCommand extends CommandBase {
 	public void fs_cmd() throws CivException {
 		TownChunk tc = this.getStandingTownChunk();
 		this.validPlotOwner();
+		
+		if (tc.isOutpost()) {
+			throw new CivException("Cannot sell outposts.");
+		}
+		
 		if (args.length < 2) {
 			throw new CivException("You must specify a price.");
 		}
@@ -212,6 +223,7 @@ public class PlotCommand extends CommandBase {
 		} catch (NumberFormatException e) {
 			throw new CivException(args[1]+" could not be read as a number.");
 		}
+		
 		CivMessage.sendTown(tc.getTown(), "Placed plot "+tc.getCenterString()+" up for sale at "+args[1]+" coins.");
 	}
 	

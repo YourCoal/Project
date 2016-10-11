@@ -33,7 +33,6 @@ import com.avrgaming.civcraft.structure.ScoutTower;
 import com.avrgaming.civcraft.structure.Stable;
 import com.avrgaming.civcraft.structure.Store;
 import com.avrgaming.civcraft.structure.Structure;
-import com.avrgaming.civcraft.util.DecimalHelper;
 
 public class TownSetCommand extends CommandBase {
 
@@ -194,18 +193,18 @@ public class TownSetCommand extends CommandBase {
 	
 	public void taxrate_cmd() throws CivException {
 		Town town = getSelectedTown();
+		
 		if (args.length < 2) {
-			CivMessage.send(sender, "Current Income Percentage:" +town.getTaxRateString());
-			return;
+			throw new CivException("Please specify a tax rate.");
 		}
 		
-		double newPercentage = vaildatePercentage(args[1]);
-		if (newPercentage < town.getGovernment().min_town_tax_rate) {
-			throw new CivException("Cannot set your tax rate lower than your government's minimum ("+
-					DecimalHelper.formatPercentage(town.getGovernment().min_town_tax_rate)+")");
+		try { 
+			town.setTaxRate(Double.valueOf(args[1])/100);
+		} catch (NumberFormatException e) {
+			throw new CivException(args[1]+" is not a number.");
 		}
-		town.setTaxRate(newPercentage);
-		town.save();
+		
+		town.quicksave();
 		CivMessage.sendTown(town, "Town changed property tax rate to "+args[1]+"%");
 	}
 
@@ -225,35 +224,24 @@ public class TownSetCommand extends CommandBase {
 		CivMessage.send(town, "Town changed flat tax to "+args[1]);
 	}
 	
-	private double vaildatePercentage(String arg) throws CivException {
-		try { 
-			arg = arg.replace("%", "");
-			Integer amount = Integer.valueOf(arg);
-			if (amount < 0 || amount > 100) {
-				throw new CivException ("You must set a percentage between 0% and 100%");
-			}
-			return ((double)amount/100);
-		} catch (NumberFormatException e) {
-			throw new CivException(arg+" is not a number.");
-		}	
-	}
-	
 	@Override
 	public void doDefaultAction() throws CivException {
 		showHelp();
 	}
-	
+
 	@Override
 	public void showHelp() {
 		showBasicHelp();
 	}
-	
+
 	@Override
 	public void permissionCheck() throws CivException {
 		Town town = getSelectedTown();
 		Player player = getPlayer();
+		
 		if (!town.playerIsInGroupName("mayors", player) && !town.playerIsInGroupName("assistants", player)) {
 			throw new CivException("Only mayors and assistants can use this command.");
 		}		
 	}
+
 }

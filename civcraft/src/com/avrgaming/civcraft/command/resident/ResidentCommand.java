@@ -28,7 +28,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.avrgaming.civcraft.book.StarterTips;
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivException;
@@ -59,19 +58,18 @@ public class ResidentCommand extends CommandBase {
 		commands.put("refresh", "Refreshes your perks.");
 		commands.put("timezone", "(timezone) Display your current timezone or change it to (timezone)");
 		commands.put("pvptimer", "Remove your PvP Timer. This is a permenant change and can not be undone.");
-		commands.put("tips", "gives you admin");
 		//commands.put("switchtown", "[town] - Allows you to instantly change your town to this town, if this town belongs to your civ.");
 	}
 	
-	public void tips_cmd() throws CivException {
-		Player player = getPlayer();
-		StarterTips.spawnGuiBook(player.getPlayer());
-		CivMessage.sendSuccess(player, "Opened the starter tips book.");
-	}
-	
 	public void pvptimer_cmd() throws CivException {
-		ResidentPvPTimerCommand cmd = new ResidentPvPTimerCommand();	
-		cmd.onCommand(sender, null, "pvptimer", this.stripArgs(args, 1));
+		Resident resident = getResident();
+		
+		if (!resident.isProtected()) {
+			CivMessage.sendError(sender, "You are not protected at this time.");
+		}
+		
+		resident.setisProtected(false);
+		CivMessage.sendSuccess(sender, "You are no longer protected.");
 	}
 	
 	public void timezone_cmd() throws CivException {

@@ -6,7 +6,6 @@ import java.util.Random;
 import org.bukkit.Location;
 
 import com.avrgaming.civcraft.exception.CivException;
-import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.mob.ICustomMob;
 import com.avrgaming.moblib.MobLib;
@@ -101,50 +100,18 @@ public class MobSpawner {
 		}
 		validMobs.removeAll(removeUs);
 		
-		Random rand = new Random();
-		int idx = rand.nextInt(validMobs.size());
+		Random random = new Random();
+		int idx = random.nextInt(validMobs.size());
 		
 		CustomMobType type = validMobs.get(idx).type;
 		CustomMobLevel level = validMobs.get(idx).level;
 		
 		try {
-			int horde = rand.nextInt(1 + 1000) + 1;
-			if (horde == 69 || horde == 150 || horde == 333 || horde == 500 || horde == 666 || horde == 852 || horde == 999) {
-				CivMessage.global("A "+level+" "+type+" horde has spawned at X."+location.getX()+" Z."+location.getZ());
-				CustomMobType htype = type;
-				CustomMobLevel hlevel = level;
-				
-								//	\/ Should spawn 20 mobs, hopefully. If not, open the code below.
-				for (int i = 0; i < 20; i++) {
-					spawnCustomMob(htype, hlevel, location);
-				}
-				
-/*				spawnCustomMob(htype, hlevel, location); //1
-				spawnCustomMob(htype, hlevel, location); //2
-				spawnCustomMob(htype, hlevel, location); //3
-				spawnCustomMob(htype, hlevel, location); //4
-				spawnCustomMob(htype, hlevel, location); //5
-				spawnCustomMob(htype, hlevel, location); //6
-				spawnCustomMob(htype, hlevel, location); //7
-				spawnCustomMob(htype, hlevel, location); //8
-				spawnCustomMob(htype, hlevel, location); //9
-				spawnCustomMob(htype, hlevel, location); //10
-				spawnCustomMob(htype, hlevel, location); //11
-				spawnCustomMob(htype, hlevel, location); //12
-				spawnCustomMob(htype, hlevel, location); //13
-				spawnCustomMob(htype, hlevel, location); //14
-				spawnCustomMob(htype, hlevel, location); //15
-				spawnCustomMob(htype, hlevel, location); //16
-				spawnCustomMob(htype, hlevel, location); //17
-				spawnCustomMob(htype, hlevel, location); //18
-				spawnCustomMob(htype, hlevel, location); //19
-				spawnCustomMob(htype, hlevel, location); //20
-				//TODO Spawn a mob alike yobo-boss, but when damaged, all these mobs spawn.*/
-			} else {
 			spawnCustomMob(type, level, location);
-			}
 		} catch (CivException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
 }

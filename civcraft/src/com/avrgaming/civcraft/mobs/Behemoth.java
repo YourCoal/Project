@@ -1,301 +1,127 @@
 package com.avrgaming.civcraft.mobs;
 
-import java.util.List;
+import net.minecraft.server.v1_7_R4.EntityCreature;
+import net.minecraft.server.v1_7_R4.EntityHuman;
+import net.minecraft.server.v1_7_R4.EntityInsentient;
+import net.minecraft.server.v1_7_R4.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_7_R4.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_7_R4.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_7_R4.PathfinderGoalRandomStroll;
 
-import net.minecraft.server.v1_8_R3.AxisAlignedBB;
-import net.minecraft.server.v1_8_R3.DamageSource;
-import net.minecraft.server.v1_8_R3.Entity;
-import net.minecraft.server.v1_8_R3.EntityCreature;
-import net.minecraft.server.v1_8_R3.EntityHuman;
-import net.minecraft.server.v1_8_R3.EntityInsentient;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.IRangedEntity;
-import net.minecraft.server.v1_8_R3.PathfinderGoalArrowAttack;
-import net.minecraft.server.v1_8_R3.PathfinderGoalFloat;
-import net.minecraft.server.v1_8_R3.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_8_R3.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_8_R3.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_8_R3.PathfinderGoalRandomStroll;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.FireworkEffect.Type;
-import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
-import org.bukkit.util.Vector;
 
 import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobLevel;
 import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobType;
 import com.avrgaming.civcraft.mobs.components.MobComponentDefense;
-import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.threading.tasks.FireWorkTask;
 import com.avrgaming.mob.ICustomMob;
-import com.avrgaming.mob.MobBaseSnowman;
+import com.avrgaming.mob.MobBaseIronGolem;
 
 public class Behemoth extends CommonCustomMob implements ICustomMob {
-	
-	private double damage;
-	
+
 	public void onCreate() {
-		initLevelAndType();
-		getGoalSelector().a(1, new PathfinderGoalFloat((EntityInsentient) entity));
-		getGoalSelector().a(2, new PathfinderGoalArrowAttack((IRangedEntity) entity, 1.0D, 60, 10.0F));
-		getGoalSelector().a(2, new PathfinderGoalRandomStroll((EntityCreature) entity, 1.0D));
-		getGoalSelector().a(3, new PathfinderGoalLookAtPlayer((EntityInsentient) entity, EntityHuman.class, 8.0F));
-		getGoalSelector().a(3, new PathfinderGoalRandomLookaround((EntityInsentient) entity));
-		getTargetSelector().a(1, new PathfinderGoalHurtByTarget((EntityCreature) entity, true));
-		this.setName(this.getLevel().getName()+" "+this.getType().getName());
+	    initLevelAndType();
+
+		getGoalSelector().a(7, new PathfinderGoalRandomStroll((EntityCreature) entity, 1.0D));
+		getGoalSelector().a(8, new PathfinderGoalLookAtPlayer((EntityInsentient) entity, EntityHuman.class, 8.0F));
+	    getGoalSelector().a(2, new PathfinderGoalMeleeAttack((EntityCreature) entity, EntityHuman.class, 1.0D, false));
+	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget((EntityCreature) entity, EntityHuman.class, 0, true));
+
+	    this.setName(this.getLevel().getName()+" "+this.getType().getName());
 	}
-	
-	@Override
-	public void onTick() {
-		super.onTick();		
-	}
-	
+
 	public void onCreateAttributes() {
 		MobComponentDefense defense;
-		this.setKnockbackResistance(1.0);
+	    this.setKnockbackResistance(1.0D);
+	    this.setMovementSpeed(0.15);
+
 		switch (this.getLevel()) {
-		
 		case LESSER:
-			defense = new MobComponentDefense(3.5);
-			setMaxHealth(50.0);
-			modifySpeed(1.2);
-			coinDrop(5, 25);
-			
-			this.addDrop("mat_ionic_crystal_fragment_1", 0.05);
-			this.addDrop("mat_forged_clay", 0.1);
-			this.addDrop("mat_crafted_reeds", 0.1);
-			this.addDrop("mat_crafted_sticks", 0.1);
+		    defense = new MobComponentDefense(3.5);
+		    setMaxHealth(75);
+		    modifySpeed(1.3);
+		    this.addDrop("mat_ionic_crystal_fragment_1", 0.05);
+		    
+		    this.addDrop("mat_forged_clay", 0.1);
+		    this.addDrop("mat_crafted_reeds", 0.1);
+		    this.addDrop("mat_crafted_sticks", 0.1);
+		    this.coinDrop(1, 25);
 			break;
-			
 		case GREATER:
-			defense = new MobComponentDefense(10);
-			setMaxHealth(65.0);
-			modifySpeed(1.2);
-			coinDrop(10, 40);
-			
-			this.addDrop("mat_ionic_crystal_fragment_2", 0.05);
-			this.addDrop("mat_steel_plate", 0.1);
-			this.addDrop("mat_steel_ingot", 0.05);
-			this.addDrop("mat_clay_molding", 0.05);
-			this.addDrop("mat_varnish", 0.01);
-			this.addDrop("mat_sticky_resin", 0.05);
-			break;
-			
+		    defense = new MobComponentDefense(10);
+		    setMaxHealth(125.0);
+		    modifySpeed(1.4);
+		    this.addDrop("mat_ionic_crystal_fragment_2", 0.05);
+
+		    this.addDrop("mat_steel_plate", 0.1);
+		    this.addDrop("mat_steel_ingot", 0.05);
+		    this.addDrop("mat_clay_molding", 0.05);
+
+		    this.addDrop("mat_varnish", 0.01);
+		    this.addDrop("mat_sticky_resin", 0.05);
+		    this.coinDrop(10, 50);
+		    break;
 		case ELITE:
-			defense = new MobComponentDefense(15);
-			setMaxHealth(80.0);
-			modifySpeed(1.2);
-			coinDrop(25, 65);
-			
-			this.addDrop("mat_ionic_crystal_fragment_3", 0.05);
-			this.addDrop("mat_carbide_steel_plate", 0.1);
-			this.addDrop("mat_carbide_steel_ingot", 0.05);
-			this.addDrop("mat_clay_molding", 0.05);
-			this.addDrop("mat_sticky_resin", 0.1);
-			this.addDrop("mat_smithy_resin", 0.05);
+		    defense = new MobComponentDefense(16);
+		    setMaxHealth(150.0);
+		    modifySpeed(1.5);
+		    this.addDrop("mat_ionic_crystal_fragment_3", 0.05);
+
+		    this.addDrop("mat_carbide_steel_plate", 0.1);
+		    this.addDrop("mat_carbide_steel_ingot", 0.05);
+		    this.addDrop("mat_clay_molding", 0.05);
+
+		    this.addDrop("mat_sticky_resin", 0.1);
+		    this.addDrop("mat_smithy_resin", 0.05);
+		    this.coinDrop(20, 80);
 			break;
-			
 		case BRUTAL:
-			defense = new MobComponentDefense(20);
-			setMaxHealth(95.0);
-			modifySpeed(1.2);
-			coinDrop(40, 100);
-			
-			this.addDrop("mat_ionic_crystal_fragment_4", 0.05);
-			this.addDrop("mat_tungsten_plate", 0.1);
-			this.addDrop("mat_tungsten_ingot", 0.05);
-			this.addDrop("mat_clay_tungsten_casting", 0.05);
-			this.addDrop("mat_sticky_resin", 0.1);
-			this.addDrop("mat_smithy_resin", 0.05);
+		    this.addDrop("mat_ionic_crystal_fragment_4", 0.05);
+		    
+		    this.addDrop("mat_tungsten_plate", 0.1);
+		    this.addDrop("mat_tungsten_ingot", 0.05);
+		    this.addDrop("mat_clay_tungsten_casting", 0.05);
+		    
+		    this.addDrop("mat_sticky_resin", 0.1);
+		    this.addDrop("mat_smithy_resin", 0.05);
+
+		    defense = new MobComponentDefense(20);
+		    setMaxHealth(160.0);
+		    modifySpeed(1.6);
+		    this.coinDrop(20, 150);
+
 			break;
-			
 		default:
-			defense = new MobComponentDefense(1);
+		    defense = new MobComponentDefense(2);
 			break;
 		}
-		this.addComponent(defense);
+		
+	    this.addComponent(defense);
 	}
-	
+
 	@Override
 	public String getBaseEntity() {
-		return MobBaseSnowman.class.getName();
+		return MobBaseIronGolem.class.getName();
 	}
-	
+
 	@Override
 	public String getClassName() {
 		return Behemoth.class.getName();
 	}
-	
+
 	public static void register() {
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.FROZEN_RIVER);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.FROZEN_OCEAN);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.COLD_BEACH);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.COLD_TAIGA);
 		
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.ICE_MOUNTAINS);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.COLD_TAIGA_HILLS);
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.COLD_TAIGA_MOUNTAINS);
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.FROZEN_RIVER);
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.FROZEN_OCEAN);
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.COLD_BEACH);
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.LESSER, Biome.COLD_TAIGA);
+	
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.COLD_TAIGA_HILLS);
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.COLD_TAIGA_MOUNTAINS);
 		
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.ELITE, Biome.ICE_PLAINS);
-		
-		setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.BRUTAL, Biome.ICE_PLAINS_SPIKES);
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.ELITE, Biome.ICE_PLAINS);
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.GREATER, Biome.ICE_MOUNTAINS);
+
+		    setValidBiome(CustomMobType.BEHEMOTH, CustomMobLevel.BRUTAL, Biome.ICE_PLAINS_SPIKES);
 	}
 	
-	@Override
-	public void onTarget(EntityTargetEvent event) {
-		super.onTarget(event);
-		if (event.getReason().equals(TargetReason.FORGOT_TARGET) ||
-			event.getReason().equals(TargetReason.TARGET_DIED)) {
-			event.getEntity().remove();
-			CommonCustomMob.customMobs.remove(this.entity.getUniqueID());
-		}
-		
-		Location current = getLocation((EntityCreature) entity);
-		Location targetLoc = event.getTarget().getLocation();
-		if (current.distance(targetLoc) > this.getFollowRange()) {
-			event.setCancelled(true);
-		}
-	}
-	
-	@Override
-	public void onRangedAttack(Entity target) {
-		if (!(target instanceof EntityPlayer)) {
-			return;
-		}
-		
-		class RuffianProjectile {
-			Location loc;
-			Location target;
-			org.bukkit.entity.Entity attacker;
-			int speed = 1;
-			double damage;
-			int splash = 5;
-			
-			public RuffianProjectile(Location loc, Location target, org.bukkit.entity.Entity attacker, double damage) {
-				this.loc = loc;
-				this.target = target;
-				this.attacker = attacker;
-				this.damage = damage;
-			}
-			
-			public Vector getVectorBetween(Location to, Location from) {
-				Vector dir = new Vector();
-				dir.setX(to.getX() - from.getX());
-				dir.setY(to.getY() - from.getY());
-				dir.setZ(to.getZ() - from.getZ());
-				return dir;
-			}
-			
-			public boolean advance() {
-				Vector dir = getVectorBetween(target, loc).normalize();	
-				dir.multiply(speed);
-				
-				loc.add(dir);
-				loc.getWorld().createExplosion(loc, 0.0f, false);
-				
-				double distance = loc.distanceSquared(target);
-				distance = loc.distanceSquared(target);
-				
-				if (distance < speed*1.5) {
-					loc.setX(target.getX());
-					loc.setY(target.getY());
-					loc.setZ(target.getZ());
-					this.onHit();
-					return true;
-				}
-				return false;
-			}
-			
-			public void onHit() {				
-				int spread = 3;
-				int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
-				for (int i = 0; i < 4; i++) {
-					int x = offset[i][0]*spread;
-					int y = 0;
-					int z = offset[i][1]*spread;
-					
-					Location location = new Location(loc.getWorld(), loc.getX(),loc.getY(), loc.getZ());
-					location = location.add(x, y, z);
-					
-					launchExplodeFirework(location);
-					//loc.getWorld().createExplosion(location, 1.0f, true);
-					//setFireAt(location, spread);
-				}
-				
-				damagePlayers(loc, splash);
-				launchExplodeFirework(loc);
-				//loc.getWorld().createExplosion(loc, 1.0f, true);
-				//setFireAt(loc, spread);
-			}
-			
-			@SuppressWarnings("deprecation")
-			private void damagePlayers(Location loc, int radius) {
-				double x = loc.getX()+0.5;
-				double y = loc.getY()+0.5;
-				double z = loc.getZ()+0.5;
-				double r = (double)radius;
-				
-				CraftWorld craftWorld = (CraftWorld)attacker.getWorld();
-				AxisAlignedBB bb = new AxisAlignedBB(x-r, y-r, z-r, x+r, y+r, z+r);
-				List<Entity> entities = craftWorld.getHandle().getEntities(((CraftEntity)attacker).getHandle(), bb);
-				
-				for (Entity e : entities) {
-					if (e instanceof EntityPlayer) {
-						EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, ((EntityPlayer)e).getBukkitEntity(), DamageCause.ENTITY_ATTACK, damage);
-						Bukkit.getServer().getPluginManager().callEvent(event);
-						e.damageEntity(DamageSource.GENERIC, (float) event.getDamage());
-					}
-				}
-			}
-			
-//			private void setFireAt(Location loc, int radius) {
-//				//Set the entire area on fire.
-//				for (int x = -radius; x < radius; x++) {
-//					for (int y = -3; y < 3; y++) {
-//						for (int z = -radius; z < radius; z++) {
-//							Block block = loc.getWorld().getBlockAt(loc.getBlockX()+x, loc.getBlockY()+y, loc.getBlockZ()+z);
-//							if (ItemManager.getId(block) == CivData.AIR) {
-//								ItemManager.setTypeId(block, CivData.FIRE);
-//								ItemManager.setData(block, 0, true);
-//							}
-//						}
-//					}
-//				}
-//			}
-			
-			private void launchExplodeFirework(Location loc) {
-				FireworkEffect fe1 = FireworkEffect.builder().withColor(Color.ORANGE).withColor(Color.YELLOW).withColor(Color.WHITE).flicker(true).with(Type.BURST).build();
-				TaskMaster.syncTask(new FireWorkTask(fe1, loc.getWorld(), loc, 2), 0);
-			}
-		}
-		
-		class SyncFollow implements Runnable {
-			public RuffianProjectile proj;
-			
-			@Override
-			public void run() {
-				
-				if (proj.advance()) {
-					proj = null;
-					return;
-				}
-				TaskMaster.syncTask(this, 1);
-			}
-		}
-		
-		SyncFollow follow = new SyncFollow();
-		RuffianProjectile proj = new RuffianProjectile(getLocation((EntityCreature) entity), 
-				getLocation((EntityPlayer)target), this.entity.getBukkitEntity(), damage);
-		follow.proj = proj;
-		TaskMaster.syncTask(follow);		
-	}
 }

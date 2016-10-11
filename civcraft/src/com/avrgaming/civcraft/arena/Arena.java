@@ -84,7 +84,6 @@ public class Arena {
 		return getInstanceName(this.instanceID, config);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void addTeam(ArenaTeam team) throws CivException {
 		this.scoreboards.put(team.getName(), ArenaManager.scoreboardManager.getNewScoreboard());
 		

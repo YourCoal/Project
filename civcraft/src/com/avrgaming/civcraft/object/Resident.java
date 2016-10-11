@@ -531,7 +531,7 @@ public class Resident extends SQLObject {
 	}
 
 	public void onEnterDebt() {
-		this.daysTilEvict = CivSettings.GRACE_DAYS_DEBT;
+		this.daysTilEvict = CivSettings.GRACE_DAYS;
 	}
 
 	public void warnDebt() {
@@ -848,7 +848,6 @@ public class Resident extends SQLObject {
 		return this.getTown().getCiv();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setScoreboardName(String name, String key) {
 		if (this.scoreboard == null) {
 			this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();

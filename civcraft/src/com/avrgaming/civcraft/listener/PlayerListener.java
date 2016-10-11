@@ -25,11 +25,9 @@ import java.util.Date;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -41,7 +39,6 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -60,7 +57,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigTechPotion;
 import com.avrgaming.civcraft.items.units.Unit;
@@ -75,11 +71,10 @@ import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.road.Road;
-import com.avrgaming.civcraft.structure.TownHall;
+import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.PlayerChunkNotifyAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PlayerLoginAsyncTask;
-import com.avrgaming.civcraft.threading.tasks.PlayerReviveTask;
 import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
@@ -89,9 +84,9 @@ import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarStats;
 
 public class PlayerListener implements Listener {
-	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerPickup(PlayerPickupItemEvent event) {
+		
 		String name;
 		boolean rare = false;
 		if (event.getItem().getItemStack().getItemMeta().hasDisplayName()) {
@@ -109,6 +104,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 	
+	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		CivLog.info("Scheduling on player login task for player:"+event.getPlayer().getName());
@@ -121,18 +117,13 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerTeleportEvent(PlayerTeleportEvent event) {
-		if (event.getCause().equals(TeleportCause.COMMAND) || event.getCause().equals(TeleportCause.PLUGIN)) {
-			CivLog.info("[TELEPORT] "+event.getPlayer().getName()+" to:"+event.getTo().getBlockX()+","+event.getTo().getBlockY()+","+event.getTo().getBlockZ()+
-					" from:"+event.getFrom().getBlockX()+","+event.getFrom().getBlockY()+","+event.getFrom().getBlockZ());
-		}
-		
-		if (event.getCause().equals(TeleportCause.UNKNOWN)) {
-			CivLog.info("[TELEPORT ERROR] A player teleported with unknown cause! Attempting to grab coordinates...");
+		if (event.getCause().equals(TeleportCause.COMMAND) ||
+				event.getCause().equals(TeleportCause.PLUGIN)) {
 			CivLog.info("[TELEPORT] "+event.getPlayer().getName()+" to:"+event.getTo().getBlockX()+","+event.getTo().getBlockY()+","+event.getTo().getBlockZ()+
 					" from:"+event.getFrom().getBlockX()+","+event.getFrom().getBlockY()+","+event.getFrom().getBlockZ());
 		}
 	}
-	
+		
 	private void setModifiedMovementSpeed(Player player) {
 		/* Change move speed based on armor. */
 		double speed = CivSettings.normal_speed;
@@ -175,19 +166,24 @@ public class PlayerListener implements Listener {
 			if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
 				Vector vec = player.getVehicle().getVelocity();
 				double yComp = vec.getY();
+				
 				vec.multiply(Road.ROAD_HORSE_SPEED);
 				vec.setY(yComp); /* Do not multiply y velocity. */
+				
 				player.getVehicle().setVelocity(vec);
 			} else {
 				speed *= Road.ROAD_PLAYER_SPEED;
 			}
 		}
+		
 		player.setWalkSpeed((float) Math.min(1.0f, speed));
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerMove(PlayerMoveEvent event) {
-		/* Abort if we havn't really moved */
+		/*
+		 * Abort if we havn't really moved
+		 */
 		if (event.getFrom().getBlockX() == event.getTo().getBlockX() && 
 			event.getFrom().getBlockZ() == event.getTo().getBlockZ() && 
 			event.getFrom().getBlockY() == event.getTo().getBlockY()) {
@@ -208,57 +204,36 @@ public class PlayerListener implements Listener {
 		
 		TaskMaster.asyncTask(PlayerChunkNotifyAsyncTask.class.getSimpleName(), 
 				new PlayerChunkNotifyAsyncTask(event.getFrom(), event.getTo(), event.getPlayer().getName()), 0);
+
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		
 		Player player = event.getPlayer();
 		Resident resident = CivGlobal.getResident(player);
 		if (resident == null || !resident.hasTown()) {
 			return;
 		}
 		
-		if (resident == null || !resident.hasCamp()) {
-			return;
-		}
-		
 		if (War.isWarTime() && !resident.isInsideArena()) {
 			if (resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
-				TownHall townhall = resident.getTown().getTownHall();
-				//Capitol capitol = resident.getCiv().getCapitolStructure();
-				if (townhall != null) {
-					BlockCoord respawn = townhall.getRandomRespawnPoint();
+				//TownHall townhall = resident.getTown().getTownHall();
+				Capitol capitol = resident.getCiv().getCapitolStructure();
+				if (capitol != null) {
+					BlockCoord respawn = capitol.getRandomRespawnPoint();
 					if (respawn != null) {
-						PlayerReviveTask reviveTask = new PlayerReviveTask(player, townhall.getRespawnTime(), townhall, event.getRespawnLocation());
+						//PlayerReviveTask reviveTask = new PlayerReviveTask(player, townhall.getRespawnTime(), townhall, event.getRespawnLocation());
 						resident.setLastKilledTime(new Date());
 						event.setRespawnLocation(respawn.getCenteredLocation());
 						CivMessage.send(player, CivColor.LightGray+"You've respawned in the War Room since it's WarTime and you're at war.");
-						TaskMaster.asyncTask("", reviveTask, 0);
+						
+						//TaskMaster.asyncTask("", reviveTask, 0);
 					}
 				}
 			}
 		}
 		
-		if (resident != null || resident.hasCamp()) {
-			Camp camp = resident.getCamp();
-			if (camp != null) {
-															//TODO get custom respawn spot INSIDE protected area
-				PlayerReviveTask reviveTask = new PlayerReviveTask(player, 0, camp, camp.getCorner().getLocation());
-				TaskMaster.asyncTask("", reviveTask, 0);
-			}
-		}
-		
-		if (resident != null || resident.hasTown()) {
-			TownHall townhall = resident.getTown().getTownHall();
-			if (townhall != null) {
-				BlockCoord respawn = townhall.getRandomRespawnPoint();
-				if (respawn != null) {
-					PlayerReviveTask reviveTask = new PlayerReviveTask(player, 0, townhall, event.getRespawnLocation());
-					event.setRespawnLocation(respawn.getCenteredLocation());
-					TaskMaster.asyncTask("", reviveTask, 0);
-				}
-			}
-		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -269,9 +244,7 @@ public class PlayerListener implements Listener {
 				resident.previewUndo.clear();
 			}
 			resident.clearInteractiveMode();
-		}	
-		PlayerLocationCacheUpdate.playerQueue.remove(event.getPlayer().getName());
-		MobSpawnerTimer.playerQueue.remove((event.getPlayer().getName()));
+		}		
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -282,6 +255,7 @@ public class PlayerListener implements Listener {
 			ArrayList<ItemStack> stacksToRemove = new ArrayList<ItemStack>();
 			for (ItemStack stack : event.getDrops()) {
 				if (stack != null) {
+					//CustomItemStack is = new CustomItemStack(stack);
 					LoreMaterial material = LoreMaterial.getMaterial(stack);
 					if (material != null) {
 						material.onPlayerDeath(event, stack);
@@ -307,11 +281,15 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		if (War.isWarTime()) {
-			WarStats.incrementPlayerDeaths(event.getEntity().getPlayer().getName());
 			if (event.getEntity().getKiller() != null) {
-				WarStats.incrementPlayerKills(event.getEntity().getPlayer().getKiller().getName());
+				WarStats.incrementPlayerKills(event.getEntity().getKiller().getName());
 			}
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST) 
+	public void onPortalCreate(PortalCreateEvent event) {
+		event.setCancelled(true);
 	}
 	
 //	@EventHandler(priority = EventPriority.NORMAL)
@@ -344,26 +322,17 @@ public class PlayerListener implements Listener {
 ////		}
 //	}
 	
-	@EventHandler(priority = EventPriority.HIGHEST) 
-	public void onPortalCreate(PortalCreateEvent event) {
-		event.setCancelled(true);
-	}
-	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerPortalEvent(PlayerPortalEvent event) {
 		if(event.getCause().equals(TeleportCause.END_PORTAL)) {
 			event.setCancelled(true);
-			//CivMessage.sendErrorNoRepeat(event.getPlayer(), "The End is disabled on this server.");
-			//TODO Allow a portal to be built with high tech or victory-ish condition?
-			CivMessage.sendError(event.getPlayer(), "The End is disabled until a player has the "+CivColor.MAGIC+"lolimtroll");
+			CivMessage.sendErrorNoRepeat(event.getPlayer(), "The End portal is disabled on this server.");
 			return;
 		}
 		
 		if (event.getCause().equals(TeleportCause.NETHER_PORTAL)) {
 			event.setCancelled(true);
-			//CivMessage.sendErrorNoRepeat(event.getPlayer(), "The Nether is disabled on this server.");
-			//TODO Allow a portal to be built inside your capitol, when upgraded?
-			CivMessage.sendError(event.getPlayer(), "The Nether is disabled until you upgrade your "+CivColor.MAGIC+"lolimtroll");
+			CivMessage.sendErrorNoRepeat(event.getPlayer(), "The Nether is disabled on this server.");
 			return;
 		}
 	}
@@ -371,30 +340,30 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
 		// THIS EVENT IS NOT RUN IN OFFLINE MODE
-		
-		//TODO if wartime and players do not have anti-cheat, kick them to avoid chat spam?
-		if (event.getLoginResult() == Result.KICK_FULL) {
-			event.setKickMessage("You were disconnected -- the server is full!");
-		}
 	}
+
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnPlayerBucketEmptyEvent(PlayerBucketEmptyEvent event) {
 		Resident resident = CivGlobal.getResident(event.getPlayer());
+	
 		if (resident == null) {
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		ChunkCoord coord = new ChunkCoord(event.getBlockClicked().getLocation());
 		CultureChunk cc = CivGlobal.getCultureChunk(coord);
 		if (cc != null) {
-			if (event.getBucket().equals(Material.LAVA_BUCKET) || event.getBucket().equals(Material.LAVA)) {
+			if (event.getBucket().equals(Material.LAVA_BUCKET) || 
+					event.getBucket().equals(Material.LAVA)) {
+				
 				if (!resident.hasTown() || (resident.getTown().getCiv() != cc.getCiv())) {
 					CivMessage.sendError(event.getPlayer(), "You cannot place lava inside another civ's culture.");
 					event.setCancelled(true);
 					return;
 				}
+				
 			}
 		}
 	}
@@ -413,6 +382,7 @@ public class PlayerListener implements Listener {
 		
 		if (event.getContents().contains(Material.POTION)) {
 			ItemStack potion = event.getContents().getItem(event.getContents().first(Material.POTION));
+			
 			if (potion.getDurability() == CivData.MUNDANE_POTION_DATA || 
 				potion.getDurability() == CivData.MUNDANE_POTION_EXT_DATA ||
 				potion.getDurability() == CivData.THICK_POTION_DATA) {
@@ -427,6 +397,7 @@ public class PlayerListener implements Listener {
 			type.getType().equals(PotionEffectType.HEAL)) {
 			return false;
 		}
+		
 		return true;
 	}
 	
@@ -465,11 +436,12 @@ public class PlayerListener implements Listener {
 			}
 		}
 	}
-	 
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onInventoryOpenEvent(InventoryOpenEvent event) {
 		if (event.getInventory() instanceof DoubleChestInventory) {
 			DoubleChestInventory doubleInv = (DoubleChestInventory)event.getInventory();
+						
 			Chest leftChest = (Chest)doubleInv.getHolder().getLeftSide();			
 			/*Generate a new player 'switch' event for the left and right chests. */
 			PlayerInteractEvent interactLeft = new PlayerInteractEvent((Player)event.getPlayer(), Action.RIGHT_CLICK_BLOCK, null, leftChest.getBlock(), null);
@@ -483,6 +455,7 @@ public class PlayerListener implements Listener {
 			Chest rightChest = (Chest)doubleInv.getHolder().getRightSide();
 			PlayerInteractEvent interactRight = new PlayerInteractEvent((Player)event.getPlayer(), Action.RIGHT_CLICK_BLOCK, null, rightChest.getBlock(), null);
 			BlockListener.OnPlayerSwitchEvent(interactRight);
+			
 			if (interactRight.isCancelled()) {
 				event.setCancelled(true);
 				return;
@@ -515,28 +488,6 @@ public class PlayerListener implements Listener {
 			} else {
 				attacker = null;
 			}
-		} else if (event.getDamager() instanceof Egg) {
-			Egg egg = (Egg)event.getDamager();
-			if (egg.getShooter() instanceof Player) {
-				attacker = (Player)egg.getShooter();
-			} else {
-				attacker = null;
-			}
-		} else if (event.getDamager() instanceof Snowball) {
-			Snowball snowb = (Snowball)event.getDamager();
-			if (snowb.getShooter() instanceof Player) {
-				attacker = (Player)snowb.getShooter();
-			} else {
-				attacker = null;
-			}
-			//TODO Detect potions?
-/*		} else if (event.getDamager() instanceof Potion) {
-			Potion potion = (Potion)event.getDamager();
-			if (potion.getShooter() instanceof Player) {
-				attacker = (Player)potion.getShooter();
-			} else {
-				attacker = null;
-			}*/
 		} else {
 			attacker = null;
 		}
@@ -551,7 +502,7 @@ public class PlayerListener implements Listener {
 			Resident defenderResident = CivGlobal.getResident(defender);
 			if (defenderResident.isCombatInfo()) {	
 				if (attacker != null) {
-					CivMessage.send(defender, CivColor.LightGray+"  [Combat] Took "+CivColor.Rose+damage+
+					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+
 							" damage "+CivColor.LightGray+" from "+CivColor.LightPurple+attacker.getName());				
 				} else {
 					String entityName = null;
@@ -563,7 +514,8 @@ public class PlayerListener implements Listener {
 					if (entityName == null) {
 						entityName = event.getDamager().getType().toString();
 					}
-					CivMessage.send(defender, CivColor.LightGray+"  [Combat] Took "+CivColor.Rose+damage+
+					
+					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+
 							" damage "+CivColor.LightGray+" from a "+entityName);
 				}
 			}
@@ -573,9 +525,10 @@ public class PlayerListener implements Listener {
 			Resident attackerResident = CivGlobal.getResident(attacker);
 			if (attackerResident.isCombatInfo()) {
 				if (defender != null) {
-					CivMessage.send(attacker, CivColor.LightGray+"  [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to "+CivColor.LightPurple+defender.getName());
+					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to "+CivColor.LightPurple+defender.getName());
 				} else {
 					String entityName = null;
+					
 					if (event.getDamager() instanceof LivingEntity) {
 						entityName = ((LivingEntity)event.getDamager()).getCustomName();
 					}
@@ -583,9 +536,14 @@ public class PlayerListener implements Listener {
 					if (entityName == null) {
 						entityName = event.getDamager().getType().toString();
 					}
-					CivMessage.send(attacker, CivColor.LightGray+"  [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to a "+entityName);
+					
+					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to a "+entityName);
 				}
 			}
 		}
+		
+		
+		
+		
 	}
 }

@@ -40,31 +40,42 @@ public class CivSetCommand extends CommandBase {
 	
 	private double vaildatePercentage(String arg) throws CivException {
 		try { 
+			
 			arg = arg.replace("%", "");
+			
 			Integer amount = Integer.valueOf(arg);
+			
 			if (amount < 0 || amount > 100) {
 				throw new CivException ("You must set a percentage between 0% and 100%");
 			}
+			
 			return ((double)amount/100);
+			
 		} catch (NumberFormatException e) {
 			throw new CivException(arg+" is not a number.");
-		}	
+		}
+				
 	}
 	
 	public void taxes_cmd() throws CivException {
 		Civilization civ = getSenderCiv();
+		
 		if (args.length < 2) {
-			CivMessage.send(sender, "Current Income Percentage:" +civ.getIncomeTaxRateString());
+			CivMessage.send(sender, "Current income percentage:"+civ.getIncomeTaxRateString());
 			return;
 		}
 		
 		double newPercentage = vaildatePercentage(args[1]);
-		if (newPercentage > civ.getGovernment().max_civ_tax_rate) {
-			throw new CivException("Cannot set your tax rate higher than your government's maximum ("+
-					DecimalHelper.formatPercentage(civ.getGovernment().max_civ_tax_rate)+")");
+		
+		if (newPercentage > civ.getGovernment().maximum_tax_rate) {
+			throw new CivException("Cannot set your tax rate higher than your government's maximum("+
+					DecimalHelper.formatPercentage(civ.getGovernment().maximum_tax_rate)+")");
 		}
+		
 		civ.setIncomeTaxRate(newPercentage);
+		
 		civ.save();
+		
 		CivMessage.sendSuccess(sender, "Set income rate to "+args[1]+" percent.");
 	}
 	

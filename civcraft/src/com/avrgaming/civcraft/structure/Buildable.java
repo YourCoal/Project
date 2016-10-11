@@ -314,8 +314,7 @@ public abstract class Buildable extends SQLObject {
 	
 	public double getBlocksPerHammer() {
 		// no hammer cost should be instant...
-		//XXX Changed to 100 to not cause a ton of lag
-		if (this.getHammerCost() == 100)
+		if (this.getHammerCost() == 0)
 			return this.totalBlockCount;
 		
 		return this.totalBlockCount / this.getHammerCost();

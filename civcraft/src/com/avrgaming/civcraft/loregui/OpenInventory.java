@@ -5,7 +5,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.avrgaming.civcraft.book.StarterTips;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
@@ -41,11 +40,6 @@ public class OpenInventory implements GuiAction {
 				}
 				
 				switch (LoreGuiItem.getActionData(stack, "invType")) {
-				case "showCooldownsInventory":
-					StarterTips.showCooldownsInventory(player);
-					break;
-					
-					
 				case "showTutorialInventory":
 					CivTutorial.showTutorialInventory(player);
 					break;

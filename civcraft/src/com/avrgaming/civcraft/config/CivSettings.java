@@ -35,7 +35,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.io.FileUtils;
+import net.minecraft.util.org.apache.commons.io.FileUtils;
+
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -64,18 +65,17 @@ import com.avrgaming.global.perks.Perk;
 public class CivSettings {
 	
 	public static CivCraft plugin;
+	public static final long MOB_REMOVE_INTERVAL = 5000;
+	/* Number of days that you can remain in debt before an action occurs. */
 
 	//TODO make this configurable.
-	public static final int GRACE_DAYS_EVICT1 = 1;
-	public static final int GRACE_DAYS_EVICT2 = 2;
-	public static final int GRACE_DAYS_DEBT = 3;
+	public static final int GRACE_DAYS = 3; 
 	
-	/* Number of days that you can remain in debt before an action occurs. */
-	public static final int GRACE_DAYS_CIV_DEBT = 7;
-	public static final int SELL_DAYS_CIV_DEBT = 14;
-	public static final int TOWN_SELL_DAYS_CIV_DEBT = 21;
-	public static final int GRACE_DAYS_TOWN_DEBT = 7;
-	public static final int SELL_DAYS_TOWN_DEBT = 14;
+	public static final int CIV_DEBT_GRACE_DAYS = 7;
+	public static final int CIV_DEBT_SELL_DAYS = 14;
+	public static final int CIV_DEBT_TOWN_SELL_DAYS = 21;
+	public static final int TOWN_DEBT_GRACE_DAYS = 7;
+	public static final int TOWN_DEBT_SELL_DAYS = 14;
 
 	
 	/* cached for faster access. */
@@ -91,15 +91,6 @@ public class CivSettings {
 	public static float T4_metal_speed;
 	public static float normal_speed;
 	public static double highjump;
-	
-	/* drops.yml */
-	public static FileConfiguration dropsConfig;
-	
-	/* resident.yml */
-	public static FileConfiguration resConfig;
-	
-	/* timers.yml */
-	public static FileConfiguration timerConfig;
 	
 	public static FileConfiguration townConfig; /* town.yml */
 	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
@@ -248,11 +239,12 @@ public class CivSettings {
 		CivSettings.T4_metal_speed = (float)CivSettings.getDouble(CivSettings.unitConfig, "base.T4_metal_speed");
 		CivSettings.normal_speed = 0.2f;	
 		
-		for (Object obj : resConfig.getList("start_kit")) {
+		for (Object obj : civConfig.getList("global.start_kit")) {
 			if (obj instanceof String) {
 				kitItems.add((String)obj);
 			}
 		}
+		
 		
 		CivGlobal.banWords.add("fuck");
 		CivGlobal.banWords.add("shit");
@@ -267,7 +259,7 @@ public class CivSettings {
 		gold_rate = CivSettings.getDouble(civConfig, "ore_rates.gold");
 		diamond_rate = CivSettings.getDouble(civConfig, "ore_rates.diamond");
 		emerald_rate = CivSettings.getDouble(civConfig, "ore_rates.emerald");
-		startingCoins = CivSettings.getDouble(resConfig, "starting_coins");
+		startingCoins = CivSettings.getDouble(civConfig, "global.starting_coins");
 		
 		alwaysCrumble.add(CivData.BEDROCK);
 		alwaysCrumble.add(ItemManager.getId(Material.GOLD_BLOCK));
@@ -283,71 +275,17 @@ public class CivSettings {
 		if (CivSettings.plugin.hasPlugin("VanishNoPacket")) {
 			hasVanishNoPacket = true;
 		}
+
 	}
 	
 	private static void initRestrictedUndoBlocks() {
-		restrictedUndoBlocks.add(Material.LONG_GRASS);
-		restrictedUndoBlocks.add(Material.DEAD_BUSH);
-		restrictedUndoBlocks.add(Material.YELLOW_FLOWER);
-		restrictedUndoBlocks.add(Material.RED_ROSE);
-		restrictedUndoBlocks.add(Material.TORCH);
-		restrictedUndoBlocks.add(Material.CACTUS);
-		restrictedUndoBlocks.add(Material.SUGAR_CANE_BLOCK);
-		restrictedUndoBlocks.add(Material.FLOWER_POT);
-		restrictedUndoBlocks.add(Material.SKULL);
-		restrictedUndoBlocks.add(Material.CARPET);
-		restrictedUndoBlocks.add(Material.DOUBLE_PLANT);
-		
-		//Wood
-		restrictedUndoBlocks.add(Material.SIGN_POST);
-		restrictedUndoBlocks.add(Material.WALL_SIGN);
-		restrictedUndoBlocks.add(Material.LADDER);
-		restrictedUndoBlocks.add(Material.RAILS);
-		restrictedUndoBlocks.add(Material.POWERED_RAIL);
-		restrictedUndoBlocks.add(Material.DETECTOR_RAIL);
-		restrictedUndoBlocks.add(Material.ACTIVATOR_RAIL);
-		restrictedUndoBlocks.add(Material.STANDING_BANNER);
-		restrictedUndoBlocks.add(Material.WALL_BANNER);
-		restrictedUndoBlocks.add(Material.WOODEN_DOOR);
-		restrictedUndoBlocks.add(Material.BIRCH_DOOR);
-		restrictedUndoBlocks.add(Material.SPRUCE_DOOR);
-		restrictedUndoBlocks.add(Material.JUNGLE_DOOR);
-		restrictedUndoBlocks.add(Material.ACACIA_DOOR);
-		restrictedUndoBlocks.add(Material.DARK_OAK_DOOR);
-		restrictedUndoBlocks.add(Material.IRON_DOOR_BLOCK);
-		
-		//Crops
-		restrictedUndoBlocks.add(Material.SAPLING);
-		restrictedUndoBlocks.add(Material.BROWN_MUSHROOM);
-		restrictedUndoBlocks.add(Material.RED_MUSHROOM);
 		restrictedUndoBlocks.add(Material.CROPS);
-		restrictedUndoBlocks.add(Material.PUMPKIN_STEM);
-		restrictedUndoBlocks.add(Material.MELON_STEM);
-		restrictedUndoBlocks.add(Material.WATER_LILY);
-		restrictedUndoBlocks.add(Material.NETHER_WARTS);
-		restrictedUndoBlocks.add(Material.COCOA);
 		restrictedUndoBlocks.add(Material.CARROT);
 		restrictedUndoBlocks.add(Material.POTATO);
-		
-		//Redstone
-		restrictedUndoBlocks.add(Material.REDSTONE_WIRE);
-		restrictedUndoBlocks.add(Material.LEVER);
-		restrictedUndoBlocks.add(Material.WOOD_PLATE);
-		restrictedUndoBlocks.add(Material.STONE_PLATE);
-		restrictedUndoBlocks.add(Material.IRON_PLATE);
-		restrictedUndoBlocks.add(Material.IRON_PLATE);
+		restrictedUndoBlocks.add(Material.REDSTONE);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_OFF);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_ON);
-		restrictedUndoBlocks.add(Material.DIODE_BLOCK_OFF);
-		restrictedUndoBlocks.add(Material.DIODE_BLOCK_ON);
-		restrictedUndoBlocks.add(Material.TRAP_DOOR);
-		restrictedUndoBlocks.add(Material.IRON_TRAPDOOR);
-		restrictedUndoBlocks.add(Material.TRIPWIRE);
-		restrictedUndoBlocks.add(Material.TRIPWIRE_HOOK);
-		restrictedUndoBlocks.add(Material.WOOD_BUTTON);
-		restrictedUndoBlocks.add(Material.STONE_BUTTON);
-		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
-		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_ON);
+		restrictedUndoBlocks.add(Material.STRING);
 	}
 
 	private static void initPlayerEntityWeapons() {
@@ -355,16 +293,27 @@ public class CivSettings {
 		playerEntityWeapons.add(EntityType.ARROW);
 		playerEntityWeapons.add(EntityType.EGG);
 		playerEntityWeapons.add(EntityType.SNOWBALL);
-		playerEntityWeapons.add(EntityType.ENDER_PEARL);
-		playerEntityWeapons.add(EntityType.FISHING_HOOK);
 		playerEntityWeapons.add(EntityType.SPLASH_POTION);
+		playerEntityWeapons.add(EntityType.FISHING_HOOK);
 	}
 	
 	public static void validateFiles() {
+//		if (plugin == null) {
+//			CivLog.debug("null plugin");
+//		}
+//		
+//		if (plugin.getDataFolder() == null) {
+//			CivLog.debug("null data folder");
+//		}
+//		
+//		if (plugin.getDataFolder().getPath() == null) {
+//			CivLog.debug("path null");
+//		}
 		File data = new File(plugin.getDataFolder().getPath()+"/data");
 		if (!data.exists()) {
 			data.mkdirs();
 		}
+//		
 	}
 	
 	public static void streamResourceToDisk(String filepath) throws IOException {
@@ -374,6 +323,7 @@ public class CivSettings {
 	}
 
 	public static FileConfiguration loadCivConfig(String filepath) throws FileNotFoundException, IOException, InvalidConfigurationException {
+
 		File file = new File(plugin.getDataFolder().getPath()+"/data/"+filepath);
 		if (!file.exists()) {
 			CivLog.warning("Configuration file:"+filepath+" was missing. Streaming to disk from Jar.");
@@ -389,9 +339,6 @@ public class CivSettings {
 	
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
-		dropsConfig = loadCivConfig("drops.yml");
-		resConfig = loadCivConfig("resident.yml");
-		timerConfig = loadCivConfig("timers.yml");
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
 		cultureConfig = loadCivConfig("culture.yml");

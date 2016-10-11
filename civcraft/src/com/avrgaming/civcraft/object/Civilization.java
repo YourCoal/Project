@@ -208,8 +208,8 @@ public class Civilization extends SQLObject {
 		this.setSciencePercentage(rs.getDouble("science_percentage"));
 		
 		double taxes = rs.getDouble("income_tax_rate");
-		if (taxes > this.government.max_civ_tax_rate) {
-			taxes = this.government.max_civ_tax_rate;
+		if (taxes > this.government.maximum_tax_rate) {
+			taxes = this.government.maximum_tax_rate;
 		}
 		
 		this.setIncomeTaxRate(taxes);
@@ -389,19 +389,10 @@ public class Civilization extends SQLObject {
 	public void setGovernment(String gov_id) {
 		this.government = CivSettings.governments.get(gov_id);
 		
-		if (this.getIncomeTaxRate() > this.government.max_civ_tax_rate) {
-			this.setIncomeTaxRate(this.government.max_civ_tax_rate);
-			CivMessage.sendCiv(this, "The civilizations's income tax rate has been set to "+this.government.max_civ_tax_rate
-					+"% due to a government change.");
+		if (this.getSciencePercentage() > this.government.maximum_tax_rate) {
+			this.setSciencePercentage(this.government.maximum_tax_rate);
 		}
 		
-		for (Town t : this.getTowns()) {
-			if (t.getTaxRate() < this.government.min_town_tax_rate) {
-				t.setTaxRate(this.government.min_town_tax_rate);
-				CivMessage.sendTown(t, "The town's property tax rate has been set to "+this.government.min_town_tax_rate
-						+"% due to a government change.");
-			}
-		}
 	}
 
 	public int getColor() {
@@ -877,9 +868,9 @@ public class Civilization extends SQLObject {
 	public void incrementDaysInDebt() {
 		daysInDebt++;
 		
-		if (daysInDebt >= CivSettings.SELL_DAYS_CIV_DEBT) {
-			if (daysInDebt >= CivSettings.SELL_DAYS_CIV_DEBT) {
-				if (daysInDebt >= CivSettings.TOWN_SELL_DAYS_CIV_DEBT) {
+		if (daysInDebt >= CivSettings.CIV_DEBT_GRACE_DAYS) {
+			if (daysInDebt >= CivSettings.CIV_DEBT_SELL_DAYS) {
+				if (daysInDebt >= CivSettings.CIV_DEBT_TOWN_SELL_DAYS) {
 					CivMessage.global(this.getName()+" and its towns have fell into ruin!");
 					try {
 						this.delete();
@@ -896,19 +887,20 @@ public class Civilization extends SQLObject {
 		this.save();
 		return;
 	}
-	
+
 	public String getDaysLeftWarning() {
-		if (daysInDebt < CivSettings.SELL_DAYS_CIV_DEBT) {
-			return ""+(CivSettings.SELL_DAYS_CIV_DEBT-daysInDebt)+" days until civ goes up for sale.";
+		
+		if (daysInDebt < CivSettings.CIV_DEBT_GRACE_DAYS) {
+			return ""+(CivSettings.CIV_DEBT_GRACE_DAYS-daysInDebt)+" days until civ goes up for sale.";
 		}
 		
-		if (daysInDebt < CivSettings.SELL_DAYS_CIV_DEBT) {
-			return this.getName()+" is up for sale, "+(CivSettings.SELL_DAYS_CIV_DEBT-daysInDebt)+" days until it's towns go up for sale.";
+		if (daysInDebt < CivSettings.CIV_DEBT_SELL_DAYS) {
+			return this.getName()+" is up for sale, "+(CivSettings.CIV_DEBT_SELL_DAYS-daysInDebt)+" days until it's towns go up for sale.";
 			
 		}
 				
-		if (daysInDebt < CivSettings.TOWN_SELL_DAYS_CIV_DEBT) {
-			return this.getName()+" is up for sale, "+(CivSettings.TOWN_SELL_DAYS_CIV_DEBT-daysInDebt)+" days until the civ is deleted.";		
+		if (daysInDebt < CivSettings.CIV_DEBT_TOWN_SELL_DAYS) {
+			return this.getName()+" is up for sale, "+(CivSettings.CIV_DEBT_TOWN_SELL_DAYS-daysInDebt)+" days until the civ is deleted.";		
 		}
 		
 		return "";
@@ -1367,7 +1359,7 @@ public class Civilization extends SQLObject {
 	}
 	
 	public boolean isTownsForSale() {
-		if (daysInDebt >= CivSettings.SELL_DAYS_CIV_DEBT) {
+		if (daysInDebt >= CivSettings.CIV_DEBT_SELL_DAYS) {
 			return true;
 		}
 		return false;
@@ -1378,7 +1370,7 @@ public class Civilization extends SQLObject {
 			return false;
 		}
 		
-		if (daysInDebt >= CivSettings.SELL_DAYS_CIV_DEBT) {
+		if (daysInDebt >= CivSettings.CIV_DEBT_GRACE_DAYS) {
 			return true;
 		}
 		return false;
@@ -1663,16 +1655,24 @@ public class Civilization extends SQLObject {
 	}
 
 	public void processUnusedBeakers() {
+		
 		EndGameCondition scienceVictory = EndGameCondition.getEndCondition("end_science");
 		if (scienceVictory == null) {
 			CivLog.error("Couldn't find science victory, not configured?");
 		} else {
 			if (scienceVictory.isActive(this)) {
-				/* * We've got an active science victory, lets add these beakers to the total stored on "the enlightenment" */
+				/* 
+				 * We've got an active science victory, lets add these beakers
+				 * to the total stored on "the enlightenment"
+				 */
 				double beakerTotal = this.getBeakers()/BeakerTimer.BEAKER_PERIOD;
 				((EndConditionScience)scienceVictory).addExtraBeakersToCiv(this, beakerTotal);
 				return;
 			}
+		}
+		
+		for (Town town : this.towns.values()) {
+			town.addUnusedBeakers(town.getBeakers().total / BeakerTimer.BEAKER_PERIOD);
 		}
 	}
 

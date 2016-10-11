@@ -1,3 +1,9 @@
+#
+# This file contains any settings relevent to culture.
+# This includes culture levels for towns.
+#
+#
+
 # culture to beaker conversion ratio.
 beakers_per_culture: 0.1
 
@@ -21,15 +27,15 @@ culture_levels:
     
     - level: 3
       amount: 20000
-      chunks: 12
+      chunks: 13
     
     - level: 4
       amount: 100000
-      chunks: 14
+      chunks: 15
 
     - level: 5
       amount: 250000
-      chunks: 16
+      chunks: 17
 
     - level: 6
       amount: 500000
@@ -41,15 +47,15 @@ culture_levels:
 
     - level: 8
       amount: 2000000
-      chunks: 25
+      chunks: 26
  
     - level: 9
       amount: 4000000
-      chunks: 28
+      chunks: 32
     
     - level: 10
       amount: 5000000
-      chunks: 32
+      chunks: 40
 
 culture_biomes:
     - name: OCEAN

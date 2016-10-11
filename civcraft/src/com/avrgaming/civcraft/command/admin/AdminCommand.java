@@ -51,30 +51,25 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.threading.tasks.PlayerKickBan;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
 public class AdminCommand extends CommandBase {
-	
-	private static boolean lockdown = false;
-	
+
 	@Override
 	public void init() {
 		command = "/ad";
 		displayName = "Admin";
 		
-		commands.put("lockdown", "Toggles if the server is joinable to players or admins only.");
-		
 		commands.put("perm", "toggles your permission overrides, if on, ignores all plot permissions.");
 		commands.put("sbperm", "Allows breaking of structure blocks");
 		commands.put("cbinstantbreak", "Allows instant breaking of control blocks.");
-		
+
 		commands.put("recover", "Manage recovery commands");
 		commands.put("server", "shows the name of this server");
 		commands.put("spawnunit", "[unit-id] [town] spawn the unit with this id for this town.");
-		
+
 		commands.put("chestreport", "[radius] check in this radius for chests");
 		commands.put("playerreport", "shows all player ender chest reports.");
 		
@@ -95,46 +90,6 @@ public class AdminCommand extends CommandBase {
 		commands.put("arena", "Arena management commands.");
 		commands.put("perk", "Admin perk management.");
 		commands.put("mob", "Mob management commands");
-	}
-	
-	public void lockdown_cmd() {
-		new Thread(new Runnable() {
-            public void run() {
-                try {
-            		AdminCommand.setLockdown(!AdminCommand.isLockdown());
-            		if (AdminCommand.isLockdown()) {
-            			CivMessage.global("A STAFF MEMBER HAS BEGUN A LOCKDOWN! PREPARE TO BE KICKED!");
-	    				Thread.sleep(2000);
-            			CivMessage.global("Kicking all players in 3");
-        				Thread.sleep(1000);
-            			CivMessage.global("Kicking all players in 2");
-        				Thread.sleep(1000);
-            			CivMessage.global("Kicking all players in 1");
-        				Thread.sleep(1000);
-            			CivMessage.global("All non-staff have been kicked.");
-            			for (Player player : Bukkit.getOnlinePlayers()) {
-            				if (player.isOp() || player.hasPermission(CivSettings.MINI_ADMIN)) {
-            					CivMessage.send(sender, "Skipping "+player.getName()+" since they are OP or admin.");
-            					continue;
-            				}
-            				TaskMaster.syncTask(new PlayerKickBan(player.getName(), true, false, "Kicked: The server is currently on lockdown... Try again in a few minutes."));
-            			}
-            		} else {
-            			CivMessage.global("All players are now allowed to join again.");
-            		}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-            }
-        }).start();
-	}
-	
-	public static boolean isLockdown() {
-		return lockdown;
-	}
-
-	public static void setLockdown(boolean ld) {
-		AdminCommand.lockdown = ld;
 	}
 	
 	public void mob_cmd() {

@@ -99,7 +99,12 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 				CivMessage.send(player, CivColor.Green+ChatColor.ITALIC+"You feel invigorated by the glorious hanging gardens.");
 			}
 		}
-		return CivColor.LightGray+"Entering "+CivColor.White+town.getName()+" "+town.getPvpString()+" ";
+		
+		if (!tc.isOutpost()) {
+			return CivColor.LightGray+"Entering "+CivColor.White+town.getName()+" "+town.getPvpString()+" ";
+		} else {
+			return CivColor.LightGray+"Entering Outpost of "+CivColor.White+town.getName()+" "+town.getPvpString()+" ";
+		}
 	}
 	
 	private void showPlotMoveMessage() {

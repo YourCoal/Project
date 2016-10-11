@@ -1,3 +1,0 @@
-#The time, in seconds, that BeakerTimer.java will be ran.
-#This is what causes research to run, and for civs to get beakers for a science victory,
-beaker_timer: 60

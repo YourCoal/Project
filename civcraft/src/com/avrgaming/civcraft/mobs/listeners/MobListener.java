@@ -2,7 +2,6 @@ package com.avrgaming.civcraft.mobs.listeners;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
@@ -13,18 +12,16 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
 
-import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.mobs.CommonCustomMob;
-import com.avrgaming.civcraft.mobs.MobSpawner;
 import com.avrgaming.moblib.MobLib;
 
 public class MobListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onChunkLoad(ChunkLoadEvent event) {
+		
 		for (Entity e : event.getChunk().getEntities()) {
 			if (e instanceof Monster) {
 				e.remove();
@@ -35,36 +32,8 @@ public class MobListener implements Listener {
 				e.remove();
 				return;
 			}
-			
-			//Test
-			if (event.getChunk().getEntities().equals(EntityType.IRON_GOLEM)) {
-				e.remove();
-				return;
-			}
 		}
-	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onChunkUnload(ChunkUnloadEvent event) throws InterruptedException {
-		event.setCancelled(true);
-		for (Entity e : event.getChunk().getEntities()) {
-			if (e instanceof Monster) {
-				e.remove();
-				return;
-			}
-			
-			if (e instanceof IronGolem) {
-				e.remove();
-				return;
-			}
-			
-			//Test
-			if (event.getChunk().getEntities().equals(EntityType.IRON_GOLEM)) {
-				e.remove();
-				return;
-			}
-		}
-		event.getChunk().unload();
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -85,7 +54,7 @@ public class MobListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onEntityDamage(EntityDamageEvent event) throws CivException {
+	public void onEntityDamage(EntityDamageEvent event) {
 		if (!(event.getEntity() instanceof LivingEntity)) {
 			return;
 		}
@@ -97,7 +66,7 @@ public class MobListener implements Listener {
 		switch (event.getCause()) {
 		case SUFFOCATION:
 			Location loc = event.getEntity().getLocation();
-			int y = loc.getWorld().getHighestBlockAt(loc.getBlockX(), loc.getBlockZ()).getY()+3;
+			int y = loc.getWorld().getHighestBlockAt(loc.getBlockX(), loc.getBlockZ()).getY()+4;
 			loc.setY(y);
 			event.getEntity().teleport(loc);
 		case CONTACT:
@@ -111,12 +80,6 @@ public class MobListener implements Listener {
 		case BLOCK_EXPLOSION:
 		case ENTITY_EXPLOSION:
 		case LIGHTNING:
-			if (event.getEntityType() == EntityType.ZOMBIE) {
-				Location location = event.getEntity().getLocation();
-				event.getEntity().remove();
-				CommonCustomMob.customMobs.remove(event.getEntity().getUniqueId());
-				MobSpawner.spawnCustomMob(MobSpawner.CustomMobType.SAVAGE, MobSpawner.CustomMobLevel.LESSER, location);
-			}
 		case MAGIC:
 			event.setCancelled(true);
 			break;
@@ -135,4 +98,5 @@ public class MobListener implements Listener {
 			}
 		}
 	}
+	
 }

@@ -1,3 +1,8 @@
+# 
+# This configuration file holds anything relevent to a civilization.
+# Also stores some global data.
+#
+
 global:
    # Hour at which daily upkeep occurs.
    daily_upkeep_hour: 20
