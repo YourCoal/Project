@@ -203,7 +203,7 @@ public class Bank extends Structure {
 		
 		try {
 			
-			if (LoreMaterial.isCustom(player.getItemInHand())) {
+			if (LoreMaterial.isCustom(player.getInventory().getItemInMainHand())) {
 				throw new CivException("You cannot exchange this item at the bank.");
 			}
 			
@@ -347,7 +347,7 @@ public class Bank extends Structure {
 	@Override
 	public void onPostBuild(BlockCoord absCoord, SimpleBlock commandBlock) {
 		this.level = getTown().saved_bank_level;
-		this.interestRate = getTown().saved_bank_interest_amount;
+		this.interestRate = getTown().saved_bank_interest;
 	}
 
 	public NonMemberFeeComponent getNonMemberFeeComponent() {

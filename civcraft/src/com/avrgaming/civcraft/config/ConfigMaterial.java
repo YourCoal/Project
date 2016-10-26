@@ -29,6 +29,7 @@ public class ConfigMaterial {
 	public boolean craftable = false;
 	public String required_tech = null;
 	public boolean shaped = false;
+	public boolean shiny = false;
 	public HashMap<String, ConfigIngredient> ingredients;
 	public String[] shape;
 	public List<HashMap<String, String>> components = new LinkedList<HashMap<String, String>>();
@@ -42,12 +43,13 @@ public class ConfigMaterial {
 		for (Map<?, ?> b : configMaterials) {
 			ConfigMaterial mat = new ConfigMaterial();
 			
-			/* Manditory Settings */
+			/* Mandatory Settings */
 			mat.id = (String)b.get("id");
 			mat.item_id = (Integer)b.get("item_id");
 			mat.item_data = (Integer)b.get("item_data");
 			mat.name = (String)b.get("name");
 			mat.name = CivColor.colorize(mat.name);
+			
 			
 			String category = (String)b.get("category");
 			if (category != null) {
@@ -90,6 +92,11 @@ public class ConfigMaterial {
 			Boolean shaped = (Boolean)b.get("shaped");
 			if (shaped != null) {
 				mat.shaped = shaped;
+			}
+
+			Boolean isShiny = (Boolean)b.get("shiny");
+			if (isShiny != null) {
+				mat.shiny = isShiny;
 			}
 			
 			Boolean vanilla = (Boolean)b.get("vanilla");
@@ -231,3 +238,4 @@ public class ConfigMaterial {
 	}
 	
 }
+

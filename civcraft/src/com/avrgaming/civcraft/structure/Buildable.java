@@ -81,7 +81,7 @@ import com.avrgaming.civcraft.template.Template.TemplateType;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
+import com.avrgaming.civcraft.books.CivTutorial;
 import com.avrgaming.civcraft.util.AABB;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.BukkitObjects;
@@ -248,8 +248,8 @@ public abstract class Buildable extends SQLObject {
 		return info.allow_demolish;
 	}
 	
-	public boolean isTileImprovement() {
-		return info.tile_improvement;
+	public boolean isTile() {
+		return info.tile;
 	}
 	
 	public boolean isActive() {	
@@ -308,7 +308,6 @@ public abstract class Buildable extends SQLObject {
 			
 			this.centerLocation = new BlockCoord(this.getCorner().getWorldname(), centerX, centerY, centerZ);
 		}
-		
 		return this.centerLocation;
 	}
 	
@@ -551,7 +550,7 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (info.tile_improvement) {
+		if (info.tile) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else { 
@@ -595,7 +594,7 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (this.isTileImprovement()) {
+		if (this.isTile()) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else {  
@@ -741,7 +740,7 @@ public abstract class Buildable extends SQLObject {
 		
 		if (this.getConfigId().equals("s_shipyard")) {
 			if (!centerBlock.getBiome().equals(Biome.OCEAN) && 
-				!centerBlock.getBiome().equals(Biome.BEACH) &&
+				!centerBlock.getBiome().equals(Biome.BEACHES) &&
 				!centerBlock.getBiome().equals(Biome.DEEP_OCEAN) &&
 				!centerBlock.getBiome().equals(Biome.RIVER) &&
 				!centerBlock.getBiome().equals(Biome.FROZEN_OCEAN) &&
@@ -761,17 +760,17 @@ public abstract class Buildable extends SQLObject {
 			validateDistanceFromSpawn(centerBlock.getLocation());
 		}
 		
-		if (this.isTileImprovement()) {
+		if (this.isTile()) {
 			ignoreBorders = true;
 			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
 			
-			if (getTown().getTileImprovementCount() >= level.tile_improvements) {
-				throw new CivException("Cannot build tile improvement. Already at tile improvement limit.");
+			if (getTown().getTileCount() >= level.tile) {
+				throw new CivException("Cannot build tile. Already at tile limit.");
 			}
 			
 			ChunkCoord coord = new ChunkCoord(centerBlock.getLocation());
 			for (Structure s : getTown().getStructures()) {
-				if (!s.isTileImprovement()) {
+				if (!s.isTile()) {
 					continue;
 				}
 				ChunkCoord sCoord = new ChunkCoord(s.getCorner());
@@ -1156,7 +1155,7 @@ public abstract class Buildable extends SQLObject {
 			
 		this.damage(amount);
 		
-		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
+		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
 		world.playEffect(hit.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		if ((hit.getOwner().getDamagePercentage() % 10) == 0 && !wasTenPercent) {
@@ -1481,9 +1480,9 @@ public abstract class Buildable extends SQLObject {
 	
 	public static int getReinforcementValue(int typeId) {
 		switch (typeId) {
-		case CivData.WATER:
+		case CivData.WATER_STILL:
 		case CivData.WATER_RUNNING:
-		case CivData.LAVA:
+		case CivData.LAVA_STILL:
 		case CivData.LAVA_RUNNING:
 		case CivData.AIR:
 		case CivData.COBWEB:

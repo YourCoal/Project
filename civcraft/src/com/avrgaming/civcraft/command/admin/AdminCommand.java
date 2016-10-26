@@ -87,14 +87,7 @@ public class AdminCommand extends CommandBase {
 		commands.put("road", "Road management commands");
 		commands.put("clearendgame", "[key] [civ] - clears this end game condition for this civ.");
 		commands.put("endworld", "Starts the Apocalypse.");
-		commands.put("arena", "Arena management commands.");
 		commands.put("perk", "Admin perk management.");
-		commands.put("mob", "Mob management commands");
-	}
-	
-	public void mob_cmd() {
-		AdminMobCommand cmd = new AdminMobCommand();	
-		cmd.onCommand(sender, null, "mob", this.stripArgs(args, 1));
 	}
 	
 	public void perk_cmd() {
@@ -144,16 +137,40 @@ public class AdminCommand extends CommandBase {
 			
 			/* Build the Category Inventory. */
 			for (ConfigMaterialCategory cat : ConfigMaterialCategory.getCategories()) {
-				ItemStack infoRec = LoreGuiItem.build(cat.name, 
-						ItemManager.getId(Material.WRITTEN_BOOK), 
-						0, 
-						CivColor.LightBlue+cat.materials.size()+" Items",
-						CivColor.Gold+"<Click To Open>");
+				
+				int material;
+//				if (cat.name.contains("Fish")) {
+//					material = ItemManager.getId(Material.RAW_FISH);
+//				} else if (cat.name.contains("Catalyst")) {
+				if (cat.name.contains("Catalyst")) {
+					material = ItemManager.getId(Material.BOOK);
+				} else if (cat.name.contains("Materials")) {
+					material = ItemManager.getId(Material.WORKBENCH);
+				} else if (cat.name.contains("Gear Tier 1")) {
+					material = ItemManager.getId(Material.IRON_BLOCK);
+				} else if (cat.name.contains("Gear Tier 2")) {
+					material = ItemManager.getId(Material.GOLD_BLOCK);
+				} else if (cat.name.contains("Gear Tier 3")) {
+					material = ItemManager.getId(Material.STONE);
+				} else if (cat.name.contains("Gear Tier 4")) {
+					material = ItemManager.getId(Material.DIAMOND_BLOCK);
+				} else if (cat.name.contains("Tools")) {
+					material = ItemManager.getId(Material.SHEARS);
+//				} else if (cat.name.contains("Eggs")) {
+//					material = ItemManager.getId(Material.MONSTER_EGG);
+				} else if (cat.name.contains("Hidden")) {
+					material = ItemManager.getId(Material.BARRIER);
+				} else {
+					material = ItemManager.getId(Material.WRITTEN_BOOK);
+				}
+				
+				ItemStack infoRec = LoreGuiItem.build(cat.name, material, 0, 
+						CivColor.LightBlue+cat.materials.size()+" Items", CivColor.Gold+"<Click To Open>");
 						infoRec = LoreGuiItem.setAction(infoRec, "OpenInventory");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invType", "showGuiInv");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invName", cat.name+" Spawn");
-						spawnInventory.addItem(infoRec);
-						
+				spawnInventory.addItem(infoRec);
+				
 				/* Build a new GUI Inventory. */
 				Inventory inv = Bukkit.createInventory(player, LoreGuiItem.MAX_INV_SIZE, cat.name+" Spawn");
 				for (ConfigMaterial mat : cat.materials.values()) {
@@ -165,16 +182,8 @@ public class AdminCommand extends CommandBase {
 					LoreGuiItemListener.guiInventories.put(inv.getName(), inv);			
 				}
 			}
-			
-
 		}
-		
 		player.openInventory(spawnInventory);
-	}
-	
-	public void arena_cmd() {
-		AdminArenaCommand cmd = new AdminArenaCommand();	
-		cmd.onCommand(sender, null, "arena", this.stripArgs(args, 1));
 	}
 	
 	public void road_cmd() {

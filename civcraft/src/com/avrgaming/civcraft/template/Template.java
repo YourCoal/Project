@@ -133,13 +133,13 @@ public class Template {
 		attachableTypes.add(ItemManager.getId(Material.STONE_BUTTON));
 		attachableTypes.add(ItemManager.getId(Material.CACTUS));
 		attachableTypes.add(ItemManager.getId(Material.SUGAR_CANE));
-		attachableTypes.add(93); //redstone repeater off
-		attachableTypes.add(94); //redstone repeater on
+		attachableTypes.add(ItemManager.getId(Material.DIODE_BLOCK_OFF)); //redstone repeater off
+		attachableTypes.add(ItemManager.getId(Material.DIODE_BLOCK_ON)); //redstone repeater on
 		attachableTypes.add(ItemManager.getId(Material.TRAP_DOOR));
 		attachableTypes.add(ItemManager.getId(Material.PUMPKIN_STEM));
 		attachableTypes.add(ItemManager.getId(Material.MELON_STEM));
 		attachableTypes.add(ItemManager.getId(Material.VINE));
-		attachableTypes.add(111); //lily pad
+		attachableTypes.add(ItemManager.getId(Material.WATER_LILY)); //lily pad
 		attachableTypes.add(ItemManager.getId(Material.BREWING_STAND));
 		attachableTypes.add(ItemManager.getId(Material.COCOA));
 		attachableTypes.add(ItemManager.getId(Material.TRIPWIRE));
@@ -157,10 +157,7 @@ public class Template {
 		attachableTypes.add(ItemManager.getId(Material.ACTIVATOR_RAIL));
 	}
 	
-	
-	public Template() 
-	{
-		
+	public Template() {
 	}
 	
 	/*public CivTemplate(Location center, String name, Type type) throws TownyException, IOException {
@@ -642,9 +639,7 @@ public class Template {
 					}
 				}
 			}
-			
 			blocks[blockX][blockY][blockZ] = block;
-			
 		}
 		
 		this.blocks = blocks;

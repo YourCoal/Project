@@ -1,0 +1,71 @@
+#Crop DataValue.7 (Full Grown Wheat)
+wheatcrop:
+   #Seed Drops
+   seeds:
+      min: 1
+      max: 3
+      max_fortune: 5
+   #Wheat Drops
+   wheat:
+      min: 1
+      max: 2
+      max_fortune: 4
+   #Broke by Water
+   water_broken:
+      minseeds: 1
+      maxseeds: 3
+      minwheat: 1
+      maxwheat: 2
+#
+#Iron Ore --> Iron
+ironore:
+   canSilk: true
+   #EXP Drops
+   exp:
+      min: 0
+      max: 2
+   #Iron Drops
+   item:
+      min: 0
+      max: 2
+      max_fortune: 4
+#
+#Gold Ore --> Titanium
+goldore:
+   canSilk: true
+   #EXP Drops
+   exp:
+      min: 0
+      max: 4
+   #Titanium Drops
+   item:
+      min: 0
+      max: 2
+      max_fortune: 4
+#
+#Redstone Ore --> Chromium
+redstoneore:
+   canSilk: true
+   #EXP Drops
+   exp:
+      min: 0
+      max: 7
+   #Chromium Drops
+   item:
+      min: 0
+      max: 1
+      max_fortune: 3
+#
+#Lapis Ore --> Tungsten
+lapisore:
+   canSilk: true
+   #EXP Drops
+   exp:
+      min: 0
+      max: 5
+   #Tungsten Drops
+   item:
+      min: 0
+      max: 1
+      max_fortune: 3
+#

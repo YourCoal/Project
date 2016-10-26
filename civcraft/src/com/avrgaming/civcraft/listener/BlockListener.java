@@ -20,10 +20,10 @@ package com.avrgaming.civcraft.listener;
 
 import gpl.HorseModifier;
 
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+
 import java.util.HashSet;
 import java.util.Random;
-
-import net.minecraft.server.v1_7_R4.NBTTagCompound;
 
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -33,7 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -120,9 +120,6 @@ import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
-import com.avrgaming.moblib.MobLib;
-
-
 
 public class BlockListener implements Listener {
 
@@ -498,8 +495,8 @@ public class BlockListener implements Listener {
 
     public BlockCoord generatesCobble(int id, Block b)
     {
-        int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
-        int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER);
+        int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER_STILL ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
+        int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER_STILL ? CivData.LAVA_STILL : CivData.WATER_STILL);
         for(BlockFace face : faces)
         {
             Block r = b.getRelative(face, 1);
@@ -541,8 +538,7 @@ public class BlockListener implements Listener {
 	public void OnBlockFromToEvent(BlockFromToEvent event) {
 		/* Disable cobblestone generators. */
 		int id = ItemManager.getId(event.getBlock());
-	    if(id >= CivData.WATER && id <= CivData.LAVA)
-	    {
+	    if(id >= CivData.WATER_STILL && id <= CivData.LAVA_STILL) {
 	        Block b = event.getToBlock();
 	        bcoord.setFromLocation(b.getLocation());
 
@@ -945,7 +941,7 @@ public class BlockListener implements Listener {
 		if (event.isCancelled()) {
 			// Fix for bucket bug.
 			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-				Integer item = ItemManager.getId(event.getPlayer().getItemInHand());
+				Integer item = ItemManager.getId(event.getPlayer().getInventory().getItemInMainHand());
 				// block cheats for placing water/lava/fire/lighter use.
 				if (item == 326 || item == 327 || item == 259 || (item >= 8 && item <= 11) || item == 51) { 
 					event.setCancelled(true);
@@ -1189,7 +1185,7 @@ public class BlockListener implements Listener {
 			}
 		}
 
-		ItemStack inHand = event.getPlayer().getItemInHand();
+		ItemStack inHand = event.getPlayer().getInventory().getItemInMainHand();
 			if (inHand != null) {
 
 				boolean denyBreeding = false;
@@ -1471,9 +1467,9 @@ public class BlockListener implements Listener {
 				return;
 		}
 
-		if (MobLib.isMobLibEntity(event.getEntity())) {
-			return;
-		}
+//		if (MobLib.isMobLibEntity(event.getEntity())) {
+//			return;
+//		}
 
 		if (event.getEntity().getType().equals(EntityType.ZOMBIE) ||
 			event.getEntity().getType().equals(EntityType.SKELETON) ||
@@ -1559,8 +1555,7 @@ public class BlockListener implements Listener {
 	public void onBlockPistonExtendEvent(BlockPistonExtendEvent event) {
 
 		/* UGH. If we extend into 'air' it doesnt count them as blocks...
-		 * we need to check air to prevent breaking of item frames...
-		 */
+		 * we need to check air to prevent breaking of item frames... */
 		final int PISTON_EXTEND_LENGTH = 13;
 		Block currentBlock = event.getBlock().getRelative(event.getDirection());
 		for (int i = 0; i < PISTON_EXTEND_LENGTH; i++) {
@@ -1605,9 +1600,11 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST) 
 	public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
-		if (!allowPistonAction(event.getRetractLocation())) {
-			event.setCancelled(true);
-			return;
+		for (Block block: event.getBlocks()) {
+			if (!allowPistonAction(block.getLocation())) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 

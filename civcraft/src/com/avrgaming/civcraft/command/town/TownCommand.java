@@ -52,7 +52,7 @@ import com.avrgaming.civcraft.questions.JoinTownResponse;
 import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
+import com.avrgaming.civcraft.books.CivTutorial;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;

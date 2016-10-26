@@ -6,16 +6,70 @@
 ################ Bank Settings ################
 #TODO add bank config options
 
-################# Trommel Settings #############
+################# Trommel Settings #################
 trommel:
-    iron_chance: 0.04
+    despotism_rate: 2.0
+    penalty_rate: 0.8
+
+trommel_gravel:
+    max: 10000
+    iron_chance: 0.06
+    redstone_chance: 0.04
     gold_chance: 0.02
     diamond_chance: 0.0050
     emerald_chance: 0.0020
     chromium_chance: 0.0008
+
+trommel_granite:
+    max: 100000
     gravel_rate: 1
-    despotism_rate: 2.0
-    penalty_rate: 0.8
+    dirt_rate: 0.75
+    polished_rate: 0.1
+    iron_chance: 0.06
+    redstone_chance: 0.04
+    gold_chance: 0.02
+    tungsten_chance: 0.0075
+    diamond_chance: 0.0050
+    emerald_chance: 0.0020
+    chromium_chance: 0.0008
+    crystal_fragment_chance: 0.0002
+    refined_chromium_chance: 0.00008
+    refined_tungsten_chance: 0.00004
+    crystal_chance: 0.00002
+
+trommel_diorite:
+    max: 100000
+    gravel_rate: 1
+    dirt_rate: 0.75
+    polished_rate: 0.1
+    iron_chance: 0.06
+    redstone_chance: 0.045
+    gold_chance: 0.025
+    tungsten_chance: 0.00080
+    diamond_chance: 0.0055
+    emerald_chance: 0.0025
+    chromium_chance: 0.00085
+    crystal_fragment_chance: 0.00025
+    refined_chromium_chance: 0.00012
+    refined_tungsten_chance: 0.00008
+    crystal_chance: 0.00004
+
+trommel_andesite:
+    max: 100000
+    gravel_rate: 1
+    dirt_rate: 0.75
+    polished_rate: 0.1
+    iron_chance: 0.06
+    redstone_chance: 0.05
+    gold_chance: 0.03
+    tungsten_chance: 0.0085
+    diamond_chance: 0.0060
+    emerald_chance: 0.0030
+    chromium_chance: 0.0009
+    crystal_fragment_chance: 0.0003
+    refined_chromium_chance: 0.00015
+    refined_tungsten_chance: 0.00010
+    crystal_chance: 0.00005
 
 ################ Grocer Settings ###############
 grocer_levels:
@@ -24,14 +78,14 @@ grocer_levels:
       itemId: 350
       itemData: 0
       amount: 1
-      price: 8.0 
+      price: 7.0
 
     - level: 2
       itemName: 'Roast Chicken'
       itemId: 366
       itemData: 0
       amount: 1
-      price: 15.0
+      price: 12.0
 
     - level: 3
       itemName: 'Cooked Pork'
@@ -45,7 +99,7 @@ grocer_levels:
       itemId: 400
       itemData: 0
       amount: 1
-      price: 50.0
+      price: 40.0
 ################# Blacksmith Settings ##############
 blacksmith:
     forge_cost: 2500.0
@@ -57,7 +111,7 @@ cottage_levels:
          - 391,1
      count: 24
      coins: 75.0
-
+#
    - level: 2
      consumes:
          - 297,2
@@ -65,36 +119,37 @@ cottage_levels:
          - 392,1
      count: 48
      coins: 150.0
-
+#
    - level: 3
      consumes:
          - 297,2
-         - 391,3
+         - 391,2
          - 392,2
      count: 96
      coins: 225.0
-
+#
    - level: 4
      consumes:
          - 297,3
-         - 391,4
+         - 391,3
          - 392,3
      count: 120
      coins: 300.0
-   
+#
    - level: 5
      consumes:
          - 297,4
-         - 391,5
+         - 391,4
          - 392,4
      count: 144
      coins: 375.0
-
+#
    - level: 6
      consumes:
          - 297,5
-         - 391,6
-         - 392,6
+         - 391,5
+         - 392,5
+         - 392,5
          - 319,1
      count: 288
      coins: 450.0
@@ -113,32 +168,107 @@ temple:
         - entities:
               - 'sheep'
           reward: 50
-############################### Mine Settings #################
+#====================[ Mine Settings ]====================#
 mine_levels:
     - level: 1
-      hammers: 100.00
-      amount: 10
-      count: 24
-   
+      hammers: 100.0
+      amount: 8
+      count: 12
+#
     - level: 2
-      hammers: 150.00
-      amount: 15
-      count: 48
-    
+      hammers: 125.0
+      amount: 10
+      count: 12
+#
     - level: 3
-      hammers: 200.00
-      amount: 20
-      count: 96
-    
+      hammers: 150.0
+      amount: 12
+      count: 24
+#
     - level: 4
-      hammers: 250.00
-      amount: 25
-      count: 120
-    
+      hammers: 175.0
+      amount: 14
+      count: 24
+#
     - level: 5
-      hammers: 300.00
+      hammers: 200.0
+      amount: 16
+      count: 36
+#
+    - level: 6
+      hammers: 225.0
+      amount: 18
+      count: 36
+#
+    - level: 7
+      hammers: 250.0
+      amount: 20
+      count: 48
+#
+    - level: 8
+      hammers: 275.0
+      amount: 22
+      count: 48
+#
+    - level: 9
+      hammers: 300.0
+      amount: 24
+      count: 60
+#
+    - level: 10
+      hammers: 325.0
+      amount: 26
+      count: 60
+#
+    - level: 11
+      hammers: 350.0
+      amount: 28
+      count: 72
+#
+    - level: 12
+      hammers: 375.0
       amount: 30
-      count: 144
+      count: 72
+#
+    - level: 13
+      hammers: 400.0
+      amount: 32
+      count: 84
+#
+    - level: 14
+      hammers: 425.0
+      amount: 34
+      count: 84
+#
+    - level: 15
+      hammers: 450.0
+      amount: 36
+      count: 96
+#
+    - level: 16
+      hammers: 475.0
+      amount: 38
+      count: 96
+#
+    - level: 17
+      hammers: 500.0
+      amount: 40
+      count: 108
+#
+    - level: 18
+      hammers: 525.0
+      amount: 42
+      count: 108
+#
+    - level: 19
+      hammers: 550.0
+      amount: 44
+      count: 120
+#
+    - level: 20
+      hammers: 575.0
+      amount: 46
+      count: 120
 ##################### Farm Settings ##########################
 farm:
     # Number of crops that will grow per 100% of growth rate.
@@ -170,6 +300,10 @@ pasture:
 barracks:
     # Barracks repair cost uses the following formula.
     #
+    # current formula:
+    # cost = base_repair^(ITEM_TIER^tier_damp) + ITEM_DURABILITY^durability_damp --- Rounded to nearest tenth
+    #
+    # old formula:
     # cost = ((base_repair * (((tier+1)*tier_damp) + ((1/damagedPercent)*damage_damp)))
     #
     # So the base repair cost is multiplied by the tier's value, the +1 is for tier 0
@@ -185,11 +319,14 @@ barracks:
     base_damage_repair: 500.0
     base_tier_repair: 2000.0
 
-    # damage dampen. 
+    # damage dampen.
     damage_damp: 1.0
 
+    # durability dampen.
+    durability_damp: 0.85
+
     # tier dampen
-    tier_damp: 0.175
+    tier_damp: 0.2025
     
 
 #################### Stable Settings ########################

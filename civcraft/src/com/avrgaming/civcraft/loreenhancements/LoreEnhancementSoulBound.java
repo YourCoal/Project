@@ -21,7 +21,7 @@ public class LoreEnhancementSoulBound extends LoreEnhancement {
 	};
 	
 	public boolean canEnchantItem(ItemStack item) {
-		return isWeaponOrArmor(item);
+		return isWeaponArmorTool(item);
 	}
 	
 	public boolean hasEnchantment(ItemStack item) {

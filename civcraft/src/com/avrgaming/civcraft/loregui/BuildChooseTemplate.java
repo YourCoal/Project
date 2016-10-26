@@ -18,7 +18,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
+import com.avrgaming.civcraft.books.CivTutorial;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.global.perks.Perk;

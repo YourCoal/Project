@@ -224,10 +224,9 @@ public class LoreCraftableMaterialListener implements Listener {
 			
 			ItemStack newStack;
 			if (!loreMat.isVanilla()) {
-				newStack = LoreMaterial.spawn(loreMat);
+				newStack = LoreMaterial.spawn(loreMat, loreMat.getCraftAmount());
 				AttributeUtil attrs = new AttributeUtil(newStack);
 				loreMat.applyAttributes(attrs);
-				newStack.setAmount(loreMat.getCraftAmount());
 			} else {
 				newStack = ItemManager.createItemStack(loreMat.getTypeID(), loreMat.getCraftAmount());
 			}
@@ -262,10 +261,9 @@ public class LoreCraftableMaterialListener implements Listener {
 			
 			ItemStack newStack;
 			if (!loreMat.isVanilla()) {
-				newStack = LoreMaterial.spawn(loreMat);
+				newStack = LoreMaterial.spawn(loreMat, loreMat.getCraftAmount());
 				AttributeUtil attrs = new AttributeUtil(newStack);
 				loreMat.applyAttributes(attrs);
-				newStack.setAmount(loreMat.getCraftAmount());
 			} else {
 				newStack = ItemManager.createItemStack(loreMat.getTypeID(), loreMat.getCraftAmount());
 			}	

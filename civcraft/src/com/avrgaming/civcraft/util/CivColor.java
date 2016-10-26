@@ -20,13 +20,16 @@ public class CivColor {
 	public static final String LightPurple = "\u00A7d";
 	public static final String Yellow = "\u00A7e";
 	public static final String White = "\u00A7f";
+	
+	public static final String BoldRed = "\u00A74"+ChatColor.BOLD;
+	public static final String BoldGreen = "\u00A72"+ChatColor.BOLD;
+	
 	public static final String BOLD = ""+ChatColor.BOLD;
 	public static final String ITALIC = ""+ChatColor.ITALIC;
 	public static final String MAGIC = ""+ChatColor.MAGIC;
 	public static final String STRIKETHROUGH = ""+ChatColor.STRIKETHROUGH;
 	public static final String RESET = ""+ChatColor.RESET;
 	public static final String UNDERLINE = ""+ChatColor.UNDERLINE;
-
 	
 	/*
 	 * Takes an input from a yaml and converts 'Essentials' style color codes into 
@@ -52,6 +55,10 @@ public class CivColor {
 		output = output.replaceAll("<lightgray>", LightGray);
 		output = output.replaceAll("<gray>", Gray);
 		output = output.replaceAll("<black>", Black);
+		
+		output = output.replaceAll("<boldred>", BoldRed);
+		output = output.replaceAll("<boldgreen>", BoldGreen);
+		
 		output = output.replaceAll("<b>", ""+ChatColor.BOLD);
 		output = output.replaceAll("<u>", ""+ChatColor.UNDERLINE);
 		output = output.replaceAll("<i>", ""+ChatColor.ITALIC);
@@ -103,6 +110,12 @@ public class CivColor {
 			return Yellow;
 		case "white":
 			return White;
+			
+		case "boldred":
+			return BoldRed;
+		case "boldgreen":
+			return BoldGreen;
+			
 		default:
 			return White;
 		}		
@@ -127,6 +140,10 @@ public class CivColor {
 		output = output.replaceAll("<lightgray>", "");
 		output = output.replaceAll("<gray>", "");
 		output = output.replaceAll("<black>", "");
+		
+		output = output.replaceAll("<boldred>", "");
+		output = output.replaceAll("<boldgreed>", "");
+		
 		output = output.replaceAll("<b>", "");
 		output = output.replaceAll("<u>", "");
 		output = output.replaceAll("<i>", "");
@@ -136,5 +153,4 @@ public class CivColor {
 		
 		return output;
 	}
-	
 }

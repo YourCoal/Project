@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
@@ -83,12 +84,10 @@ import com.avrgaming.global.perks.Perk;
 import com.avrgaming.global.perks.components.CustomTemplate;
 
 public class Town extends SQLObject {
-
+	
 	private ConcurrentHashMap<String, Resident> residents = new ConcurrentHashMap<String, Resident>();
-	private ConcurrentHashMap<String, Resident> fakeResidents = new ConcurrentHashMap<String, Resident>();
-
+	
 	private ConcurrentHashMap<ChunkCoord, TownChunk> townChunks = new ConcurrentHashMap<ChunkCoord, TownChunk>();
-	private ConcurrentHashMap<ChunkCoord, TownChunk> outposts = new ConcurrentHashMap<ChunkCoord, TownChunk>();
 	private ConcurrentHashMap<ChunkCoord, CultureChunk> cultureChunks = new ConcurrentHashMap<ChunkCoord, CultureChunk>();
 	
 	private ConcurrentHashMap<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
@@ -102,11 +101,16 @@ public class Town extends SQLObject {
 	private Civilization motherCiv;
 	private int daysInDebt;
 	
+	public boolean canTeleport = false;
+	
 	/* Hammers */
 	private double baseHammers = 1.0;
 	private double extraHammers;
 	public Buildable currentStructureInProgress;
 	public Buildable currentWonderInProgress;
+	
+	/* Beakers */
+	private double unusedBeakers;
 	
 	/* Culture */
 	private int culture;
@@ -114,9 +118,6 @@ public class Town extends SQLObject {
 	private PermissionGroup defaultGroup;
 	private PermissionGroup mayorGroup;
 	private PermissionGroup assistantGroup;
-	
-	/* Beakers */
-	private double unusedBeakers;
 	
 	// These are used to resolve reverse references after the database loads.
 	private String defaultGroupName;
@@ -150,7 +151,8 @@ public class Town extends SQLObject {
 	
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
 	public int saved_bank_level = 1;
-	public double saved_bank_interest_amount = 0;
+	public double saved_bank_interest = 0;
+	public int saved_trommel_level= 0;
 	
 	/* Happiness Stuff */
 	private double baseHappy = 0.0;
@@ -768,10 +770,8 @@ public class Town extends SQLObject {
 		this.baseHammers = hammerRate;
 	}
 	
-	public static Town newTown(Resident resident, String name, Civilization civ, boolean free, boolean capitol, 
-			Location loc) throws CivException {
+	public static Town newTown(Resident resident, String name, Civilization civ, boolean free, boolean capitol, Location loc) throws CivException {
 		try {
-			
 			if (War.isWarTime() && !free && civ.getDiplomacyManager().isAtWar()) {
 				throw new CivException("Cannot start towns during WarTime if you're at war.");
 			}
@@ -927,7 +927,7 @@ public class Town extends SQLObject {
 			
 			if (!free) {
 				ItemStack newStack = new ItemStack(Material.AIR);
-				player.setItemInHand(newStack);	
+				player.getInventory().setItemInMainHand(newStack);	
 				Unit.removeUnit(player);
 			}
 			
@@ -1303,7 +1303,6 @@ public class Town extends SQLObject {
 		upkeep += this.getBaseUpkeep();
 		//upkeep += this.getSpreadUpkeep();
 		upkeep += this.getStructureUpkeep();
-		upkeep += this.getOutpostUpkeep();
 		
 		upkeep *= getGovernment().upkeep_rate;
 		
@@ -1674,9 +1673,9 @@ public class Town extends SQLObject {
 	public boolean isStructureAddable(Structure struct) {
 		int count = this.getStructureTypeCount(struct.getConfigId());
 
-		if (struct.isTileImprovement()) {
+		if (struct.isTile()) {
 			ConfigTownLevel level = CivSettings.townLevels.get(this.getLevel());
-			if (this.getTileImprovementCount() > level.tile_improvements) {
+			if (this.getTileCount() > level.tile) {
 				return false;
 			}
 		} else if ((struct.getLimit() != 0) && (count > struct.getLimit())) {
@@ -1918,7 +1917,7 @@ public class Town extends SQLObject {
 	}
 
 	public double getTotalUpkeep() throws InvalidConfiguration {
-		return this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep() + this.getOutpostUpkeep();
+		return this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep();
 	}
 
 	public double getTradeRate() {
@@ -1947,10 +1946,10 @@ public class Town extends SQLObject {
 		return rate;
 	}
 
-	public int getTileImprovementCount() {
+	public int getTileCount() {
 		int count = 0;
 		for (Structure struct : getStructures()) {
-			if (struct.isTileImprovement()) {
+			if (struct.isTile()) {
 				count++;
 			}
 		}
@@ -1958,11 +1957,7 @@ public class Town extends SQLObject {
 	}
 
 	public void removeTownChunk(TownChunk tc) {
-		if (tc.isOutpost()) {
-			this.outposts.remove(tc.getChunkCoord());
-		} else {
-			this.townChunks.remove(tc.getChunkCoord());
-		}
+		this.townChunks.remove(tc.getChunkCoord());
 	}
 
 	public Double getHammersFromCulture() {
@@ -2326,42 +2321,22 @@ public class Town extends SQLObject {
 		
 		return points;
 	}
-
-	public void addOutpostChunk(TownChunk tc) throws AlreadyRegisteredException {
-		if (outposts.containsKey(tc.getChunkCoord())) {
-			throw new AlreadyRegisteredException("Outpost at "+tc.getChunkCoord()+" already registered to town "+this.getName());
-		}
-		outposts.put(tc.getChunkCoord(), tc);	
-	}
-
-	public Collection<TownChunk> getOutpostChunks() {
-		return outposts.values();
-	}
-
-	public double getOutpostUpkeep() {
-//		double outpost_upkeep;
-//		try {
-//			outpost_upkeep = CivSettings.getDouble(CivSettings.townConfig, "town.outpost_upkeep");
-//		} catch (InvalidConfiguration e) {
-//			e.printStackTrace();
-//			return 0.0;
-//		}
-		//return outpost_upkeep*outposts.size();
-		return 0;
-	}
-
+	
 	public boolean isOutlaw(String name) {
-		return this.outlaws.contains(name);
+		Resident res = CivGlobal.getResident(name);
+		return this.outlaws.contains(res.getUUIDString());
 	}
 	
 	public void addOutlaw(String name) {
-		this.outlaws.add(name);
-		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
+		Resident res = CivGlobal.getResident(name);
+		this.outlaws.add(res.getUUIDString());
+		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
 	}
 	
 	public void removeOutlaw(String name) {
-		this.outlaws.remove(name);
-		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
+		Resident res = CivGlobal.getResident(name);
+		this.outlaws.remove(res.getUUIDString());
+		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
 	}
 	
 	public void changeCiv(Civilization newCiv) {
@@ -2378,9 +2353,11 @@ public class Town extends SQLObject {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			Resident resident = CivGlobal.getResident(outlaw);
-			if (newCiv.hasResident(resident)) {
-				removeUs.add(outlaw);
+			if (outlaw.length() >= 2){
+				Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
+				if (newCiv.hasResident(resident)) {
+					removeUs.add(outlaw);
+				}
 			}
 		}
 		
@@ -2522,11 +2499,6 @@ public class Town extends SQLObject {
 				//player offline
 			}
 		}
-		
-		for (Resident resident : this.fakeResidents.values()) {
-			residents.add(resident);
-		}
-		
 		return residents;
 	}
 
@@ -2894,10 +2866,6 @@ public class Town extends SQLObject {
 		this.currentWonderInProgress = currentWonderInProgress;
 	}
 
-	public void addFakeResident(Resident fake) {
-		this.fakeResidents.put(fake.getName(), fake);
-	}
-
 	private static String lastMessage = null;
 	public boolean processSpyExposure(Resident resident) {
 		double exposure = resident.getSpyExposure();
@@ -3153,18 +3121,34 @@ public class Town extends SQLObject {
 			struct.save();
 		}
 	}
-
+	
 	public boolean hasDisabledStructures() {
 		if (this.disabledBuildables.size() == 0) {
 			return false;
 		}
 		return true;
 	}
-
+	
 	public Collection<Buildable> getDisabledBuildables() {
 		return this.disabledBuildables.values();
 	}
-
-
-
+	
+	
+	public boolean hasEmbassy() {
+		if (this.structures.values() == this.getStructureByType("s_embassy")) {
+			return true;
+		}
+		return false;
+	}
+	
+	public Structure getEmbassy() {
+		return this.getStructureByType("s_embassy");
+	}
+	
+	public boolean canTeleport() {
+		if (hasEmbassy() == true) {
+			return true;
+		}
+		return false;
+	}
 }

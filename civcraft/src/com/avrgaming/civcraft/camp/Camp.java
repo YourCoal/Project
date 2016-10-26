@@ -156,7 +156,7 @@ public class Camp extends Buildable {
 						throw new CivException("A camp named "+name+" already exists!");
 					}
 					
-					ItemStack stack = player.getItemInHand();
+					ItemStack stack = player.getInventory().getItemInMainHand();
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 					if (craftMat == null || !craftMat.hasComponent("FoundCamp")) {
 						throw new CivException("You must be holding an item that can found a camp.");
@@ -170,7 +170,7 @@ public class Camp extends Buildable {
 				
 					CivMessage.sendSuccess(player, "You have set up camp!");
 					ItemStack newStack = new ItemStack(Material.AIR);
-					player.setItemInHand(newStack);
+					player.getInventory().setItemInMainHand(newStack);
 					resident.clearInteractiveMode();
 				} catch (CivException e) {
 					CivMessage.sendError(player, e.getMessage());
@@ -182,7 +182,7 @@ public class Camp extends Buildable {
 	}
 	
 	public Camp(Resident owner, String name, Location corner) throws CivException {
-		this.ownerName = owner.getName();
+		this.ownerName = owner.getUUID().toString();
 		this.corner = new BlockCoord(corner);
 		try {
 			this.setName(name);
@@ -269,11 +269,7 @@ public class Camp extends Buildable {
 			InvalidObjectException, CivException {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));
-		if (CivGlobal.useUUID) {
-			this.ownerName = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("owner_name"))).getName();		
-		} else {
-			this.ownerName = rs.getString("owner_name");
-		}
+		this.ownerName = rs.getString("owner_name");	
 		this.corner = new BlockCoord(rs.getString("corner"));
 		this.nextRaidDate = new Date(rs.getLong("next_raid_date"));
 		this.setTemplateName(rs.getString("template_name"));
@@ -305,11 +301,7 @@ public class Camp extends Buildable {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-		if (CivGlobal.useUUID) {
-			hashmap.put("owner_name", this.getOwner().getUUIDString());		
-		} else {
-			hashmap.put("owner_name", this.getOwner().getName());
-		}
+		hashmap.put("owner_name", this.getOwner().getUUIDString());		
 		hashmap.put("firepoints", this.firepoints);
 		hashmap.put("corner", this.corner.toString());
 		hashmap.put("next_raid_date", this.nextRaidDate.getTime());
@@ -321,7 +313,6 @@ public class Camp extends Buildable {
 	
 	@Override
 	public void delete() throws SQLException {
-		
 		for (Resident resident : this.members.values()) {
 			resident.setCamp(null);
 			resident.save();
@@ -744,10 +735,11 @@ public class Camp extends Buildable {
 			ItemStack token = LoreCraftableMaterial.spawn(craftMat);
 			
 			Tagged tag = (Tagged) craftMat.getComponent("Tagged");
-			token = tag.addTag(token, this.getOwnerName());
+			Resident res = CivGlobal.getResident(this.getOwnerName());
+			token = tag.addTag(token, res.getUUIDString());
 	
 			AttributeUtil attrs = new AttributeUtil(token);
-			attrs.addLore(CivColor.LightGray+this.getOwnerName());
+			attrs.addLore(CivColor.LightGray+res.getName());
 			token = attrs.getStack();
 			
 			mInv.addItem(token);
@@ -1013,12 +1005,12 @@ public class Camp extends Buildable {
 	}
 
 	public Resident getOwner() {
-		return CivGlobal.getResident(ownerName);
+		return CivGlobal.getResidentViaUUID(UUID.fromString(ownerName));
 	}
 
 
 	public void setOwner(Resident owner) {
-		this.ownerName = owner.getName();
+		this.ownerName = owner.getUUID().toString();
 	}
 
 
@@ -1213,7 +1205,8 @@ public class Camp extends Buildable {
 	}
 
 	public String getOwnerName() {
-		return ownerName;
+		Resident res = CivGlobal.getResidentViaUUID(UUID.fromString(ownerName));
+		return res.getName();
 	}
 
 	public void setOwnerName(String ownerName) {
@@ -1237,7 +1230,7 @@ public class Camp extends Buildable {
 	}
 
 	public void onControlBlockHit(ControlPoint cp, World world, Player player) {
-		world.playSound(cp.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
+		world.playSound(cp.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
 		world.playEffect(cp.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		CivMessage.send(player, CivColor.LightGray+"Damaged Control Block ("+cp.getHitpoints()+" / "+cp.getMaxHitpoints()+")");
@@ -1247,8 +1240,8 @@ public class Camp extends Buildable {
 	
 	public void onControlBlockDestroy(ControlPoint cp, World world, Player player) {		
 		ItemManager.setTypeId(cp.getCoord().getLocation().getBlock(), CivData.AIR);
-		world.playSound(cp.getCoord().getLocation(), Sound.ANVIL_BREAK, 1.0f, -1.0f);
-		world.playSound(cp.getCoord().getLocation(), Sound.EXPLODE, 1.0f, 1.0f);
+		world.playSound(cp.getCoord().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1.0f, -1.0f);
+		world.playSound(cp.getCoord().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 		
 		FireworkEffect effect = FireworkEffect.builder().with(org.bukkit.FireworkEffect.Type.BURST).withColor(Color.YELLOW).withColor(Color.RED).withTrail().withFlicker().build();
 		FireworkEffectPlayer fePlayer = new FireworkEffectPlayer();

@@ -139,20 +139,11 @@ public class TownChunk extends SQLObject {
 		this.price = rs.getDouble("price");
 		this.outpost = rs.getBoolean("outpost");
 		
-		if (!this.outpost) {
-			try {
-				this.getTown().addTownChunk(this);
-			} catch (AlreadyRegisteredException e1) {
-				e1.printStackTrace();
-			}
-		} else {
-			try {
-				this.getTown().addOutpostChunk(this);
-			} catch (AlreadyRegisteredException e) {
-				e.printStackTrace();
-			}
+		try {
+			this.getTown().addTownChunk(this);
+		} catch (AlreadyRegisteredException e1) {
+			e1.printStackTrace();
 		}
-		
 	}
 
 	@Override
@@ -286,21 +277,11 @@ public class TownChunk extends SQLObject {
 //			throw new CivException("Internal configuration exception.");
 //		}
 		
-		if (!outpost) {
-			try {
-				town.addTownChunk(tc);
-			} catch (AlreadyRegisteredException e1) {
-				e1.printStackTrace();
-				throw new CivException("Internal Error Occurred.");
-	
-			}
-		} else {
-			try {
-				town.addOutpostChunk(tc);
-			} catch (AlreadyRegisteredException e) {
-				e.printStackTrace();
-				throw new CivException("Internal Error Occurred.");
-			}
+		try {
+			town.addTownChunk(tc);
+		} catch (AlreadyRegisteredException e1) {
+			e1.printStackTrace();
+			throw new CivException("Internal Error Occurred.");
 		}
 		
 		Camp camp = CivGlobal.getCampFromChunk(coord);

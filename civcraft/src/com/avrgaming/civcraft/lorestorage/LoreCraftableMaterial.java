@@ -206,9 +206,7 @@ public class LoreCraftableMaterial extends LoreMaterial {
 	}
 
 	public static void buildRecipes() {
-		/*
-		 * Loads in materials from configuration file.
-		 */
+		/* Loads in materials from configuration file. */
 		for (LoreCraftableMaterial loreMat : materials.values()) {
 			if (!loreMat.isCraftable()) {
 				continue;
@@ -218,7 +216,7 @@ public class LoreCraftableMaterial extends LoreMaterial {
 			ConfigMaterial configMaterial = loreMat.configMaterial;
 			
 			if (loreMat.isShaped()) {
-				ItemStack[] matrix = new ItemStack[10];
+				ItemStack[] matrix = new ItemStack[9];
 				ShapedRecipe recipe = new ShapedRecipe(stack);
 				recipe.shape(configMaterial.shape[0], configMaterial.shape[1], configMaterial.shape[2]);
 				
@@ -264,7 +262,6 @@ public class LoreCraftableMaterial extends LoreMaterial {
 				String key = getShapedRecipeKey(matrix);
 				shapedKeys.put(key, loreMat);
 				
-
 				/* Register recipe with server. */
 				Bukkit.getServer().addRecipe(recipe);
 			} else {

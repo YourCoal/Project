@@ -51,7 +51,7 @@ public class PerkManagerSimple extends PerkManager {
 					"`uuid` varchar(256)," +
 					"`game_name` mediumtext," +
 					"`platinum` int(11),"+
-					"PRIMARY KEY (`uuid`)" + ")";
+					"PRIMARY KEY (`id`)" + ")";
 			
 			SQL.makeGlobalTable(table_create);
 			CivLog.info("Created "+USER_PLATINUM_TABLE_NAME+" table");

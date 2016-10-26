@@ -10,14 +10,15 @@ global:
    hourly_tick: 3600
 
    start_kit:
-        - '270:1'
-        - '271:1'
-        - '269:1'
-        - '17:10'
+        - '424:24'
         - '346:2'
-        - '366:10'
-        - '345:1'
-        - 'mat_tutorial_book:1'
+        - '166:64'
+        - '17:24'
+        - '266:40'
+        - '4:24'
+        - '166:64'
+        - '166:64'
+        - 'civ_tutorial_book:1'
 
    # Amount of mins PvP timer remains active after first login.
    pvp_timer: 120

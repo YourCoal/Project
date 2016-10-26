@@ -56,8 +56,10 @@ public abstract class LoreMaterial {
 
 	private LinkedList<String> lore = new LinkedList<String>();
 	private String name;
-		
+	
+	//TODO Remove materialMap and make it matMap, because I want to compact code
 	public static Map<String, LoreMaterial> materialMap = new HashMap<String, LoreMaterial>();
+	public static Map<String, LoreMaterial> matMap = new HashMap<String, LoreMaterial>();
 	public static final String MID_TAG = CivColor.Black+"MID";
 	
 	public LoreMaterial(String id, int typeID, short damage) {
@@ -134,6 +136,13 @@ public abstract class LoreMaterial {
 		return materialMap.get(getMID(stack));
 	}
 	
+	public static LoreMaterial getMaterial(LoreMaterial stack) {
+		if (stack == null) {
+			return null;
+		}
+		return materialMap.get(stack);
+	}
+	
 	/*
 	 * Moves an item stack off of this slot by trying
 	 * to re-add it to the inventory, if it fails, then
@@ -164,18 +173,23 @@ public abstract class LoreMaterial {
 		}
 		return null;
 	}
-
+	
 	public static ItemStack spawn(LoreMaterial material) {
-		ItemStack stack = ItemManager.createItemStack(material.getTypeID(), 1, material.getDamage());
+		return spawn(material, 1);
+	}
+	
+	public static ItemStack spawn(LoreMaterial material, int amount) {
+		ItemStack stack = ItemManager.createItemStack(material.getTypeID(), amount, material.getDamage());
 		AttributeUtil attrs = new AttributeUtil(stack);
 		setMIDAndName(attrs, material.getId(), material.getName());
 		
 		if (material instanceof LoreCraftableMaterial) {
 			LoreCraftableMaterial craftMat = (LoreCraftableMaterial)material;
-			//craftMat.getConfigMaterial().category
 			attrs.addLore(CivColor.ITALIC+craftMat.getConfigMaterial().category);
+			if (craftMat.getConfigMaterial().shiny) {
+				attrs.setShiny();
+			}
 		}
-		
 		material.applyAttributes(attrs);
 		return attrs.getStack();
 	}

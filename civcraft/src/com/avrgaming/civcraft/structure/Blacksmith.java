@@ -60,7 +60,7 @@ public class Blacksmith extends Structure {
 	
 	private static final long COOLDOWN = 5;
 	//private static final double BASE_CHANCE = 0.8;
-	public static int SMELT_TIME_SECONDS = 3600*3;
+	public static int SMELT_TIME_SECONDS = 3600*2;
 	public static double YIELD_RATE = 1.25;
 	
 	private Date lastUse = new Date();
@@ -128,7 +128,7 @@ public class Blacksmith extends Structure {
 			this.perform_forge(player, cost);
 			break;
 		case 2:
-			this.depositSmelt(player, player.getItemInHand());
+			this.depositSmelt(player, player.getInventory().getItemInMainHand());
 			break;
 		case 3:
 			this.withdrawSmelt(player);
@@ -166,7 +166,7 @@ public class Blacksmith extends Structure {
 	}
 	
 	public String getkey(Player player, Structure struct, String tag) {
-		return player.getName()+"_"+struct.getConfigId()+"_"+struct.getCorner().toString()+"_"+tag; 
+		return player.getUniqueId().toString()+"_"+struct.getConfigId()+"_"+struct.getCorner().toString()+"_"+tag;
 	}
 
 	public void saveItem(ItemStack item, String key) {
@@ -215,7 +215,7 @@ public class Blacksmith extends Structure {
 	 */
 	public void deposit_forge(Player player) throws CivException {
 		
-		ItemStack item = player.getItemInHand();
+		ItemStack item = player.getInventory().getItemInMainHand();
 		
 		ArrayList<SessionEntry> sessions = null;
 		String key = this.getkey(player, this, "forge");
@@ -233,7 +233,7 @@ public class Blacksmith extends Structure {
 			if (item.getAmount() > 1) {
 				item.setAmount(item.getAmount()-1);
 			} else {
-				player.setItemInHand(new ItemStack(Material.AIR));
+				player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 			//	player.getInventory().remove(item);
 			}
 			
@@ -269,7 +269,7 @@ public class Blacksmith extends Structure {
 		ArrayList<SessionEntry> sessions = CivGlobal.getSessionDB().lookup(key);
 		
 		/* Search for free catalyst. */
-		ItemStack stack = player.getItemInHand();
+		ItemStack stack = player.getInventory().getItemInMainHand();
 		AttributeUtil attrs = new AttributeUtil(stack);
 		Catalyst catalyst;
 		
@@ -328,11 +328,11 @@ public class Blacksmith extends Structure {
 				attrs.removeCivCraftProperty("freeCatalyst");
 			}
 			
-			player.setItemInHand(attrs.getStack());
+			player.getInventory().setItemInMainHand(attrs.getStack());
 			
 		}
 		
-		stack = player.getItemInHand();
+		stack = player.getInventory().getItemInMainHand();
 		ItemStack enhancedItem = catalyst.getEnchantedItem(stack);
 		
 		if (enhancedItem == null) {
@@ -347,11 +347,11 @@ public class Blacksmith extends Structure {
 			 * There is a one in third chance that our item will break.
 			 * Sucks, but this is what happened here.
 			 */
-			player.setItemInHand(ItemManager.createItemStack(CivData.AIR, 1));
+			player.getInventory().setItemInMainHand(ItemManager.createItemStack(CivData.AIR, 1));
 			CivMessage.sendError(player, "Enhancement failed. Item has broken.");
 			return;
 		} else {
-			player.setItemInHand(enhancedItem);
+			player.getInventory().setItemInMainHand(enhancedItem);
 			CivMessage.sendSuccess(player, "Enhancement succeeded!");
 			return;
 		}

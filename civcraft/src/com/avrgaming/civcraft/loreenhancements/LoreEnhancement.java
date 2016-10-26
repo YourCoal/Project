@@ -24,13 +24,25 @@ public abstract class LoreEnhancement {
 		enhancements.put("LoreEnhancementAttack", new LoreEnhancementAttack());
 		enhancements.put("LoreEnhancementDefense", new LoreEnhancementDefense());
 		enhancements.put("LoreEnhancementPunchout", new LoreEnhancementPunchout());
-		enhancements.put("LoreEnhancementArenaItem", new LoreEnhancementArenaItem());
 	}
 	
 	public boolean onDeath(PlayerDeathEvent event, ItemStack stack) { return false; }
 
 	public boolean canEnchantItem(ItemStack item) {
 		return true;
+	}
+	
+	public static boolean isTool(ItemStack item) {
+		switch (ItemManager.getId(item)) {
+		case CivData.WOOD_PICKAXE:
+		case CivData.STONE_PICKAXE:
+		case CivData.IRON_PICKAXE:
+		case CivData.GOLD_PICKAXE:
+		case CivData.DIAMOND_PICKAXE:
+			return true;
+		default:
+			return false;
+		}
 	}
 	
 	public static boolean isWeapon(ItemStack item) {
@@ -75,8 +87,8 @@ public abstract class LoreEnhancement {
 		}
 	}
 	
-	public static boolean isWeaponOrArmor(ItemStack item) {
-		return isWeapon(item) || isArmor(item);
+	public static boolean isWeaponArmorTool(ItemStack item) {
+		return isTool(item) || isWeapon(item) || isArmor(item);
 	}
 
 	public boolean hasEnchantment(ItemStack item) {

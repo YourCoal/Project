@@ -11,7 +11,7 @@ import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
+import com.avrgaming.civcraft.books.CivTutorial;
 
 public class OpenInventory implements GuiAction {
 

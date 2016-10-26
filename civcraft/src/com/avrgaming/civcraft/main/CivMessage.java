@@ -29,8 +29,6 @@ import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.avrgaming.civcraft.arena.Arena;
-import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.object.Civilization;
@@ -80,13 +78,25 @@ public class CivMessage {
 		CivLog.info(line);	
 	}
 	
+	public static void sendNoRepeat(Object sender, String line) {
+		if (sender instanceof Player) {
+			Player player = (Player)sender;
+			
+			Integer hashcode = lastMessageHashCode.get(player.getName());
+			if (hashcode != null && hashcode == line.hashCode()) {
+				return;
+			}
+			lastMessageHashCode.put(player.getName(), line.hashCode());
+		}
+		send(sender, line);
+	}
+	
 	public static void send(Object sender, String line) {
 		if ((sender instanceof Player)) {
 			((Player) sender).sendMessage(line);
 		} else if (sender instanceof CommandSender) {
 			((CommandSender) sender).sendMessage(line);
-		}
-		else if (sender instanceof Resident) {
+		} else if (sender instanceof Resident) {
 			try {
 				CivGlobal.getPlayer(((Resident) sender)).sendMessage(line);
 			} catch (CivException e) {
@@ -470,26 +480,4 @@ public class CivMessage {
 			return;
 		}
 	}
-
-	public static void sendTeam(ArenaTeam team, String message) {
-		for (Resident resident : team.teamMembers) {
-			CivMessage.send(resident, CivColor.Blue+"[Team ("+team.getName()+")] "+CivColor.RESET+message);
-		}
-	}
-	
-	public static void sendTeamHeading(ArenaTeam team, String message) {
-		for (Resident resident : team.teamMembers) {
-			CivMessage.sendHeading(resident, message);
-		}
-	}
-	
-	public static void sendArena(Arena arena, String message) {
-		CivLog.info("[Arena] "+message);
-		for (ArenaTeam team : arena.getTeams()) {
-			for (Resident resident : team.teamMembers) {
-				CivMessage.send(resident, CivColor.LightBlue+"[Arena] "+CivColor.RESET+message);
-			}
-		}
-	}
-	
 }

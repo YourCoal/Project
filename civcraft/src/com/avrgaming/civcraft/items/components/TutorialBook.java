@@ -6,7 +6,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.avrgaming.civcraft.tutorial.CivTutorial;
+import com.avrgaming.civcraft.books.CivTutorial;
 import com.avrgaming.civcraft.util.CivColor;
 
 public class TutorialBook extends ItemComponent {

@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.minecraft.util.org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FileUtils;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -91,7 +91,9 @@ public class CivSettings {
 	public static float T4_metal_speed;
 	public static float normal_speed;
 	public static double highjump;
-	
+
+	public static FileConfiguration dropsConfig; /* drops.yml */
+
 	public static FileConfiguration townConfig; /* town.yml */
 	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
 	public static Map<String, ConfigTownUpgrade> townUpgrades = new TreeMap<String, ConfigTownUpgrade>();
@@ -183,9 +185,6 @@ public class CivSettings {
 	public static FileConfiguration nocheatConfig; /* nocheatConfig.yml */
 	public static HashMap<String, ConfigValidMod> validMods = new HashMap<String, ConfigValidMod>();
 	
-	public static FileConfiguration arenaConfig; /* arenas.yml */
-	public static HashMap<String, ConfigArena> arenas = new HashMap<String, ConfigArena>();
-	
 	public static FileConfiguration fishingConfig; /* fishing.yml */
 	public static ArrayList<ConfigFishing> fishingDrops = new ArrayList<ConfigFishing>();
 		
@@ -200,9 +199,17 @@ public class CivSettings {
 	public static HashSet<Material> restrictedUndoBlocks = new HashSet<Material>();
 	public static boolean hasVanishNoPacket = false;
 	
+	public static final String HACKER = "civ.hacker";
 	public static final String MINI_ADMIN = "civ.admin";
 	public static final String MODERATOR = "civ.moderator";
+	public static final String ARCTIC_PERKS = "civ.arcticperks";
+	public static final String AZTEC_PERKS = "civ.aztecperks";
+	public static final String EGYPTIAN_PERKS = "civ.egyptianperks";
+	public static final String ROMAN_PERKS = "civ.romanperks";
+	public static final String HELL_PERKS = "civ.hellperks";
 	public static final String FREE_PERKS = "civ.freeperks";
+	public static final String CULTIST_PERKS = "civ.cultistperks";
+	public static final String ELVEN_PERKS = "civ.elvenperks";
 	public static final String ECON = "civ.econ";
 	public static final int MARKET_COIN_STEP = 5;
 	public static final int MARKET_BUYSELL_COIN_DIFF = 30;
@@ -339,6 +346,7 @@ public class CivSettings {
 	
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
+		dropsConfig = loadCivConfig("drops.yml");
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
 		cultureConfig = loadCivConfig("culture.yml");
@@ -360,7 +368,6 @@ public class CivSettings {
 		materialsConfig = loadCivConfig("materials.yml");
 		randomEventsConfig = loadCivConfig("randomevents.yml");
 		nocheatConfig = loadCivConfig("nocheat.yml");
-		arenaConfig = loadCivConfig("arena.yml");
 		fishingConfig = loadCivConfig("fishing.yml");
 	}
 
@@ -399,7 +406,6 @@ public class CivSettings {
 		ConfigEndCondition.loadConfig(civConfig, endConditions);
 		ConfigPlatinumReward.loadConfig(civConfig, platinumRewards);
 		ConfigValidMod.loadConfig(nocheatConfig, validMods);
-		ConfigArena.loadConfig(arenaConfig, arenas);
 		ConfigFishing.loadConfig(fishingConfig, fishingDrops);
 	
 		ConfigRemovedRecipes.removeRecipes(materialsConfig, removedRecipies );
@@ -574,6 +580,15 @@ public class CivSettings {
 		String data = cfg.getString(path);
 		if (data == null) {
 			throw new InvalidConfiguration("Could not get configuration string "+path);
+		}
+		return data;
+	}
+	
+	@SuppressWarnings("unused")
+	public static Boolean getBoolean(FileConfiguration cfg, String path) throws InvalidConfiguration {
+		Boolean data = cfg.getBoolean(path);
+		if (data == null) {
+			throw new InvalidConfiguration("Could not get configuration boolean "+path);
 		}
 		return data;
 	}

@@ -18,10 +18,6 @@
  */
 package com.avrgaming.civcraft.items.components;
 
-import gpl.AttributeUtil;
-import gpl.AttributeUtil.Attribute;
-import gpl.AttributeUtil.AttributeType;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -34,24 +30,30 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.CivColor;
 
+import gpl.AttributeUtil;
+import gpl.AttributeUtil.Attribute;
+import gpl.AttributeUtil.AttributeType;
 
 public class Attack extends ItemComponent {
-
+	
 	@Override
 	public void onPrepareCreate(AttributeUtil attrs) {
-		
 		// Add generic attack damage of 0 to clear the default lore on item.
-		attrs.add(Attribute.newBuilder().name("Attack").
-				type(AttributeType.GENERIC_ATTACK_DAMAGE).
-				amount(0).
-				build());
+		attrs.add(Attribute.newBuilder().name("Attack"). type(AttributeType.GENERIC_ATTACK_DAMAGE).
+				amount(0). build());
 		attrs.addLore(CivColor.Rose+""+this.getDouble("value")+" Attack");
+		
+//		NBTTagCompound damage = new NBTTagCompound();
+//		NBTTagList modifiers = new NBTTagList();
+//		damage.set("Slot", new NBTTagString("mainhand"));
+//		modifiers.add(damage);
+//		itemmeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+		
 		return;
 	}
 	
 	@Override
 	public void onHold(PlayerItemHeldEvent event) {	
-		
 		Resident resident = CivGlobal.getResident(event.getPlayer());
 		if (!resident.hasTechForItem(event.getPlayer().getInventory().getItem(event.getNewSlot()))) {		
 			CivMessage.send(resident, CivColor.Rose+"Warning - "+CivColor.LightGray+
@@ -63,15 +65,14 @@ public class Attack extends ItemComponent {
 	public void onAttack(EntityDamageByEntityEvent event, ItemStack inHand) {
 		AttributeUtil attrs = new AttributeUtil(inHand);
 		double dmg = this.getDouble("value");
-				
 		double extraAtt = 0.0;
 		for (LoreEnhancement enh : attrs.getEnhancements()) {
 			if (enh instanceof LoreEnhancementAttack) {
 				extraAtt +=  ((LoreEnhancementAttack)enh).getExtraAttack(attrs);
 			}
 		}
-		dmg += extraAtt;
 		
+		dmg += extraAtt;
 		if (event.getDamager() instanceof Player) {
 			Resident resident = CivGlobal.getResident(((Player)event.getDamager()));
 			if (!resident.hasTechForItem(inHand)) {
@@ -82,8 +83,6 @@ public class Attack extends ItemComponent {
 		if (dmg < 0.5) {
 			dmg = 0.5;
 		}
-		
 		event.setDamage(dmg);
 	}
-
 }

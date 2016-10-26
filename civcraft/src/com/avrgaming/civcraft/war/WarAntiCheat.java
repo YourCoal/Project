@@ -52,8 +52,7 @@ public class WarAntiCheat {
 		try {
 			if (!resident.isUsesAntiCheat()) {
 				TaskMaster.syncTask(new PlayerKickBan(resident.getName(), true, false, 
-						"Kicked: You are required to have CivCraft's Anti-Cheat plugin installed to participate in WarTime."+
-						"Visit http://civcraft.net to get it."));
+						"Kicked: You are required to have CivCraft's Anti-Cheat plugin installed to participate in WarTime. Visit http://www.websitehere.net to get it."));
 			}
 		} catch (CivException e) {
 		}

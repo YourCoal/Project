@@ -38,7 +38,7 @@ import com.avrgaming.civcraft.object.Relation;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
+import com.avrgaming.civcraft.books.CivTutorial;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -65,12 +65,16 @@ public class PlayerLoginAsyncTask implements Runnable {
 	public void run() {
 		try {
 			CivLog.info("Running PlayerLoginAsyncTask for "+getPlayer().getName()+" UUID("+playerUUID+")");
-			Resident resident = CivGlobal.getResident(getPlayer().getName());
+			Resident resident = CivGlobal.getResidentViaUUID(playerUUID);
+			if (resident != null && !resident.getName().equals(getPlayer().getName())) {
+				CivGlobal.removeResident(resident);
+				resident.setName(getPlayer().getName());
+				resident.save();
+				CivGlobal.addResident(resident);
+			}
 			
-			/* 
-			 * Test to see if player has changed their name. If they have, these residents
-			 * will not match. Disallow players changing their name without admin approval. 
-			 */
+			/* Test to see if player has changed their name. If they have, these residents
+			 * will not match. Disallow players changing their name without admin approval. */
 			if (CivGlobal.getResidentViaUUID(getPlayer().getUniqueId()) != resident) {
 				TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, 
 						"Your user ID on record does not match the player name you're attempting to log in with."+
@@ -184,6 +188,27 @@ public class PlayerLoginAsyncTask implements Runnable {
 						resident.giveAllFreePerks();
 					}
 				}
+				if (getPlayer().hasPermission(CivSettings.ARCTIC_PERKS)) {
+					resident.giveAllArcticPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.AZTEC_PERKS)) {
+					resident.giveAllAztecPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.CULTIST_PERKS)) {
+					resident.giveAllCultistPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.EGYPTIAN_PERKS)) {
+					resident.giveAllEgyptianPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.ELVEN_PERKS)) {
+					resident.giveAllElvenPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.ROMAN_PERKS)) {
+					resident.giveAllRomanPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.HELL_PERKS)) {
+					resident.giveAllHellPerks();
+				}
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
@@ -253,12 +278,9 @@ public class PlayerLoginAsyncTask implements Runnable {
 			if (EndConditionDiplomacy.canPeopleVote()) {
 				CivMessage.send(resident, CivColor.LightGreen+"The Council of Eight is built! Use /vote to vote for your favorite Civilization!");
 			}
-		} catch (CivException playerNotFound) {
+		} catch (CivException | InvalidNameException playerInvalid) {
 			// Player logged out while async task was running.
 			CivLog.warning("Couldn't complete PlayerLoginAsyncTask. Player may have been kicked while async task was running.");
 		}
 	}
-	
-
-
 }

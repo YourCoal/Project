@@ -20,10 +20,10 @@ package com.avrgaming.civcraft.components;
 
 import java.util.HashSet;
 
-import net.minecraft.server.v1_7_R4.Vec3D;
+import net.minecraft.server.v1_10_R1.Vec3D;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -143,9 +143,17 @@ public abstract class ProjectileComponent extends Component {
 		return false;
 	}
 	
+	private boolean isLit(Player player) {
+		Location loc1 = player.getLocation();
+		return ((loc1.getWorld()).getBlockAt(loc1).getLightFromSky() >= 15);
+
+	}
+	
 	private boolean canSee(Player player, Location loc2) {
-		Location loc1 = player.getLocation();		
-		return ((CraftWorld)loc1.getWorld()).getHandle().a(Vec3D.a(loc1.getX(), loc1.getY() + player.getEyeHeight(), loc1.getZ()), Vec3D.a(loc2.getX(), loc2.getY(), loc2.getZ())) == null;
+		Location loc1 = player.getLocation();
+		Vec3D vec1 = new Vec3D(loc1.getX(), loc1.getY() + player.getEyeHeight(), loc1.getZ());
+		Vec3D vec2 = new Vec3D(loc2.getX(), loc2.getY(), loc2.getZ());
+		return ((CraftWorld)loc1.getWorld()).getHandle().rayTrace(vec1, vec2) == null;
 	}
 	
 	protected Location adjustTurretLocation(Location turretLoc, Location playerLoc) {
@@ -210,9 +218,15 @@ public abstract class ProjectileComponent extends Component {
 				return;
 			}
 			
-			// XXX todo convert this to not use a player so we can async...
-			if (!this.canSee(player, turretLoc)) {
-				continue;
+			if (!this.getBuildable().getConfigId().equals("s_teslatower")) {
+				// XXX todo convert this to not use a player so we can async...
+				if (!this.canSee(player, turretLoc)) {
+					continue;
+				}
+			} else {
+				if (!this.isLit(player)) {
+					continue;
+				}
 			}
 		
 			if (isWithinRange(player.getLocation(), range)) {
@@ -255,3 +269,4 @@ public abstract class ProjectileComponent extends Component {
 	}
 	
 }
+
