@@ -41,7 +41,7 @@ import com.avrgaming.civcraft.util.ItemManager;
 public class Farm extends Structure {
 	
 	public static final long GROW_RATE = (int)CivSettings.getIntegerStructure("farm.grow_tick_rate");
-	public static final int CROP_GROW_LIGHT_LEVEL = 9;
+	public static final int CROP_GROW_LIGHT_LEVEL = 8;
 	public static final int MUSHROOM_GROW_LIGHT_LEVEL = 12;
 	public static final int MAX_SUGARCANE_HEIGHT = 3;
 	
@@ -104,6 +104,7 @@ public class Farm extends Structure {
 		case CivData.CARROTS:
 		case CivData.POTATOES:
 		case CivData.NETHERWART:
+		case CivData.BEETROOT_CROP:
 	//	case CivData.SUGARCANE:
 			return true;
 		}

@@ -1,9 +1,5 @@
-# This controls the drops from fishing
 #
-#Here is an explaination of the options
-#craftMatId - Custom item_id
-#type_id - Vanilla item_id
-#drop_chance - Probability to drop.
+# This controls the drops from fishing
 #
 
 fishing_drops:

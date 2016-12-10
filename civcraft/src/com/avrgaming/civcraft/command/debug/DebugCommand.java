@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.command.debug;
 
-import gpl.AttributeUtil;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -49,6 +47,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.avrgaming.civcraft.books.Information;
+import com.avrgaming.civcraft.books.Tutorial;
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.command.admin.AdminTownCommand;
 import com.avrgaming.civcraft.config.CivSettings;
@@ -98,7 +98,6 @@ import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
 import com.avrgaming.civcraft.threading.tasks.TradeGoodPostGenTask;
 import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
 import com.avrgaming.civcraft.threading.timers.DailyTimer;
-import com.avrgaming.civcraft.books.CivTutorial;
 import com.avrgaming.civcraft.util.AsciiMap;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
@@ -108,6 +107,8 @@ import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.global.perks.Perk;
+
+import gpl.AttributeUtil;
 
 public class DebugCommand extends CommandBase {
 
@@ -709,11 +710,11 @@ public class DebugCommand extends CommandBase {
 	}
 	
 	public void showinv_cmd() throws CivException {
-		CivTutorial.spawnGuiBook(getPlayer());
+		Tutorial.spawnGuiBook(getPlayer());
 	}
 	
 	public void showcraftinv_cmd() throws CivException {
-		CivTutorial.showCraftingHelp(getPlayer());
+		Information.showCraftingHelp(getPlayer());
 	}
 	
 	

@@ -86,13 +86,43 @@ public class CivData {
 	public static final int LOG = 17;
 	public static final int LEAF = 18;
 	
+	public static final int TALL_GRASS = 31;
+	public static final int DEAD_BUSH = 32;
+	
+	public static final int YELLOW_FLOWER = 37;
+	public static final int OTHER_FLOWERS = 38;
+	
+	public static final int REDSTONE_WIRE = 55;
+	
+	public static final int SUGARCANE = 83;
+	
+	public static final int LILY_PAD = 111;
+	
 	public static final int EMERALD_ORE = 129;
+	
+	public static final int TRIPWIRE = 131;
 	
 	public static final int COBBLESTONE_WALL = 139;
 	
 	public static final int QUARTZ_BLOCK = 155;
 	
+	public static final int STAINED_CLAY = 159;
+	
+	public static final int LEAF2 = 161;
+	
+	public static final int SLIME_BLOCK = 165;
+	
+	public static final int CARPET = 171;
+	public static final int HARDENED_CLAY = 172;
+	
+	public static final int DOUBLE_FLOWER = 175;
+	
+	public static final int BEETROOT_CROP = 207;
+	
 	public static final int APPLE = 260;
+	
+	public static final int BEETROOT_ITEM = 434;
+	public static final int BEETROOT_SEED = 435;
 	
 //	public static final int LAPIS = ItemManager.getMaterialData(Material.INK_SACK, 4);
 	
@@ -114,7 +144,6 @@ public class CivData {
 	public static final int DISPENSER = 23;
 	public static final int REDSTONE_DUST = 331;
 	public static final int WHEAT = 59;
-	public static final int SUGARCANE = 83;
 	public static final int PUMPKIN_STEM = 104;
 	public static final int MELON_STEM = 105;
 	public static final int CARROTS = 141;
@@ -371,13 +400,14 @@ public class CivData {
 		switch (bs.getTypeId()) {
 		case WHEAT:
 		case CARROTS:		
-		case POTATOES:		
+		case POTATOES:
 			if (bs.getData() == 0x7) {
 				return false;
 			}
 			return true;
 		
 		case NETHERWART:
+		case BEETROOT_CROP:
 			if (bs.getData() == 0x3) {
 				return false;
 			}
@@ -400,7 +430,7 @@ public class CivData {
 		
 		return false;
 	}
-
+	
 	public static byte convertSignDataToDoorDirectionData(byte data) {
 		switch(data) {
 		case SIGNPOST_NORTH:
@@ -412,25 +442,10 @@ public class CivData {
 		case SIGNPOST_WEST:
 			return 0x0;
 		}
-		
 		return 0x0;
 	}
-
+	
 	public static byte convertSignDataToChestData(byte data) {
-		/* Chests are 
-		 * 0x2: Facing north (for ladders and signs, attached to the north side of a block)
-		 * 0x3: Facing south
-		 * 0x4: Facing west
-		 * 0x5: Facing east
-		 */
-		
-		/* Signposts are
-		 * 0x0: south
-			0x4: west
-			0x8: north
-			0xC: east
-		 */
-		
 		switch(data) {
 		case SIGNPOST_NORTH:
 			return CHEST_NORTH;
@@ -441,23 +456,8 @@ public class CivData {
 		case SIGNPOST_WEST:
 			return CHEST_WEST;
 		}
-		
-		
-//		switch (data) {
-//		case 0x0:
-//			return 0x3;
-//		case 0x4:
-//			return 0x4;
-//		case 0x8:
-//			return 0x2;
-//		case 0xC:
-//			return 0x5;
-//		}
-		
-		
 		System.out.println("Warning, unknown sign post direction:"+data);
 		return CHEST_SOUTH;
 	}
-	
 }
 

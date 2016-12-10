@@ -76,6 +76,30 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("setunhappy", "[town] [amount] - sets a magical base unhappiness for this town.");
 		commands.put("event", "[town] [event_id] - Runs the named random event in this town.");
 		commands.put("rename", "[town] [new_name] - Renames this town.");
+		commands.put("givefood", "[town] [amount] - gives this [town] this [amount] of food.");
+		commands.put("takefood", "[town] [amount] - removes this [town] this [amount] of food.");
+		commands.put("setfood", "[town] [amount] - sets this [town] this [amount] of food.");
+	}
+	
+	public void givefood_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer count = getNamedInteger(2);
+		town.getFood().giveFood(count);
+		CivMessage.sendSuccess(sender, "Gave "+town.getName()+" (Add)"+count+" food.");
+	}
+	
+	public void setfood_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer count = getNamedInteger(2);
+		town.getFood().setFoodCount(count);
+		CivMessage.sendSuccess(sender, "Gave "+town.getName()+" (Set)"+count+" food.");
+	}
+	
+	public void subfood_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer count = getNamedInteger(2);
+		town.getFood().takeFood(count);
+		CivMessage.sendSuccess(sender, "Gave "+town.getName()+" (Sub)"+count+" food.");
 	}
 	
 	public void rename_cmd() throws CivException, InvalidNameException {

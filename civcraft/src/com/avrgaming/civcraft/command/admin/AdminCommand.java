@@ -146,12 +146,14 @@ public class AdminCommand extends CommandBase {
 					material = ItemManager.getId(Material.BOOK);
 				} else if (cat.name.contains("Materials")) {
 					material = ItemManager.getId(Material.WORKBENCH);
+				} else if (cat.name.contains("Gear Tier 0")) {
+					material = ItemManager.getId(Material.COAL_BLOCK);
 				} else if (cat.name.contains("Gear Tier 1")) {
 					material = ItemManager.getId(Material.IRON_BLOCK);
 				} else if (cat.name.contains("Gear Tier 2")) {
 					material = ItemManager.getId(Material.GOLD_BLOCK);
 				} else if (cat.name.contains("Gear Tier 3")) {
-					material = ItemManager.getId(Material.STONE);
+					material = ItemManager.getId(Material.LAPIS_BLOCK);
 				} else if (cat.name.contains("Gear Tier 4")) {
 					material = ItemManager.getId(Material.DIAMOND_BLOCK);
 				} else if (cat.name.contains("Tools")) {

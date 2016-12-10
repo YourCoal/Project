@@ -19,7 +19,7 @@
 package com.avrgaming.civcraft.threading.tasks;
 
 import gpl.AttributeUtil;
-import net.minecraft.server.v1_10_R1.Material;
+import net.minecraft.server.v1_11_R1.Material;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -54,7 +54,6 @@ public class StructureBlockHitEvent implements Runnable {
 	
 	@Override
 	public void run() {
-		
 		if (playerName == null) {
 			return;
 		}
@@ -65,6 +64,7 @@ public class StructureBlockHitEvent implements Runnable {
 			//Player offline now?
 			return;
 		}
+		
 		if (dmgBlock.allowDamageNow(player)) {
 			/* Do our damage. */
 			int damage = 1;
@@ -81,13 +81,22 @@ public class StructureBlockHitEvent implements Runnable {
 			}
 			
 			if (damage > 1) {
+				//TODO FIX THIS
+/*				if (dmgBlock.getCoord().getBlock() == dmgBlock.getTown().getTownHall().getControlPoints()) {
+					CivMessage.send(player, CivColor.LightGray+"if this works im bad.");
+					damage = 1;
+				}
+				
+				if (dmgBlock.getCiv().getCapitolStructure().getControlPoints().equals(dmgBlock)) {
+					CivMessage.send(player, CivColor.LightGray+"Punchout has been voided because you broke a control block.");
+					damage = 1;
+				}*/
 				CivMessage.send(player, CivColor.LightGray+"Punchout does "+(damage-1)+" extra damage!");
 			}
-				
+			
 			dmgBlock.getOwner().onDamage(damage, world, player, dmgBlock.getCoord(), dmgBlock);
 		} else {
-			CivMessage.sendErrorNoRepeat(player, 
-					"This block belongs to a "+dmgBlock.getOwner().getDisplayName()+" and cannot be destroyed right now.");
+			CivMessage.sendErrorNoRepeat(player, "This block belongs to a "+dmgBlock.getOwner().getDisplayName()+" and cannot be destroyed right now.");
 		}
 	}
 }

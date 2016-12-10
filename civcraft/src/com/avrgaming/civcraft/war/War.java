@@ -134,17 +134,28 @@ public class War {
 		processDefeated();
 	}
 	
-	/**
-	 * @return the warTime
-	 */
+	/** @return the warTime */
 	public static boolean isWarTime() {
 		return warTime;
 	}
-
-	/**
-	 * @param warTime the warTime to set
-	 */
+	
+	public static boolean hasWars() {
+		for (Civilization civ : CivGlobal.getCivs()) {
+			for (Relation relation : civ.getDiplomacyManager().getRelations()) {
+				if (relation.getStatus().equals(Status.WAR)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/** @param warTime the warTime to set */
 	public static void setWarTime(boolean warTime) {
+		if (warTime == true && !War.hasWars()) {
+			CivMessage.globalHeading(CivColor.BOLD+"WarTime Skipped -- No One At War");
+			return;
+		}
 		
 		if (warTime == false) {
 			/* War time has ended. */
@@ -405,40 +416,46 @@ public class War {
 		War.onlyWarriors = onlyWarriors;
 	}
 	
-	public static boolean isWithinWarDeclareDays() {
-		Date nextWar = War.getNextWarTime();
-		Date now = new Date();
-		int time_declare_days = getTimeDeclareDays();
-		
-		if ((now.getTime() + time_declare_days*(1000*60*60*24)) >= nextWar.getTime()) {
-			return true;
-		}
-		
-		return false;	
-	}
-
-	public static boolean isWithinAllyDeclareHours() {
-		Date nextWar = War.getNextWarTime();
-		int ally_declare_hours = getAllyDeclareHours();
-		
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.HOUR_OF_DAY, ally_declare_hours);
-				
-		if (cal.getTime().after(nextWar)) {
-			return true;
-		}
-		
-		return false;	
-	}
-	
-	public static int getTimeDeclareDays() {
+	public static int getDeclareDaysCutOff() {
 		try {
-			int time_declare_days = CivSettings.getInteger(CivSettings.warConfig, "war.time_declare_days");
+			int time_declare_days = CivSettings.getInteger(CivSettings.warConfig, "war.declare_days_cutoff");
 			return time_declare_days;
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 			return 0;
 		}
+	}
+	
+	public static boolean isWithinWarDeclareDaysCutOff() {
+		Date nextWar = War.getNextWarTime();
+		Date now = new Date();
+		int time_declare_days = getDeclareDaysCutOff();
+		
+		if ((now.getTime() + time_declare_days*(1000*60*60*24)) >= nextWar.getTime()) {
+			return true;
+		}
+		return false;	
+	}
+	
+	public static double getNewTownDaysCutOff() {
+		try {
+			double time_newtown_days = CivSettings.getDouble(CivSettings.warConfig, "war.newtown_days_cutoff");
+			return time_newtown_days;
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public static boolean isWithinNewTownDaysCutOff() {
+		Date nextWar = War.getNextWarTime();
+		Date now = new Date();
+		double time_newtown_days = getNewTownDaysCutOff();
+		
+		if ((now.getTime() + time_newtown_days*(1000*60*60)) >= nextWar.getTime()) {
+			return true;
+		}
+		return false;	
 	}
 	
 	public static int getAllyDeclareHours() {
@@ -449,6 +466,19 @@ public class War {
 			e.printStackTrace();
 			return 0;
 		}
+	}
+	
+	public static boolean isWithinAllyDeclareHours() {
+		Date nextWar = War.getNextWarTime();
+		int ally_declare_hours = getAllyDeclareHours();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.HOUR_OF_DAY, ally_declare_hours);
+				
+		if (cal.getTime().after(nextWar)) {
+			return true;
+		}
+		return false;	
 	}
 	
 	public static boolean isCivAggressor(Civilization civ) {

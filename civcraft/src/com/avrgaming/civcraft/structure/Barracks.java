@@ -194,17 +194,6 @@ public class Barracks extends Structure {
 			changeIndex((index+1));
 			break;
 		case "train":
-/*			if (resident.hasTown()) {
-				try {
-				if (getTown().getAssistantGroup().hasMember(resident) || getTown().getMayorGroup().hasMember(resident)) {
-					train(resident);
-				} else {
-					throw new CivException("Only Mayors and Assistants may train units.");
-				}
-				} catch (CivException e) {
-					CivMessage.send(player, CivColor.Rose+e.getMessage());
-				}
-			}*/
 			if (resident.hasTown()) {
 				try {
 				if (getCiv().getLeaderGroup().hasMember(resident) || getCiv().getAdviserGroup().hasMember(resident) || getTown().getMayorGroup().hasMember(resident)) {
@@ -252,12 +241,12 @@ public class Barracks extends Structure {
 					double baseTierRepair = CivSettings.getDouble(CivSettings.structureConfig, "barracks.base_tier_repair");
 					
 					double tierDamp = CivSettings.getDouble(CivSettings.structureConfig, "barracks.tier_damp");
-					double tierCost = Math.pow((craftMat.getConfigMaterial().tier), tierDamp);				
-					double fromTier = Math.pow(baseTierRepair, tierCost);				
+					double tierCost = Math.pow((craftMat.getConfigMaterial().tier), tierDamp);
+					double fromTier = Math.pow(baseTierRepair, tierCost);
 					
 					double durabilityDamp = CivSettings.getDouble(CivSettings.structureConfig, "barracks.durability_damp");
-					double itemDurability = inHand.getDurability();
-					double durabilityCost = Math.pow(itemDurability, durabilityDamp);	
+					double itemDurability = Math.subtractExact(inHand.getType().getMaxDurability(), inHand.getDurability());
+					double durabilityCost = Math.pow(itemDurability, durabilityDamp);
 					
 					double subTotal = (fromTier + durabilityCost);
 					totalCost = Math.round(subTotal);
@@ -267,7 +256,6 @@ public class Barracks extends Structure {
 				repairItem.displayMessage();
 				resident.setInteractiveMode(repairItem);
 				return;
-				
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				throw new CivException("Internal configuration error");

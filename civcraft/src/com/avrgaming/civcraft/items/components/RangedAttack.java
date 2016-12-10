@@ -38,7 +38,6 @@ public class RangedAttack extends ItemComponent {
 	
 	@Override
 	public void onHold(PlayerItemHeldEvent event) {	
-		
 		Resident resident = CivGlobal.getResident(event.getPlayer());
 		if (!resident.hasTechForItem(event.getPlayer().getInventory().getItem(event.getNewSlot()))) {		
 			CivMessage.send(resident, CivColor.Rose+"Warning - "+CivColor.LightGray+
@@ -49,7 +48,6 @@ public class RangedAttack extends ItemComponent {
 	public void onRangedAttack(EntityDamageByEntityEvent event, ItemStack inHand) {
 		AttributeUtil attrs = new AttributeUtil(inHand);
 		double dmg = this.getDouble("value");
-		
 		if (event.getDamager() instanceof Arrow) {
 			Arrow arrow = (Arrow)event.getDamager();
 			if (arrow.getShooter() instanceof Player) {
@@ -69,7 +67,6 @@ public class RangedAttack extends ItemComponent {
 			}
 		}
 		dmg += extraAtt;
-		
 		
 		Vector vel = event.getDamager().getVelocity();
 		double magnitudeSquared = Math.pow(vel.getX(), 2) + Math.pow(vel.getY(), 2) + Math.pow(vel.getZ(), 2);
@@ -94,9 +91,6 @@ public class RangedAttack extends ItemComponent {
 		if (totalDmg < 0.5) {
 			totalDmg = 0.5;
 		}
-		
 		event.setDamage(totalDmg);
 	}
-
-
 }

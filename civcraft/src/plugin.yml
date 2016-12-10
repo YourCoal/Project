@@ -1,8 +1,11 @@
 name: CivCraft
+author: YourCoal
 main: com.avrgaming.civcraft.main.CivCraft
 version: 1.0
 
 commands:
+    test:
+        aliases:
     town:
         aliases: [t]
     plot:
@@ -16,7 +19,7 @@ commands:
     deny:
         aliases: [no]
     civ:
-        aliases:
+        aliases: [c]
     tc:
         aliases:
     cc:
@@ -48,8 +51,6 @@ commands:
     trade:
         aliases:
     kill:
-        aliases:
-    team:
         aliases:
     sb:
         aliases:

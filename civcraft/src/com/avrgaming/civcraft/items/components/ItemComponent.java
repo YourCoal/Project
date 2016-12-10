@@ -70,6 +70,10 @@ public abstract class ItemComponent {
 		return Double.valueOf(attributes.get(key));
 	}
 	
+	public int getInteger(String key) {
+		return Integer.valueOf(attributes.get(key));
+	}
+	
 	public void setAttribute(String key, String value) {
 		attributes.put(key, value);
 	}
@@ -88,5 +92,4 @@ public abstract class ItemComponent {
 	public boolean onBlockPlaced(BlockPlaceEvent event) { return false;	}
 	public void onInventoryOpen(InventoryOpenEvent event, ItemStack stack) {	}
 	public void onHold(PlayerItemHeldEvent event) {	}
-
 }

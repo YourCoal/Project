@@ -40,7 +40,7 @@ public class ConfigGovernment {
 	public double culture_rate;
 	public double hammer_rate;
 	public double beaker_rate;
-	public double maximum_tax_rate;
+	public double max_civ_tax_rate;
 	
 	public static void loadConfig(FileConfiguration cfg, Map<String, ConfigGovernment> government_map) {
 		government_map.clear();
@@ -51,7 +51,7 @@ public class ConfigGovernment {
 			gov.id = (String)level.get("id");
 			gov.displayName = (String)level.get("displayName");
 			gov.require_tech = (String)level.get("require_tech");
-
+			
 			gov.trade_rate = (Double)level.get("trade_rate");
 			gov.upkeep_rate = (Double)level.get("upkeep_rate");
 			gov.cottage_rate = (Double)level.get("cottage_rate");
@@ -59,8 +59,8 @@ public class ConfigGovernment {
 			gov.culture_rate = (Double)level.get("culture_rate");
 			gov.hammer_rate = (Double)level.get("hammer_rate");
 			gov.beaker_rate = (Double)level.get("beaker_rate");
-			gov.maximum_tax_rate = (Double)level.get("maximum_tax_rate");
-
+			gov.max_civ_tax_rate = (Double)level.get("max_civ_tax_rate");
+			
 			government_map.put(gov.id, gov);
 		}
 		CivLog.info("Loaded "+government_map.size()+" governments.");		
@@ -96,7 +96,7 @@ public class ConfigGovernment {
 	}
 
 	public boolean isAvailable(Civilization civ) {
-		if (civ.hasTechnology(this.require_tech)) {
+		if (civ.hasRequiredTech(this.require_tech)) {
 			return true;
 		}
 		return false;

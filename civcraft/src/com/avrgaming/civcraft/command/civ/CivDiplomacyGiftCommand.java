@@ -81,8 +81,8 @@ public class CivDiplomacyGiftCommand extends CommandBase {
 			throw new CivException("Cannot gift civilizations during WarTime.");
 		}
 		
-		if (War.isWithinWarDeclareDays()) {
-			throw new CivException("Cannot gift civilizations within "+War.getTimeDeclareDays()+" days before WarTime.");
+		if (War.isWithinWarDeclareDaysCutOff()) {
+			throw new CivException("Cannot gift civilizations within "+War.getDeclareDaysCutOff()+" days before WarTime.");
 		}
 		
 		

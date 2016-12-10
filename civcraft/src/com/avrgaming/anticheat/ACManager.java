@@ -110,7 +110,7 @@ public class ACManager implements PluginMessageListener {
 			}
 		}
 		
-		TaskMaster.syncTask(new SyncTask(player.getName()), TimeTools.toTicks(3));
+		TaskMaster.syncTask(new SyncTask(player.getName()), TimeTools.toTicks(2));
 		
 		if (War.isWarTime() && !player.isOp()) {
 			
@@ -135,7 +135,7 @@ public class ACManager implements PluginMessageListener {
 				}
 			}
 			
-			TaskMaster.syncTask(new WarCheckTask(player.getName()), TimeTools.toTicks(30));
+			TaskMaster.syncTask(new WarCheckTask(player.getName()), TimeTools.toTicks(5));
 		}
 		
 		class HackerCheckTask implements Runnable {
@@ -163,7 +163,7 @@ public class ACManager implements PluginMessageListener {
 				}
 			}
 		}
-		TaskMaster.syncTask(new HackerCheckTask(player.getName()), TimeTools.toTicks(30));
+		TaskMaster.syncTask(new HackerCheckTask(player.getName()), TimeTools.toTicks(5));
 	}
 
 	

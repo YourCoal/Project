@@ -4,30 +4,31 @@
 camp:
     # Number of hitpoints a camp has.
     hitpoints: 5000
-  
     # Number of hitpoints to regenerate per second
     regen_rate: 2
-
     # Number of hours a camp can survive without coal.
     firepoints: 48
-
     # Number of coal it takes to revive one hour worth
     # of camp life.
     coal_per_firepoint: 4
-
     # Template path to the camp. Starting from the templates directory.
     template: 'camp'
-
-    # cost of the camp in coins.
-    cost: 2500.0
-
-    # Sifter Settings
-    sifter_gold_nugget_chance: 0.10
-    sifter_iron_ingot_chance: 0.025
-   
     # number of hours to let camp be raidable
     raid_length: 2 
+    # coins per day camps need to pay to exist
+    upkeep: 50.0
 
+    # Sifter Settings
+    sifter_gold_nugget_chance: 0.1
+    sifter_iron_ingot_chance: 0.025
+#
+sifter:
+    dirt_sand_gravel_chance: 1.0
+    iron_nugger_chance: 0.25
+    iron_ingot_chance: 0.025
+    gold_nugget_chance: 0.1
+    gold_ingot_chance: 0.01
+#
 longhouse_levels:
    - level: 1
      consumes:

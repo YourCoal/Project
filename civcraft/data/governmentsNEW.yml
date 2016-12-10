@@ -1,0 +1,86 @@
+# Number of hours to remain in anarchy after switching governments.
+anarchy_duration: 24
+
+governments:
+#-------------------------------------#
+#=========> Era 0 - Ancient <=========#
+#-------------------------------------#
+#Government-Switching Cooldown Government
+ - id: gov_anarchy
+   displayName: Anarchy
+   require_tech:
+   require_civic:
+   max_civ_tax_rate: 0.00
+   min_town_tax_rate: 0.00
+   trade_rate: 0.50
+   cottage_rate: 0.50
+   upkeep_rate: 3.50
+   hammer_rate: 0.50
+   beaker_rate: 0.50
+   growth_rate: 0.25
+   culture_rate: 0.50
+   faith_rate: 0.50
+#Default Government on Start
+ - id: gov_chiefdom
+   displayName: Chiefdom
+   require_tech:
+   require_civic:
+   max_civ_tax_rate: 0.05
+   min_town_tax_rate: 0.02
+   trade_rate: 1.00
+   cottage_rate: 1.00
+   upkeep_rate: 1.00
+   hammer_rate: 1.00
+   beaker_rate: 1.00
+   growth_rate: 0.50
+   culture_rate: 1.00
+   faith_rate: 1.00
+#-------------------------------------#
+#========> Era 1 - Classical <========#
+#-------------------------------------#
+#10% boost to all yields
+ - id: gov_autocracy
+   displayName: Autocracy
+   require_tech:
+   require_civic:
+   max_civ_tax_rate: 0.10
+   min_town_tax_rate: 0.04
+   trade_rate: 1.20
+   cottage_rate: 1.10
+   upkeep_rate: 1.10
+   hammer_rate: 1.10
+   beaker_rate: 1.10
+   growth_rate: 0.55
+   culture_rate: 1.10
+   faith_rate: 1.10
+
+#-------------------------------------#
+#========> Era 2 -- Medieval <========#
+#-------------------------------------#
+
+
+#-------------------------------------#
+#=======> Era 3 - Renaissance <=======#
+#-------------------------------------#
+
+
+#-------------------------------------#
+#=======> Era 4 -- Industrial <=======#
+#-------------------------------------#
+
+
+#-------------------------------------#
+#=========> Era 5 -- Modern <=========#
+#-------------------------------------#
+
+
+#-------------------------------------#
+#=========> Era 6 -- Atomic <=========#
+#-------------------------------------#
+
+
+#-------------------------------------#
+#======> Era 7 - Informational <======#
+#-------------------------------------#
+
+

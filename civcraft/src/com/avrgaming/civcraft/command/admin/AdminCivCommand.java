@@ -281,7 +281,7 @@ public class AdminCivCommand extends CommandBase {
 			throw new CivException("No tech with ID:"+args[2]);
 		}
 		
-		if (civ.hasTechnology(tech.id)) {
+		if (civ.hasRequiredTech(tech.id)) {
 			throw new CivException("Civ "+civ.getName()+" already has tech id:"+tech.id);
 		}
 		

@@ -50,6 +50,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.books.Tutorial;
 import com.avrgaming.civcraft.components.Component;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
@@ -81,7 +82,6 @@ import com.avrgaming.civcraft.template.Template.TemplateType;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
-import com.avrgaming.civcraft.books.CivTutorial;
 import com.avrgaming.civcraft.util.AABB;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.BukkitObjects;
@@ -116,7 +116,7 @@ public abstract class Buildable extends SQLObject {
 	private int templateZ;
 	
 	// Number of blocks to shift the structure away from us when built.
-	public static final double SHIFT_OUT = 0;
+	public static final int SHIFT_OUT = 0;
 	public static final int MIN_DISTANCE = 7;
 	
 	private Map<BlockCoord, StructureSign> structureSigns = new ConcurrentHashMap<BlockCoord, StructureSign>();
@@ -252,6 +252,10 @@ public abstract class Buildable extends SQLObject {
 		return info.tile;
 	}
 	
+	public boolean isOutpost() {
+		return info.outpost;
+	}
+	
 	public boolean isActive() {	
 		return this.isComplete() && !isDestroyed() && isEnabled();
 	}
@@ -291,7 +295,7 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	public abstract void updateBuildProgess();
-
+	
 	public BlockCoord getCorner() {
 		return corner;
 	}
@@ -391,7 +395,7 @@ public abstract class Buildable extends SQLObject {
 			resident.pendingBuildable = this;
 			
 			/* Build an inventory full of templates to select. */
-			Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9);
+			Inventory inv = Bukkit.getServer().createInventory(player, Tutorial.MAX_CHEST_SIZE*9);
 			ItemStack infoRec = LoreGuiItem.build("Default "+this.getDisplayName(), 
 					ItemManager.getId(Material.WRITTEN_BOOK), 
 					0, CivColor.Gold+"<Click To Build>");
@@ -483,7 +487,7 @@ public abstract class Buildable extends SQLObject {
 			resident.pendingCallback = callback;
 
 			/* Build an inventory full of templates to select. */
-			Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9);
+			Inventory inv = Bukkit.getServer().createInventory(player, Tutorial.MAX_CHEST_SIZE*9);
 			ItemStack infoRec = LoreGuiItem.build("Default "+info.displayName, 
 					ItemManager.getId(Material.WRITTEN_BOOK), 
 					0, CivColor.Gold+"<Click To Build>");
@@ -539,17 +543,12 @@ public abstract class Buildable extends SQLObject {
 		}
 	}
 	
-	/*
-	 * XXX this is called only on structures which do not have towns yet.
-	 * For Example Capitols, Camps and Town Halls.
-	 */
+	//XXX this is called only on structures which do not have towns yet (Capitols, Camps, and Town Halls)
 	public static Location repositionCenterStatic(Location center, ConfigBuildableInfo info, String dir, double x_size, double z_size) throws CivException {
-		Location loc = new Location(center.getWorld(), 
-				center.getX(), center.getY(), center.getZ(), 
-				center.getYaw(), center.getPitch());
+		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
 		
 		
-		// Reposition tile improvements
+		/*		// Reposition tile improvements
 		if (info.tile) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
@@ -558,42 +557,52 @@ public abstract class Buildable extends SQLObject {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() + SHIFT_OUT);				
-			}
-			else if (dir.equalsIgnoreCase("west")) {
+			} else if (dir.equalsIgnoreCase("west")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			}
-			else if (dir.equalsIgnoreCase("north")) {
+			} else if (dir.equalsIgnoreCase("north")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			}
-			else if (dir.equalsIgnoreCase("south")) {
+			} else if (dir.equalsIgnoreCase("south")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() + SHIFT_OUT);
 			}
-		}   
+		}*/
+		
+		// Reposition tile improvements
+		if (info.tile || info.outpost) {
+			// just put the center at 0,0 of this chunk?
+			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+		} else {
+			int locX = (int) Math.round(loc.getX());
+			int locZ = (int) Math.round(loc.getZ());
+			if (dir.equalsIgnoreCase("east")) {
+				loc = center.getChunk().getBlock(locX, center.getBlockY(), locZ).getLocation();
+			} else if (dir.equalsIgnoreCase("west")) {
+				loc = center.getChunk().getBlock(locX, center.getBlockY(), locZ).getLocation();
+			} else if (dir.equalsIgnoreCase("north")) {
+				loc = center.getChunk().getBlock(locX, center.getBlockY(), locZ).getLocation();
+			} else if (dir.equalsIgnoreCase("south")) {
+				loc = center.getChunk().getBlock(locX, center.getBlockY(), locZ).getLocation();
+			}
+		}
 		if (info.templateYShift != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
 			loc.setY(loc.getY() + info.templateYShift);
-			
 			if (loc.getY() < 1) {
 				throw new CivException("Cannot build here, too close to bedrock.");
 			}
-		}
-				
+		}	
 		return loc;
 	}
 	
 	protected Location repositionCenter(Location center, String dir, double x_size, double z_size) throws CivException {
-		Location loc = new Location(center.getWorld(), 
-				center.getX(), center.getY(), center.getZ(), 
-				center.getYaw(), center.getPitch());
+		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
 		
-		
-		// Reposition tile improvements
+/*		// Reposition tile improvements
 		if (this.isTile()) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
@@ -602,39 +611,56 @@ public abstract class Buildable extends SQLObject {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() + SHIFT_OUT);
-			}
-			else if (dir.equalsIgnoreCase("west")) {
+			} else if (dir.equalsIgnoreCase("west")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			}
-			else if (dir.equalsIgnoreCase("north")) {
+			} else if (dir.equalsIgnoreCase("north")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			}
-			else if (dir.equalsIgnoreCase("south")) {
+			} else if (dir.equalsIgnoreCase("south")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() + SHIFT_OUT);
 			}
-		}  
+		}*/
+		
+		
+		// Reposition tile improvements
+		if (info.tile || info.outpost) {
+			// just put the center at 0,0 of this chunk?
+			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+		} else {
+			int locX = (int) loc.getX();
+			int locZ = (int) loc.getZ();
+			if (dir.equalsIgnoreCase("east")) {	
+//				loc = center.getChunk().getBlock(locX+1, center.getBlockY(), locZ-24).getLocation();
+				loc = center.getChunk().getBlock(locX + SHIFT_OUT, center.getBlockY(), (int) (locZ - (z_size / 2))).getLocation();
+			} else if (dir.equalsIgnoreCase("west")) {
+//				loc = center.getChunk().getBlock(locX-1, center.getBlockY(), locZ+8).getLocation();
+				loc = center.getChunk().getBlock((int) (locX - (SHIFT_OUT+x_size)), center.getBlockY(), (int) (locZ - (z_size / 2))).getLocation();
+			} else if (dir.equalsIgnoreCase("north")) {
+//				loc = center.getChunk().getBlock(locX-8, center.getBlockY(), locZ-1).getLocation();
+				loc = center.getChunk().getBlock((int) (locX - (x_size / 2)), center.getBlockY(), (int) (locZ - (SHIFT_OUT+z_size))).getLocation();
+			} else if (dir.equalsIgnoreCase("south")) {
+//				loc = center.getChunk().getBlock(locX+8, center.getBlockY(), locZ+1).getLocation();
+				loc = center.getChunk().getBlock((int) (locX - (x_size / 2)), center.getBlockY(), locZ + SHIFT_OUT).getLocation();
+			}
+		}
+		
 		if (this.getTemplateYShift() != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
 			loc.setY(loc.getY() + this.getTemplateYShift());
-			
 			if (loc.getY() < 1) {
 				throw new CivException("Cannot build here, too close to bedrock.");
 			}
-		}
-				
+		}	
 		return loc;
 	}
 	
-	public void resumeBuildFromTemplate() throws Exception
-	{
+	public void resumeBuildFromTemplate() throws Exception {
 		Template tpl;
-		
 		Location corner = getCorner().getLocation();
 
 		try {
@@ -764,7 +790,7 @@ public abstract class Buildable extends SQLObject {
 			ignoreBorders = true;
 			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
 			
-			if (getTown().getTileCount() >= level.tile) {
+			if (getTown().getTileCount() >= level.tiles) {
 				throw new CivException("Cannot build tile. Already at tile limit.");
 			}
 			
@@ -1133,6 +1159,10 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	public void onDamage(int amount, World world, Player player, BlockCoord coord, BuildableDamageBlock hit) {
+		if (!this.getCiv().getDiplomacyManager().isAtWar()) {
+			return;
+		}
+		
 		boolean wasTenPercent = false;
 		
 		if(hit.getOwner().isDestroyed()) {
@@ -1294,6 +1324,9 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	public void onTechUpdate() {
+	}
+	
+	public void onCivicUpdate() {
 	}
 	
 	public void processRegen() {
@@ -1480,18 +1513,51 @@ public abstract class Buildable extends SQLObject {
 	
 	public static int getReinforcementValue(int typeId) {
 		switch (typeId) {
-		case CivData.WATER_STILL:
-		case CivData.WATER_RUNNING:
-		case CivData.LAVA_STILL:
-		case CivData.LAVA_RUNNING:
 		case CivData.AIR:
+		case CivData.SAPLING:
+		case CivData.WATER_RUNNING:
+		case CivData.WATER_STILL:
+		case CivData.LAVA_RUNNING:
+		case CivData.LAVA_STILL:
+		case CivData.LEAF:
+		case CivData.SPONGE:
 		case CivData.COBWEB:
+		case CivData.TALL_GRASS:
+		case CivData.DEAD_BUSH:
+		case CivData.YELLOW_FLOWER:
+		case CivData.OTHER_FLOWERS:
+		case CivData.BROWNMUSHROOM:
+		case CivData.REDMUSHROOM:
+		case CivData.TORCH:
+		case CivData.FIRE:
+		case CivData.WHEAT:
+		case CivData.REDSTONE_WIRE:
+		case CivData.SUGARCANE:
+		case CivData.LILY_PAD:
+		case CivData.TRIPWIRE:
+		case CivData.CARROTS:
+		case CivData.POTATOES:
+		case CivData.BEETROOT_CROP:
+		case CivData.ANVIL:
+		case CivData.LEAF2:
+		case CivData.SLIME_BLOCK:
+		case CivData.CARPET:
+		case CivData.DOUBLE_FLOWER:
 			return 0;
+		case CivData.DIAMOND_BLOCK:
+		case CivData.EMERALD_BLOCK:
+			return 5;
+		case CivData.GOLD_BLOCK:
 		case CivData.IRON_BLOCK:
+		case CivData.OBSIDIAN:
 			return 4;
 		case CivData.STONE_BRICK:
+		case CivData.COAL_BLOCK:
 			return 3;
 		case CivData.STONE:
+		case CivData.COBBLESTONE:
+		case CivData.STAINED_CLAY:
+		case CivData.HARDENED_CLAY:
 			return 2;
 		default:
 			return 1;

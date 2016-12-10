@@ -160,32 +160,32 @@ public class FarmChunk {
 		case CivData.CARROTS:
 		case CivData.POTATOES:
 			if (bs.getData() < 0x7) {
-				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock("World", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}
 			break;
 		case CivData.NETHERWART:
+		case CivData.BEETROOT_CROP:
 			if (bs.getData() < 0x3) {
-				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock("World", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}
 			break;
 		case CivData.MELON_STEM:
 		case CivData.PUMPKIN_STEM:
 			if (bs.getData() < 0x7) {
-				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock("World", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			} else if (bs.getData() == 0x7) {
 				spawnMelonOrPumpkin(bs, task);
 			}
 			break;
 		case CivData.COCOAPOD:	
 			if (CivData.canCocoaGrow(bs)) {
-				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(),CivData.getNextCocoaValue(bs), false);
+				addGrowBlock("World", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(),CivData.getNextCocoaValue(bs), false);
 			}
 			break;
 		}
 	}
 	
 	public void processGrowth(CivAsyncTask task) throws InterruptedException {
-		
 		if (this.getStruct().isActive() == false) {
 			return;
 		}

@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.object;
 
-import gpl.InventorySerializer;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,6 +50,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.avrgaming.civcraft.books.Tutorial;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
@@ -78,7 +77,6 @@ import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.BuildPreviewAsyncTask;
-import com.avrgaming.civcraft.books.CivTutorial;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
@@ -90,6 +88,8 @@ import com.avrgaming.global.perks.Perk;
 import com.avrgaming.global.perks.PlatinumManager;
 import com.avrgaming.global.perks.components.CustomPersonalTemplate;
 import com.avrgaming.global.perks.components.CustomTemplate;
+
+import gpl.InventorySerializer;
 
 public class Resident extends SQLObject {
 
@@ -1396,26 +1396,26 @@ public class Resident extends SQLObject {
 	public ArrayList<Perk> getUnboundTemplatePerks(ArrayList<Perk> alreadyBoundPerkList, ConfigBuildableInfo info) {
 		ArrayList<Perk> unboundPerks = new ArrayList<Perk>();
 		for (Perk ourPerk : perks.values()) {
-			CustomTemplate customTemplate = (CustomTemplate) ourPerk.getComponent("CustomTemplate");
-			if (customTemplate == null) {
-				continue;
-			}
-			
-			if (!customTemplate.getString("template").equals(info.template_base_name)) {
-				/* Not the correct template. */
-				continue;
-			}
-			
-			for (Perk perk : alreadyBoundPerkList) {
-				if (perk.getIdent().equals(ourPerk.getIdent())) {
-					/* Perk is already bound in this town, do not display for binding. */
-					break;
+			if (!ourPerk.getIdent().contains("template")) {
+				CustomTemplate customTemplate = (CustomTemplate) ourPerk.getComponent("CustomTemplate");
+				if (customTemplate == null) {
+					continue;
 				}
+				
+				if (!customTemplate.getString("template").equals(info.template_base_name)) {
+					/* Not the correct template. */
+					continue;
+				}
+				
+				for (Perk perk : alreadyBoundPerkList) {
+					if (perk.getIdent().equals(ourPerk.getIdent())) {
+						/* Perk is already bound in this town, do not display for binding. */
+						break;
+					}
+				}
+				unboundPerks.add(ourPerk);
 			}
-			
-			unboundPerks.add(ourPerk);
 		}
-		
 		return unboundPerks;
 	}
 
@@ -1572,7 +1572,7 @@ public class Resident extends SQLObject {
 		String[] split = craftMat.getConfigMaterial().required_tech.split(",");
 		for (String tech : split) {
 			tech = tech.replace(" ", "");
-			if (!this.getCiv().hasTechnology(tech)) {
+			if (!this.getCiv().hasRequiredTech(tech)) {
 				return false;
 			}
 		}
@@ -1730,22 +1730,20 @@ public class Resident extends SQLObject {
 			return;
 		}
 		
-		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9, "Perks");
+		Inventory inv = Bukkit.getServer().createInventory(player, Tutorial.MAX_CHEST_SIZE*9, "Perks");
 		for (Object obj : perks.values()) {
 			Perk p = (Perk)obj;
-			if (p.getIdent().startsWith("temp")) {
+			if (p.getIdent().startsWith("temp")){
 				ItemStack stack = LoreGuiItem.build(p.configPerk.display_name, p.configPerk.type_id, p.configPerk.data,
-						CivColor.Gold+"<Click To Activate>", CivColor.LightBlue+"Count: "+p.count);
+						CivColor.LightBlue+"Click To View", CivColor.LightBlue+"These Templates");
 				stack = LoreGuiItem.setAction(stack, "ShowTemplateType");
 				stack = LoreGuiItem.setActionData(stack, "perk", p.configPerk.id);
-
 				inv.addItem(stack);
 			} else if (p.getIdent().startsWith("perk")) {
 				ItemStack stack = LoreGuiItem.build(p.configPerk.display_name, p.configPerk.type_id, p.configPerk.data,
 						CivColor.Gold+"<Click To Activate>", CivColor.LightBlue+"Count: "+p.count);
 				stack = LoreGuiItem.setAction(stack, "ActivatePerk");
 				stack = LoreGuiItem.setActionData(stack, "perk", p.configPerk.id);
-
 				inv.addItem(stack);
 			}
 		}
@@ -1760,11 +1758,11 @@ public class Resident extends SQLObject {
 			return;
 		}
 		
-		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9, "Templates for "+name);
+		Inventory inv = Bukkit.getServer().createInventory(player, Tutorial.MAX_CHEST_SIZE*9, "Templates for "+name);
 		for (Object obj : perks.values()) {
 			Perk p = (Perk)obj;
 			if (p.getIdent().contains("tpl_" +name)) {
-			ItemStack stack = LoreGuiItem.build(p.configPerk.display_name, p.configPerk.type_id,  p.configPerk.data,
+			ItemStack stack = LoreGuiItem.build(p.configPerk.display_name,  p.configPerk.type_id, p.configPerk.data,
 					CivColor.Gold+"<Click To Activate>", CivColor.LightBlue+"Count: "+p.count);
 			stack = LoreGuiItem.setAction(stack, "ActivatePerk");
 			stack = LoreGuiItem.setActionData(stack, "perk", p.configPerk.id);

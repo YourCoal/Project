@@ -161,9 +161,9 @@ public class LoreCraftableMaterial extends LoreMaterial {
 			LoreCraftableMaterial loreMat = new LoreCraftableMaterial(cfgMat.id, cfgMat.item_id, (short)cfgMat.item_data);
 			
 			loreMat.setName(cfgMat.name);
-			if (cfgMat.lore != null) {
-				loreMat.setLore(cfgMat.lore);
-			}
+//			if (cfgMat.lore != null) {
+//				loreMat.setLore(cfgMat.lore);
+//			}
 			
 			loreMat.setCraftable(cfgMat.craftable);
 			loreMat.setShaped(cfgMat.shaped);
@@ -415,7 +415,6 @@ public class LoreCraftableMaterial extends LoreMaterial {
 	@Override
 	public void onItemCraft(CraftItemEvent event) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -505,7 +504,7 @@ public class LoreCraftableMaterial extends LoreMaterial {
 	public void setCraftable(boolean craftable) {
 		this.craftable = craftable;
 	}
-
+	
 	public boolean isShaped() {
 		return shaped;
 	}
@@ -624,22 +623,30 @@ public class LoreCraftableMaterial extends LoreMaterial {
 		}
 	}
 	
+	public boolean isMineable() {
+		return this.configMaterial.mineable;
+	}
+	
+	public boolean isFarmable() {
+		return this.configMaterial.farmable;
+	}
+	
+	public boolean isQuest() {
+		return this.configMaterial.quest;
+	}
 	
 	public boolean isVanilla() {
 		return this.configMaterial.vanilla;
 	}
-
-
+	
 	public int getCraftAmount() {
 		return this.configMaterial.amount;
 	}
-
-
+	
 	public void rebuildLore() {
 		
 	}
-
-
+	
 	public static String serializeEnhancements(ItemStack stack) {
 		String out = "";
 		

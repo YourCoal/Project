@@ -3,7 +3,7 @@ package com.avrgaming.civcraft.siege;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import net.minecraft.server.v1_10_R1.EntityPlayer;
+import net.minecraft.server.v1_11_R1.EntityPlayer;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -43,11 +43,13 @@ public class CannonProjectile {
 	public static double yield;
 	public static double playerDamage;
 	public static double maxRange;
+	public static int controlBlockHP;
 	static {
 		try {
 			yield = CivSettings.getDouble(CivSettings.warConfig, "cannon.yield");
 			playerDamage = CivSettings.getDouble(CivSettings.warConfig, "cannon.player_damage");
 			maxRange = CivSettings.getDouble(CivSettings.warConfig, "cannon.max_range");
+			controlBlockHP = CivSettings.getInteger(CivSettings.warConfig, "cannon.control_block_hp");
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 		}
@@ -107,16 +109,17 @@ public class CannonProjectile {
 							
 							if (!sb.getOwner().isDestroyed()) {
 								if (!structuresHit.contains(sb.getOwner())) {
-									
 									structuresHit.add(sb.getOwner());
-
 									if (sb.getOwner() instanceof TownHall) {
 										TownHall th = (TownHall)sb.getOwner();
-
 										if (th.getHitpoints() == 0) { 
 											explodeBlock(b);
 										} else {
-											th.onCannonDamage(cannon.getDamage());
+											try {
+												th.onCannonDamage(cannon.getDamage(), this);
+											} catch (CivException e1) {
+												e1.printStackTrace();
+											}
 										}
 									} else {
 										Player player = null;

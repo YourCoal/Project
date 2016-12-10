@@ -37,6 +37,7 @@ import com.avrgaming.civcraft.structure.Grocer;
 import com.avrgaming.civcraft.structure.Library;
 import com.avrgaming.civcraft.structure.Store;
 import com.avrgaming.civcraft.structure.Structure;
+import com.avrgaming.civcraft.structure.Trommel;
 
 public class ConfigTownUpgrade {
 	public String id;
@@ -168,6 +169,26 @@ public class ConfigTownUpgrade {
 				}
 			}
 			break;
+		case "set_trommel_level":
+			boolean didUpgrade = false;
+			int trommelLevel = 1;
+			for (Structure structure : town.getStructures()) {
+				if (structure.getConfigId().equalsIgnoreCase("s_trommel")) {
+					if (structure != null && (structure instanceof Trommel)) {
+						Trommel trommel = (Trommel)structure;
+						if (trommel.getLevel() < Integer.valueOf(args[1].trim())) {
+							didUpgrade = true;
+							trommel.setLevel(Integer.valueOf(args[1].trim()));
+							town.saved_trommel_level = trommel.getLevel();
+							trommelLevel = trommel.getLevel();
+						}
+					}
+				}
+			}
+			if (didUpgrade) {
+				CivMessage.sendTown(town, "Our trommels are now level "+trommelLevel);
+			}
+			break;
 		}
 	}
 
@@ -178,7 +199,7 @@ public class ConfigTownUpgrade {
 		}
 		
 		if (town.hasUpgrade(this.require_upgrade)) {
-			if (town.getCiv().hasTechnology(this.require_tech)) {
+			if (town.getCiv().hasRequiredTech(this.require_tech)) {
 				if (town.hasStructure(require_structure)) {
 					if (!town.hasUpgrade(this.id)) {
 						return true;

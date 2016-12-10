@@ -213,11 +213,11 @@ public class Camp extends Buildable {
 			coal_per_firepoint = CivSettings.getInteger(CivSettings.campConfig, "camp.coal_per_firepoint");
 			maxFirePoints = CivSettings.getInteger(CivSettings.campConfig, "camp.firepoints");
 			
+			raidLength = CivSettings.getInteger(CivSettings.campConfig, "camp.raid_length");
+			
 			// Setup sifter
 			double gold_nugget_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_gold_nugget_chance");
 			double iron_ignot_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_iron_ingot_chance");
-			
-			raidLength = CivSettings.getInteger(CivSettings.campConfig, "camp.raid_length");
 			
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_nugget_chance, ItemManager.getId(Material.GOLD_NUGGET), (short)0, 1);
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, iron_ignot_chance, ItemManager.getId(Material.IRON_INGOT), (short)0, 1);
@@ -230,12 +230,9 @@ public class Camp extends Buildable {
 				consumeComponent.setConsumes(lvl.level, lvl.consumes);
 			}
 			this.consumeComponent.onLoad();
-
 		} catch (InvalidConfiguration e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public static final String TABLE_NAME = "CAMPS";

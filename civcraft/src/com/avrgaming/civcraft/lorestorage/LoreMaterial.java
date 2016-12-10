@@ -18,12 +18,11 @@
  */
 package com.avrgaming.civcraft.lorestorage;
 
-import gpl.AttributeUtil;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -41,12 +40,16 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.object.BuildableDamageBlock;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
+
+import gpl.AttributeUtil;
 
 public abstract class LoreMaterial {
 
@@ -187,11 +190,20 @@ public abstract class LoreMaterial {
 			LoreCraftableMaterial craftMat = (LoreCraftableMaterial)material;
 			attrs.addLore(CivColor.ITALIC+craftMat.getConfigMaterial().category);
 			if (craftMat.getConfigMaterial().shiny) {
-				attrs.setShiny();
+//				attrs.addGlow(stack, true);
+				addGlow(stack);
 			}
 		}
 		material.applyAttributes(attrs);
 		return attrs.getStack();
+	}
+	
+	public static void addGlow(ItemStack stack)
+	{
+		ItemMeta meta = stack.getItemMeta();
+		meta.addEnchant( Enchantment.LURE, 1, false );
+		meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
+		stack.setItemMeta( meta );
 	}
 	
 	public int getTypeID() {
@@ -237,6 +249,14 @@ public abstract class LoreMaterial {
 	public String getName() {
 		return name;
 	}
+	
+	//Does not work.
+/*	public void addEnchantment(ItemStack stack) {
+		ItemMeta meta = stack.getItemMeta();
+		meta.addEnchant(Enchantment.LURE, 1, false);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		stack.setItemMeta(meta);
+	}*/
 	
 	public static ItemStack addEnhancement(ItemStack stack, LoreEnhancement enhancement) {
 		AttributeUtil attrs = new AttributeUtil(stack);

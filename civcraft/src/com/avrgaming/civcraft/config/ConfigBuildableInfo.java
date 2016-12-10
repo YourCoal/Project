@@ -52,6 +52,7 @@ public class ConfigBuildableInfo {
 	public Boolean isWonder = false;
 	public Integer regenRate = 0;
 	public Boolean tile = false;
+	public Boolean outpost = false;
 	public Integer points = 0;
 	public boolean allow_demolish = false;
 	public boolean strategic = false;
@@ -111,26 +112,30 @@ public class ConfigBuildableInfo {
 			sinfo.isWonder = isWonder;
 			sinfo.points = (Integer)obj.get("points");
 			
-				@SuppressWarnings("unchecked")
-				List<Map<?, ?>> comps = (List<Map<?, ?>>) obj.get("components");
-				if (comps != null) {
-					for (Map<?, ?> compObj : comps) {
-						
-						HashMap<String, String> compMap = new HashMap<String, String>();
-						for (Object key : compObj.keySet()) {
-							compMap.put((String)key, (String)compObj.get(key));
-						}
-				
-						sinfo.components.add(compMap);	
+			@SuppressWarnings("unchecked")
+			List<Map<?, ?>> comps = (List<Map<?, ?>>) obj.get("components");
+			if (comps != null) {
+				for (Map<?, ?> compObj : comps) {
+					HashMap<String, String> compMap = new HashMap<String, String>();
+					for (Object key : compObj.keySet()) {
+						compMap.put((String)key, (String)compObj.get(key));
 					}
+					sinfo.components.add(compMap);	
 				}
+			}
 			
-			
-			Boolean tileImprovement = (Boolean)obj.get("tile_improvement");
-			if (tileImprovement != null && tileImprovement == true) {
+			Boolean tile = (Boolean)obj.get("tile");
+			if (tile != null && tile == true) {
 				sinfo.tile = true;
 			} else {
 				sinfo.tile = false;
+			}
+			
+			Boolean outpost = (Boolean)obj.get("outpost");
+			if (outpost != null && outpost == true) {
+				sinfo.outpost = true;
+			} else {
+				sinfo.outpost = false;
 			}
 			
 			Boolean allowDemolish = (Boolean)obj.get("allow_demolish");

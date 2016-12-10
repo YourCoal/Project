@@ -121,7 +121,7 @@ public class CivGlobal {
 	public static Map<String, CivQuestionTask> civQuestions = new ConcurrentHashMap<String, CivQuestionTask>();
 	private static Map<String, Resident> residents = new ConcurrentHashMap<String, Resident>();
 	private static Map<UUID, Resident> residentsViaUUID = new ConcurrentHashMap<UUID, Resident>();
-
+	
 	private static Map<String, Town> towns = new ConcurrentHashMap<String, Town>();
 	private static Map<String, Civilization> civs = new ConcurrentHashMap<String, Civilization>();
 	private static Map<String, Civilization> conqueredCivs = new ConcurrentHashMap<String, Civilization>();
@@ -151,7 +151,9 @@ public class CivGlobal {
 	private static Map<ChunkCoord, Camp> campChunks = new ConcurrentHashMap<ChunkCoord, Camp>();
 	public static HashSet<BlockCoord> vanillaGrowthLocations = new HashSet<BlockCoord>();
 	private static Map<BlockCoord, Market> markets = new ConcurrentHashMap<BlockCoord, Market>();
+	
 	public static HashSet<String> researchedTechs = new HashSet<String>();
+	public static HashSet<String> researchedCivics = new HashSet<String>();
 	
 	/* TODO change this to true for MC 1.8 */
 	//public static boolean useUUID = false;
@@ -195,10 +197,11 @@ public class CivGlobal {
 	public static PerkManager perkManager = null;
 	public static boolean installMode = false;
 	
+	public static int highestCivEra = 0;
+	
 	public static void loadGlobals() throws SQLException, CivException {
-		
 		CivLog.heading("Loading CivCraft Objects From Database");
-			
+		
 		sdb = new SessionDatabase();
 		loadCamps();
 		loadCivs();
@@ -223,7 +226,6 @@ public class CivGlobal {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
 		CivLog.heading("--- Done <3 ---");
 		
 		/* Load in upgrades after all of our objects are loaded, resolves dependencies */
@@ -233,15 +235,13 @@ public class CivGlobal {
 		/* Finish with an onLoad event. */
 		onLoadTask postBuildSyncTask = new onLoadTask();
 		TaskMaster.syncTask(postBuildSyncTask);
-				
+		
 		/* Check for orphan civs now */
 		for (Civilization civ : civs.values()) {
 			Town capitol = civ.getTown(civ.getCapitolName());
-			
 			if (capitol == null) {
 				orphanCivs.add(civ);
 			}
-			
 		}
 		
 	/*	ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -265,6 +265,42 @@ public class CivGlobal {
 		
 		checkForInvalidStructures();
 		loadCompleted = true;
+	}
+	
+	public static void setCurrentEra(int era, Civilization civ) {
+		if (era > highestCivEra) {
+			highestCivEra = era;
+			String newEra = "";
+			switch (highestCivEra) {
+				case 0: //ANCIENT
+					newEra = "The Ancient Era";
+					return;
+				case 1: //CLASSICAL
+					newEra = "The Classical Era";
+					break;
+				case 2: //MEDIEVAL
+					newEra = "The Midieval Era";
+					break;
+				case 3: //RENAISSANCE
+					newEra = "The Renaissance Era";
+					break;
+				case 4: //INDUSTRIAL
+					newEra = "The Industrial Era";
+					break;
+				case 5: //MODERN
+					newEra = "The Modern Era";
+					break;
+				case 6: //ATOMIC
+					newEra = "The Atomic Era";
+					break;
+				case 7: //INFORMATION
+					newEra = "The Information Era";
+					break;
+				default:
+					break;
+			}
+			CivMessage.global(CivColor.LightBlue+CivColor.ITALIC+newEra+" "+CivColor.LightGray+" has been achieved by "+CivColor.ITALIC+civ.getName());
+		}
 	}
 	
 	public static void checkForInvalidStructures() {
@@ -335,6 +371,10 @@ public class CivGlobal {
 			while(rs.next()) {
 				try {
 					Civilization civ = new Civilization(rs);
+					if (highestCivEra < civ.getCurrentEra()) {
+						highestCivEra = civ.getCurrentEra();
+					}
+					
 					if (!civ.isConquered()) {
 						CivGlobal.addCiv(civ);
 					} else {
@@ -1064,6 +1104,10 @@ public class CivGlobal {
 	public static ProtectedBlock getProtectedBlock(BlockCoord coord) {
 		return protectedBlocks.get(coord);
 	}
+	
+	public static ProtectedBlock removeProtectedBlock(BlockCoord coord) {
+		return protectedBlocks.remove(coord);
+	}
 
 	public static SessionDatabase getSessionDB() {
 		return sdb;
@@ -1357,7 +1401,7 @@ public class CivGlobal {
 		double lowest_distance = Double.MAX_VALUE;
 		
 		for (Buildable struct : structures.values()) {
-			double distance = struct.getCorner().getLocation().distance(location);
+			double distance = struct.getCenterLocation().getLocation().distance(location);
 			if (distance < lowest_distance ) {
 				lowest_distance = distance;
 				nearest = struct;
@@ -1365,7 +1409,7 @@ public class CivGlobal {
 		}
 		
 		for (Buildable struct : wonders.values()) {
-			double distance = struct.getCorner().getLocation().distance(location);
+			double distance = struct.getCenterLocation().getLocation().distance(location);
 			if (distance < lowest_distance ) {
 				lowest_distance = distance;
 				nearest = struct;

@@ -92,7 +92,7 @@ public class MarketBuyCommand extends CommandBase {
 			throw new CivException("Can only buy towns that are up for sale.");
 		}
 		
-		if (War.isWarTime() || War.isWithinWarDeclareDays()) {
+		if (War.isWarTime() || War.isWithinWarDeclareDaysCutOff()) {
 			throw new CivException("Can not buy towns during WarTime or within 3 days of WarTime.");
 		}
 		
@@ -126,7 +126,7 @@ public class MarketBuyCommand extends CommandBase {
 			throw new CivException("Can only buy civilizations that are up for sale.");
 		}
 		
-		if (War.isWarTime() || War.isWithinWarDeclareDays()) {
+		if (War.isWarTime() || War.isWithinWarDeclareDaysCutOff()) {
 			throw new CivException("Can not buy civs during WarTime or within 3 days of WarTime.");
 		}
 		

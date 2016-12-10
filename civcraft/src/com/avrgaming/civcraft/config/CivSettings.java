@@ -59,7 +59,6 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.randomevents.ConfigRandomEvent;
 import com.avrgaming.civcraft.structure.Wall;
 import com.avrgaming.civcraft.template.Template;
-import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.global.perks.Perk;
 
 public class CivSettings {
@@ -91,9 +90,16 @@ public class CivSettings {
 	public static float T4_metal_speed;
 	public static float normal_speed;
 	public static double highjump;
-
+	
+	public static FileConfiguration animalsConfig; /* animals.yml */
+	public static Set<ConfigStableLlamaItem> stableLlamaItems = new HashSet<ConfigStableLlamaItem>();
+	public static HashMap<Integer, ConfigStableLlama> llamas = new HashMap<Integer, ConfigStableLlama>();
+	
+	public static FileConfiguration civicsConfig; /* civics.yml */
+	public static Map<String, ConfigCivic> civics = new HashMap<String, ConfigCivic>();
+	
 	public static FileConfiguration dropsConfig; /* drops.yml */
-
+	
 	public static FileConfiguration townConfig; /* town.yml */
 	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
 	public static Map<String, ConfigTownUpgrade> townUpgrades = new TreeMap<String, ConfigTownUpgrade>();
@@ -170,6 +176,7 @@ public class CivSettings {
 	
 	public static Set<ConfigStableItem> stableItems = new HashSet<ConfigStableItem>();
 	public static HashMap<Integer, ConfigStableHorse> horses = new HashMap<Integer, ConfigStableHorse>();
+	
 	
 	public static FileConfiguration happinessConfig; /* happiness.yml */
 	public static HashMap<Integer, ConfigTownHappinessLevel> townHappinessLevels = new HashMap<Integer, ConfigTownHappinessLevel>();
@@ -269,10 +276,14 @@ public class CivSettings {
 		startingCoins = CivSettings.getDouble(civConfig, "global.starting_coins");
 		
 		alwaysCrumble.add(CivData.BEDROCK);
-		alwaysCrumble.add(ItemManager.getId(Material.GOLD_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.DIAMOND_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.IRON_BLOCK));
-		alwaysCrumble.add(ItemManager.getId(Material.REDSTONE_BLOCK));
+		alwaysCrumble.add(CivData.COAL_BLOCK);
+		alwaysCrumble.add(CivData.IRON_BLOCK);
+		alwaysCrumble.add(CivData.GOLD_BLOCK);
+		alwaysCrumble.add(CivData.LAPIS_BLOCK);
+		alwaysCrumble.add(CivData.REDSTONE_BLOCK);
+		alwaysCrumble.add(CivData.DIAMOND_BLOCK);
+		alwaysCrumble.add(CivData.EMERALD_BLOCK);
+		alwaysCrumble.add(CivData.ENDER_CHEST);
 		
 		LoreEnhancement.init();
 		LoreCraftableMaterial.buildStaticMaterials();
@@ -346,6 +357,8 @@ public class CivSettings {
 	
 		
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
+		animalsConfig = loadCivConfig("animals.yml");
+		civicsConfig = loadCivConfig("civics.yml");
 		dropsConfig = loadCivConfig("drops.yml");
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
@@ -372,6 +385,9 @@ public class CivSettings {
 	}
 
 	private static void loadConfigObjects() throws InvalidConfiguration {
+		ConfigStableLlama.loadConfig(animalsConfig, llamas);
+		ConfigStableLlamaItem.loadConfig(animalsConfig, stableLlamaItems);
+		ConfigCivic.loadConfig(civicsConfig, civics);
 		ConfigTownLevel.loadConfig(townConfig, townLevels);
 		ConfigTownUpgrade.loadConfig(townConfig, townUpgrades);
 		ConfigCultureLevel.loadConfig(cultureConfig, cultureLevels);
@@ -712,6 +728,15 @@ public class CivSettings {
 		for (ConfigTech tech : techs.values()) {
 			if (tech.name.equalsIgnoreCase(techname)) {
 				return tech;
+			}
+		}
+		return null;
+	}
+	
+	public static ConfigCivic getCivicByName(String cvcname) {
+		for (ConfigCivic cvc : civics.values()) {
+			if (cvc.name.equalsIgnoreCase(cvcname)) {
+				return cvc;
 			}
 		}
 		return null;

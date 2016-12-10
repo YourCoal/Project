@@ -1,0 +1,458 @@
+#
+#This is something new to CivCraft from Civilization VI, in which each civic gives a personal buff.
+#Each era/tier will have 5 civics in which they will give two personal buffs of the following:
+#1. Hammers & Mines, 'hammers_mines'
+#2. Beakers & Labs, 'beakers_labs'
+#3. Culture & Trade, 'culture_trade'
+#4. Faith & Monuments, 'faith_monuments'
+#5. Growth & Cottages, 'growth_cottages'
+#
+#
+#Civics have more of a config to them, so I want to show you how they work:
+#  - id: 'civic_example'  - Logging ID of the civic in SQL.
+#    name: 'Example'  - Visual name of the civic to players/logs.
+#    culture_cost: 500.0  - Alike beakers to tech, this is culture to research a civic.
+#    cost: 100.0  - Alike tech too, you need to pay money to research a civic.
+#    points: 5  - score points added to the TOWN, just like techs to CIVS.
+#    require_techs:  - sees if the CIV has the tech for the TOWN to get civic.
+#    require_civics:  - sees if the TOWN has the required civics for this new civic.
+#    bonus_factors: 'rate1_rate2'  - Which one of the five personal buffs are enabled by the civic.
+#    era: 0  - Which era is apart of this civic (Eras only unlocked by techs, remember that).
+#
+#All civics are found at: http://civilization.wikia.com/wiki/Civics_(Civ6)
+#
+
+# the amount to multiply cottage coins once taxation is researched
+#taxation_cottage_buff: 2.0
+
+# Definitions for civics.
+civics:
+#-------------------------------------#
+#=========> Era 0 - Ancient <=========#
+#-------------------------------------#
+#Card: Ilkum
+  - id: 'civic_craftsmanship'
+    name: 'Craftsmanship'
+    culture_cost: 2500.0
+    cost: 3500.0
+    points: 50
+    require_techs:
+    require_civics:
+#TODO Add this in code to enable civics to work right
+    bonus_factors: 'hammers_mines'
+    era: 0
+#Card: Inspiration
+  - id: 'civic_mysticism'
+    name: 'Mysticism'
+    culture_cost: 2500.0
+    cost: 3500.0
+    points: 50
+    require_techs:
+    require_civics:
+#TODO Add this in code to enable civics to work right
+    bonus_factors: 'beakers_labs'
+    era: 0
+#Card: Caravansaries
+  - id: 'civic_foreign_trade'
+    name: 'Foreign Trade'
+    culture_cost: 2500.0
+    cost: 3500.0
+    points: 50
+    require_techs:
+    require_civics:
+#TODO Add this in code to enable civics to work right
+    bonus_factors: 'culture_trade'
+    era: 0
+#Card: God King
+  - id: 'civic_code_of_laws'
+    name: 'Code of Laws'
+    culture_cost: 2500.0
+    cost: 3500.0
+    points: 50
+    require_techs:
+    require_civics:
+#TODO Add this in code to enable civics to work right
+    bonus_factors: 'faith_monuments'
+    era: 0
+#Card: Colonization
+  - id: 'civic_early_empire'
+    name: 'Early Empire'
+    culture_cost: 2500.0
+    cost: 3500.0
+    points: 50
+    require_techs:
+    require_civics:
+#TODO Add this in code to enable civics to work right
+    bonus_factors: 'growth_cottages'
+    era: 0
+#-------------------------------------#
+#========> Era 1 - Classical <========#
+#-------------------------------------#
+#Card: Limes
+  - id: 'civic_defensive_tactics'
+    name: 'Defensive Tactics'
+    culture_cost: 10000.0
+    cost: 10000.0
+    points: 200
+    require_techs:
+    require_civics:
+    bonus_factors: 'hammers_mines'
+    era: 1
+#Card: Literary Tradition
+  - id: 'civic_drama_and_poetry'
+    name: 'Drama and Poetry'
+    culture_cost: 10000.0
+    cost: 10000.0
+    points: 200
+    require_techs:
+    require_civics:
+    bonus_factors: 'beakers_labs'
+    era: 1
+#Card: Natural Philosophy
+  - id: 'civic_recorded_history'
+    name: 'Recorded History'
+    culture_cost: 10000.0
+    cost: 10000.0
+    points: 200
+    require_techs:
+    require_civics:
+    bonus_factors: 'culture_trade'
+    era: 1
+#Card: Scripture
+  - id: 'civic_theology'
+    name: 'Theology'
+    culture_cost: 10000.0
+    cost: 10000.0
+    points: 200
+    require_techs:
+    require_civics:
+    bonus_factors: 'faith_monuments'
+    era: 1
+#Card: Insulae
+  - id: 'civic_games_and_recreation'
+    name: 'Games and Recreation'
+    culture_cost: 10000.0
+    cost: 10000.0
+    points: 200
+    require_techs:
+    require_civics:
+    bonus_factors: 'growth_cottages'
+    era: 1
+#-------------------------------------#
+#========> Era 2 -- Medieval <========#
+#-------------------------------------#
+#Card: Serfdom
+  - id: 'civic_feudalism'
+    name: 'Feudalism'
+    culture_cost: 35000.0
+    cost: 20000.0
+    points: 500
+    require_techs:
+    require_civics:
+    bonus_factors: 'hammers_mines'
+    era: 2
+#Card: Meritocracy
+  - id: 'civic_civil_service'
+    name: 'Civil Service'
+    culture_cost: 35000.0
+    cost: 20000.0
+    points: 500
+    require_techs:
+    require_civics:
+    bonus_factors: 'beakers_labs'
+    era: 2
+#Card: Trade Confederation
+  - id: 'civic_mercenaries'
+    name: 'Mercenaries'
+    culture_cost: 35000.0
+    cost: 20000.0
+    points: 500
+    require_techs:
+    require_civics:
+    bonus_factors: 'culture_trade'
+    era: 2
+#Card: Traveling Merchants
+  - id: 'civic_guilds'
+    name: 'Guilds'
+    culture_cost: 35000.0
+    cost: 20000.0
+    points: 500
+    require_techs:
+    require_civics:
+    bonus_factors: 'faith_monuments'
+    era: 2
+#Card: Medina Quarter
+  - id: 'civic_medieval_faires'
+    name: 'Medieval Faires'
+    culture_cost: 35000.0
+    cost: 20000.0
+    points: 500
+    require_techs:
+    require_civics:
+    bonus_factors: 'growth_cottages'
+    era: 2
+#-------------------------------------#
+#=======> Era 3 - Renaissance <=======#
+#-------------------------------------#
+#Card: Machiavellianism
+  - id: 'civic_diplomatic_service'
+    name: 'Diplomatic Service'
+    culture_cost: 90000.0
+    cost: 40000.0
+    points: 850
+    require_techs:
+    require_civics:
+    bonus_factors: 'hammers_mines'
+    era: 3
+#Card: Rationalism
+  - id: 'civic_the_enlightenment'
+    name: 'The Enlightenment'
+    culture_cost: 90000.0
+    cost: 40000.0
+    points: 850
+    require_techs:
+    require_civics:
+    bonus_factors: 'beakers_labs'
+    era: 3
+#Card: Triangular Trade
+  - id: 'civic_mercantilism'
+    name: 'Mercantilism'
+    culture_cost: 90000.0
+    cost: 40000.0
+    points: 850
+    require_techs:
+    require_civics:
+    bonus_factors: 'culture_trade'
+    era: 3
+#Card: Simultaneom
+  - id: 'civic_reformed_church'
+    name: 'Reformed Church'
+    culture_cost: 90000.0
+    cost: 40000.0
+    points: 850
+    require_techs:
+    require_civics:
+    bonus_factors: 'faith_monuments'
+    era: 3
+#Card: Invention
+  - id: 'civic_humanism'
+    name: 'Humanism'
+    culture_cost: 90000.0
+    cost: 40000.0
+    points: 850
+    require_techs:
+    require_civics:
+    bonus_factors: 'growth_cottages'
+    era: 3
+#-------------------------------------#
+#=======> Era 4 -- Industrial <=======#
+#-------------------------------------#
+#Card: Public Works
+  - id: 'civic_civil_engineering'
+    name: 'Civil Engineering'
+    culture_cost: 225000.0
+    cost: 70000.0
+    points: 1250
+    require_techs:
+    require_civics:
+    bonus_factors: 'hammers_mines'
+    era: 4
+#Card: Military Research
+  - id: 'civic_urbanization'
+    name: 'Urbanization'
+    culture_cost: 225000.0
+    cost: 70000.0
+    points: 1250
+    require_techs:
+    require_civics:
+    bonus_factors: 'beakers_labs'
+    era: 4
+#Card: Grand Opera
+  - id: 'civic_opera_and_ballet'
+    name: 'Opera and Ballet'
+    culture_cost: 225000.0
+    cost: 70000.0
+    points: 1250
+    require_techs:
+    require_civics:
+    bonus_factors: 'culture_trade'
+    era: 4
+#Card: Raj
+  - id: 'civic_colonialism'
+    name: 'Colonialism'
+    culture_cost: 225000.0
+    cost: 70000.0
+    points: 1250
+    require_techs:
+    require_civics:
+    bonus_factors: 'faith_monuments'
+    era: 4
+#Card: Total War
+  - id: 'civic_scorched_earth'
+    name: 'Scorched Earth'
+    culture_cost: 225000.0
+    cost: 70000.0
+    points: 1250
+    require_techs:
+    require_civics:
+    bonus_factors: 'growth_cottages'
+    era: 4
+#-------------------------------------#
+#=========> Era 5 -- Modern <=========#
+#-------------------------------------#
+#Card: Lightning Warfare
+  - id: 'civic_totalitarianism'
+    name: 'Totalitarianism'
+    culture_cost: 550000.0
+    cost: 100000.0
+    points: 2500
+    require_techs:
+    require_civics:
+    bonus_factors: 'hammers_mines'
+    era: 5
+#Card: Inspiration
+  - id: 'civic_nuclear_program'
+    name: 'Nuclear Program'
+    culture_cost: 550000.0
+    cost: 100000.0
+    points: 2500
+    require_techs:
+    require_civics:
+    bonus_factors: 'beakers_labs'
+    era: 5
+#Card: Market Economy
+  - id: 'civic_capitalism'
+    name: 'Capitalism'
+    culture_cost: 550000.0
+    cost: 100000.0
+    points: 2500
+    require_techs:
+    require_civics:
+    bonus_factors: 'culture_trade'
+    era: 5
+#Card: None
+  - id: 'civic_class_struggle'
+    name: 'Class Struggle'
+    culture_cost: 550000.0
+    cost: 100000.0
+    points: 2500
+    require_techs:
+    require_civics:
+    bonus_factors: 'faith_monuments'
+    era: 5
+#Card: Arsenal of Democracy
+  - id: 'civic_suffrage'
+    name: 'Suffrage'
+    culture_cost: 550000.0
+    cost: 100000.0
+    points: 2500
+    require_techs:
+    require_civics:
+    bonus_factors: 'growth_cottages'
+    era: 5
+#-------------------------------------#
+#=========> Era 6 -- Atomic <=========#
+#-------------------------------------#
+#Card: None
+  - id: 'civic_rapid_deployment'
+    name: 'Rapid Deployment'
+    culture_cost: 1000000.0
+    cost: 275000.0
+    points: 4000
+    require_techs:
+    require_civics:
+    bonus_factors: 'hammers_mines'
+    era: 6
+#Card: None
+  - id: 'civic_space_race'
+    name: 'Space Race'
+    culture_cost: 1000000.0
+    cost: 275000.0
+    points: 4000
+    require_techs:
+    require_civics:
+    bonus_factors: 'beakers_labs'
+    era: 6
+#Card: None
+  - id: 'civic_cold_war'
+    name: 'Cold War'
+    culture_cost: 1000000.0
+    cost: 275000.0
+    points: 4000
+    require_techs:
+    require_civics:
+    bonus_factors: 'culture_trade'
+    era: 6
+#Card: None
+  - id: 'civic_cultural_heritage'
+    name: 'Cultural Heritage'
+    culture_cost: 1000000.0
+    cost: 275000.0
+    points: 4000
+    require_techs:
+    require_civics:
+    bonus_factors: 'faith_monuments'
+    era: 6
+#Card: None
+  - id: 'civic_professional_sports'
+    name: 'Professional Sports'
+    culture_cost: 1000000.0
+    cost: 275000.0
+    points: 4000
+    require_techs:
+    require_civics:
+    bonus_factors: 'growth_cottages'
+    era: 6
+#-------------------------------------#
+#======> Era 7 - Informational <======#
+#-------------------------------------#
+##Card: 
+#  - id: 'civic_'
+#    name: ''
+#    culture_cost: 2000000.0
+#    cost: 500000.0
+#    points: 6500
+#    require_techs:
+#    require_civics:
+#    bonus_factors: 'hammers_mines'
+#    era: 7
+#Card: Collective Activism
+  - id: 'civic_social_media'
+    name: 'Social Media'
+    culture_cost: 2000000.0
+    cost: 500000.0
+    points: 6500
+    require_techs:
+    require_civics:
+    bonus_factors: 'beakers_labs'
+    era: 7
+#Card: Ecommerce
+  - id: 'civic_globalization'
+    name: 'Globalization'
+    culture_cost: 2000000.0
+    cost: 500000.0
+    points: 6500
+    require_techs:
+    require_civics:
+    bonus_factors: 'culture_trade'
+    era: 7
+##Card: 
+#  - id: 'civic_'
+#    name: ''
+#    culture_cost: 2000000.0
+#    cost: 500000.0
+#    points: 6500
+#    require_techs:
+#    require_civics:
+#    bonus_factors: 'faith_monuments'
+#    era: 7
+##Card: 
+#  - id: 'civic_'
+#    name: ''
+#    culture_cost: 2000000.0
+#    cost: 500000.0
+#    points: 6500
+#    require_techs:
+#    require_civics:
+#    bonus_factors: 'growth_cottages'
+#    era: 7

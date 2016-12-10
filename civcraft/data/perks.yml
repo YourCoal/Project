@@ -90,20 +90,6 @@ perks:
       components:
           - name: 'CustomTemplate'
 
-    - id: 'template_elven'
-      display_name: 'Elven Template'
-      item_id: 18
-      data: 3
-      components:
-          - name: 'CustomTemplate'
-
-    - id: 'template_cultist'
-      display_name: 'Cultist Template'
-      item_id: 397
-      data: 1
-      components:
-          - name: 'CustomTemplate'
-
 ############ ARCTIC THEME
     - id: 'prem_tpl_arctic_camp'
       display_name: 'Arctic Camp'

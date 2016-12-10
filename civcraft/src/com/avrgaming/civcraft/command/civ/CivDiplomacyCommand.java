@@ -264,9 +264,9 @@ public class CivDiplomacyCommand extends CommandBase {
 			case ALLY:
 				message += "an ALLY";
 				
-				if (War.isWithinWarDeclareDays()) {
+				if (War.isWithinWarDeclareDaysCutOff()) {
 					if (ourCiv.getDiplomacyManager().isAtWar() || otherCiv.getDiplomacyManager().isAtWar()) {
-						throw new CivException("Cannot make new allies within "+War.getTimeDeclareDays()+" before WarTime when one of you is at war.");
+						throw new CivException("Cannot make new allies within "+War.getDeclareDaysCutOff()+" before WarTime when one of you is at war.");
 					}
 				}
 				break;
@@ -343,7 +343,7 @@ public class CivDiplomacyCommand extends CommandBase {
 					throw new CivException("Cannot declare war during WarTime.");
 				}
 				
-				if (War.isWithinWarDeclareDays()) {
+				if (War.isWithinWarDeclareDaysCutOff()) {
 					if (War.isCivAggressorToAlly(otherCiv, ourCiv)) {
 						if (War.isWithinAllyDeclareHours()) {
 							throw new CivException("Too soon to next WarTime. Allies can only aid other allies within "+War.getAllyDeclareHours()+" hours before WarTime.");
@@ -351,7 +351,7 @@ public class CivDiplomacyCommand extends CommandBase {
 							//aidingAlly = true;
 						}
 					} else {		
-						throw new CivException("Too soon to next WarTime. Cannot declare "+War.getTimeDeclareDays()+" before WarTime.");
+						throw new CivException("Too soon to next WarTime. Cannot declare "+War.getDeclareDaysCutOff()+" before WarTime.");
 					}
 				}
 				

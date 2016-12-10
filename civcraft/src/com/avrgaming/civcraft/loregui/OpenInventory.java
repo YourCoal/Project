@@ -5,13 +5,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.books.Information;
+import com.avrgaming.civcraft.books.Tutorial;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.books.CivTutorial;
 
 public class OpenInventory implements GuiAction {
 
@@ -40,12 +41,18 @@ public class OpenInventory implements GuiAction {
 				}
 				
 				switch (LoreGuiItem.getActionData(stack, "invType")) {
+				//civcraft/books/Tutorial.java
 				case "showTutorialInventory":
-					CivTutorial.showTutorialInventory(player);
+					Tutorial.showTutorialInventory(player);
+					break;
+				//civcraft/books/Information.java
+				case "showTechInventory":
+					Information.showTechInventory(player);
 					break;
 				case "showCraftingHelp":
-					CivTutorial.showCraftingHelp(player);
+					Information.showCraftingHelp(player);
 					break;
+					
 				case "showGuiInv":
 					String invName = LoreGuiItem.getActionData(stack, "invName");
 					Inventory inv = LoreGuiItemListener.guiInventories.get(invName);
@@ -60,8 +67,6 @@ public class OpenInventory implements GuiAction {
 				}
 			}
 		}
-		
 		TaskMaster.syncTask(new SyncTaskDelayed(player.getName(), stack));		
 	}
-
 }

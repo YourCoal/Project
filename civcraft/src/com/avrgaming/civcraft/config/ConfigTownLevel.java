@@ -31,7 +31,8 @@ public class ConfigTownLevel {
 	public double upkeep;
 	public int plots;
 	public double plot_cost;
-	public int tile;
+	public int tiles;
+	public int outposts;
 	
 	
 	public static void loadConfig(FileConfiguration cfg, Map<Integer, ConfigTownLevel> levels) {
@@ -44,8 +45,8 @@ public class ConfigTownLevel {
 			town_level.upkeep = (Double)level.get("upkeep");
 			town_level.plots = (Integer)level.get("plots");
 			town_level.plot_cost = (Double)level.get("plot_cost");
-			town_level.tile = (Integer)level.get("tile_improvements");
-			
+			town_level.tiles = (Integer)level.get("tiles");
+			town_level.outposts = (Integer)level.get("outposts");
 			levels.put(town_level.level, town_level);
 		}
 		CivLog.info("Loaded "+levels.size()+" town levels.");

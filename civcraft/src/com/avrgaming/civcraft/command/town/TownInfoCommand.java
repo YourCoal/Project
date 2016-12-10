@@ -403,7 +403,7 @@ public class TownInfoCommand extends CommandBase {
 			}
 						
 			double coins = cottage.getCoinsGenerated();
-			if (town.getCiv().hasTechnology("tech_taxation")) {
+			if (town.getCiv().hasRequiredTech("tech_taxation")) {
 				double taxation_bonus;
 				try {
 					taxation_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_cottage_buff");
@@ -540,13 +540,20 @@ public class TownInfoCommand extends CommandBase {
 		
 		if (resident == null || civ.hasResident(resident) || isAdmin) {
 			String color = CivColor.LightGreen;
-			if (town.getTileCount() > level.tile) {
+			if (town.getTileCount() > level.tiles) {
+				color = CivColor.Rose;
+			}
+			if (town.getOutpostCount() > level.outposts) {
 				color = CivColor.Rose;
 			}
 			
+			//TODO Food is like Treasury, Population idk.
+			CivMessage.send(sender, CivColor.Green+"Food: "+CivColor.LightGreen+df.format(town.getFoodCount())+
+									CivColor.Green+"  Population: "+CivColor.LightGreen+df.format(town.getPopulation().total));
+			
 			CivMessage.send(sender, CivColor.Green+"Plots: "+CivColor.LightGreen+"("+town.getTownChunks().size()+"/"+town.getMaxPlots()+") "+
-//									CivColor.Green+"  Outposts: "+CivColor.LightGreen+"("+color+town.getOutpostCount()+CivColor.LightGreen+"/"+level.outposts+")"+
-									CivColor.Green+"  Tiles: "+CivColor.LightGreen+"("+color+town.getTileCount()+CivColor.LightGreen+"/"+level.tile+")");
+									CivColor.Green+"  Tiles: "+CivColor.LightGreen+"("+color+town.getTileCount()+CivColor.LightGreen+"/"+level.tiles+")"+
+									CivColor.Green+"  Outposts: "+CivColor.LightGreen+"("+color+town.getOutpostCount()+CivColor.LightGreen+"/"+level.outposts+")");
 			
 			CivMessage.send(sender, CivColor.Green+"Growth: "+CivColor.LightGreen+df.format(town.getGrowth().total)+
 									CivColor.Green+"  Hammers: "+CivColor.LightGreen+df.format(town.getHammers().total)+
@@ -569,6 +576,9 @@ public class TownInfoCommand extends CommandBase {
 			ConfigCultureLevel clc = CivSettings.cultureLevels.get(town.getCultureLevel());	
 			CivMessage.send(sender, CivColor.Green+"Culture Level: "+CivColor.LightGreen+clc.level+" ("+town.getAccumulatedCulture()+"/"+clc.amount+")"+
 									CivColor.Green+"  Online: "+CivColor.LightGreen+town.getOnlineResidents().size());
+			
+//			ConfigFaithLevel cfl = CivSettings.faithLevels.get(town.getFaithLevel());	
+//			CivMessage.send(sender, CivColor.Green+"Faith Level: "+CivColor.LightGreen+cfl.level+" ("+town.getAccumulatedFaith()+"/"+cfl.amount+")");
 		}
 		
 		if (town.getBonusGoodies().size() > 0) {

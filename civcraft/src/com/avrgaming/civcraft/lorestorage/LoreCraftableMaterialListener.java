@@ -63,6 +63,12 @@ public class LoreCraftableMaterialListener implements Listener {
 				return;
 			}
 			
+			if (!craftMat.getConfigMaterial().playerHasCivic(player)) {
+				CivMessage.sendError(player, "You do not have the required civic ("+craftMat.getConfigMaterial().getRequireString()+") to craft this item.");
+				event.setCancelled(true);
+				return;
+			}
+			
 //			if (craftMat.hasComponent("Tagged")) {
 //				String tag = Tagged.matrixHasSameTag(event.getInventory().getMatrix());
 //				if (tag == null) {

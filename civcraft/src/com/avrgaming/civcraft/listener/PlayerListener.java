@@ -207,7 +207,6 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		
 		Player player = event.getPlayer();
 		Resident resident = CivGlobal.getResident(player);
 		if (resident == null || !resident.hasTown()) {
@@ -540,9 +539,21 @@ public class PlayerListener implements Listener {
 				}
 			}
 		}
-		
-		
-		
-		
 	}
+	
+	//TODO Fix, does not work. Low priority.
+/*	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerChangeHand(PlayerSwapHandItemsEvent event) {
+		if (event.getOffHandItem() != null) {
+			if (event.getOffHandItem().getType() == Material.AIR) {
+				return;
+			} else {
+				event.setCancelled(true);
+				ItemStack offHand= event.getPlayer().getInventory().getItemInOffHand();
+				event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), offHand);
+				CivMessage.send(event.getPlayer(), CivColor.Rose+CivColor.ITALIC+"You cannot have items in your off hand! Droping item on the ground...");
+			}
+		}
+		event.setCancelled(true);
+	}*/
 }

@@ -130,18 +130,15 @@ public class Cottage extends Structure {
 	}
 	
 	public void generateCoins(CivAsyncTask task) {
-		
 		if (!this.isActive()) {
 			return;
 		}
 		
 		/* Build a multi-inv from granaries. */
 		MultiInventory multiInv = new MultiInventory();
-
 		for (Structure struct : this.getTown().getStructures()) {
 			if (struct instanceof Granary) {
 				ArrayList<StructureChest> chests = struct.getAllChestsById(1);
-				
 				// Make sure the chunk is loaded and add it to the inventory.
 				try {
 					for (StructureChest c : chests) {
@@ -218,7 +215,7 @@ public class Cottage extends Structure {
 			total_coins *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 		}
 		
-		if (this.getCiv().hasTechnology("tech_taxation")) {
+		if (this.getCiv().hasRequiredTech("tech_taxation")) {
 			double taxation_bonus;
 			try {
 				taxation_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_cottage_buff");

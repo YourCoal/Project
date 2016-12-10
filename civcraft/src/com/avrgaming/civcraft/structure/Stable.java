@@ -139,7 +139,7 @@ public class Stable extends Structure {
 					paid = cost;
 				}	
 
-				HorseModifier mod;	
+				HorseModifier mod;
 				if (!horse.mule) {			
 					mod = HorseModifier.spawn(horseSpawnCoord.getLocation());
 					mod.setType(HorseType.NORMAL);
@@ -151,6 +151,7 @@ public class Stable extends Structure {
 				mod.setVariant(HorseVariant.valueOf(horse.variant));
 				HorseModifier.setHorseSpeed(mod.getHorse(), horse.speed);
 				((Horse)mod.getHorse()).setJumpStrength(horse.jump);
+				((Horse)mod.getHorse()).setMaxHealth(horse.health);
 				((Horse)mod.getHorse()).setHealth(horse.health);
 				((Horse)mod.getHorse()).setOwner(player);
 				((Horse)mod.getHorse()).setBaby();

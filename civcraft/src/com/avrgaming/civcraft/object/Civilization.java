@@ -73,6 +73,7 @@ public class Civilization extends SQLObject {
 	
 	private int color;
 	private int daysInDebt = 0;
+	private int currentEra = 0;
 	private double incomeTaxRate;
 	private double sciencePercentage;
 	private ConfigTech researchTech = null;
@@ -156,8 +157,8 @@ public class Civilization extends SQLObject {
 					"`daysInDebt` int NOT NULL DEFAULT '0',"+
 					"`techs` mediumtext DEFAULT NULL," +
 					"`researchTech` mediumtext DEFAULT NULL,"+
-					"`researchProgress` float NOT NULL DEFAULT 0,"+
-					"`researched` mediumtext DEFAULT NULL, "+
+					"`researchTechProgress` float NOT NULL DEFAULT 0,"+
+					"`researchedTechs` mediumtext DEFAULT NULL, "+
 					"`government_id` mediumtext DEFAULT NULL," +
 					"`color` int(11) DEFAULT 0," +
 					"`income_tax_rate` float NOT NULL DEFAULT 0," +
@@ -197,19 +198,19 @@ public class Civilization extends SQLObject {
 		daysInDebt = rs.getInt("daysInDebt");
 		this.color = rs.getInt("color");
 		this.setResearchTech(CivSettings.techs.get(rs.getString("researchTech")));
-		this.setResearchProgress(rs.getDouble("researchProgress"));
+		this.setResearchProgress(rs.getDouble("researchTechProgress"));
 		this.setGovernment(rs.getString("government_id"));
 		this.loadKeyValueString(rs.getString("lastUpkeepTick"), this.lastUpkeepPaidMap);
 		this.loadKeyValueString(rs.getString("lastTaxesTick"), this.lastTaxesPaidMap);
 		this.setSciencePercentage(rs.getDouble("science_percentage"));
 		
 		double taxes = rs.getDouble("income_tax_rate");
-		if (taxes > this.government.maximum_tax_rate) {
-			taxes = this.government.maximum_tax_rate;
+		if (taxes > this.government.max_civ_tax_rate) {
+			taxes = this.government.max_civ_tax_rate;
 		}
 		
 		this.setIncomeTaxRate(taxes);
-		this.loadResearchedTechs(rs.getString("researched"));
+		this.loadResearchedTechs(rs.getString("researchedTechs"));
 		this.adminCiv = rs.getBoolean("adminCiv");
 		this.conquered = rs.getBoolean("conquered");
 		Long ctime = rs.getLong("conquered_date");
@@ -229,6 +230,12 @@ public class Civilization extends SQLObject {
 		this.setTreasury(new EconObject(this));
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
 		this.getTreasury().setDebt(rs.getDouble("debt"));
+		
+		for (ConfigTech tech : this.getTechs()) {
+			if (tech.era > this.getCurrentEra()) {
+				this.setCurrentEra(tech.era);
+			}
+		}
 	}
 
 	@Override
@@ -255,11 +262,11 @@ public class Civilization extends SQLObject {
 		} else {
 			hashmap.put("researchTech", null);
 		}
-		hashmap.put("researchProgress", this.getResearchProgress());
+		hashmap.put("researchTechProgress", this.getResearchProgress());
 		hashmap.put("government_id", this.getGovernment().id);
 		hashmap.put("lastUpkeepTick", this.saveKeyValueString(this.lastUpkeepPaidMap));
 		hashmap.put("lastTaxesTick", this.saveKeyValueString(this.lastTaxesPaidMap));
-		hashmap.put("researched", this.saveResearchedTechs());
+		hashmap.put("researchedTechs", this.saveResearchedTechs());
 		hashmap.put("adminCiv", this.adminCiv);
 		hashmap.put("conquered", this.conquered);
 		if (this.conquer_date != null) {
@@ -283,7 +290,6 @@ public class Civilization extends SQLObject {
 		}
 		
 		String[] techs = techstring.split(",");
-		
 		for (String tech : techs) {
 			ConfigTech t = CivSettings.techs.get(tech);
 			if (t != null) {
@@ -295,11 +301,9 @@ public class Civilization extends SQLObject {
 	
 	private Object saveResearchedTechs() {
 		String out = "";
-		
 		for (ConfigTech tech : this.techs.values()) {
 			out += tech.id+",";
 		}
-		
 		return out;
 	}
 
@@ -329,9 +333,8 @@ public class Civilization extends SQLObject {
 		}
 		return out;
 	}
-
-	public boolean hasTechnology(String require_tech) {
-		
+	
+	public boolean hasRequiredTech(String require_tech) {
 		if (require_tech != null) {
 			String split[] = require_tech.split(":");
 			for (String str : split) {
@@ -340,7 +343,6 @@ public class Civilization extends SQLObject {
 				}
 			}
 		}
-		
 		return true;
 	}
 	
@@ -348,7 +350,6 @@ public class Civilization extends SQLObject {
 		if (configId == null || configId.equals("")) {
 			return true;
 		}
-		
 		return techs.containsKey(configId);
 	}
 	
@@ -356,10 +357,13 @@ public class Civilization extends SQLObject {
 		CivGlobal.researchedTechs.add(t.id.toLowerCase());
 		techs.put(t.id, t);
 		
+		if (t.era > this.getCurrentEra()) {
+			this.setCurrentEra(t.era);
+		}
+		
 		for (Town town : this.getTowns()) {
 			town.onTechUpdate();
 		}
-		
 	}
 	
 	public void removeTech(ConfigTech t) {
@@ -368,12 +372,11 @@ public class Civilization extends SQLObject {
 	
 	public void removeTech(String configId) {
 		techs.remove(configId);
-		
 		for (Town town : this.getTowns()) {
 			town.onTechUpdate();
 		}
 	}
-
+	
 	public ConfigGovernment getGovernment() {
 		return government;
 	}
@@ -381,8 +384,8 @@ public class Civilization extends SQLObject {
 	public void setGovernment(String gov_id) {
 		this.government = CivSettings.governments.get(gov_id);
 		
-		if (this.getSciencePercentage() > this.government.maximum_tax_rate) {
-			this.setSciencePercentage(this.government.maximum_tax_rate);
+		if (this.getSciencePercentage() > this.government.max_civ_tax_rate) {
+			this.setSciencePercentage(this.government.max_civ_tax_rate);
 		}
 		
 	}
@@ -1002,6 +1005,9 @@ public class Civilization extends SQLObject {
 		
 		if (getResearchProgress() >= getResearchTech().beaker_cost) {
 			CivMessage.sendCiv(this, "Our civilization has discovered "+getResearchTech().name+"!");
+			CivMessage.global("The civilization "+this.getName()+"has discovered the technology "+getResearchTech().name+"!");
+			CivMessage.global(CivColor.BOLD+getResearchTech().name+" Quote: "+CivColor.LightGray+CivColor.ITALIC+getResearchTech().quote);
+			
 			this.addTech(this.getResearchTech());
 			this.setResearchProgress(0);
 			this.setResearchTech(null);
@@ -1255,6 +1261,9 @@ public class Civilization extends SQLObject {
 		}
 		for (Relation relation : deletedRelations) {
 			try {
+				if (relation.getStatus() == Relation.Status.WAR) {
+					relation.setStatus(Relation.Status.NEUTRAL);
+				}
 				relation.delete();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1848,4 +1857,14 @@ public class Civilization extends SQLObject {
 		return stack;
 	}
 	
+	public int getCurrentEra() {
+		return currentEra;
+	}
+	
+	public void setCurrentEra(int currentEra) {
+		this.currentEra = currentEra;
+		if (this.currentEra > CivGlobal.highestCivEra) {
+			CivGlobal.setCurrentEra(this.currentEra, this);
+		}
+	}
 }

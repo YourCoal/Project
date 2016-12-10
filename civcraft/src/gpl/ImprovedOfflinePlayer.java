@@ -30,30 +30,31 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import net.minecraft.server.v1_10_R1.AttributeMapBase;
-import net.minecraft.server.v1_10_R1.AttributeMapServer;
-import net.minecraft.server.v1_10_R1.GenericAttributes;
-import net.minecraft.server.v1_10_R1.InventoryEnderChest;
-import net.minecraft.server.v1_10_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.NBTTagDouble;
-import net.minecraft.server.v1_10_R1.NBTTagFloat;
-import net.minecraft.server.v1_10_R1.NBTTagList;
-import net.minecraft.server.v1_10_R1.PlayerAbilities;
-import net.minecraft.server.v1_10_R1.PlayerInventory;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
 import com.avrgaming.civcraft.util.NBTStaticHelper;
+
+import net.minecraft.server.v1_11_R1.AttributeMapBase;
+import net.minecraft.server.v1_11_R1.AttributeMapServer;
+import net.minecraft.server.v1_11_R1.EntityHuman;
+import net.minecraft.server.v1_11_R1.GenericAttributes;
+import net.minecraft.server.v1_11_R1.InventoryEnderChest;
+import net.minecraft.server.v1_11_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.NBTTagDouble;
+import net.minecraft.server.v1_11_R1.NBTTagFloat;
+import net.minecraft.server.v1_11_R1.NBTTagList;
+import net.minecraft.server.v1_11_R1.PlayerAbilities;
+import net.minecraft.server.v1_11_R1.PlayerInventory;
 
 /**
  * @name ImprovedOfflinePlayer
@@ -155,13 +156,13 @@ public class ImprovedOfflinePlayer {
     this.compound.setBoolean("SpawnForced", override == null ? false : override);
     if(this.autosave) savePlayerData();
   }
-  public Inventory getEnderChest() {
-    InventoryEnderChest endchest = new InventoryEnderChest();
+  public Inventory getEnderChest(EntityHuman eh) {
+    InventoryEnderChest endchest = new InventoryEnderChest(eh);
     endchest.a(this.compound.getList("EnderItems", NBTStaticHelper.TAG_COMPOUND));
     return new CraftInventory(endchest);
   }
   public void setEnderChest(Inventory inventory) {
-    this.compound.set("EnderItems", ((InventoryEnderChest)((CraftInventory)inventory).getInventory()).h());
+    this.compound.setInt("EnderItems", ((InventoryEnderChest)((CraftInventory)inventory).getInventory()).h());
     if(this.autosave) savePlayerData();
   }
   public float getExhaustion() {
