@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.object.Resident;
 
@@ -17,11 +18,16 @@ public class ActionBarUpdateTimer implements Runnable {
 	public void run() {
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			Resident res = CivGlobal.getResident(p);
-			
-			String town = res.getTown().getName();
-			double treasury = res.getTown().getTreasury().getBalance();
-			
-			sendActionBar(p, "Town: "+town+"  Treasury: "+treasury);
+			try {
+				Player pl = CivGlobal.getPlayer(res);
+				
+				String town = res.getTown().getName();
+				double treasury = res.getTown().getTreasury().getBalance();
+				
+				sendActionBar(pl, "Town: "+town+"  Treasury: "+treasury);
+			} catch (CivException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

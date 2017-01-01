@@ -32,9 +32,7 @@ public class CivChatCommand implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-
-		//TODO let non players use this command
-		if ((sender instanceof Player) == false) {
+		if (!(sender instanceof Player)) {
 			return false;
 		}
 		
@@ -44,7 +42,7 @@ public class CivChatCommand implements CommandExecutor {
 			CivMessage.sendError(sender, "You are not a resident? Relogin please..");
 			return false;
 		}
-	
+		
 		if (args.length == 0) {
 			resident.setCivChat(!resident.isCivChat());
 			resident.setTownChat(false);
@@ -52,17 +50,15 @@ public class CivChatCommand implements CommandExecutor {
 			return true;
 		}
 		
-		
 		String fullArgs = "";
 		for (String arg : args) {
 			fullArgs += arg + " ";
 		}
-	
+		
 		if (resident.getTown() == null) {
 			player.sendMessage(CivColor.Rose+"You are not part of a civ, nobody hears you.");
 			return false;
 		}
-		
 		CivMessage.sendCivChat(resident.getTown().getCiv(), resident, "<%s> %s", fullArgs);
 		return true;
 	}

@@ -31,6 +31,7 @@ import com.avrgaming.civcraft.object.AttrSource;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Cottage;
+import com.avrgaming.civcraft.structure.Lab;
 import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
@@ -78,11 +79,13 @@ public class EffectEventTimer extends CivAsyncTask {
 			case "process_mine":
 				if (struct instanceof Mine) {
 					Mine mine = (Mine)struct;
-					try {
-						mine.process_mine(this);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					mine.generateHammers(this);
+				}
+				break;
+			case "process_lab":
+				if (struct instanceof Lab) {
+					Lab lab = (Lab)struct;
+					lab.generateBeakers(this);
 				}
 				break;
 			}

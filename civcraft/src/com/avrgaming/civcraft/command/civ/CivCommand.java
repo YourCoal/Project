@@ -346,7 +346,7 @@ public class CivCommand extends CommandBase {
 		} catch (CivException e) {
 		}
 
-		if (player == null || player.hasPermission(CivSettings.MINI_ADMIN) || player.isOp()) {
+		if (player == null || player.hasPermission(CivSettings.ADMIN) || player.isOp()) {
 			cal.setTime(CivGlobal.getTodaysSpawnRegenDate());
 			out.add(CivColor.LightPurple+"Next Spawn Regen: "+CivColor.LightGreen+sdf.format(cal.getTime()));
 			

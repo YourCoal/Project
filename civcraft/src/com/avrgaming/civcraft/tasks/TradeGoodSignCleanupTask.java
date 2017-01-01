@@ -57,7 +57,7 @@ public class TradeGoodSignCleanupTask implements Runnable {
 		int count = 0;
 		int i = 0;
 		//BlockCoord bcoord2 = new BlockCoord();
-		World world = Bukkit.getWorld("world");
+		World world = Bukkit.getWorld("World");
 
 		
 		

@@ -27,33 +27,33 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.avrgaming.civcraft.main.CivLog;
 
-public class ConfigMineLevel {
+public class ConfigLabLevel {
 	
 	public int level;
 	public Map<Integer, Integer> consumes;
 	public int data;
 	public int count;
-	public double hammers;
+	public double beakers;
 	
-	public ConfigMineLevel() {
+	public ConfigLabLevel() {
 	}
 	
-	public ConfigMineLevel(ConfigMineLevel currentlvl) {
+	public ConfigLabLevel(ConfigLabLevel currentlvl) {
 		this.level = currentlvl.level;
 		this.count = currentlvl.count;
 		this.data = currentlvl.data;
-		this.hammers = currentlvl.hammers;
+		this.beakers = currentlvl.beakers;
 		this.consumes = new HashMap<Integer, Integer>();
 		for (Entry<Integer, Integer> entry : currentlvl.consumes.entrySet()) {
 			this.consumes.put(entry.getKey(), entry.getValue());
 		}
 	}
 	
-	public static void loadConfig(FileConfiguration cfg, Map<Integer, ConfigMineLevel> mine_levels) {
-		mine_levels.clear();
-		List<Map<?, ?>> mine_list = cfg.getMapList("mine_levels");
+	public static void loadConfig(FileConfiguration cfg, Map<Integer, ConfigLabLevel> lab_levels) {
+		lab_levels.clear();
+		List<Map<?, ?>> lab_list = cfg.getMapList("lab_levels");
 		Map<Integer, Integer> consumes_list = null;
-		for (Map<?,?> cl : mine_list ) {
+		for (Map<?,?> cl : lab_list ) {
 			List<?> consumes = (List<?>)cl.get("consumes");
 			if (consumes != null) {
 				consumes_list = new HashMap<Integer, Integer>();
@@ -65,14 +65,14 @@ public class ConfigMineLevel {
 				}
 			}
 			
-			ConfigMineLevel minelevel = new ConfigMineLevel();
-			minelevel.level = (Integer)cl.get("level");
-			minelevel.consumes = consumes_list;
-			minelevel.data = (Integer)cl.get("data");
-			minelevel.count = (Integer)cl.get("count");
-			minelevel.hammers = (Double)cl.get("hammers");
-			mine_levels.put(minelevel.level, minelevel);
+			ConfigLabLevel lablevel = new ConfigLabLevel();
+			lablevel.level = (Integer)cl.get("level");
+			lablevel.consumes = consumes_list;
+			lablevel.data = (Integer)cl.get("data");
+			lablevel.count = (Integer)cl.get("count");
+			lablevel.beakers = (Double)cl.get("beakers");
+			lab_levels.put(lablevel.level, lablevel);
 		}
-		CivLog.info("Loaded "+mine_levels.size()+" Mine Levels.");		
+		CivLog.info("Loaded "+lab_levels.size()+" lab Levels.");		
 	}
 }

@@ -98,7 +98,7 @@ import com.wimbli.WorldBorder.Config;
 
 public abstract class Buildable extends SQLObject {
 	
-	private Town town;
+	protected Town town;
 	protected BlockCoord corner;
 	public ConfigBuildableInfo info = new ConfigBuildableInfo(); //Blank buildable info for buildables which do not have configs.
 	protected int hitpoints;
@@ -126,12 +126,11 @@ public abstract class Buildable extends SQLObject {
 	protected Map<BlockCoord, Boolean> structureBlocks = new ConcurrentHashMap<BlockCoord, Boolean>();
 	private BlockCoord centerLocation;
 	
-	// XXX this is a bad hack to get the townchunks to load in the proper order when saving asynchronously
 	public ArrayList<TownChunk> townChunksToSave = new ArrayList<TownChunk>();
 	public ArrayList<Component> attachedComponents = new ArrayList<Component>();
 	
 	private boolean valid = true;
-	public static double validPercentRequirement = 0.8;
+	public static double validPercentRequirement = 0.85;
 	public static HashSet<Buildable> invalidBuildables = new HashSet<Buildable>();
 	public HashMap<Integer, BuildableLayer> layerValidPercentages = new HashMap<Integer, BuildableLayer>();
 	public boolean validated = false;
@@ -161,7 +160,6 @@ public abstract class Buildable extends SQLObject {
 		return corner.toString();
 	}
 	
-	
 	public String getConfigId() {
 		return info.id;
 	}
@@ -173,12 +171,10 @@ public abstract class Buildable extends SQLObject {
 	public String getDisplayName() {
 		return info.displayName;
 	}
-
 	
 	public int getMaxHitPoints() {
 		return info.max_hitpoints;
 	}
-
 	
 	public double getCost() {
 		return info.cost;
@@ -188,10 +184,8 @@ public abstract class Buildable extends SQLObject {
 		if (this.info.regenRate == null) {
 			return 0;
 		}
-		
 		return info.regenRate;
 	}
-
 	
 	public double getHammerCost() {
 		double rate = 1;
@@ -201,26 +195,21 @@ public abstract class Buildable extends SQLObject {
 		return rate*info.hammer_cost;
 	}
 	
-	
 	public double getUpkeepCost() {
 		return info.upkeep;
 	}
-	
 	
 	public int getTemplateYShift() {
 		return info.templateYShift;
 	}
 	
-	
 	public String getRequiredUpgrade() {
 		return info.require_upgrade;
 	}
-
 	
 	public String getRequiredTechnology() {
 		return info.require_tech;
 	}
-	
 	
 	public String getUpdateEvent() {
 		return info.update_event;
@@ -547,9 +536,8 @@ public abstract class Buildable extends SQLObject {
 	public static Location repositionCenterStatic(Location center, ConfigBuildableInfo info, String dir, double x_size, double z_size) throws CivException {
 		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
 		
-		
-		/*		// Reposition tile improvements
-		if (info.tile) {
+		// Reposition tile improvements
+		if (info.tile || info.outpost) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else { 
@@ -570,25 +558,8 @@ public abstract class Buildable extends SQLObject {
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() + SHIFT_OUT);
 			}
-		}*/
-		
-		// Reposition tile improvements
-		if (info.tile || info.outpost) {
-			// just put the center at 0,0 of this chunk?
-			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-		} else {
-			int locX = (int) Math.round(loc.getX());
-			int locZ = (int) Math.round(loc.getZ());
-			if (dir.equalsIgnoreCase("east")) {
-				loc = center.getChunk().getBlock(locX, center.getBlockY(), locZ).getLocation();
-			} else if (dir.equalsIgnoreCase("west")) {
-				loc = center.getChunk().getBlock(locX, center.getBlockY(), locZ).getLocation();
-			} else if (dir.equalsIgnoreCase("north")) {
-				loc = center.getChunk().getBlock(locX, center.getBlockY(), locZ).getLocation();
-			} else if (dir.equalsIgnoreCase("south")) {
-				loc = center.getChunk().getBlock(locX, center.getBlockY(), locZ).getLocation();
-			}
 		}
+		
 		if (info.templateYShift != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
 			loc.setY(loc.getY() + info.templateYShift);
@@ -602,15 +573,15 @@ public abstract class Buildable extends SQLObject {
 	protected Location repositionCenter(Location center, String dir, double x_size, double z_size) throws CivException {
 		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
 		
-/*		// Reposition tile improvements
-		if (this.isTile()) {
+		// Reposition tile improvements
+		if (info.tile || info.outpost) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-		} else {  
-			if (dir.equalsIgnoreCase("east")) {
+		} else { 
+			if (dir.equalsIgnoreCase("east")) {				
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);
+				loc.setX(loc.getX() + SHIFT_OUT);				
 			} else if (dir.equalsIgnoreCase("west")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
@@ -623,29 +594,6 @@ public abstract class Buildable extends SQLObject {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() + SHIFT_OUT);
-			}
-		}*/
-		
-		
-		// Reposition tile improvements
-		if (info.tile || info.outpost) {
-			// just put the center at 0,0 of this chunk?
-			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-		} else {
-			int locX = (int) loc.getX();
-			int locZ = (int) loc.getZ();
-			if (dir.equalsIgnoreCase("east")) {	
-//				loc = center.getChunk().getBlock(locX+1, center.getBlockY(), locZ-24).getLocation();
-				loc = center.getChunk().getBlock(locX + SHIFT_OUT, center.getBlockY(), (int) (locZ - (z_size / 2))).getLocation();
-			} else if (dir.equalsIgnoreCase("west")) {
-//				loc = center.getChunk().getBlock(locX-1, center.getBlockY(), locZ+8).getLocation();
-				loc = center.getChunk().getBlock((int) (locX - (SHIFT_OUT+x_size)), center.getBlockY(), (int) (locZ - (z_size / 2))).getLocation();
-			} else if (dir.equalsIgnoreCase("north")) {
-//				loc = center.getChunk().getBlock(locX-8, center.getBlockY(), locZ-1).getLocation();
-				loc = center.getChunk().getBlock((int) (locX - (x_size / 2)), center.getBlockY(), (int) (locZ - (SHIFT_OUT+z_size))).getLocation();
-			} else if (dir.equalsIgnoreCase("south")) {
-//				loc = center.getChunk().getBlock(locX+8, center.getBlockY(), locZ+1).getLocation();
-				loc = center.getChunk().getBlock((int) (locX - (x_size / 2)), center.getBlockY(), locZ + SHIFT_OUT).getLocation();
 			}
 		}
 		

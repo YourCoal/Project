@@ -116,7 +116,7 @@ public class LlamaPen extends Structure {
 				mod.setVariant(LlamaVariant.valueOf(llama.variant));
 				LlamaModifier.setLlamaSpeed(mod.getLlama(), llama.speed);
 				((Llama)mod.getLlama()).setJumpStrength(llama.jump);
-				((Llama)mod.getLlama()).setMaxHealth(llama.health);
+//				((Llama)mod.getLlama()).setMaxHealth(llama.health);
 				((Llama)mod.getLlama()).setHealth(llama.health);
 				((Llama)mod.getLlama()).setOwner(player);
 				((Llama)mod.getLlama()).setBaby();

@@ -295,20 +295,6 @@ public class AdminCommand extends CommandBase {
 		AdminCivCommand cmd = new AdminCivCommand();	
 		cmd.onCommand(sender, null, "civ", this.stripArgs(args, 1));
 	}
-
-	public void setfullmessage_cmd() {
-		if (args.length < 2) {
-			CivMessage.send(sender, "Current:"+CivGlobal.fullMessage);
-			return;
-		}
-		
-		synchronized(CivGlobal.maxPlayers) {
-			CivGlobal.fullMessage = args[1];
-		}
-		
-		CivMessage.sendSuccess(sender, "Set to:"+args[1]);
-		
-	}
 	
 	@SuppressWarnings("deprecation")
 	public void unban_cmd() throws CivException {
@@ -397,14 +383,13 @@ public class AdminCommand extends CommandBase {
 
 	@Override
 	public void permissionCheck() throws CivException {
-		
 		if (sender instanceof Player) {
-			if (((Player)sender).hasPermission(CivSettings.MINI_ADMIN)) {
+			if (((Player)sender).hasPermission(CivSettings.ADMIN)) {
 				return;
 			}
 		}
 		
-		
+		//TODO Remove OPs from having powers?
 		if (sender.isOp() == false) {
 			throw new CivException("Only admins can use this command.");			
 		}

@@ -357,7 +357,6 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnCreateSpawnEvent(CreatureSpawnEvent event) {
-
 		if (event.getSpawnReason().equals(SpawnReason.BREEDING)) {
 			ChunkCoord coord = new ChunkCoord(event.getEntity().getLocation());
 			Pasture pasture = Pasture.pastureChunks.get(coord);
@@ -967,20 +966,15 @@ public class BlockListener implements Listener {
 		}
 
 		Block soilBlock = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
-
-		// prevent players trampling crops
 		if ((event.getAction() == Action.PHYSICAL)) {
 			if ((soilBlock.getType() == Material.SOIL) || (soilBlock.getType() == Material.CROPS)) {
-				//CivLog.debug("no crop cancel.");
 				event.setCancelled(true);
 				return;	
 			}
 		}
 
-		/* 
-		 * Right clicking causes some dupe bugs for some reason with items that have "actions" such as swords.
-		 * It also causes block place events on top of signs. So we'll just only allow signs to work with left click.
-		 */
+		/* Right clicking causes some dupe bugs for some reason with items that have "actions" such as swords.
+		 * It also causes block place events on top of signs. So we'll just only allow signs to work with left click. */
 		boolean leftClick = event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK);
 
 		if (event.getClickedBlock() != null) {		
@@ -1067,7 +1061,6 @@ public class BlockListener implements Listener {
 	}
 
 	public static void OnPlayerSwitchEvent(PlayerInteractEvent event) {
-
 		if (event.getClickedBlock() == null) {
 			return;
 		}
@@ -1101,8 +1094,19 @@ public class BlockListener implements Listener {
 				if(tc.getTown().getCiv().getDiplomacyManager().atWarWith(resident.getTown().getCiv())) {
 
 					switch (event.getClickedBlock().getType()) {
-					case WOODEN_DOOR:
 					case IRON_DOOR:
+					case BIRCH_DOOR:
+					case WOODEN_DOOR:
+					case SPRUCE_DOOR:
+					case JUNGLE_DOOR:
+					case ACACIA_DOOR:
+					case DARK_OAK_DOOR:
+					case FENCE_GATE:
+					case BIRCH_FENCE_GATE:
+					case SPRUCE_FENCE_GATE:
+					case JUNGLE_FENCE_GATE:
+					case ACACIA_FENCE_GATE:
+						case DARK_OAK_FENCE_GATE:
 						return;
 					default:
 						break;
@@ -1382,7 +1386,14 @@ public class BlockListener implements Listener {
 		}
 
 		for (org.bukkit.entity.Entity ent : event.getChunk().getEntities()) {
-			if (ent.getType().equals(EntityType.ZOMBIE)) {
+			if (ent.getType().equals(EntityType.ZOMBIE) || ent.getType().equals(EntityType.SKELETON) ||
+					ent.getType().equals(EntityType.CREEPER) || ent.getType().equals(EntityType.SPIDER) ||
+					ent.getType().equals(EntityType.CAVE_SPIDER) || ent.getType().equals(EntityType.ENDERMAN) ||
+					ent.getType().equals(EntityType.WITCH) || ent.getType().equals(EntityType.BLAZE) ||
+					ent.getType().equals(EntityType.SILVERFISH) || ent.getType().equals(EntityType.ENDERMITE) ||
+					ent.getType().equals(EntityType.GHAST) || ent.getType().equals(EntityType.MAGMA_CUBE) ||
+					ent.getType().equals(EntityType.SLIME) || ent.getType().equals(EntityType.IRON_GOLEM) ||
+					ent.getType().equals(EntityType.BAT) || ent.getType().equals(EntityType.PIG_ZOMBIE)) {
 				ent.remove();
 			}
 		}
@@ -1493,6 +1504,11 @@ public class BlockListener implements Listener {
 		}
 		
 		if (event.getEntity().getType().equals(EntityType.SNOWMAN) && event.getSpawnReason().equals(SpawnReason.BUILD_SNOWMAN)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		if (event.getEntity().getType().equals(EntityType.SILVERFISH) && event.getSpawnReason().equals(SpawnReason.SILVERFISH_BLOCK)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -1740,8 +1756,12 @@ public class BlockListener implements Listener {
 
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
-			if (ItemManager.getId(event.getBlock()) == CivData.WOOD_DOOR ||
-					ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR) {
+			if (ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR ||
+					ItemManager.getId(event.getBlock()) == CivData.BIRCH_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.SPRUCE_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.JUNGLE_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.ACACIA_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.DARK_OAK_DOOR) {
 				event.setNewCurrent(0);
 				return;
 			}
@@ -1817,5 +1837,11 @@ public class BlockListener implements Listener {
 	public void onEntityPortalCreate(EntityCreatePortalEvent event) {
 		event.setCancelled(true);
 	}
-
+	
+/*	@EventHandler(priority = EventPriority.NORMAL)
+	public void onBrewEvent(BrewEvent event) {
+		Material material = event.getContents().getIngredient().getType();
+		if (material == Material.DIRT) {
+		}
+	}*/
 }

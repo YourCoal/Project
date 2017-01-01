@@ -83,6 +83,9 @@ public class CivData {
 		public static final int RED_SAND = 1;
 	public static final int GRAVEL = 13;
 		
+	public static final int GOLD_ORE = 14;
+	public static final int IRON_ORE = 15;
+	public static final int COAL_ORE = 16;
 	public static final int LOG = 17;
 	public static final int LEAF = 18;
 	
@@ -94,9 +97,12 @@ public class CivData {
 	
 	public static final int REDSTONE_WIRE = 55;
 	
+	public static final int REDSTONE_ORE = 73;
+	
 	public static final int SUGARCANE = 83;
 	
 	public static final int LILY_PAD = 111;
+	public static final int NETHER_BRICK = 112;
 	
 	public static final int EMERALD_ORE = 129;
 	
@@ -119,6 +125,10 @@ public class CivData {
 	
 	public static final int BEETROOT_CROP = 207;
 	
+	public static final int MAGMA_BLOCK = 213;
+	public static final int RED_NETHER_BRICK = 214;
+	public static final int NETHER_WART_BLOCK = 215;
+	
 	public static final int APPLE = 260;
 	
 	public static final int BEETROOT_ITEM = 434;
@@ -132,8 +142,6 @@ public class CivData {
 	public static final int CLOWNFISH = 2;
 	public static final int PUFFERFISH = 3;
 	
-	public static final int GOLD_ORE = 14;
-	public static final int IRON_ORE = 15;
 	public static final int IRON_INGOT = 265;
 	public static final int GOLD_INGOT = 266;
 	public static final int FENCE = 85;

@@ -158,7 +158,6 @@ public abstract class CivAsyncTask implements Runnable {
 	}
 	
 	public Boolean updateInventory(Action action, MultiInventory inv, ItemStack itemStack) throws InterruptedException {
-
 		UpdateInventoryRequest request = new UpdateInventoryRequest(SyncUpdateInventory.lock);
 		request.action = action;
 		request.stack = itemStack;
@@ -177,7 +176,8 @@ public abstract class CivAsyncTask implements Runnable {
 				 */
 				request.condition.await(TIMEOUT, TimeUnit.MILLISECONDS);
 				if (!request.finished) {
-					CivLog.warning("Couldn't update inventory in "+TIMEOUT+" milliseconds! Retrying.");
+					//XXX Disabled due to spam from Town Bonus Chest
+//					CivLog.warning("Couldn't update inventory in "+TIMEOUT+" milliseconds! Retrying.");
 				}
 			}
 			

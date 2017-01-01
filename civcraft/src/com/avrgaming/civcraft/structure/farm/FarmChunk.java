@@ -31,7 +31,6 @@ import org.bukkit.block.Block;
 
 import com.avrgaming.civcraft.components.ActivateOnBiome;
 import com.avrgaming.civcraft.components.Component;
-import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.InvalidBlockLocation;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.object.Town;
@@ -140,9 +139,9 @@ public class FarmChunk {
 		}
 		
 		if (bs.getTypeId() == CivData.MELON_STEM) {
-			addGrowBlock("world", freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.MELON, 0x0, true);
+			addGrowBlock("World", freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.MELON, 0x0, true);
 		} else {
-			addGrowBlock("world", freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.PUMPKIN, 0x0, true);
+			addGrowBlock("World", freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.PUMPKIN, 0x0, true);
 		}
 		return;
 	}
@@ -199,7 +198,7 @@ public class FarmChunk {
 		// So for example, if we have a 120% growth rate, every 10 ticks 1 crop *always* grows,
 		// and another has a 20% chance to grow.
 		
-		double effectiveGrowthRate = (double)this.town.getGrowth().total / (double)100;
+		double effectiveGrowthRate = this.town.getGrowth().total / 100;
 		
 		for (Component comp : this.getFarm().attachedComponents) {
 			if (comp instanceof ActivateOnBiome) {
@@ -211,8 +210,16 @@ public class FarmChunk {
 		}
 		this.getFarm().setLastEffectiveGrowth(effectiveGrowthRate);
 		
-		int crops_per_growth_tick = (int)CivSettings.getIntegerStructure("farm.grows_per_tick");
-		int numberOfCropsToGrow = (int)(effectiveGrowthRate * crops_per_growth_tick); //Since this is a double, 1.0 means 100% so int cast is # of crops
+		//TODO Make sure our new thing works...
+		int town_level = this.town.getLevel(); //1 crop per level
+		int farm_level = this.town.saved_farm_level; //1 crop per farm level
+		int grow_rate = (int) Math.round(this.town.getGrowth().total / 250); //1 crop per 250 growth
+		int total_count = town_level + farm_level + grow_rate;
+		
+		int numberOfCropsToGrow = (int) (effectiveGrowthRate * total_count);
+		
+//		int crops_per_growth_tick = (int)CivSettings.getIntegerStructure("farm.grows_per_tick");
+//		int numberOfCropsToGrow = (int)(effectiveGrowthRate * crops_per_growth_tick); //Since this is a double, 1.0 means 100% so int cast is # of crops
 		int chanceForLast = (int) (this.town.getGrowth().total % 100);
 		
 		this.lastGrownCrops.clear();

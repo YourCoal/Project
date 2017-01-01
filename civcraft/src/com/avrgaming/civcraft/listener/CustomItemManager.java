@@ -53,6 +53,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -104,7 +105,7 @@ public class CustomItemManager implements Listener {
 //		}
 	}
 	
-	//XXX Fully Grown Wheat Crop
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerWheatCropBreak(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.CROPS)) {
@@ -169,16 +170,6 @@ public class CustomItemManager implements Listener {
 						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackWheat);
 					}
 				}
-				
-				/* Try to get any extra bonus enhancement from this item. */
-/*				AttributeUtil attrs = new AttributeUtil(event.getPlayer().getInventory().getItemInMainHand());
-				for (LoreEnhancement enh : attrs.getEnhancements()) {
-					if (enh instanceof LoreEnhancementCivBonus) {
-						ItemStack stackCust1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:test_item"), 1);
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackCust1);
-						CivMessage.send(event.getPlayer(), CivColor.LightGray+"Civ Bonus Success!");
-					}
-				}*/
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				return;
@@ -186,7 +177,6 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
-	//XXX Fully Grown Carrot Crop
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerCarrotCropBreak(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.CARROT)) {
@@ -231,7 +221,6 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
-	//XXX Fully Grown Carrot Crop
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerPotatoCropBreak(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.POTATO)) {
@@ -276,7 +265,6 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
-	//XXX Fully Grown Beetroot Crop
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerBeetrootCropBreak(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.BEETROOT_BLOCK)) {
@@ -350,7 +338,7 @@ public class CustomItemManager implements Listener {
 	
 	
 	
-	
+	//XXX TODO Fix water breaking crops events for not dropping right items
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onWaterBreaksCropEvent(BlockFromToEvent event) {
@@ -513,7 +501,7 @@ public class CustomItemManager implements Listener {
 				int minXP = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.exp.min");
 				int maxXP = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.exp.max");
 				
-				int randAmtXP = rand.nextInt(maxXP - minXP) + 1;
+				int randAmtXP = rand.nextInt(minXP + maxXP);
 				randAmtXP -= minXP;
 				if (randAmtXP <= 0) {
 					randAmtXP = 1;
@@ -527,7 +515,7 @@ public class CustomItemManager implements Listener {
 					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.item.max");
 				}
 				
-				int randAmt = rand.nextInt(maxOre - minOre) + 1;
+				int randAmt = rand.nextInt(minOre + maxOre);
 				randAmt -= minOre;
 				if (randAmt <= 0) {
 					randAmt = 1;
@@ -541,10 +529,10 @@ public class CustomItemManager implements Listener {
 					maxLap = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.item.max");
 				}
 				
-				int randAmtLap = rand.nextInt(maxLap - minLap) + 1;
+				int randAmtLap = rand.nextInt(minLap + maxLap);
 				randAmtLap -= minLap;
-				if (randAmtLap <= 0) {
-					randAmtLap = 1;
+				if (randAmtLap <= 4) {
+					randAmtLap = 4;
 				}
 				
 				for (int i = 0; i < randAmt; i++) {
@@ -552,7 +540,7 @@ public class CustomItemManager implements Listener {
 					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack1);
 				}
 				for (int i = 0; i < randAmtLap; i++) {
-					ItemStack stack2 = new ItemStack(Material.INK_SACK, randAmtLap, (short)4);
+					ItemStack stack2 = new ItemStack(Material.INK_SACK, randAmtLap/6, (short)4);
 					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack2);
 				}
 				ExperienceOrb exp = event.getPlayer().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
@@ -578,7 +566,7 @@ public class CustomItemManager implements Listener {
 				int minXP = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.exp.min");
 				int maxXP = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.exp.max");
 				
-				int randAmtXP = rand.nextInt(maxXP - minXP) + 1;
+				int randAmtXP = rand.nextInt(minXP + maxXP);
 				randAmtXP -= minXP;
 				if (randAmtXP <= 0) {
 					randAmtXP = 1;
@@ -592,7 +580,7 @@ public class CustomItemManager implements Listener {
 					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.dust.max");
 				}
 				
-				int randAmt = rand.nextInt(maxOre - minOre) + 1;
+				int randAmt = rand.nextInt(minOre + maxOre);
 				randAmt -= minOre;
 				if (randAmt <= 0) {
 					randAmt = 1;
@@ -606,14 +594,14 @@ public class CustomItemManager implements Listener {
 					maxRed = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.item.max");
 				}
 				
-				int randAmtRed = rand.nextInt(maxRed - minRed) + 1;
+				int randAmtRed = rand.nextInt(minRed + maxRed);
 				randAmtRed -= minRed;
-				if (randAmtRed <= 0) {
-					randAmtRed = 1;
+				if (randAmtRed <= 4) {
+					randAmtRed = 4;
 				}
 				
 				for (int i = 0; i < randAmt; i++) {
-					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:chromium_ore"));
+					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:steel_ore"));
 					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack1);
 				}
 				for (int i = 0; i < randAmtRed; i++) {
@@ -643,7 +631,7 @@ public class CustomItemManager implements Listener {
 				int minXP = CivSettings.getInteger(CivSettings.dropsConfig, "goldore.exp.min");
 				int maxXP = CivSettings.getInteger(CivSettings.dropsConfig, "goldore.exp.max");
 				
-				int randAmtXP = rand.nextInt(maxXP - minXP) + 1;
+				int randAmtXP = rand.nextInt(minXP + maxXP);
 				randAmtXP -= minXP;
 				if (randAmtXP <= 0) {
 					randAmtXP = 1;
@@ -657,16 +645,18 @@ public class CustomItemManager implements Listener {
 					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "goldore.item.max");
 				}
 				
-				int randAmt = rand.nextInt(maxOre - minOre) + 1;
+				int randAmt = rand.nextInt(minOre + maxOre);
 				randAmt -= minOre;
 				if (randAmt <= 0) {
 					randAmt = 1;
 				}
 				
 				for (int i = 0; i < randAmt; i++) {
-					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:titanium_ore"));
+					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:bronze_ore"));
 					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack1);
 				}
+				ItemStack stack2 = new ItemStack(Material.GOLD_ORE, 1);
+				event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack2);
 				ExperienceOrb exp = event.getPlayer().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
 				exp.setExperience(randAmtXP);
 			} catch (InvalidConfiguration e) {
@@ -690,7 +680,7 @@ public class CustomItemManager implements Listener {
 				int minXP = CivSettings.getInteger(CivSettings.dropsConfig, "ironore.exp.min");
 				int maxXP = CivSettings.getInteger(CivSettings.dropsConfig, "ironore.exp.max");
 				
-				int randAmtXP = rand.nextInt(maxXP - minXP) + 1;
+				int randAmtXP = rand.nextInt(minXP + maxXP);
 				randAmtXP -= minXP;
 				if (randAmtXP <= 0) {
 					randAmtXP = 1;
@@ -704,7 +694,7 @@ public class CustomItemManager implements Listener {
 					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "ironore.item.max");
 				}
 				
-				int randAmt = rand.nextInt(maxOre - minOre) + 1;
+				int randAmt = rand.nextInt(minOre + maxOre);
 				randAmt -= minOre;
 				if (randAmt <= 0) {
 					randAmt = 1;
@@ -741,7 +731,12 @@ public class CustomItemManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 	
-		ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
+		ItemStack stack = null;
+		if (event.getHand() == EquipmentSlot.OFF_HAND) {
+			 stack = event.getPlayer().getInventory().getItemInOffHand();
+		} else {
+			 stack = event.getPlayer().getInventory().getItemInMainHand();
+		}
 		if (stack == null) {
 			return;
 		}

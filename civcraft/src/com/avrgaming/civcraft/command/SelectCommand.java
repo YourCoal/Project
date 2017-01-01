@@ -37,14 +37,12 @@ public class SelectCommand implements CommandExecutor {
 			return false;
 		}
 		
-		
 		if (args.length < 1) {
 			CivMessage.sendError(sender, "Enter a number.");
 			return false;
 		}
 		
 		Player player = (Player)sender;
-		
 		PlayerQuestionTask task = (PlayerQuestionTask) CivGlobal.getQuestionTask(player.getName());
 		if (task == null) {
 			CivMessage.sendError(sender, "No question to respond to.");
@@ -60,9 +58,7 @@ public class SelectCommand implements CommandExecutor {
 		synchronized(task) {
 			task.setResponse(args[0]);
 			task.notifyAll();
-		}
-				
+		}	
 		return true;
 	}
-
 }

@@ -50,7 +50,6 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
-import com.avrgaming.civcraft.structure.Cottage;
 import com.avrgaming.civcraft.structure.Granary;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
@@ -440,26 +439,6 @@ public class MissionBook extends UnitItemMaterial {
 			String value = ""+posion_ticks;
 			
 			CivGlobal.getSessionDB().add("posiongranary:"+tc.getTown().getName(), value, tc.getTown().getId(), tc.getTown().getId(), granary.getId());
-			
-			try {
-				double famine_chance = CivSettings.getDouble(CivSettings.espionageConfig, "espionage.poison_granary_famine_chance");
-				
-				if (rand.nextInt(100) < (int)(famine_chance*100)) {
-					
-					for (Structure struct : tc.getTown().getStructures()) {
-						if (struct instanceof Cottage) {
-							((Cottage)struct).delevel();
-						}
-					}
-					
-					CivMessage.global(CivColor.Yellow+"DISASTER!"+CivColor.White+" The cottages in "+tc.getTown().getName()+
-							" have suffered a famine from poison grain! Each cottage loses 1 level.");
-				}
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				throw new CivException("Invalid configuration.");
-			}
-			
 			CivMessage.sendSuccess(player, "Poisoned the granary for "+posion_ticks+" hours!");
 		}
 	}

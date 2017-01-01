@@ -59,7 +59,6 @@ import org.bukkit.util.Vector;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigTechPotion;
-import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.items.units.UnitItemMaterial;
 import com.avrgaming.civcraft.items.units.UnitMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreMaterial;
@@ -103,7 +102,6 @@ public class PlayerListener implements Listener {
 		}
 	}
 	
-	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		CivLog.info("Scheduling on player login task for player:"+event.getPlayer().getName());
@@ -111,6 +109,19 @@ public class PlayerListener implements Listener {
 		
 		CivGlobal.playerFirstLoginMap.put(event.getPlayer().getName(), new Date());
 		PlayerLocationCacheUpdate.playerQueue.add(event.getPlayer().getName());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		Resident resident = CivGlobal.getResident(event.getPlayer());
+		if (resident != null) {
+			//TODO if player logs out while in combat, we kill them and drop stuff, or kill them a drop chest?
+			if (resident.previewUndo != null) {
+				resident.previewUndo.clear();
+			}
+			resident.clearInteractiveMode();
+		}
+		PlayerLocationCacheUpdate.playerQueue.remove(event.getPlayer().getName());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -124,64 +135,31 @@ public class PlayerListener implements Listener {
 		
 	private void setModifiedMovementSpeed(Player player) {
 		/* Change move speed based on armor. */
-		double speed = CivSettings.normal_speed;
-		
-		/* Set speed from armor. */
-		if (Unit.isWearingFullComposite(player)) {
-			speed *= CivSettings.T4_leather_speed;
-		}
-		
-		if (Unit.isWearingFullHardened(player)) {
-			speed *= CivSettings.T3_leather_speed;
-		}
-		
-		if (Unit.isWearingFullRefined(player)) {
-			speed *= CivSettings.T2_leather_speed;
-		}
-		
-		if (Unit.isWearingFullBasicLeather(player)) {
-			speed *= CivSettings.T1_leather_speed;
-		}
-		
-		if (Unit.isWearingAnyIron(player)) {
-			speed *= CivSettings.T1_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyChain(player)) {
-			speed *= CivSettings.T2_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyGold(player)) {
-			speed *= CivSettings.T3_metal_speed;
-		}
-		
-		if (Unit.isWearingAnyDiamond(player)) {
-			speed *= CivSettings.T4_metal_speed;
-		}
-		
+		double speed;
 		Resident resident = CivGlobal.getResident(player);
-		if (resident != null && resident.isOnRoad()) {	
-			if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
-				Vector vec = player.getVehicle().getVelocity();
-				double yComp = vec.getY();
-				
-				vec.multiply(Road.ROAD_HORSE_SPEED);
-				vec.setY(yComp); /* Do not multiply y velocity. */
-				
-				player.getVehicle().setVelocity(vec);
-			} else {
-				speed *= Road.ROAD_PLAYER_SPEED;
+		if (resident != null) {
+			speed = CivSettings.normal_speed;
+			if (resident.isOnRoad()) {	
+				if (player.getVehicle() != null && player.getVehicle().getType().equals(EntityType.HORSE)) {
+					Vector vec = player.getVehicle().getVelocity();
+					double yComp = vec.getY();
+					
+					vec.multiply(Road.ROAD_HORSE_SPEED);
+					vec.setY(yComp); /* Do not multiply y velocity. */
+					player.getVehicle().setVelocity(vec);
+				} else {
+					speed *= Road.ROAD_PLAYER_SPEED;
+				}
 			}
+		} else {
+			speed = CivSettings.normal_speed;
 		}
-		
 		player.setWalkSpeed((float) Math.min(1.0f, speed));
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerMove(PlayerMoveEvent event) {
-		/*
-		 * Abort if we havn't really moved
-		 */
+		// Abort if we havn't really moved
 		if (event.getFrom().getBlockX() == event.getTo().getBlockX() && 
 			event.getFrom().getBlockZ() == event.getTo().getBlockZ() && 
 			event.getFrom().getBlockY() == event.getTo().getBlockY()) {
@@ -230,19 +208,6 @@ public class PlayerListener implements Listener {
 				}
 			}
 		}
-		
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerQuit(PlayerQuitEvent event) {
-		Resident resident = CivGlobal.getResident(event.getPlayer());
-		if (resident != null) {
-			if (resident.previewUndo != null) {
-				resident.previewUndo.clear();
-			}
-			resident.clearInteractiveMode();
-		}
-		PlayerLocationCacheUpdate.playerQueue.remove(event.getPlayer().getName());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)

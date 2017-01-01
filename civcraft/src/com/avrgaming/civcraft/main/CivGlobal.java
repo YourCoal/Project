@@ -112,7 +112,7 @@ import com.avrgaming.civcraft.war.WarRegen;
 import com.avrgaming.global.perks.PerkManager;
 
 public class CivGlobal {
-
+	
 	public static final double MIN_FRAME_DISTANCE = 3.0;
 	
 	public static Economy econ;
@@ -132,7 +132,6 @@ public class CivGlobal {
 	private static Map<BlockCoord, Structure> structures = new ConcurrentHashMap<BlockCoord, Structure>();
 	private static Map<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
 	private static Map<BlockCoord, StructureBlock> structureBlocks = new ConcurrentHashMap<BlockCoord, StructureBlock>();
-	//private static Map<BlockCoord, LinkedList<StructureBlock>> structureBlocksIn2D = new ConcurrentHashMap<BlockCoord, LinkedList<StructureBlock>>();
 	private static Map<String, HashSet<Buildable>> buildablesInChunk = new ConcurrentHashMap<String, HashSet<Buildable>>();
 	private static Map<BlockCoord, CampBlock> campBlocks = new ConcurrentHashMap<BlockCoord, CampBlock>();
 	private static Map<BlockCoord, StructureSign> structureSigns = new ConcurrentHashMap<BlockCoord, StructureSign>();
@@ -155,9 +154,6 @@ public class CivGlobal {
 	public static HashSet<String> researchedTechs = new HashSet<String>();
 	public static HashSet<String> researchedCivics = new HashSet<String>();
 	
-	/* TODO change this to true for MC 1.8 */
-	//public static boolean useUUID = false;
-	
 	public static Map<Integer, Boolean> CivColorInUse = new ConcurrentHashMap<Integer, Boolean>();
 	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
 	
@@ -166,21 +162,23 @@ public class CivGlobal {
 	public static TreeMap<Integer, Town> townScores = new TreeMap<Integer, Town>();
 
 	public static HashMap<String, Date> playerFirstLoginMap = new HashMap<String, Date>();
-	public static HashSet<String> banWords = new HashSet<String>();
 			
 	//public static Scoreboard globalBoard;
 	
-	public static Integer maxPlayers = -1;
 	public static HashSet<String> betaPlayers = new HashSet<String>();
-	public static String fullMessage = "Server is full for now, come back later.";
 	public static Boolean betaOnly = false;
 	
 	//TODO convert this to completely static?
 	private static SessionDatabase sdb;
-
-	public static boolean trommelsEnabled = true;
-	public static boolean towersEnabled = true;
+	
 	public static boolean growthEnabled = true;
+	public static boolean fisheriesEnabled = true;
+	public static boolean granariesEnabled = true;
+	public static boolean sawmillsEnabled = true;
+	public static boolean trommelsEnabled = true;
+	public static boolean quarriesEnabled = true;
+	
+	public static boolean towersEnabled = true;
 	public static Boolean banWordsAlways = false;
 	public static boolean banWordsActive = false;
 	public static boolean scoringEnabled = true;
@@ -244,6 +242,7 @@ public class CivGlobal {
 			}
 		}
 		
+		//TODO See if this works...
 	/*	ScoreboardManager manager = Bukkit.getScoreboardManager();
 		CivGlobal.globalBoard = manager.getNewScoreboard();
 		Team team = globalBoard.registerNewTeam("everybody");
@@ -299,7 +298,7 @@ public class CivGlobal {
 				default:
 					break;
 			}
-			CivMessage.global(CivColor.LightBlue+CivColor.ITALIC+newEra+" "+CivColor.LightGray+" has been achieved by "+CivColor.ITALIC+civ.getName());
+			CivMessage.global(CivColor.LightPurple+CivColor.ITALIC+newEra+" "+CivColor.LightGray+" has been achieved by "+CivColor.White+CivColor.ITALIC+civ.getName());
 		}
 	}
 	
@@ -1003,15 +1002,6 @@ public class CivGlobal {
 		}
 		buildables.add(owner);
 		buildablesInChunk.put(key, buildables);
-		
-//		BlockCoord xz = new BlockCoord(coord.getWorldname(), coord.getX(), 0, coord.getZ());
-//		LinkedList<StructureBlock> sbList = structureBlocksIn2D.get(xz);
-//		if (sbList == null) {
-//			sbList = new LinkedList<StructureBlock>();
-//		}
-//		
-//		sbList.add(sb);
-//		structureBlocksIn2D.put(xz, sbList);
 	}
 	
 	public static void removeStructureBlock(BlockCoord coord) {

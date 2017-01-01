@@ -40,8 +40,6 @@ import com.avrgaming.civcraft.command.KillCommand;
 import com.avrgaming.civcraft.command.PayCommand;
 import com.avrgaming.civcraft.command.ReportCommand;
 import com.avrgaming.civcraft.command.SelectCommand;
-import com.avrgaming.civcraft.command.TestCommand;
-import com.avrgaming.civcraft.command.TradeCommand;
 import com.avrgaming.civcraft.command.VoteCommand;
 import com.avrgaming.civcraft.command.admin.AdminCommand;
 import com.avrgaming.civcraft.command.camp.CampCommand;
@@ -103,9 +101,8 @@ import com.avrgaming.civcraft.threading.timers.PlayerProximityComponentTimer;
 import com.avrgaming.civcraft.threading.timers.ReduceExposureTimer;
 import com.avrgaming.civcraft.threading.timers.RegenTimer;
 import com.avrgaming.civcraft.threading.timers.UnitTrainTimer;
-import com.avrgaming.civcraft.threading.timers.UpdateEventTimer;
+import com.avrgaming.civcraft.threading.timers.UpdateSecond1EventTimer;
 import com.avrgaming.civcraft.threading.timers.WindmillTimer;
-import com.avrgaming.civcraft.trade.TradeInventoryListener;
 import com.avrgaming.civcraft.util.BukkitObjects;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.TimeTools;
@@ -119,8 +116,9 @@ import pvptimer.PvPTimer;
 
 public final class CivCraft extends JavaPlugin {
 
-	private boolean isError = false;	
-	private static JavaPlugin plugin;	
+	private boolean isError = false;
+	private static JavaPlugin plugin;
+	public static boolean isDisable = false;
 	
 	private void startTimers() {
 		TaskMaster.asyncTask("SQLUpdate", new SQLUpdate(), 0);
@@ -139,14 +137,18 @@ public final class CivCraft extends JavaPlugin {
 //		TaskMaster.asyncTimer("ActionBarUpdateTimer", new ActionBarUpdateTimer(), 0, TimeTools.toTicks(5));
 		
 		// Structure event timers
-		TaskMaster.asyncTimer("UpdateEventTimer", new UpdateEventTimer(), TimeTools.toTicks(1));
+		TaskMaster.asyncTimer("UpdateSecond1EventTimer", new UpdateSecond1EventTimer(), TimeTools.toTicks(1));
+//		TaskMaster.asyncTimer("UpdateSecond30EventTimer", new UpdateSecond30EventTimer(), TimeTools.toTicks(30));
+//		TaskMaster.asyncTimer("Update1MinuteEventTimer", new UpdateEventTimer(), TimeTools.toTicks(60));
+//		TaskMaster.asyncTimer("Update5MinuteEventTimer", new UpdateEventTimer(), TimeTools.toTicks(60*5));
+		
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
 
 		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
 		TaskMaster.asyncTimer("CultureCivicTimer", new CultureCivicTimer(60), TimeTools.toTicks(60));
 		
 		TaskMaster.syncTimer("UnitTrainTimer", new UnitTrainTimer(), TimeTools.toTicks(1));
-		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(5));
+		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(4));
 
 		try {
 			double arrow_firerate = CivSettings.getDouble(CivSettings.warConfig, "arrow_tower.fire_rate");
@@ -199,7 +201,6 @@ public final class CivCraft extends JavaPlugin {
 		pluginManager.registerEvents(new LoreCraftableMaterialListener(), this);
 		pluginManager.registerEvents(new LoreGuiItemListener(), this);
 		pluginManager.registerEvents(new DisableXPListener(), this);
-		pluginManager.registerEvents(new TradeInventoryListener(), this);
 		pluginManager.registerEvents(new CannonListener(), this);
 		pluginManager.registerEvents(new WarListener(), this);
 		pluginManager.registerEvents(new FishingListener(), this);	
@@ -245,40 +246,40 @@ public final class CivCraft extends JavaPlugin {
 			} catch (InvalidConfiguration e1) {
 				e1.printStackTrace();
 			}
-			
-
 		} catch (InvalidConfiguration | SQLException | IOException | InvalidConfigurationException | CivException | ClassNotFoundException e) {
 			e.printStackTrace();
 			setError(true);
+			this.onDisable();
+			CivLog.warning("Stopping server to prevent errors!");
+			CivLog.warning("Stopping server to prevent errors!");
+			CivLog.warning("Stopping server to prevent errors!");
+			CivLog.warning("Stopping server to prevent errors!");
+			this.getServer().shutdown();
 			return;
-			//TODO disable plugin?
 		}
 		
 		// Init commands
-		getCommand("test").setExecutor(new TestCommand());
-		getCommand("town").setExecutor(new TownCommand());
-		getCommand("resident").setExecutor(new ResidentCommand());
-		getCommand("dbg").setExecutor(new DebugCommand());
-		getCommand("plot").setExecutor(new PlotCommand());
-		getCommand("accept").setExecutor(new AcceptCommand());
-		getCommand("deny").setExecutor(new DenyCommand());
-		getCommand("civ").setExecutor(new CivCommand());
-		getCommand("tc").setExecutor(new TownChatCommand());
-		getCommand("cc").setExecutor(new CivChatCommand());
-		//getCommand("gc").setExecutor(new GlobalChatCommand());
 		getCommand("ad").setExecutor(new AdminCommand());
+		getCommand("dbg").setExecutor(new DebugCommand());
+		getCommand("civ").setExecutor(new CivCommand());
+		getCommand("vote").setExecutor(new VoteCommand());
+		getCommand("market").setExecutor(new MarketCommand());
+		getCommand("town").setExecutor(new TownCommand());
+		getCommand("build").setExecutor(new BuildCommand());
+		getCommand("plot").setExecutor(new PlotCommand());
+		getCommand("camp").setExecutor(new CampCommand());
+		getCommand("resident").setExecutor(new ResidentCommand());
 		getCommand("econ").setExecutor(new EconCommand());
 		getCommand("pay").setExecutor(new PayCommand());
-		getCommand("build").setExecutor(new BuildCommand());
-		getCommand("market").setExecutor(new MarketCommand());
-		getCommand("select").setExecutor(new SelectCommand());
+		getCommand("accept").setExecutor(new AcceptCommand());
+		getCommand("deny").setExecutor(new DenyCommand());
 		getCommand("here").setExecutor(new HereCommand());
-		getCommand("camp").setExecutor(new CampCommand());
-		getCommand("report").setExecutor(new ReportCommand());
-		getCommand("vote").setExecutor(new VoteCommand());
-		getCommand("trade").setExecutor(new TradeCommand());
 		getCommand("kill").setExecutor(new KillCommand());
-	
+		getCommand("tc").setExecutor(new TownChatCommand());
+		getCommand("cc").setExecutor(new CivChatCommand());
+		getCommand("report").setExecutor(new ReportCommand());
+		getCommand("select").setExecutor(new SelectCommand());
+		
 		registerEvents();
 		
 		if (hasPlugin("NoCheatPlus")) {
@@ -288,7 +289,6 @@ public final class CivCraft extends JavaPlugin {
 		}
 		startTimers();
 		CivCraft.addFurnaceRecipes();
-		//creativeInvPacketManager.init(this);		
 	}
 	
 	public boolean hasPlugin(String name) {
@@ -299,7 +299,9 @@ public final class CivCraft extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-//		MobSpawner.despawnAll();
+		super.onDisable();
+		isDisable = true;
+		SQLUpdate.save();
 	}
 
 	public boolean isError() {

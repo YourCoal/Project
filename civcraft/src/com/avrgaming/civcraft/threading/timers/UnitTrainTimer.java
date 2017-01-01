@@ -30,7 +30,6 @@ public class UnitTrainTimer implements Runnable {
 
 	@Override
 	public void run() {
-		
 		Iterator<Entry<BlockCoord, Structure>> iter = CivGlobal.getStructureIterator();
 		while(iter.hasNext()) {
 			Structure struct = iter.next().getValue();
@@ -39,5 +38,4 @@ public class UnitTrainTimer implements Runnable {
 			}
 		}
 	}
-
 }

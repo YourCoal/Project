@@ -71,36 +71,36 @@ ironore:
       max: 1
       max_fortune: 3
 #
-#Gold Ore --> Titanium
+#Gold Ore --> Bronze
 goldore:
    canSilk: true
    #EXP Drops
    exp:
       min: 0
-      max: 4
-   #Titanium Drops
+      max: 3
+   #Bronze Drops
    item:
       min: 0
       max: 1
       max_fortune: 3
 #
-#Redstone Ore --> Chromium
+#Redstone Ore --> Steel
 redstoneore:
    canSilk: true
    #EXP Drops
    exp:
       min: 0
       max: 5
-   #Chromium Drops
+   #Steel Drops
    dust:
       min: 0
       max: 1
       max_fortune: 3
    #Redstone Drops
    item:
-      min: 2
-      max: 5
-      max_fortune: 8
+      min: 4
+      max: 6
+      max_fortune: 10
 #
 #Lapis Ore --> Tungsten
 lapisore:
@@ -116,7 +116,7 @@ lapisore:
       max_fortune: 3
    #Lapis Drops
    item:
-      min: 2
-      max: 5
-      max_fortune: 8
+      min: 4
+      max: 6
+      max_fortune: 10
 #

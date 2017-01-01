@@ -12,10 +12,7 @@ import javax.annotation.Nullable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
@@ -726,38 +723,25 @@ public class AttributeUtil {
 	}
 	
 	//XXX Is not working in 1.11
-/*	public void setShiny() {
+	public void setShiny() {
 		if (nmsStack == null) {
 			return;
 		}
 		
-		if (nmsStack.getTag() == null) {
-			nmsStack.setTag(new NBTTagCompound());
-		}
-		
-		NBTTagCompound enchCompound = nmsStack.getTag().getCompound("ench");
-		if (enchCompound == null) {
-			enchCompound = new NBTTagCompound();
-		}
-		
-		enchCompound.setShort("id", (short) 62); //Enchant id 62 = Lure
-		enchCompound.setShort("lvl", (short)1);
-		
-		nmsStack.getTag().set("ench", enchCompound);
-		this.setHideFlag(1);
-	}*/
-	
-	public ItemStack addGlow(ItemStack item, boolean glow) {
-		ItemMeta meta = item.getItemMeta();
-		if (glow) {
-			meta.addEnchant(Enchantment.WATER_WORKER, 70, true);
-			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		} else {
-			meta.getEnchants().keySet().forEach(meta::removeEnchant);
-			meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
-		item.setItemMeta(meta);
-		return item;
+    	if (nmsStack.getTag() == null) {
+    		nmsStack.setTag(new NBTTagCompound());
+    	}
+    	
+    	NBTTagCompound enchCompound = nmsStack.getTag().getCompound("ench");
+    	if (enchCompound == null) {
+    		enchCompound = new NBTTagCompound();
+    	}
+    	
+    	enchCompound.setShort("id", (short) 62); //Enchant id 62 = Lure
+    	enchCompound.setShort("lvl", (short)1);
+    	
+    	nmsStack.getTag().set("ench", enchCompound);
+    	this.setHideFlag(1);
 	}
 	
 	public boolean isShiny() {
@@ -769,14 +753,14 @@ public class AttributeUtil {
 			return false;
 		}
 		
-		NBTTagCompound enchCompound = nmsStack.getTag().getCompound("ench");
-		if (enchCompound == null) {
-			return false;
-		}
-		
-		if (enchCompound.hasKey("id") && enchCompound.getShort("id") == (short)62) {
-			return true;
-		}
+    	NBTTagCompound enchCompound = nmsStack.getTag().getCompound("ench");
+    	if (enchCompound == null) {
+    		return false;
+    	}
+    	
+    	if (enchCompound.hasKey("id") && enchCompound.getShort("id") == (short)62) {
+    		return true;
+    	}
 
 		return false;
 	}

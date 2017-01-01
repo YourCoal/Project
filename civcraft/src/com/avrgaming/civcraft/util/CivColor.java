@@ -21,8 +21,13 @@ public class CivColor {
 	public static final String Yellow = "\u00A7e";
 	public static final String White = "\u00A7f";
 	
-	public static final String BoldRed = "\u00A74"+ChatColor.BOLD;
 	public static final String BoldGreen = "\u00A72"+ChatColor.BOLD;
+	public static final String BoldRed = "\u00A74"+ChatColor.BOLD;
+	public static final String BoldGold = "\u00A76"+ChatColor.BOLD;
+	public static final String BoldLightGreen = "\u00A7a"+ChatColor.BOLD;
+	public static final String BoldLightPurple = "\u00A7d"+ChatColor.BOLD;
+	
+	public static final String ItalicWhite = "\u00A7f"+ChatColor.ITALIC;
 	
 	public static final String BOLD = ""+ChatColor.BOLD;
 	public static final String ITALIC = ""+ChatColor.ITALIC;
@@ -56,8 +61,13 @@ public class CivColor {
 		output = output.replaceAll("<gray>", Gray);
 		output = output.replaceAll("<black>", Black);
 		
-		output = output.replaceAll("<boldred>", BoldRed);
 		output = output.replaceAll("<boldgreen>", BoldGreen);
+		output = output.replaceAll("<boldred>", BoldRed);
+		output = output.replaceAll("<boldgold>", BoldGold);
+		output = output.replaceAll("<boldlightgreen>", BoldLightGreen);
+		output = output.replaceAll("<boldlightpurple>", BoldLightPurple);
+		
+		output = output.replaceAll("<italicwhite>", ItalicWhite);
 		
 		output = output.replaceAll("<b>", ""+ChatColor.BOLD);
 		output = output.replaceAll("<u>", ""+ChatColor.UNDERLINE);
@@ -111,10 +121,19 @@ public class CivColor {
 		case "white":
 			return White;
 			
-		case "boldred":
-			return BoldRed;
 		case "boldgreen":
 			return BoldGreen;
+		case "boldred":
+			return BoldRed;
+		case "boldgold":
+			return BoldGold;
+		case "boldlightgreen":
+			return BoldLightGreen;
+		case "boldlightpurple":
+			return BoldLightPurple;
+			
+		case "italicwhite":
+			return ItalicWhite;
 			
 		default:
 			return White;
@@ -141,8 +160,13 @@ public class CivColor {
 		output = output.replaceAll("<gray>", "");
 		output = output.replaceAll("<black>", "");
 		
+		output = output.replaceAll("<boldgreen>", "");
 		output = output.replaceAll("<boldred>", "");
-		output = output.replaceAll("<boldgreed>", "");
+		output = output.replaceAll("<boldgold>", "");
+		output = output.replaceAll("<boldlightgreen>", "");
+		output = output.replaceAll("<boldlightpurple>", "");
+		
+		output = output.replaceAll("<italicwhite>", "");
 		
 		output = output.replaceAll("<b>", "");
 		output = output.replaceAll("<u>", "");

@@ -28,6 +28,165 @@
 
 materials:
 #======================================================#
+#================[ Resource Materials ]================#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:base_hammer'
+     item_id: 139
+     item_data: 0
+     name: 'Hammers'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     mineable: true
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:base_beaker'
+     item_id: 379
+     item_data: 0
+     name: 'Beakers'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     mineable: true
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t1_mine_package'
+     item_id: 325
+     item_data: 0
+     name: 'T1 Mine Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t1_lab_package'
+     item_id: 368
+     item_data: 0
+     name: 'T1 Lab Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t1_monument_package'
+     item_id: 332
+     item_data: 0
+     name: 'T1 Monument Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t2_mine_package'
+     item_id: 325
+     item_data: 0
+     name: 'T2 Mine Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t2_lab_package'
+     item_id: 368
+     item_data: 0
+     name: 'T2 Lab Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t2_monument_package'
+     item_id: 332
+     item_data: 0
+     name: 'T2 Monument Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t3_mine_package'
+     item_id: 325
+     item_data: 0
+     name: 'T3 Mine Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t3_lab_package'
+     item_id: 368
+     item_data: 0
+     name: 'T3 Lab Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t3_monument_package'
+     item_id: 332
+     item_data: 0
+     name: 'T3 Monument Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t4_mine_package'
+     item_id: 325
+     item_data: 0
+     name: 'T4 Mine Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t4_lab_package'
+     item_id: 368
+     item_data: 0
+     name: 'T4 Lab Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t4_monument_package'
+     item_id: 332
+     item_data: 0
+     name: 'T4 Monument Package'
+     craftable: false
+     shaped: false
+     category: '<lightgreen>Resources'
+     quest: true
+     components:
+       - name: 'NoRightClick'
+#======================================================#
 #=============[ Primary Materials Tier 1 ]=============#
 #======================================================#
 # Checked 12/01/2016
@@ -37,6 +196,7 @@ materials:
      name: 'T1 Iron Ore'
      craftable: false
      shaped: false
+     shiny: true
      category: '<lightgreen>Tier 1 Materials'
      mineable: true
      components:
@@ -117,7 +277,7 @@ materials:
      ingredients:
        - type_id: 289
          data: 0
-         count: 4
+         count: 5
 # Checked 12/01/2016
    - id: 'civ:double_refined_sulphur'
      item_id: 289
@@ -130,7 +290,7 @@ materials:
        - type_id: 0
          data: 0
          custom_id: 'civ:single_refined_sulphur'
-         count: 2
+         count: 5
 # Checked 12/01/2016
    - id: 'civ:fortified_wall'
      item_id: 139
@@ -156,23 +316,11 @@ materials:
      name: 'T2 Bronze Ore'
      craftable: false
      shaped: false
+     shiny: true
      category: '<yellow>Tier 2 Materials'
      mineable: true
      components:
        - name: 'NoRightClick'
-# Checked 12/01/2016
-   - id: 'civ:forged_bronze'
-     item_id: 133
-     item_data: 0
-     name: 'T3 Forged Bronze'
-     craftable: true
-     shaped: false
-     category: '<yellow>Tier 2 Materials'
-     ingredients:
-       - type_id: 0
-         data: 0
-         custom_id: 'civ:bronze_ore'
-         count: 9
 # Checked 12/01/2016
    - id: 'civ:bronze_ingot'
      item_id: 406
@@ -186,9 +334,22 @@ materials:
        - name: 'NoRightClick'
      ingredients:
        - type_id: 0
-         custom_id: 'civ:forged_bronze'
+         custom_id: 'civ:bronze_ore'
          data: 0
          count: 1
+# Checked 12/01/2016
+   - id: 'civ:forged_bronze'
+     item_id: 133
+     item_data: 0
+     name: 'T3 Forged Bronze'
+     craftable: true
+     shaped: false
+     category: '<yellow>Tier 2 Materials'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:bronze_ingot'
+         count: 2
 # Checked 12/01/2016
    - id: 'civ:bronze_block'
      item_id: 41
@@ -253,6 +414,7 @@ materials:
      name: 'T3 Steel Ore'
      craftable: false
      shaped: false
+     shiny: true
      category: '<rose>Tier 3 Materials'
      mineable: true
      components:
@@ -269,7 +431,7 @@ materials:
        - type_id: 0
          data: 0
          custom_id: 'civ:steel_ore'
-         count: 9
+         count: 6
 # Checked 12/01/2016
    - id: 'civ:steel_ingot'
      item_id: 399
@@ -320,6 +482,7 @@ materials:
      name: 'T4 Tungsten Ore'
      craftable: false
      shaped: false
+     shiny: true
      category: '<lightblue>Tier 4 Materials'
      mineable: true
      components:
@@ -587,7 +750,8 @@ materials:
        - name: 'DurabilityOnDeath'
          value: '0.1'
      ingredients:
-       - type_id: 265
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
          data: 0
          letter: 'i'
        - type_id: 280
@@ -613,7 +777,8 @@ materials:
        - name: 'DurabilityOnDeath'
          value: '0.1'
      ingredients:
-       - type_id: 265
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
          data: 0
          letter: 'i'
      shape:
@@ -636,7 +801,8 @@ materials:
        - name: 'DurabilityOnDeath'
          value: '0.1'
      ingredients:
-       - type_id: 265
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
          data: 0
          letter: 'i'
      shape:
@@ -659,7 +825,8 @@ materials:
        - name: 'DurabilityOnDeath'
          value: '0.1'
      ingredients:
-       - type_id: 265
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
          data: 0
          letter: 'i'
      shape:
@@ -682,7 +849,8 @@ materials:
        - name: 'DurabilityOnDeath'
          value: '0.1'
      ingredients:
-       - type_id: 265
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
          data: 0
          letter: 'i'
      shape:
@@ -1946,19 +2114,22 @@ materials:
      required_civics: 'civic_defensive_tactics'
      craftable: true
      vanilla: true
-     shaped: false
+     shaped: true
      components:
        - name: 'AllowBlockPlace'
      ingredients:
        - type_id: 0
          custom_id: 'civ:single_refined_sulphur'
          data: 0
-         count: 1
+         letter: 'g'
        - type_id: 0
          custom_id: 'civ:compacted_sand'
          data: 0
-         count: 1
-         letter: 'g'
+         letter: 's'
+     shape:
+       - "g g"
+       - " s "
+       - "g g"
 # Checked 12/01/2016
    - id: 'civ:vanilla_ender_chest'
      item_id: 130

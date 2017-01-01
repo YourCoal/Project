@@ -29,7 +29,7 @@ import com.avrgaming.civcraft.components.AttributeBiomeRadiusPerLevel;
 import com.avrgaming.civcraft.components.ConsumeLevelComponent;
 import com.avrgaming.civcraft.components.ConsumeLevelComponent.Result;
 import com.avrgaming.civcraft.config.CivSettings;
-import com.avrgaming.civcraft.config.ConfigMineLevel;
+import com.avrgaming.civcraft.config.ConfigLabLevel;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.CivTaskAbortException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
@@ -45,16 +45,16 @@ import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.MultiInventory;
 
-public class Mine extends Structure {
+public class Lab extends Structure {
 	
-	private double produced_hammers = 0;
+	private double produced_beakers = 0;
 	private ConsumeLevelComponent consumeComp = null;
 	
-	protected Mine(Location center, String id, Town town) throws CivException {
+	protected Lab(Location center, String id, Town town) throws CivException {
 		super(center, id, town);
 	}
 	
-	public Mine(ResultSet rs) throws SQLException, CivException {
+	public Lab(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
 	
@@ -82,17 +82,17 @@ public class Mine extends Structure {
 	
 	@Override
 	public String getMarkerIconName() {
-		return "hammer";
+		return "beaker";
 	}
 	
 	public String getkey() {
 		return this.getTown().getName()+"_"+this.getConfigId()+"_"+this.getCorner().toString(); 
 	}
 
-	/* Returns true if the mine has been poisoned, false otherwise. */
+	/* Returns true if the lab has been poisoned, false otherwise. */
 	public boolean processFatigue(MultiInventory inv) {
 		//Check to make sure the granary has not been poisoned!
-		String key = "fatiguemine:"+getTown().getName();
+		String key = "fatiguelab:"+getTown().getName();
 		ArrayList<SessionEntry> entries;
 		entries = CivGlobal.getSessionDB().lookup(key);
 		int max_fatigue_ticks = -1;
@@ -112,22 +112,22 @@ public class Mine extends Structure {
 				CivGlobal.getSessionDB().add(key, ""+max_fatigue_ticks, this.getTown().getCiv().getId(), this.getTown().getId(), this.getId());
 	
 			// Add some rotten flesh to the chest lol
-			CivMessage.sendTown(this.getTown(), CivColor.Rose+"Our mines have been fatiged!!");
+			CivMessage.sendTown(this.getTown(), CivColor.Rose+"Our labs have been fatiged!!");
 			inv.addItem(ItemManager.createItemStack(CivData.ROTTEN_FLESH, 4));
 			return true;
 		}
 		return false;
 	}
 	
-	public void generateHammers(CivAsyncTask task) {
+	public void generateBeakers(CivAsyncTask task) {
 		if (!this.isActive()) {
 			return;
 		}
 		
-		/* Build a multi-inv from mines. */
+		/* Build a multi-inv from labs. */
 		MultiInventory multiInv = new MultiInventory();
 		for (Structure struct : this.getTown().getStructures()) {
-			if (struct instanceof Mine) {
+			if (struct instanceof Lab) {
 				ArrayList<StructureChest> chests = struct.getAllChestsById(0);
 				// Make sure the chunk is loaded and add it to the inventory.
 				try {
@@ -148,24 +148,24 @@ public class Mine extends Structure {
 		}
 		getConsumeComponent().setSource(multiInv);
 		
-		double mine_consume_mod = 1.0; //allows buildings and govs to change the totals for mine consumption
+		double lab_consume_mod = 1.0; //allows buildings and govs to change the totals for lab consumption
 		
 		if (this.getTown().getBuffManager().hasBuff(Buff.REDUCE_CONSUME_PRODUCTION)) {
-			mine_consume_mod *= this.getTown().getBuffManager().getEffectiveDouble(Buff.REDUCE_CONSUME_PRODUCTION);
+			lab_consume_mod *= this.getTown().getBuffManager().getEffectiveDouble(Buff.REDUCE_CONSUME_PRODUCTION);
 		}
 		
-		//TODO make a new buff that works for mines/labs
+		//TODO make a new buff that works for labs/labs
 //		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_consume")) {
-//			mine_consume_mod *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_consume");
+//			lab_consume_mod *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_consume");
 //		}
 		
-		//TODO make a new buff that works for mines/labs
+		//TODO make a new buff that works for labs/labs
 //		if (this.getTown().getBuffManager().hasBuff(Buff.FISHING)) {
 //			int breadPerFish = this.getTown().getBuffManager().getEffectiveInt(Buff.FISHING);
 //			getConsumeComponent().addEquivExchange(CivData.BREAD, CivData.FISH_RAW, breadPerFish);
 //		}
 		
-		getConsumeComponent().setConsumeRate(mine_consume_mod);
+		getConsumeComponent().setConsumeRate(lab_consume_mod);
 		Result result = getConsumeComponent().processConsumption();
 		getConsumeComponent().onSave();
 		getConsumeComponent().clearEquivExchanges();
@@ -173,19 +173,19 @@ public class Mine extends Structure {
 		/* Bail early for results that do not generate coins. */
 		switch (result) {
 		case STARVE:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+CivColor.Rose+"starved"+
-					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no hammers.");
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" lab "+CivColor.Rose+"starved"+
+					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no beakers.");
 			return;
 		case LEVELDOWN:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+(getConsumeComponent().getLevel()+1)+" mine "+CivColor.Red+"leveled-down"+
-					CivColor.LightGreen+" and generated no hammers.");
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+(getConsumeComponent().getLevel()+1)+" lab "+CivColor.Red+"leveled-down"+
+					CivColor.LightGreen+" and generated no beakers.");
 			return;
 		case STAGNATE:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+CivColor.Yellow+"stagnated"+
-					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no hammers.");
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" lab "+CivColor.Yellow+"stagnated"+
+					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no beakers.");
 			return;
 		case UNKNOWN:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+CivColor.LightGreen+"Something "+CivColor.DarkPurple+" UnKnOwN "+CivColor.LightGreen+" happened to a mine. It generates no hammers.");
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+CivColor.LightGreen+"Something "+CivColor.DarkPurple+" UnKnOwN "+CivColor.LightGreen+" happened to a lab. It generates no beakers.");
 			return;
 		default:
 			break;
@@ -197,31 +197,31 @@ public class Mine extends Structure {
 		
 		/* Calculate how much money we made. */
 		/* leveling down doesnt generate coins, so we don't have to check it here. */
-		ConfigMineLevel lvl = null;
+		ConfigLabLevel lvl = null;
 		if (result == Result.LEVELUP) {
-			lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel()-1);	
+			lvl = CivSettings.labLevels.get(getConsumeComponent().getLevel()-1);	
 		} else {
-			lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel());
+			lvl = CivSettings.labLevels.get(getConsumeComponent().getLevel());
 		}
 				
-		int total_hammers = (int)Math.round(lvl.hammers*this.getTown().getMineRate());
-		//TODO make a new buff that works for mines/labs
+		int total_beakers = (int)Math.round(lvl.beakers*this.getTown().getLabRate());
+		//TODO make a new buff that works for labs/labs
 //		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
-//			total_hammers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
+//			total_beakers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {
-				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_mine_buff");
-				total_hammers *= tech_bonus;
+				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_lab_buff");
+				total_beakers *= tech_bonus;
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
 		}
 		
-		setProducedHammers(total_hammers);
-		produced_hammers = total_hammers;
+		setProducedHammers(total_beakers);
+		produced_beakers = total_beakers;
 		
 		String stateMessage = "";
 		switch (result) {
@@ -237,7 +237,7 @@ public class Mine extends Structure {
 		default:
 			break;
 		}
-		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+stateMessage+" and generated "+total_hammers+" hammers!");
+		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" lab "+stateMessage+" and generated "+total_beakers+" beakers!");
 	}
 	
 	public int getLevel() {
@@ -254,15 +254,15 @@ public class Mine extends Structure {
 	
 	public int getMaxCount() {
 		int level = getLevel();
-		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
+		ConfigLabLevel lvl = CivSettings.labLevels.get(level);
 		return lvl.count;
 	}
 	
-	public double getProducedHammers() {
+	public double getProducedBeakers() {
 		if (!this.isComplete()) {
 			return 0.0;
 		}
-		return produced_hammers;
+		return produced_beakers;
 	}
 	
 	public double setProducedHammers(double amount) {
@@ -272,7 +272,7 @@ public class Mine extends Structure {
 		return amount;
 	}
 	
-	public double getHammersPerTile() {
+	public double getBeakersPerTile() {
 		AttributeBiomeRadiusPerLevel attrBiome = (AttributeBiomeRadiusPerLevel)this.getComponent("AttributeBiomeRadiusPerLevel");
 		double base = attrBiome.getBaseValue();
 		double rate = 1;

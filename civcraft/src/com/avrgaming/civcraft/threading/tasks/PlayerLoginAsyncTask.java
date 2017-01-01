@@ -81,43 +81,78 @@ public class PlayerLoginAsyncTask implements Runnable {
 						"If you changed your name, please change it back or contact an admin to request a name change."));
 				return;
 			}
-	
-			if (resident == null) {
-				CivLog.info("No resident found. Creating for "+getPlayer().getName());
-				try {
-					resident = new Resident(getPlayer().getUniqueId(), getPlayer().getName());
-				} catch (InvalidNameException e) {
-					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "You have an invalid name. Sorry."));
-					return;
-				}
-				
-				CivGlobal.addResident(resident);
-				CivLog.info("Added resident:"+resident.getName());
-				resident.setRegistered(System.currentTimeMillis());
-				Tutorial.showTutorialInventory(getPlayer());
-				resident.setisProtected(true);
-				int mins;
-				try {
-					mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
-				} catch (InvalidConfiguration e1) {
-					e1.printStackTrace();
-					return;
-				}
-				CivMessage.send(resident, CivColor.LightGray+"You have a PvP timer enabled for "+mins+" mins. You cannot attack or be attacked until it expires.");
-				CivMessage.send(resident, CivColor.LightGray+"To remove it, type /resident pvptimer");
-	
-			} 
 			
-			/* 
-			 * Resident is present. Lets check the UUID against the stored UUID.
+			if (resident == null) {
+				new Thread(new Runnable() {
+					public void run() {
+						try {
+							Resident resident = CivGlobal.getResident(getPlayer().getName());
+							CivLog.info("No resident found. Creating for "+getPlayer().getName());
+							CivLog.info("No resident found. Creating for "+getPlayer().getName());
+							try {
+								resident = new Resident(getPlayer().getUniqueId(), getPlayer().getName());
+							} catch (InvalidNameException e) {
+								CivLog.info("Resident has invalid name:"+resident.getName());
+								CivLog.info("Resident has invalid name:"+resident.getName());
+								TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "You have an invalid name. Sorry."));
+								return;
+							}
+							
+							Thread.sleep(2500);
+							resident.setisProtected(true);
+							CivGlobal.addResident(resident);
+							CivMessage.send(resident, "Generating player..."+CivColor.LightGray+"Adding player to database...");
+							Thread.sleep(2000);
+							TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
+							CivMessage.send(resident, "Generating player..."+CivColor.LightGray+"Giving tutorial kit...");
+							Thread.sleep(2000);
+							CivMessage.send(resident, "Generating player...");
+							Thread.sleep(2000);
+							//Setup the intro
+							Thread.sleep(1000);
+							CivMessage.sendTitle(resident, 10, 60, 10, "- H. Jackson Brown, Jr.", "The best preparation for tomorrow is doing your best today.");
+							Thread.sleep(4000);
+							CivMessage.sendTitle(resident, 10, 120, 10, "", "Are you ready to hold a civilization, and test your faith against time?");
+							Thread.sleep(7000);
+							
+							//Finish intro
+							Thread.sleep(1000);
+							
+							Thread.sleep(750);
+							CivMessage.sendTitle(resident, 10, 60, 10, CivColor.ITALIC+"Time to Begin your Adventure!", CivColor.LightGray+CivColor.ITALIC+"Don't fall into the ruins of forgoten lands.");
+							Thread.sleep(5000);
+							CivMessage.sendTitle(resident, 5, 15, 5, "Generating player...", CivColor.LightGray+"Tutorial Screen Generating...");
+							Thread.sleep(2000);
+							Tutorial.showTutorialInventory(getPlayer());
+							CivMessage.send(resident, CivColor.LightGray+"Displaying tutorial screen.");
+							CivMessage.send(resident, CivColor.LightGray+"Your PvP Timer will be enabled in "+CivColor.Yellow+CivColor.BOLD+"60 Seconds"+CivColor.LightGray+".");
+							Thread.sleep(60000);
+							resident.setRegistered(System.currentTimeMillis());
+							resident.setisProtected(true);
+							int mins;
+							try {
+								mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
+							} catch (InvalidConfiguration e1) {
+								e1.printStackTrace();
+								return;
+							}
+							CivMessage.sendTitle(resident, 10, 20, 10, "Generating player...", CivColor.LightGray+"Enabling PvP Timer...");
+							CivMessage.send(resident, CivColor.LightGray+"You now have a PvP Timer for "+mins+" minutes.");
+						} catch (InterruptedException | CivException e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+			}
+			
+			/* Resident is present. Lets check the UUID against the stored UUID.
 			 * We are not going to allow residents to change names without admin permission.
-			 * If someone logs in with a name that does not match the stored UUID, we'll kick them.
-			 */
-			if (resident.getUUID() == null) {
+			 * If someone logs in with a name that does not match the stored UUID, we'll kick them. */
+			if (resident != null && resident.getUUID() == null) {
 				/* This resident does not yet have a UUID stored. Free lunch. */
 				resident.setUUID(getPlayer().getUniqueId());
 				CivLog.info("Resident named:"+resident.getName()+" was acquired by UUID:"+resident.getUUIDString());
-			} else if (!resident.getUUID().equals(getPlayer().getUniqueId())) {
+			} else if (resident != null && !resident.getUUID().equals(getPlayer().getUniqueId())) {
 				TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, 
 						"You're attempting to log in with a name already in use. Please change your name."));
 				return;
@@ -128,7 +163,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 			}
 					
 			if (War.isWarTime() && War.isOnlyWarriors()) {
-				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
+				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MOD) || getPlayer().hasPermission(CivSettings.ADMIN)) {
 					//Allowed to connect since player is OP or mini admin.
 				} else if (!resident.hasTown() || !resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
 					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "Only players in civilizations at war can connect right now. Sorry."));
@@ -137,7 +172,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 			}
 			
 			/* turn on allchat by default for admins and moderators. */
-			if (getPlayer().hasPermission(CivSettings.MODERATOR) || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
+			if (getPlayer().hasPermission(CivSettings.MOD) || getPlayer().hasPermission(CivSettings.ADMIN)) {
 				resident.allchat = true;
 				Resident.allchatters.add(resident.getName());
 			}
@@ -184,7 +219,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 				if (CivSettings.getString(CivSettings.perkConfig, "system.free_perks").equalsIgnoreCase("true")) {
 					resident.giveAllFreePerks();
 				} else if (CivSettings.getString(CivSettings.perkConfig, "system.free_admin_perks").equalsIgnoreCase("true")) {
-					if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
+					if (getPlayer().hasPermission(CivSettings.ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
 						resident.giveAllFreePerks();
 					}
 				}

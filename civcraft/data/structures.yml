@@ -3,156 +3,184 @@
 # structures as well as some specific structure related configuration options.
 #
 
-################ Bank Settings ################
+#====================[ Town Hall Bonus Settings ]====================#
+townhall_bonus:
+    bonus_max: 10000
+    hammer_rate: 0.4
+    beaker_rate: 0.15
+    t1_package_rate: 0.01
+    t2_package_rate: 0.0075
+    t3_package_rate: 0.005
+    t4_package_rate: 0.0025
+#====================[ Quarry Settings ]====================#
+quarry:
+    hammers:
+        max: 10000
+        stone_rate: 0.5
+        gda_rate: 0.3
+    beakers:
+        max: 10000
+        wartblock_rate: 0.5
+        brm_rate: 0.3
+    wp: #Wood Pickaxe
+        max: 10000
+        coal_rate: 0.2
+        iron_rate: 0.075
+    sp: #Stone Pickaxe
+        max: 10000
+        coal_rate: 0.07
+        iron_rate: 0.2
+        gold_rate: 0.08
+        redstone_rate: 0.06
+#====================[ Bank Settings ]====================#
 #TODO add bank config options
 
-################# Trommel Settings #################
+#====================[ Trommel Settings ]====================#
 trommel:
     despotism_rate: 2.0
     penalty_rate: 0.8
 
-trommel_gravel:
+trommel_cobblestone:
     max: 10000
-    iron_chance: 0.05
-    redstone_chance: 0.035
-    gold_chance: 0.02
-    diamond_chance: 0.0050
-    emerald_chance: 0.0020
-    chromium_chance: 0.0008
-
+    coal_rate: 0.03
+    iron_rate: 0.04
+    gold_rate: 0.02
+    lapis_redstone_rate: 0.01
+    diamond_rate: 0.005
+    emerald_rate: 0.0025
+    custom_ore_rate: 0.001
+    custom_ingot_rate: 0.0005
+#
+trommel_stone:
+    max: 10000
+    coal_rate: 0.03
+    iron_rate: 0.04
+    gold_rate: 0.02
+    lapis_redstone_rate: 0.01
+    diamond_rate: 0.005
+    emerald_rate: 0.0025
+    custom_ore_rate: 0.001
+    custom_ingot_rate: 0.0005
+#
 trommel_granite:
     max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
-    redstone_chance: 0.04
-    gold_chance: 0.02
-    tungsten_chance: 0.0075
-    diamond_chance: 0.0050
-    emerald_chance: 0.0020
-    chromium_chance: 0.0008
-    crystal_fragment_chance: 0.0002
-    refined_chromium_chance: 0.00008
-    refined_tungsten_chance: 0.00004
-    crystal_chance: 0.00002
-
+    coal_rate: 0.7
+    iron_rate: 0.025
+    gold_rate: 0.009
+    lapis_redstone_rate: 0.04
+    diamond_rate: 0.005
+    emerald_rate: 0.0025
+    custom_ore_rate: 0.001
+    custom_ingot_rate: 0.0005
+#
 trommel_diorite:
     max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
-    redstone_chance: 0.045
-    gold_chance: 0.025
-    tungsten_chance: 0.00080
-    diamond_chance: 0.0055
-    emerald_chance: 0.0025
-    chromium_chance: 0.00085
-    crystal_fragment_chance: 0.00025
-    refined_chromium_chance: 0.00012
-    refined_tungsten_chance: 0.00008
-    crystal_chance: 0.00004
-
+    coal_rate: 0.7
+    iron_rate: 0.03
+    gold_rate: 0.02
+    lapis_redstone_rate: 0.06
+    diamond_rate: 0.0025
+    emerald_rate: 0.005
+    custom_ore_rate: 0.001
+    custom_ingot_rate: 0.0005
+#
 trommel_andesite:
     max: 100000
-    gravel_rate: 1
-    dirt_rate: 0.75
-    polished_rate: 0.1
-    iron_chance: 0.06
-    redstone_chance: 0.05
-    gold_chance: 0.03
-    tungsten_chance: 0.0085
-    diamond_chance: 0.0060
-    emerald_chance: 0.0030
-    chromium_chance: 0.0009
-    crystal_fragment_chance: 0.0003
-    refined_chromium_chance: 0.00015
-    refined_tungsten_chance: 0.00010
-    crystal_chance: 0.00005
-
+    coal_rate: 0.45
+    iron_rate: 0.02
+    gold_rate: 0.04
+    lapis_redstone_rate: 0.05
+    diamond_rate: 0.0025
+    emerald_rate: 0.005
+    custom_ore_rate: 0.001
+    custom_ingot_rate: 0.0005
+#
+trommel_obsidian:
+    max: 100000
+    coal_rate: 0.45
+    iron_rate: 0.001
+    gold_rate: 0.00075
+    lapis_redstone_rate: 0.1
+    diamond_rate: 0.035
+    emerald_rate: 0.01
+    custom_ore_rate: 0.001
+    custom_ingot_rate: 0.0005
+#
 ################ Grocer Settings ###############
 grocer_levels:
     - level: 1
-      itemName: 'Fish'
+      itemName: 'Cooked Fish'
       itemId: 350
       itemData: 0
       amount: 1
-      price: 7.0
-
+      price: 5.0
+#
     - level: 2
-      itemName: 'Roast Chicken'
-      itemId: 366
-      itemData: 0
-      amount: 1
-      price: 12.0
-
-    - level: 3
-      itemName: 'Cooked Pork'
-      itemId: 320
-      itemData: 0
-      amount: 1
-      price: 20.0
- 
-    - level: 4
       itemName: 'Pumpkin Pie'
       itemId: 400
       itemData: 0
       amount: 1
-      price: 40.0
+      price: 10.0
+#
+    - level: 3
+      itemName: 'Cooked Chicken'
+      itemId: 366
+      itemData: 0
+      amount: 1
+      price: 15.0
+#
+    - level: 4
+      itemName: 'Cooked Steak'
+      itemId: 364
+      itemData: 0
+      amount: 1
+      price: 20.0
+#
+    - level: 5
+      itemName: 'Gold Carrot'
+      itemId: 396
+      itemData: 0
+      amount: 1
+      price: 50.0
+#
+    - level: 4
+      itemName: 'Gold Apple B'
+      itemId: 322
+      itemData: 0
+      amount: 1
+      price: 500.0
 ################# Blacksmith Settings ##############
 blacksmith:
     forge_cost: 2500.0
 ################# Cottage Settings #################
 cottage_levels:
    - level: 1
-     consumes:
-         - 297,1
-         - 391,1
-     count: 24
+     amount: 1
      coins: 75.0
 #
    - level: 2
-     consumes:
-         - 297,2
-         - 391,2
-         - 392,1
-     count: 48
+     amount: 3
      coins: 150.0
 #
    - level: 3
-     consumes:
-         - 297,2
-         - 391,2
-         - 392,2
-     count: 96
+     amount: 5
      coins: 225.0
 #
    - level: 4
-     consumes:
-         - 297,3
-         - 391,3
-         - 392,3
-     count: 120
+     amount: 7
      coins: 300.0
 #
    - level: 5
-     consumes:
-         - 297,4
-         - 391,4
-         - 392,4
-     count: 144
+     amount: 10
      coins: 375.0
 #
    - level: 6
-     consumes:
-         - 297,5
-         - 391,5
-         - 392,5
-         - 392,5
-         - 319,1
-     count: 288
+     amount: 13
      coins: 450.0
+#
+   - level: 7
+     amount: 16
+     coins: 525.0
 ################### Temple Settings #######################
 temple:
     # rate which temple modifies total culture output
@@ -170,105 +198,203 @@ temple:
           reward: 50
 #====================[ Mine Settings ]====================#
 mine_levels:
-    - level: 1
-      hammers: 100.0
-      amount: 8
-      count: 12
+##### Redstone
+   - level: 1
+     consumes:
+         - 331,4
+     data: 0
+     hammers: 50.0
+     count: 24
 #
-    - level: 2
-      hammers: 125.0
-      amount: 10
-      count: 12
+   - level: 2
+     consumes:
+         - 331,8
+     data: 0
+     hammers: 100.0
+     count: 36
 #
-    - level: 3
-      hammers: 150.0
-      amount: 12
-      count: 24
+   - level: 3
+     consumes:
+         - 331,12
+     data: 0
+     hammers: 150.0
+     count: 48
 #
-    - level: 4
-      hammers: 175.0
-      amount: 14
-      count: 24
+   - level: 4
+     consumes:
+         - 331,16
+     data: 0
+     hammers: 200.0
+     count: 60
+##### Redstone, Iron
+   - level: 5
+     consumes:
+         - 331,16
+         - 265,3
+     data: 0
+     hammers: 250.0
+     count: 72
 #
-    - level: 5
-      hammers: 200.0
-      amount: 16
-      count: 36
+   - level: 6
+     consumes:
+         - 331,20
+         - 265,6
+     data: 0
+     hammers: 300.0
+     count: 84
 #
-    - level: 6
-      hammers: 225.0
-      amount: 18
-      count: 36
+   - level: 7
+     consumes:
+         - 331,24
+         - 265,9
+     data: 0
+     hammers: 350.0
+     count: 96
 #
-    - level: 7
-      hammers: 250.0
-      amount: 20
-      count: 48
+   - level: 8
+     consumes:
+         - 331,28
+         - 265,12
+     data: 0
+     hammers: 400.0
+     count: 108
+##### Redstone, Iron, Diamond
+   - level: 9
+     consumes:
+         - 331,28
+         - 265,12
+         - 264,2
+     data: 0
+     hammers: 450.0
+     count: 120
 #
-    - level: 8
-      hammers: 275.0
-      amount: 22
-      count: 48
+   - level: 10
+     consumes:
+         - 331,32
+         - 265,15
+         - 264,4
+     data: 0
+     hammers: 500.0
+     count: 132
 #
-    - level: 9
-      hammers: 300.0
-      amount: 24
-      count: 60
+   - level: 11
+     consumes:
+         - 331,36
+         - 265,18
+         - 264,6
+     data: 0
+     hammers: 550.0
+     count: 144
 #
-    - level: 10
-      hammers: 325.0
-      amount: 26
-      count: 60
+   - level: 12
+     consumes:
+         - 331,40
+         - 265,21
+         - 264,8
+     data: 0
+     hammers: 600.0
+     count: 156
 #
-    - level: 11
-      hammers: 350.0
-      amount: 28
-      count: 72
+#====================[ Lab Settings ]====================#
+lab_levels:
+##### Lapis
+   - level: 1
+     consumes:
+         - 351,4
+     data: 4
+     beakers: 50.0
+     count: 24
 #
-    - level: 12
-      hammers: 375.0
-      amount: 30
-      count: 72
+   - level: 2
+     consumes:
+         - 351,8
+     data: 4
+     beakers: 100.0
+     count: 36
 #
-    - level: 13
-      hammers: 400.0
-      amount: 32
-      count: 84
+   - level: 3
+     consumes:
+         - 351,12
+     data: 4
+     beakers: 150.0
+     count: 48
 #
-    - level: 14
-      hammers: 425.0
-      amount: 34
-      count: 84
+   - level: 4
+     consumes:
+         - 351,16
+     data: 4
+     beakers: 200.0
+     count: 60
+##### Lapis, Gold
+   - level: 5
+     consumes:
+         - 351,16
+         - 266,3
+     data: 4
+     beakers: 250.0
+     count: 72
 #
-    - level: 15
-      hammers: 450.0
-      amount: 36
-      count: 96
+   - level: 6
+     consumes:
+         - 351,20
+         - 266,6
+     data: 4
+     beakers: 300.0
+     count: 84
 #
-    - level: 16
-      hammers: 475.0
-      amount: 38
-      count: 96
+   - level: 7
+     consumes:
+         - 351,24
+         - 266,9
+     data: 4
+     beakers: 350.0
+     count: 96
 #
-    - level: 17
-      hammers: 500.0
-      amount: 40
-      count: 108
+   - level: 8
+     consumes:
+         - 351,28
+         - 266,12
+     data: 4
+     beakers: 400.0
+     count: 108
+##### Lapis, Gold, Emerald
+   - level: 9
+     consumes:
+         - 351,28
+         - 266,12
+         - 388,2
+     data: 4
+     beakers: 450.0
+     count: 120
 #
-    - level: 18
-      hammers: 525.0
-      amount: 42
-      count: 108
+   - level: 10
+     consumes:
+         - 351,32
+         - 266,15
+         - 388,4
+     data: 4
+     beakers: 500.0
+     count: 132
 #
-    - level: 19
-      hammers: 550.0
-      amount: 44
-      count: 120
+   - level: 11
+     consumes:
+         - 351,36
+         - 266,18
+         - 388,6
+     data: 4
+     beakers: 550.0
+     count: 144
 #
-    - level: 20
-      hammers: 575.0
-      amount: 46
-      count: 120
+   - level: 12
+     consumes:
+         - 351,40
+         - 266,21
+         - 388,8
+     data: 4
+     beakers: 600.0
+     count: 156
+#
+
 ##################### Farm Settings ##########################
 farm:
     # Number of crops that will grow per 100% of growth rate.
@@ -448,7 +574,7 @@ structures:
     require_upgrade:
     check_event:
     effect_event: generate_culture:25
-    update_event:
+    update_event: bonus_chest
     onBuild_event:
     limit: 2
     cost: 10000.0
@@ -472,7 +598,7 @@ structures:
     require_upgrade:
     check_event:
     effect_event: generate_culture:50
-    update_event:
+    update_event: bonus_chest
     onBuild_event:
     limit: 2
     cost: 50000.0
@@ -504,7 +630,7 @@ structures:
     hammer_cost: 1200.0
     points: 1500
     max_hitpoints: 200
-  
+#
   - id: s_trommel
     template: trommel
     template_y_shift: 0
@@ -522,7 +648,25 @@ structures:
     hammer_cost: 800.0
     points: 1500
     max_hitpoints: 200
-
+#
+  - id: s_quarry
+    template: trommel
+    template_y_shift: 0
+    displayName: Quarry
+    require_upgrade:
+    require_tech: 'tech_mining'
+    effect_event: 
+    check_event: 
+    update_event: quarry_process
+    onBuild_event:
+    limit: 0
+    allow_outside_town: true
+    cost: 50000.0
+    upkeep: 2000.0
+    hammer_cost: 2500.0
+    points: 4000
+    max_hitpoints: 300
+#
   - id: s_store
     template: store
     template_y_shift: 0
@@ -737,7 +881,7 @@ structures:
           biomes: 'OCEAN'
           attribute: 'GROWTH'
           value: '0.05'
-  
+#
   - id: ti_mine
     template: mine
     template_y_shift: -6
@@ -745,15 +889,12 @@ structures:
     require_upgrade:
     require_tech: 'tech_productivity'
     effect_event: process_mine
-    check_event:
-    update_event:
-    onBuild_event:
-    limit: 0
-    cost: 25000.0
-    upkeep: 1500.0
     tile: true
-    hammer_cost: 900.0
-    points: 6200
+    limit: 4
+    cost: 25000.0
+    upkeep: 1000.0
+    hammer_cost: 1000.0
+    points: 5000
     max_hitpoints: 300
     components:
         - name: 'AttributeBiomeRadiusPerLevel'
@@ -761,7 +902,28 @@ structures:
           biomes: 'EXTREME_HILLS:3,SMALL_MOUNTAINS:3,ICE_MOUNTAINS:3,DESERT_HILLS:1,FOREST_HILLS:1,TAGIA_HILLS:1,JUNGLE_HILLS:1'
           base_value: '7.0'
         - name: 'ConsumeLevelComponent'
-
+#
+  - id: ti_lab
+    template: lab
+    template_y_shift: 0
+    displayName: Lab
+    require_upgrade:
+    require_tech: 'tech_productivity'
+    effect_event: process_lab
+    tile: true
+    limit: 4
+    cost: 25000.0
+    upkeep: 1000.0
+    hammer_cost: 1000.0
+    points: 5000
+    max_hitpoints: 300
+    components:
+        - name: 'AttributeBiomeRadiusPerLevel'
+          attribute: 'BEAKERS'
+          biomes: 'EXTREME_HILLS:3,SMALL_MOUNTAINS:3,ICE_MOUNTAINS:3,DESERT_HILLS:1,FOREST_HILLS:1,TAGIA_HILLS:1,JUNGLE_HILLS:1'
+          base_value: '7.0'
+        - name: 'ConsumeLevelComponent'
+#
   - id: ti_trade_outpost
     template: trade_outpost
     template_y_shift: 0

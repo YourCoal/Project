@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
@@ -40,9 +39,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.object.BuildableDamageBlock;
@@ -62,7 +59,7 @@ public abstract class LoreMaterial {
 	
 	//TODO Remove materialMap and make it matMap, because I want to compact code
 	public static Map<String, LoreMaterial> materialMap = new HashMap<String, LoreMaterial>();
-	public static Map<String, LoreMaterial> matMap = new HashMap<String, LoreMaterial>();
+//	public static Map<String, LoreMaterial> matMap = new HashMap<String, LoreMaterial>();
 	public static final String MID_TAG = CivColor.Black+"MID";
 	
 	public LoreMaterial(String id, int typeID, short damage) {
@@ -190,20 +187,11 @@ public abstract class LoreMaterial {
 			LoreCraftableMaterial craftMat = (LoreCraftableMaterial)material;
 			attrs.addLore(CivColor.ITALIC+craftMat.getConfigMaterial().category);
 			if (craftMat.getConfigMaterial().shiny) {
-//				attrs.addGlow(stack, true);
-				addGlow(stack);
+				attrs.setShiny();
 			}
 		}
 		material.applyAttributes(attrs);
 		return attrs.getStack();
-	}
-	
-	public static void addGlow(ItemStack stack)
-	{
-		ItemMeta meta = stack.getItemMeta();
-		meta.addEnchant( Enchantment.LURE, 1, false );
-		meta.addItemFlags( ItemFlag.HIDE_ENCHANTS );
-		stack.setItemMeta( meta );
 	}
 	
 	public int getTypeID() {

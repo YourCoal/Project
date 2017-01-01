@@ -167,24 +167,6 @@ public class AdminChatCommand extends CommandBase {
 		
 	}
 	
-	public void banwordadd_cmd() throws CivException {
-		if (args.length < 2) {
-			throw new CivException("Enter a word to ban");
-		}
-		
-		CivGlobal.banWords.add(args[1]);
-		CivMessage.sendSuccess(sender, "added "+args[1]);
-	}
-	
-	public void banwordremove_cmd() throws CivException {
-		if (args.length < 2) {
-			throw new CivException("Enter a word to ban");
-		}
-		
-		CivGlobal.banWords.remove(args[1]);
-		CivMessage.sendSuccess(sender, "removed "+args[1]);
-	}
-	
 	public void banwordtoggle() throws CivException {
 		
 		CivGlobal.banWordsAlways = !CivGlobal.banWordsAlways;

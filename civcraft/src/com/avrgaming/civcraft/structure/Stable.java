@@ -151,7 +151,7 @@ public class Stable extends Structure {
 				mod.setVariant(HorseVariant.valueOf(horse.variant));
 				HorseModifier.setHorseSpeed(mod.getHorse(), horse.speed);
 				((Horse)mod.getHorse()).setJumpStrength(horse.jump);
-				((Horse)mod.getHorse()).setMaxHealth(horse.health);
+//				((Horse)mod.getHorse()).setMaxHealth(horse.health);
 				((Horse)mod.getHorse()).setHealth(horse.health);
 				((Horse)mod.getHorse()).setOwner(player);
 				((Horse)mod.getHorse()).setBaby();

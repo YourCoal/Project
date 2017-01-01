@@ -32,78 +32,59 @@ import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.SimpleBlock;
 
 public class Trommel extends Structure {
-	public static final int GRAVEL_MAX = CivSettings.getIntegerStructure("trommel_gravel.max"); //100%
-	private static final double GRAVEL_REDSTONE_CHANCE = CivSettings.getDoubleStructure("trommel_gravel.redstone_chance"); //3%
-	private static final double GRAVEL_IRON_CHANCE = CivSettings.getDoubleStructure("trommel_gravel.iron_chance"); //4%
-	private static final double GRAVEL_GOLD_CHANCE = CivSettings.getDoubleStructure("trommel_gravel.gold_chance"); //2%
-	private static final double GRAVEL_DIAMOND_CHANCE = CivSettings.getDoubleStructure("trommel_gravel.diamond_chance"); //0.50%
-	private static final double GRAVEL_EMERALD_CHANCE = CivSettings.getDoubleStructure("trommel_gravel.emerald_chance"); //0.20%
-	private static final double GRAVEL_CHROMIUM_CHANCE = CivSettings.getDoubleStructure("trommel_gravel.chromium_chance");
 	
-	public static final int GRANITE_MAX_CHANCE = CivSettings.getIntegerStructure("trommel_granite.max");
-	private static final double GRANITE_DIRT_RATE = CivSettings.getDoubleStructure("trommel_granite.dirt_rate"); //100%
-	private static final double GRANITE_POLISHED_RATE = CivSettings.getDoubleStructure("trommel_granite.polished_rate"); //10%
-	private static final double GRANITE_REDSTONE_CHANCE = CivSettings.getDoubleStructure("trommel_granite.redstone_chance");
-	private static final double GRANITE_IRON_CHANCE = CivSettings.getDoubleStructure("trommel_granite.iron_chance");
-	private static final double GRANITE_GOLD_CHANCE = CivSettings.getDoubleStructure("trommel_granite.gold_chance");
-	private static final double GRANITE_TUNGSTEN_CHANCE = CivSettings.getDoubleStructure("trommel_granite.tungsten_chance");
-	private static final double GRANITE_DIAMOND_CHANCE = CivSettings.getDoubleStructure("trommel_granite.diamond_chance");
-	private static final double GRANITE_EMERALD_CHANCE = CivSettings.getDoubleStructure("trommel_granite.emerald_chance");
-	private static final double GRANITE_CHROMIUM_CHANCE = CivSettings.getDoubleStructure("trommel_granite.chromium_chance");
-	private static final double GRANITE_CRYSTAL_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("trommel_granite.crystal_fragment_chance");
-	private static final double GRANITE_REFINED_CHROMIUM_CHANCE = CivSettings.getDoubleStructure("trommel_granite.refined_chromium_chance");
-	private static final double GRANITE_REFINED_TUNGSTEN_CHANCE = CivSettings.getDoubleStructure("trommel_granite.refined_tungsten_chance");
-	private static final double GRANITE_CRYSTAL_CHANCE = CivSettings.getDoubleStructure("trommel_granite.crystal_chance");
+	public static final int COBBLESTONE_MAX = CivSettings.getIntegerStructure("trommel_cobblestone.max");
+	private static final double COBBLESTONE_IRON_RATE = CivSettings.getDoubleStructure("trommel_cobblestone.iron_rate");
+	private static final double COBBLESTONE_GOLD_RATE = CivSettings.getDoubleStructure("trommel_cobblestone.gold_rate");
+	private static final double COBBLESTONE_LAPIS_REDSTONE_RATE = CivSettings.getDoubleStructure("trommel_cobblestone.lapis_redstone_rate");
+	private static final double COBBLESTONE_DIAMOND_RATE = CivSettings.getDoubleStructure("trommel_cobblestone.diamond_rate");
+	private static final double COBBLESTONE_EMERALD_RATE = CivSettings.getDoubleStructure("trommel_cobblestone.emerald_rate");
+	private static final double COBBLESTONE_CUSTOM_ORE_RATE = CivSettings.getDoubleStructure("trommel_cobblestone.custom_ore_rate");
 	
-	public static final int DIORITE_MAX_CHANCE = CivSettings.getIntegerStructure("trommel_diorite.max");
-	private static final double DIORITE_DIRT_RATE = CivSettings.getDoubleStructure("trommel_diorite.dirt_rate"); //100%
-	private static final double DIORITE_POLISHED_RATE = CivSettings.getDoubleStructure("trommel_diorite.polished_rate"); //10%
-	private static final double DIORITE_REDSTONE_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.redstone_chance");
-	private static final double DIORITE_IRON_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.iron_chance");
-	private static final double DIORITE_GOLD_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.gold_chance");
-	private static final double DIORITE_TUNGSTEN_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.tungsten_chance");
-	private static final double DIORITE_DIAMOND_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.diamond_chance");
-	private static final double DIORITE_EMERALD_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.emerald_chance");
-	private static final double DIORITE_CHROMIUM_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.chromium_chance");
-	private static final double DIORITE_CRYSTAL_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.crystal_fragment_chance");
-	private static final double DIORITE_REFINED_CHROMIUM_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.refined_chromium_chance");
-	private static final double DIORITE_REFINED_TUNGSTEN_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.refined_tungsten_chance");
-	private static final double DIORITE_CRYSTAL_CHANCE = CivSettings.getDoubleStructure("trommel_diorite.crystal_chance");
+	public static final int STONE_MAX = CivSettings.getIntegerStructure("trommel_cobblestone.max");
+	private static final double STONE_IRON_RATE = CivSettings.getDoubleStructure("trommel_stone.iron_rate");
+	private static final double STONE_GOLD_RATE = CivSettings.getDoubleStructure("trommel_stone.gold_rate");
+	private static final double STONE_LAPIS_REDSTONE_RATE = CivSettings.getDoubleStructure("trommel_stone.lapis_redstone_rate");
+	private static final double STONE_DIAMOND_RATE = CivSettings.getDoubleStructure("trommel_stone.diamond_rate");
+	private static final double STONE_EMERALD_RATE = CivSettings.getDoubleStructure("trommel_stone.emerald_rate");
+	private static final double STONE_CUSTOM_ORE_RATE = CivSettings.getDoubleStructure("trommel_stone.custom_ore_rate");
 	
-	public static final int ANDESITE_MAX_CHANCE = CivSettings.getIntegerStructure("trommel_andesite.max");
-	private static final double ANDESITE_DIRT_RATE = CivSettings.getDoubleStructure("trommel_andesite.dirt_rate"); //100%
-	private static final double ANDESITE_POLISHED_RATE = CivSettings.getDoubleStructure("trommel_andesite.polished_rate"); //10%
-	private static final double ANDESITE_REDSTONE_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.redstone_chance");
-	private static final double ANDESITE_IRON_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.iron_chance");
-	private static final double ANDESITE_GOLD_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.gold_chance");
-	private static final double ANDESITE_TUNGSTEN_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.tungsten_chance");
-	private static final double ANDESITE_DIAMOND_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.diamond_chance");
-	private static final double ANDESITE_EMERALD_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.emerald_chance");
-	private static final double ANDESITE_CHROMIUM_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.chromium_chance");
-	private static final double ANDESITE_CRYSTAL_FRAGMENT_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.crystal_fragment_chance");
-	private static final double ANDESITE_REFINED_CHROMIUM_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.refined_chromium_chance");
-	private static final double ANDESITE_REFINED_TUNGSTEN_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.refined_tungsten_chance");
-	private static final double ANDESITE_CRYSTAL_CHANCE = CivSettings.getDoubleStructure("trommel_andesite.crystal_chance");
+	public static final int GRANITE_MAX = CivSettings.getIntegerStructure("trommel_granite.max");
+	private static final double GRANITE_IRON_RATE = CivSettings.getDoubleStructure("trommel_granite.iron_rate");
+	private static final double GRANITE_GOLD_RATE = CivSettings.getDoubleStructure("trommel_granite.gold_rate");
+	private static final double GRANITE_LAPIS_REDSTONE_RATE = CivSettings.getDoubleStructure("trommel_granite.lapis_redstone_rate");
+	private static final double GRANITE_DIAMOND_RATE = CivSettings.getDoubleStructure("trommel_granite.diamond_rate");
+	private static final double GRANITE_EMERALD_RATE = CivSettings.getDoubleStructure("trommel_granite.emerald_rate");
+	private static final double GRANITE_CUSTOM_ORE_RATE = CivSettings.getDoubleStructure("trommel_granite.custom_ore_rate");
+	
+	public static final int DIORITE_MAX = CivSettings.getIntegerStructure("trommel_diorite.max");
+	private static final double DIORITE_IRON_RATE = CivSettings.getDoubleStructure("trommel_diorite.iron_rate");
+	private static final double DIORITE_GOLD_RATE = CivSettings.getDoubleStructure("trommel_diorite.gold_rate");
+	private static final double DIORITE_LAPIS_REDSTONE_RATE = CivSettings.getDoubleStructure("trommel_diorite.lapis_redstone_rate");
+	private static final double DIORITE_DIAMOND_RATE = CivSettings.getDoubleStructure("trommel_diorite.diamond_rate");
+	private static final double DIORITE_EMERALD_RATE = CivSettings.getDoubleStructure("trommel_diorite.emerald_rate");
+	private static final double DIORITE_CUSTOM_ORE_RATE = CivSettings.getDoubleStructure("trommel_diorite.custom_ore_rate");
+	
+	public static final int ANDESITE_MAX = CivSettings.getIntegerStructure("trommel_andesite.max");
+	private static final double ANDESITE_IRON_RATE = CivSettings.getDoubleStructure("trommel_andesite.iron_rate");
+	private static final double ANDESITE_GOLD_RATE = CivSettings.getDoubleStructure("trommel_andesite.gold_rate");
+	private static final double ANDESITE_LAPIS_REDSTONE_RATE = CivSettings.getDoubleStructure("trommel_andesite.lapis_redstone_rate");
+	private static final double ANDESITE_DIAMOND_RATE = CivSettings.getDoubleStructure("trommel_andesite.diamond_rate");
+	private static final double ANDESITE_EMERALD_RATE = CivSettings.getDoubleStructure("trommel_andesite.emerald_rate");
+	private static final double ANDESITE_CUSTOM_ORE_RATE = CivSettings.getDoubleStructure("trommel_andesite.custom_ore_rate");
 	
 	private int level = 1;
 	public int skippedCounter = 0;
 	public ReentrantLock lock = new ReentrantLock();
 	
 	public enum Mineral {
-		DUST,
-		CRYSTAL,
-		REFINED_TUNGSTEN,
-		REFINED_CHROMIUM,
-		CRYSTAL_FRAGMENT,
-		CHROMIUM,
+		CUSTOMINGOT,
+		CUSTOMORE,
 		EMERALD,
 		DIAMOND,
-		TUNGSTEN,
+		LAPIS_REDSTONE,
 		GOLD,
-		REDSTONE,
 		IRON,
-		POLISHED,
-		DIRT
 	}
 	
 	protected Trommel(Location center, String id, Town town) throws CivException {
@@ -127,26 +108,54 @@ public class Trommel extends Structure {
 		return "minecart";
 	}
 	
-	public double getGravelChance(Mineral mineral) {
+	public double getCobblestoneChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
+		case CUSTOMORE:
+			chance = COBBLESTONE_CUSTOM_ORE_RATE;
+			break;
 		case EMERALD:
-			chance = GRAVEL_EMERALD_CHANCE;
+			chance = COBBLESTONE_EMERALD_RATE;
 			break;
 		case DIAMOND:
-			chance = GRAVEL_DIAMOND_CHANCE;
+			chance = COBBLESTONE_DIAMOND_RATE;
+			break;
+		case LAPIS_REDSTONE:
+			chance = COBBLESTONE_LAPIS_REDSTONE_RATE;
 			break;
 		case GOLD:
-			chance = GRAVEL_GOLD_CHANCE;
+			chance = COBBLESTONE_GOLD_RATE;
 			break;
 		case IRON:
-			chance = GRAVEL_IRON_CHANCE;
+			chance = COBBLESTONE_IRON_RATE;
 			break;
-		case REDSTONE:
-			chance = GRAVEL_REDSTONE_CHANCE;
+		default:
 			break;
-		case CHROMIUM:
-			chance = GRAVEL_CHROMIUM_CHANCE;
+		}
+		return this.modifyChance(chance);
+	}
+	
+	public double getStoneChance(Mineral mineral) {
+		double chance = 0;
+		switch (mineral) {
+		case CUSTOMORE:
+			chance = STONE_CUSTOM_ORE_RATE;
+			break;
+		case EMERALD:
+			chance = STONE_EMERALD_RATE;
+			break;
+		case DIAMOND:
+			chance = STONE_DIAMOND_RATE;
+			break;
+		case LAPIS_REDSTONE:
+			chance = STONE_LAPIS_REDSTONE_RATE;
+			break;
+		case GOLD:
+			chance = STONE_GOLD_RATE;
+			break;
+		case IRON:
+			chance = STONE_IRON_RATE;
+			break;
 		default:
 			break;
 		}
@@ -156,46 +165,23 @@ public class Trommel extends Structure {
 	public double getGraniteChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
-		case CRYSTAL:
-			chance = GRANITE_CRYSTAL_CHANCE;
-			break;
-		case REFINED_CHROMIUM:
-			chance = GRANITE_REFINED_CHROMIUM_CHANCE;
-			break;
-		case REFINED_TUNGSTEN:
-			chance = GRANITE_REFINED_TUNGSTEN_CHANCE;
-			break;
-		case CRYSTAL_FRAGMENT:
-			chance = GRANITE_CRYSTAL_FRAGMENT_CHANCE;
+		case CUSTOMORE:
+			chance = GRANITE_CUSTOM_ORE_RATE;
 			break;
 		case EMERALD:
-			chance = GRANITE_EMERALD_CHANCE;
+			chance = GRANITE_EMERALD_RATE;
 			break;
 		case DIAMOND:
-			chance = GRANITE_DIAMOND_CHANCE;
+			chance = GRANITE_DIAMOND_RATE;
 			break;
-		case TUNGSTEN:
-			chance = GRANITE_TUNGSTEN_CHANCE;
+		case LAPIS_REDSTONE:
+			chance = GRANITE_LAPIS_REDSTONE_RATE;
 			break;
 		case GOLD:
-			chance = GRANITE_GOLD_CHANCE;
+			chance = GRANITE_GOLD_RATE;
 			break;
 		case IRON:
-			chance = GRANITE_IRON_CHANCE;
-			break;
-		case REDSTONE:
-			chance = GRANITE_REDSTONE_CHANCE;
-			break;
-		case CHROMIUM:
-			chance = GRANITE_CHROMIUM_CHANCE;
-			break;
-		case POLISHED:
-			chance = GRANITE_POLISHED_RATE;
-			break;
-		case DIRT:
-			chance = GRANITE_DIRT_RATE;
-			break;
-		case DUST:
+			chance = GRANITE_IRON_RATE;
 			break;
 		default:
 			break;
@@ -206,97 +192,50 @@ public class Trommel extends Structure {
 	public double getDioriteChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
-		case CRYSTAL:
-			chance = DIORITE_CRYSTAL_CHANCE;
-			break;
-		case REFINED_CHROMIUM:
-			chance = DIORITE_REFINED_CHROMIUM_CHANCE;
-			break;
-		case REFINED_TUNGSTEN:
-			chance = DIORITE_REFINED_TUNGSTEN_CHANCE;
-			break;
-		case CRYSTAL_FRAGMENT:
-			chance = DIORITE_CRYSTAL_FRAGMENT_CHANCE;
+		case CUSTOMORE:
+			chance = DIORITE_CUSTOM_ORE_RATE;
 			break;
 		case EMERALD:
-			chance = DIORITE_EMERALD_CHANCE;
+			chance = DIORITE_EMERALD_RATE;
 			break;
 		case DIAMOND:
-			chance = DIORITE_DIAMOND_CHANCE;
+			chance = DIORITE_DIAMOND_RATE;
 			break;
-		case TUNGSTEN:
-			chance = DIORITE_TUNGSTEN_CHANCE;
+		case LAPIS_REDSTONE:
+			chance = DIORITE_LAPIS_REDSTONE_RATE;
 			break;
 		case GOLD:
-			chance = DIORITE_GOLD_CHANCE;
+			chance = DIORITE_GOLD_RATE;
 			break;
 		case IRON:
-			chance = DIORITE_IRON_CHANCE;
-			break;
-		case REDSTONE:
-			chance = DIORITE_REDSTONE_CHANCE;
-			break;
-		case CHROMIUM:
-			chance = DIORITE_CHROMIUM_CHANCE;
-			break;
-		case POLISHED:
-			chance = DIORITE_POLISHED_RATE;
-			break;
-		case DIRT:
-			chance = DIORITE_DIRT_RATE;
-			break;
-		case DUST:
+			chance = DIORITE_IRON_RATE;
 			break;
 		default:
 			break;
 		}
 		return this.modifyChance(chance);
 	}
-
 	
 	public double getAndesiteChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
-		case CRYSTAL:
-			chance = ANDESITE_CRYSTAL_CHANCE;
-			break;
-		case REFINED_CHROMIUM:
-			chance = ANDESITE_REFINED_CHROMIUM_CHANCE;
-			break;
-		case REFINED_TUNGSTEN:
-			chance = ANDESITE_REFINED_TUNGSTEN_CHANCE;
-			break;
-		case CRYSTAL_FRAGMENT:
-			chance = ANDESITE_CRYSTAL_FRAGMENT_CHANCE;
+		case CUSTOMORE:
+			chance = ANDESITE_CUSTOM_ORE_RATE;
 			break;
 		case EMERALD:
-			chance = ANDESITE_EMERALD_CHANCE;
+			chance = ANDESITE_EMERALD_RATE;
 			break;
 		case DIAMOND:
-			chance = ANDESITE_DIAMOND_CHANCE;
+			chance = ANDESITE_DIAMOND_RATE;
 			break;
-		case TUNGSTEN:
-			chance = ANDESITE_TUNGSTEN_CHANCE;
+		case LAPIS_REDSTONE:
+			chance = ANDESITE_LAPIS_REDSTONE_RATE;
 			break;
 		case GOLD:
-			chance = ANDESITE_GOLD_CHANCE;
+			chance = ANDESITE_GOLD_RATE;
 			break;
 		case IRON:
-			chance = ANDESITE_IRON_CHANCE;
-			break;
-		case REDSTONE:
-			chance = ANDESITE_REDSTONE_CHANCE;
-			break;
-		case CHROMIUM:
-			chance = ANDESITE_CHROMIUM_CHANCE;
-			break;
-		case POLISHED:
-			chance = ANDESITE_POLISHED_RATE;
-			break;
-		case DIRT:
-			chance = ANDESITE_DIRT_RATE;
-			break;
-		case DUST:
+			chance = ANDESITE_IRON_RATE;
 			break;
 		default:
 			break;
@@ -332,5 +271,4 @@ public class Trommel extends Structure {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-
 }

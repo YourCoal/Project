@@ -151,7 +151,7 @@ public class ACManager implements PluginMessageListener {
 					Player player = CivGlobal.getPlayer(name);
 					Resident resident = CivGlobal.getResident(player);
 					if (resident != null && !resident.isUsesAntiCheat()) {
-						if (player.isOp() || player.hasPermission(CivSettings.MINI_ADMIN)) {
+						if (player.isOp() || player.hasPermission(CivSettings.MOD) || player.hasPermission(CivSettings.ADMIN)) {
 							return;
 						} else if (player.hasPermission(CivSettings.HACKER)) {
 							TaskMaster.syncTask(new PlayerKickBan(player.getName(), true, false, "You must use AntiCheat to join this server."+
@@ -226,7 +226,7 @@ public class ACManager implements PluginMessageListener {
 			CivLog.info("Failed to validate player:"+player.getName()+" Message:"+e.getMessage());
 			//e.printStackTrace();
 			
-			if (player.isOp() || player.hasPermission(CivSettings.MINI_ADMIN)) {
+			if (player.isOp() || player.hasPermission(CivSettings.MOD) || player.hasPermission(CivSettings.ADMIN)) {
 				return;
 			} else if (player.hasPermission(CivSettings.HACKER)) {
 				TaskMaster.syncTask(new PlayerKickBan(player.getName(), true, false, "You must use AntiCheat to join this server."+

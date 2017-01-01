@@ -346,7 +346,7 @@ public class Civilization extends SQLObject {
 		return true;
 	}
 	
-	private boolean hasTech(String configId) {
+	public boolean hasTech(String configId) {
 		if (configId == null || configId.equals("")) {
 			return true;
 		}

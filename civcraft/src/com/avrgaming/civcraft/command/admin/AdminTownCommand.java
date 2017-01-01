@@ -63,7 +63,6 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("rmmayor", "[town] [player] - remove this player as a mayor from this town.");
 		commands.put("rmassistant", "[town] [player] - remove this player as an assistant from this town.");
 		commands.put("tp", "[town] - teleports to this town's town hall");
-		commands.put("culture", "[town] [amount] - gives this town this amount of culture.");
 		commands.put("info", "[town] - shows information for this town as-if you were a resident.");
 		commands.put("setciv", "[town] [civ] - changes this town's civilization to the named civ.");
 		commands.put("select", "[town] - selects this town as if you were the owner.");
@@ -76,30 +75,62 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("setunhappy", "[town] [amount] - sets a magical base unhappiness for this town.");
 		commands.put("event", "[town] [event_id] - Runs the named random event in this town.");
 		commands.put("rename", "[town] [new_name] - Renames this town.");
+		
+		commands.put("giveculture", "[town] [amount] - gives this [town] this [amount] of culture.");
+		commands.put("takeculture", "[town] [amount] - removs this [town] this [amount] of culture.");
+		commands.put("setculture", "[town] [amount] - gives this [town] this [amount] of culture.");
 		commands.put("givefood", "[town] [amount] - gives this [town] this [amount] of food.");
 		commands.put("takefood", "[town] [amount] - removes this [town] this [amount] of food.");
 		commands.put("setfood", "[town] [amount] - sets this [town] this [amount] of food.");
+	}
+	
+	public void giveculture_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer culture = getNamedInteger(2);
+		town.addAccumulatedCulture(0+culture);
+		CivMessage.sendSuccess(sender, town.getName()+" (Add)"+culture+" culture.");
+		town.save();
+	}
+	
+	public void setculture_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer culture = getNamedInteger(2);
+		town.addAccumulatedCulture(0-town.getCulture().total);
+		town.addAccumulatedCulture(culture);
+		CivMessage.sendSuccess(sender, town.getName()+" (Set)"+culture+" culture.");
+		town.save();
+	}
+	
+	public void takeculture_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer culture = getNamedInteger(2);
+		town.addAccumulatedCulture(0-culture);
+		CivMessage.sendSuccess(sender, town.getName()+" (Sub)"+culture+" food.");
+		town.save();
 	}
 	
 	public void givefood_cmd() throws CivException {
 		Town town = getNamedTown(1);
 		Integer count = getNamedInteger(2);
 		town.getFood().giveFood(count);
-		CivMessage.sendSuccess(sender, "Gave "+town.getName()+" (Add)"+count+" food.");
+		CivMessage.sendSuccess(sender, town.getName()+" (Add)"+count+" food.");
+		town.save();
 	}
 	
 	public void setfood_cmd() throws CivException {
 		Town town = getNamedTown(1);
 		Integer count = getNamedInteger(2);
 		town.getFood().setFoodCount(count);
-		CivMessage.sendSuccess(sender, "Gave "+town.getName()+" (Set)"+count+" food.");
+		CivMessage.sendSuccess(sender, town.getName()+" (Set)"+count+" food.");
+		town.save();
 	}
 	
-	public void subfood_cmd() throws CivException {
+	public void takefood_cmd() throws CivException {
 		Town town = getNamedTown(1);
 		Integer count = getNamedInteger(2);
 		town.getFood().takeFood(count);
-		CivMessage.sendSuccess(sender, "Gave "+town.getName()+" (Sub)"+count+" food.");
+		CivMessage.sendSuccess(sender, town.getName()+" (Sub)"+count+" food.");
+		town.save();
 	}
 	
 	public void rename_cmd() throws CivException, InvalidNameException {
@@ -314,16 +345,6 @@ public class AdminTownCommand extends CommandBase {
 		cmd.senderTownOverride = town;
 		cmd.senderCivOverride = town.getCiv();
 		cmd.onCommand(sender, null, "info", this.stripArgs(args, 2));		
-	}
-	
-	public void culture_cmd() throws CivException {
-		Town town = getNamedTown(1);
-		Integer culture = getNamedInteger(2);
-		
-		town.addAccumulatedCulture(culture);
-		town.save();
-		
-		CivMessage.sendSuccess(sender, "Gave "+town.getName()+" "+culture+" culture points.");
 	}
 	
 	public void tp_cmd() throws CivException {

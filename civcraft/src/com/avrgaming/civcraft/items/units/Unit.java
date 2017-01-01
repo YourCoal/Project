@@ -47,7 +47,6 @@ public abstract class Unit {
 	public static MissionBook SPY_SABOTAGE;
 	
 	public static void init() {
-		
 		SPY_UNIT = new Spy("u_spy", CivSettings.units.get("u_spy"));
 		
 		for (ConfigMission mission : CivSettings.missions.values()) {
@@ -61,35 +60,28 @@ public abstract class Unit {
 				SPY_MISSIONS.add(book);
 			}
 		}
-		
 		SETTLER_UNIT = new Settler("u_settler", CivSettings.units.get("u_settler"));
 	}
 	
 	public Unit() {
 	}
 	
-	
 	public Unit(Inventory inv) throws CivException {
-				
 	}
 	
-	
 	protected static boolean addItemNoStack(Inventory inv, ItemStack stack) {
-						
-			ItemStack[] contents = inv.getContents();
-			for (int i = 0; i < contents.length; i++) {
-				if (contents[i] == null) {
-					contents[i] = stack;
-					inv.setContents(contents);
-					return true;
-				}
+		ItemStack[] contents = inv.getContents();
+		for (int i = 0; i < contents.length; i++) {
+			if (contents[i] == null) {
+				contents[i] = stack;
+				inv.setContents(contents);
+				return true;
 			}
-			
-			return false;
+		}
+		return false;
 	}
 
 	public static ConfigUnit getPlayerUnit(Player player) {
-		
 		for (ItemStack stack : player.getInventory().getContents()) {
 			if (stack == null) {
 				continue;
@@ -97,22 +89,17 @@ public abstract class Unit {
 			
 			LoreMaterial material = LoreMaterial.getMaterial(stack);
 			if (material != null && (material instanceof UnitMaterial)) {
-				
 				if(!UnitMaterial.validateUnitUse(player, stack)) {
 					return null;
 				}
-				
-				
 				return ((UnitMaterial)material).getUnit();
 			}
 		}
-		
 		return null;
 	}
 
 	@SuppressWarnings("deprecation")
 	public static void removeUnit(Player player) {
-		
 		for (ItemStack stack : player.getInventory().getContents()) {
 			if (stack != null) {
 				LoreMaterial material = LoreMaterial.getMaterial(stack);
@@ -126,7 +113,6 @@ public abstract class Unit {
 						player.getInventory().remove(stack);
 						continue;
 					}
-					
 				}
 			}
 		}
@@ -134,7 +120,6 @@ public abstract class Unit {
 	}
 
 	public static boolean isWearingFullLeather(Player player) {
-		
 		try {
 			if (ItemManager.getId(player.getEquipment().getBoots()) != CivData.LEATHER_BOOTS) {
 				return false;

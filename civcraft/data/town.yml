@@ -2,24 +2,12 @@
 # Use this to configure global town costs/settings as well as town levels and culture 
 # levels for towns.
 town:
-    # Cost to start a town
-    cost: 10000.0
-
-    # Cost to claim a plot
-    plot_cost: 1000.0
-
     # Min distance from another town
     min_town_distance: 150.0
     
     # Min distance from another town that is your enemy
     min_town_distance_enemy: 300.0
 
-    # Cost to claim an outpost.
-    outpost_cost: 5000.0
-
-    # upkeep per outpost plot per day.
-    outpost_upkeep: 1000.0
-    
     # Grace distance that town will not calculate upkeep from.
     upkeep_town_block_grace_distance: 8.0
 
@@ -546,31 +534,106 @@ upgrades:
     require_structure: 's_library'
     category: 'Library'
 #
-# Grocer upgrades
+# Grocer Upgrades
+#
   - id: 'upgrade_grocer_level_2'
     name: 'Upgrade Grocer Level 2'
     action: 'set_grocer_level, 2'
-    cost: 2500.0
+    cost: 1000.0
     require_upgrade:
     require_tech: 'tech_trade'
     require_structure: 's_grocer'
     category: 'Grocer'
-
+#
   - id: 'upgrade_grocer_level_3'
     name: 'Upgrade Grocer Level 3'
     action: 'set_grocer_level, 3'
-    cost: 3000.0
+    cost: 2500.0
     require_upgrade: 'upgrade_grocer_level_2'
     require_tech: 'tech_commerce'
     require_structure: 's_grocer'
     category: 'Grocer'
-
+#
   - id: 'upgrade_grocer_level_4'
     name: 'Upgrade Grocer Level 4'
     action: 'set_grocer_level, 4'
-    cost: 5000.0
+    cost: 4000.0
     require_upgrade: 'upgrade_grocer_level_3'
     require_tech: 'tech_global_trade'
     require_structure: 's_grocer'
     category: 'Grocer'
-
+#
+  - id: 'upgrade_grocer_level_5'
+    name: 'Upgrade Grocer Level 5'
+    action: 'set_grocer_level, 5'
+    cost: 10000.0
+    require_upgrade: 'upgrade_grocer_level_4'
+    require_tech: 'tech_global_trade'
+    require_structure: 's_grocer'
+    category: 'Grocer'
+#
+  - id: 'upgrade_grocer_level_6'
+    name: 'Upgrade Grocer Level 6'
+    action: 'set_grocer_level, 6'
+    cost: 50000.0
+    require_upgrade: 'upgrade_grocer_level_5'
+    require_tech: 'tech_global_trade'
+    require_structure: 's_grocer'
+    category: 'Grocer'
+#
+# Cottage Upgrades
+#
+  - id: 'upgrade_cottage_level_2'
+    name: 'Upgrade Cottage Level 2'
+    action: 'set_cottage_level, 2'
+    cost: 30000.0
+    require_upgrade:
+    require_civic: 'civic_games_and_recreation'
+    require_structure: 'ti_cottage'
+    category: 'Cottage'
+#
+  - id: 'upgrade_cottage_level_3'
+    name: 'Upgrade Cottage Level 3'
+    action: 'set_cottage_level, 3'
+    cost: 75000.0
+    require_upgrade: 'upgrade_cottage_level_2'
+    require_civic: 'civic_medieval_faires'
+    require_structure: 'ti_cottage'
+    category: 'Cottage'
+#
+  - id: 'upgrade_cottage_level_4'
+    name: 'Upgrade Cottage Level 4'
+    action: 'set_cottage_level, 4'
+    cost: 200000.0
+    require_upgrade: 'upgrade_cottage_level_3'
+    require_civic: 'civic_humanism'
+    require_structure: 'ti_cottage'
+    category: 'Cottage'
+#
+  - id: 'upgrade_cottage_level_5'
+    name: 'Upgrade Cottage Level 5'
+    action: 'set_cottage_level, 5'
+    cost: 500000.0
+    require_upgrade: 'upgrade_cottage_level_4'
+    require_civic: 'civic_scorched_earth'
+    require_structure: 'ti_cottage'
+    category: 'Cottage'
+#
+  - id: 'upgrade_cottage_level_6'
+    name: 'Upgrade Cottage Level 6'
+    action: 'set_cottage_level, 6'
+    cost: 1000000.0
+    require_upgrade: 'upgrade_cottage_level_5'
+    require_civic: 'civic_suffrage'
+    require_structure: 'ti_cottage'
+    category: 'Cottage'
+#
+  - id: 'upgrade_cottage_level_7'
+    name: 'Upgrade Cottage Level 7'
+    action: 'set_cottage_level, 7'
+    cost: 3500000.0
+    require_upgrade: 'upgrade_cottage_level_6'
+    require_civic: 'civic_professional_sports'
+    require_structure: 'ti_cottage'
+    category: 'Cottage'
+#
