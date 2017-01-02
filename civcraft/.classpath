@@ -2,23 +2,26 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/bonecp-0.8.0.RELEASE.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/bukkit-1.11-R0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/craftbukkit-1.11-R0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/dhutils.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/guava-15.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/hamcrest-core-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/HeroChat.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/json.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/junit-4.11.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/mockito-all-1.9.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/NoCheatPlus.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/slf4j-simple-1.7.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/spigot-1.11-R0.1-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/TagAPI.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/VanishNoPacket.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/Vault.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10 jars/WorldBorder.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/bonecp-0.8.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/bukkit-1.11.2-R0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/craftbukkit-1.11.2-R0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/dhutils.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/guava-15.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/HeroChat.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/iTag-1.1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/json.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/mockito-all-1.9.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/NoCheatPlus.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/slf4j-simple-1.7.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/spigot-1.11.2-R0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/TagAPI-notused.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/TitleAPI-1.7.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/VanishNoPacket.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/WorldBorder.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.11 jars/HolographicDisplays.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
