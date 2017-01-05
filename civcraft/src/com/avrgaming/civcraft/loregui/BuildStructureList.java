@@ -3,16 +3,14 @@ package com.avrgaming.civcraft.loregui;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.avrgaming.civcraft.main.CivMessage;
-
 public class BuildStructureList implements GuiAction {
-	
+
 	@Override
 	public void performAction(InventoryClickEvent event, ItemStack stack) {
-		CivMessage.send(event.getWhoClicked(), "Currently disabled for now.");
 //		Player player = (Player)event.getWhoClicked();
 //		Resident resident = CivGlobal.getResident(player);
 //		Inventory guiInventory = Bukkit.getServer().createInventory(player, LoreGuiItem.MAX_INV_SIZE, "Pick Structure To Build");
+//		
 //		for (ConfigBuildableInfo info : CivSettings.structures.values()) {
 //			int type = ItemManager.getId(Material.ANVIL);
 //			if (info.itemTypeId != 0) {
@@ -32,9 +30,15 @@ public class BuildStructureList implements GuiAction {
 //					is = LoreGuiItem.setActionData(is, "info", info.id);
 //				}
 //			}
+//			
 //			guiInventory.addItem(is);
 //		}
+//		
+//		
 //		LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);		
 //		TaskMaster.syncTask(new OpenInventoryTask(player, guiInventory));
 	}
+
+
+
 }

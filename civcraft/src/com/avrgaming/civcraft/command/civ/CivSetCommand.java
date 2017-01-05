@@ -67,9 +67,9 @@ public class CivSetCommand extends CommandBase {
 		
 		double newPercentage = vaildatePercentage(args[1]);
 		
-		if (newPercentage > civ.getGovernment().max_civ_tax_rate) {
+		if (newPercentage > civ.getGovernment().maximum_tax_rate) {
 			throw new CivException("Cannot set your tax rate higher than your government's maximum("+
-					DecimalHelper.formatPercentage(civ.getGovernment().max_civ_tax_rate)+")");
+					DecimalHelper.formatPercentage(civ.getGovernment().maximum_tax_rate)+")");
 		}
 		
 		civ.setIncomeTaxRate(newPercentage);

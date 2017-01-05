@@ -47,24 +47,32 @@ public class AdminWarCommand extends CommandBase {
 	}
 	
 	public void onlywarriors_cmd() {
+		
 		War.setOnlyWarriors(!War.isOnlyWarriors());
+		
 		if (War.isOnlyWarriors()) {
+		
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				Resident resident = CivGlobal.getResident(player);
-				if (player.hasPermission(CivSettings.MOD) || player.hasPermission(CivSettings.ADMIN)) {
-					CivMessage.send(sender, "Skipping "+player.getName()+" since they are Mod/Admin.");
+				
+				if (player.isOp() || player.hasPermission(CivSettings.MINI_ADMIN)) {
+					CivMessage.send(sender, "Skipping "+player.getName()+" since he is OP or mini admin.");
 					continue;
 				}
 				
-				if (resident == null || !resident.hasTown() || !resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
+				if (resident == null || !resident.hasTown() || 
+						!resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
+					
 					TaskMaster.syncTask(new PlayerKickBan(player.getName(), true, false, "Kicked: Only residents 'at war' can play right now."));
 				}	
 			}
+			
 			CivMessage.global("All players 'not at war' have been kicked and cannot rejoin.");
 		} else {
 			CivMessage.global("All players are now allowed to join again.");
 		}
 	}
+	
 	
 //	public void setlastwar_cmd() throws CivException {
 //		if (args.length < 2) {
@@ -86,29 +94,32 @@ public class AdminWarCommand extends CommandBase {
 //	}
 	
 	public void start_cmd() {
+		
 		War.setWarTime(true);
 		CivMessage.sendSuccess(sender, "WarTime enabled.");
 	}
 	
 	public void stop_cmd() {
+		
 		War.setWarTime(false);
 		CivMessage.sendSuccess(sender, "WarTime disabled.");
 	}
-	
+
 	@Override
 	public void doDefaultAction() throws CivException {
 		showHelp();
 	}
-	
+
 	@Override
 	public void showHelp() {
 		showBasicHelp();
 	}
-	
+
 	@Override
 	public void permissionCheck() throws CivException {
 		if (sender.isOp() == false) {
 			throw new CivException("Only admins can use this command.");			
 		}	
 	}
+
 }

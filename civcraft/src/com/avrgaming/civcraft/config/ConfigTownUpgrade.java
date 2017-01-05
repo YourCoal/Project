@@ -37,7 +37,6 @@ import com.avrgaming.civcraft.structure.Grocer;
 import com.avrgaming.civcraft.structure.Library;
 import com.avrgaming.civcraft.structure.Store;
 import com.avrgaming.civcraft.structure.Structure;
-import com.avrgaming.civcraft.structure.Trommel;
 
 public class ConfigTownUpgrade {
 	public String id;
@@ -46,7 +45,6 @@ public class ConfigTownUpgrade {
 	public String action;
 	public String require_upgrade = null;
 	public String require_tech = null;
-	public String require_civic = null;
 	public String require_structure = null;
 	public String category = null;
 	
@@ -64,16 +62,16 @@ public class ConfigTownUpgrade {
 			town_upgrade.action = (String)level.get("action");
 			town_upgrade.require_upgrade = (String)level.get("require_upgrade");
 			town_upgrade.require_tech = (String)level.get("require_tech");
-			town_upgrade.require_civic = (String)level.get("require_civic");
 			town_upgrade.require_structure = (String)level.get("require_structure");
 			town_upgrade.category = (String)level.get("category");
-			
+		
 			Integer categoryCount = categories.get(town_upgrade.category);
 			if (categoryCount == null) {
 				categories.put(town_upgrade.category.toLowerCase(), 1);
 			} else {
 				categories.put(town_upgrade.category.toLowerCase(), categoryCount+1);
 			}
+			
 			upgrades.put(town_upgrade.id, town_upgrade);
 		}
 		CivLog.info("Loaded "+upgrades.size()+" town upgrades.");		
@@ -112,7 +110,7 @@ public class ConfigTownUpgrade {
 				Bank bank = (Bank)struct;
 				if (bank.getInterestRate() < Double.valueOf(args[1].trim())) {
 					bank.setInterestRate(Double.valueOf(args[1].trim()));
-					town.saved_bank_interest = bank.getInterestRate();
+					town.saved_bank_interest_amount = bank.getInterestRate();
 					DecimalFormat df = new DecimalFormat();
 					CivMessage.sendTown(town, "The bank is now provides a "+df.format(bank.getInterestRate()*100)+"% interest rate.");
 				}
@@ -170,36 +168,6 @@ public class ConfigTownUpgrade {
 				}
 			}
 			break;
-		case "set_trommel_level":
-			boolean didTrommelUpgrade = false;
-			int trommelLevel = 1;
-			for (Structure structure : town.getStructures()) {
-				if (structure.getConfigId().equalsIgnoreCase("s_trommel")) {
-					if (structure != null && (structure instanceof Trommel)) {
-						Trommel trommel = (Trommel)structure;
-						if (trommel.getLevel() < Integer.valueOf(args[1].trim())) {
-							didTrommelUpgrade = true;
-							trommel.setLevel(Integer.valueOf(args[1].trim()));
-							town.saved_trommel_level = trommel.getLevel();
-							trommelLevel = trommel.getLevel();
-						}
-					}
-				}
-			}
-			if (didTrommelUpgrade) {
-				CivMessage.sendTown(town, "Our trommels are now level "+trommelLevel);
-			}
-			break;
-		case "set_cottage_level":
-			boolean didCottageUpgrade = false;
-			if (town.saved_cottage_level < Integer.valueOf(args[1].trim())) {
-				didCottageUpgrade = true;
-				town.saved_cottage_level = town.saved_cottage_level + 1;
-			}
-			if (didCottageUpgrade) {
-				CivMessage.sendTown(town, "Our cottages are now level "+town.saved_cottage_level);
-			}
-			break;
 		}
 	}
 
@@ -210,12 +178,10 @@ public class ConfigTownUpgrade {
 		}
 		
 		if (town.hasUpgrade(this.require_upgrade)) {
-			if (town.getCiv().hasRequiredTech(this.require_tech)) {
-				if (town.hasRequiredCivic(this.require_civic)) {
-					if (town.hasStructure(require_structure)) {
-						if (!town.hasUpgrade(this.id)) {
-							return true;
-						}
+			if (town.getCiv().hasTechnology(this.require_tech)) {
+				if (town.hasStructure(require_structure)) {
+					if (!town.hasUpgrade(this.id)) {
+						return true;
 					}
 				}
 			}
@@ -233,6 +199,8 @@ public class ConfigTownUpgrade {
 				}
 			}
 		}
+		
 		return count;
-	}	
+	}
+		
 }

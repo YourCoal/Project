@@ -102,7 +102,7 @@ public class BuildCommand extends CommandBase {
 			throw new CivException (nearest.getDisplayName()+" at "+nearest.getCorner()+" is not destroyed.");
 		}
 		
-		if (!town.getCiv().hasRequiredTech(nearest.getRequiredTechnology())) {
+		if (!town.getCiv().hasTechnology(nearest.getRequiredTechnology())) {
 			throw new CivException ("You do not have the technology to repair "+nearest.getDisplayName()+" at "+nearest.getCorner());
 		}
 	

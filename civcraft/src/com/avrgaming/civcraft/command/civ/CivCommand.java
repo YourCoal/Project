@@ -129,8 +129,8 @@ public class CivCommand extends CommandBase {
 	public void revolution_cmd() throws CivException {
 		Town town = getSelectedTown();
 		
-		if (War.isWarTime() || War.isWithinWarDeclareDaysCutOff()) {
-			throw new CivException("Can not start a revolution during WarTime or "+War.getDeclareDaysCutOff()+" days before WarTime");
+		if (War.isWarTime() || War.isWithinWarDeclareDays()) {
+			throw new CivException("Can not start a revolution during WarTime or "+War.getTimeDeclareDays()+" days before WarTime");
 		}
 		
 		if (town.getMotherCiv() == null) {
@@ -346,7 +346,7 @@ public class CivCommand extends CommandBase {
 		} catch (CivException e) {
 		}
 
-		if (player == null || player.hasPermission(CivSettings.ADMIN) || player.isOp()) {
+		if (player == null || player.hasPermission(CivSettings.MINI_ADMIN) || player.isOp()) {
 			cal.setTime(CivGlobal.getTodaysSpawnRegenDate());
 			out.add(CivColor.LightPurple+"Next Spawn Regen: "+CivColor.LightGreen+sdf.format(cal.getTime()));
 			

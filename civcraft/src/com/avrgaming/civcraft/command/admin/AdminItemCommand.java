@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementArenaItem;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementSoulBound;
@@ -42,8 +43,9 @@ public class AdminItemCommand extends CommandBase {
 			throw new CivException("No custom item with id:"+id);
 		}
 		
-		ItemStack stack = LoreCraftableMaterial.spawn(craftMat, amount);
+		ItemStack stack = LoreCraftableMaterial.spawn(craftMat);
 		
+		stack.setAmount(amount);
 		HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(stack);
 		for (ItemStack is : leftovers.values()) {
 			player.getWorld().dropItem(player.getLocation(), is);
@@ -55,12 +57,12 @@ public class AdminItemCommand extends CommandBase {
 	public void enhance_cmd() throws CivException {
 		Player player = getPlayer();
 		HashMap<String, LoreEnhancement> enhancements = new HashMap<String, LoreEnhancement>();
-		ItemStack inHand = getPlayer().getInventory().getItemInMainHand();
+		ItemStack inHand = getPlayer().getItemInHand();
 		
 		enhancements.put("soulbound", new LoreEnhancementSoulBound());
 		enhancements.put("attack", new LoreEnhancementAttack());
 		enhancements.put("defence", new LoreEnhancementDefense());
-		enhancements.put("soulbound", new LoreEnhancementSoulBound());
+		enhancements.put("arena", new LoreEnhancementArenaItem());
 
 		if (inHand == null || ItemManager.getId(inHand) == CivData.AIR) {
 			throw new CivException("You must have an item in your hand to enhance it.");
@@ -82,7 +84,7 @@ public class AdminItemCommand extends CommandBase {
 			if (name.equals(str)) {
 				LoreEnhancement enh = enhancements.get(str);
 				ItemStack stack = LoreMaterial.addEnhancement(inHand, enh);
-				player.getInventory().setItemInMainHand(stack);
+				player.setItemInHand(stack);
 				CivMessage.sendSuccess(sender, "Enhanced with "+name);
 				return;
 			}

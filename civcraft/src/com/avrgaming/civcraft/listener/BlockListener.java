@@ -1,5 +1,6 @@
 /*************************************************************************
  * 
+ * AVRGAMING LLC
  * __________________
  * 
  *  [2013] AVRGAMING LLC
@@ -17,8 +18,12 @@
  */
 package com.avrgaming.civcraft.listener;
 
+import gpl.HorseModifier;
+
 import java.util.HashSet;
 import java.util.Random;
+
+import net.minecraft.server.v1_7_R4.NBTTagCompound;
 
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -28,7 +33,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -115,9 +120,9 @@ import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
+import com.avrgaming.moblib.MobLib;
 
-import gpl.HorseModifier;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
+
 
 public class BlockListener implements Listener {
 
@@ -167,7 +172,7 @@ public class BlockListener implements Listener {
 					}
 				}
 			}
-		}
+	    }
 
 
 		coord.setFromLocation(event.getBlock().getLocation());
@@ -357,6 +362,7 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnCreateSpawnEvent(CreatureSpawnEvent event) {
+
 		if (event.getSpawnReason().equals(SpawnReason.BREEDING)) {
 			ChunkCoord coord = new ChunkCoord(event.getEntity().getLocation());
 			Pasture pasture = Pasture.pastureChunks.get(coord);
@@ -477,103 +483,110 @@ public class BlockListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+
 	}
-	
-	private final BlockFace[] faces = new BlockFace[] {
-		BlockFace.SELF,
-		BlockFace.UP,
-		BlockFace.DOWN,
-		BlockFace.NORTH,
-		BlockFace.EAST,
-		BlockFace.SOUTH,
-		BlockFace.WEST,		
+
+     private final BlockFace[] faces = new BlockFace[] {
+			        BlockFace.DOWN,
+		            BlockFace.NORTH,
+		            BlockFace.EAST,
+		            BlockFace.SOUTH,
+		            BlockFace.WEST,		            
+		            BlockFace.SELF,
+		            BlockFace.UP
 	  };
-	
-/*	public BlockCoord generatesCobble(int id, Block b) {
-	   int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER_STILL ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
-	   int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER_STILL ? CivData.LAVA_STILL : CivData.WATER_STILL);
-	   for(BlockFace face : faces) {
-		  Block r = b.getRelative(face, 1);
-		  if(ItemManager.getId(r) == mirrorID1 || ItemManager.getId(r) == mirrorID2) {
-		  	return new BlockCoord(r);
-		  }
-	   }
-	   
-	   return null;
-	}*/
-	
-	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onBlockFromToEvent(BlockFromToEvent event) {
-		int id = event.getBlock().getTypeId();
-		Block b = event.getToBlock();
-		if(generatesCobble(id, b)) {
-			event.setCancelled(true);
-		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.NORMAL)
-	public boolean generatesCobble(int id, Block b) {
-		int mirrorID1 = (id == 8 || id == 9 ? 10 : 8);
-		int mirrorID2 = (id == 8 || id == 9 ? 11 : 9);
-		for(BlockFace face : faces) {
-			Block r = b.getRelative(face, 1);
-			if(r.getTypeId() == mirrorID1 || r.getTypeId() == mirrorID2) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-/*	private static HashSet<BlockCoord> stopCobbleTasks = new HashSet<BlockCoord>();
+
+    public BlockCoord generatesCobble(int id, Block b)
+    {
+        int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
+        int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER);
+        for(BlockFace face : faces)
+        {
+            Block r = b.getRelative(face, 1);
+            if(ItemManager.getId(r) == mirrorID1 || ItemManager.getId(r) == mirrorID2)
+            {
+            	
+            	return new BlockCoord(r);
+            }
+        }
+        
+        return null;
+    }
+
+//    private static void destroyLiquidRecursive(Block source) {
+//    	//source.setTypeIdAndData(CivData.AIR, (byte)0, false);
+//    	NMSHandler nms = new NMSHandler();
+//    	nms.setBlockFast(source.getWorld(), source.getX(), source.getY(), source.getZ(), 0, (byte)0);
+//    	
+//    	for (BlockFace face : BlockFace.values()) {
+//    		Block relative = source.getRelative(face);
+//    		if (relative == null) {
+//    			continue;
+//    		}
+//    		
+//    		if (!isLiquid(relative.getTypeId())) {
+//    			continue;
+//    		}
+//    		
+//    		destroyLiquidRecursive(relative);
+//    	}
+//    }
+    
+//    private static boolean isLiquid(int id) {
+//    	return (id >= CivData.WATER && id <= CivData.LAVA);
+//    }
+    
+    private static HashSet<BlockCoord> stopCobbleTasks = new HashSet<BlockCoord>();
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnBlockFromToEvent(BlockFromToEvent event) {
-		// Disable cobblestone generators.
+		/* Disable cobblestone generators. */
 		int id = ItemManager.getId(event.getBlock());
-		if(id >= CivData.WATER_STILL && id <= CivData.LAVA_STILL) {
-		   Block b = event.getToBlock();
-		   bcoord.setFromLocation(b.getLocation());
+	    if(id >= CivData.WATER && id <= CivData.LAVA)
+	    {
+	        Block b = event.getToBlock();
+	        bcoord.setFromLocation(b.getLocation());
 
-		   int toid = ItemManager.getId(b);
-		   if(toid == 0) {
-			  BlockCoord other = generatesCobble(id, b);
-		   	if(other != null)
-			  {
-			  	//BlockCoord d = new BlockCoord(event.getToBlock());
-//			  	BlockCoord fromCoord = new BlockCoord(event.getBlock());
-			  	event.setCancelled(true);
+	        int toid = ItemManager.getId(b);
+	        if(toid == 0)
+	        {
+	            BlockCoord other = generatesCobble(id, b);
+	        	if(other != null)
+	            {
+	            	//BlockCoord d = new BlockCoord(event.getToBlock());
+//	            	BlockCoord fromCoord = new BlockCoord(event.getBlock());
+	            	event.setCancelled(true);
 
-			  	class SyncTask implements Runnable {
-			  		BlockCoord block;
+	            	class SyncTask implements Runnable {
+	            		BlockCoord block;
 
-			  		public SyncTask(BlockCoord block) {
-			  			this.block = block;
-			  		}
+	            		public SyncTask(BlockCoord block) {
+	            			this.block = block;
+	            		}
 
 						@Override
 						public void run() {
 							ItemManager.setTypeIdAndData(block.getBlock(), CivData.NETHERRACK, (byte)0, true);
 							stopCobbleTasks.remove(block);
 						}
-			  	}
+	            	}
 
-			  	if (!stopCobbleTasks.contains(other)) {
-			  		stopCobbleTasks.add(other);
-			  		TaskMaster.syncTask(new SyncTask(other), 2);
-			  	}
+	            	if (!stopCobbleTasks.contains(other)) {
+	            		stopCobbleTasks.add(other);
+	            		TaskMaster.syncTask(new SyncTask(other), 2);
+	            	}
 
-//			  	if (!stopCobbleTasks.contains(fromCoord)) {
-//			  		stopCobbleTasks.add(fromCoord);
-//			  		TaskMaster.syncTask(new SyncTask(fromCoord));
-//			  	}
-			  }
-		   }
-		}
-	}*/
+//	            	if (!stopCobbleTasks.contains(fromCoord)) {
+//	            		stopCobbleTasks.add(fromCoord);
+//	            		TaskMaster.syncTask(new SyncTask(fromCoord));
+//	            	}
+	            }
+	        }
+	    }
+	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnBlockFormEvent (BlockFormEvent event) {
+
 		/* Disable cobblestone generators. */
 		if (ItemManager.getId(event.getNewState()) == CivData.COBBLESTONE) {
 			ItemManager.setTypeId(event.getNewState(), CivData.GRAVEL);
@@ -932,7 +945,7 @@ public class BlockListener implements Listener {
 		if (event.isCancelled()) {
 			// Fix for bucket bug.
 			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-				Integer item = ItemManager.getId(event.getPlayer().getInventory().getItemInMainHand());
+				Integer item = ItemManager.getId(event.getPlayer().getItemInHand());
 				// block cheats for placing water/lava/fire/lighter use.
 				if (item == 326 || item == 327 || item == 259 || (item >= 8 && item <= 11) || item == 51) { 
 					event.setCancelled(true);
@@ -956,8 +969,7 @@ public class BlockListener implements Listener {
 				Block clickedBlock = event.getClickedBlock();
 				if (ItemManager.getId(clickedBlock) == CivData.WHEAT || 
 					ItemManager.getId(clickedBlock) == CivData.CARROTS || 
-					ItemManager.getId(clickedBlock) == CivData.POTATOES || 
-					ItemManager.getId(clickedBlock) == CivData.BEETROOT_CROP) {
+					ItemManager.getId(clickedBlock) == CivData.POTATOES) {
 					event.setCancelled(true);
 					CivMessage.sendError(event.getPlayer(), "You cannot use bone meal on carrots, wheat, or potatoes.");
 					return;
@@ -966,15 +978,20 @@ public class BlockListener implements Listener {
 		}
 
 		Block soilBlock = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
+
+		// prevent players trampling crops
 		if ((event.getAction() == Action.PHYSICAL)) {
 			if ((soilBlock.getType() == Material.SOIL) || (soilBlock.getType() == Material.CROPS)) {
+				//CivLog.debug("no crop cancel.");
 				event.setCancelled(true);
 				return;	
 			}
 		}
 
-		/* Right clicking causes some dupe bugs for some reason with items that have "actions" such as swords.
-		 * It also causes block place events on top of signs. So we'll just only allow signs to work with left click. */
+		/* 
+		 * Right clicking causes some dupe bugs for some reason with items that have "actions" such as swords.
+		 * It also causes block place events on top of signs. So we'll just only allow signs to work with left click.
+		 */
 		boolean leftClick = event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK);
 
 		if (event.getClickedBlock() != null) {		
@@ -1061,6 +1078,7 @@ public class BlockListener implements Listener {
 	}
 
 	public static void OnPlayerSwitchEvent(PlayerInteractEvent event) {
+
 		if (event.getClickedBlock() == null) {
 			return;
 		}
@@ -1094,19 +1112,8 @@ public class BlockListener implements Listener {
 				if(tc.getTown().getCiv().getDiplomacyManager().atWarWith(resident.getTown().getCiv())) {
 
 					switch (event.getClickedBlock().getType()) {
-					case IRON_DOOR:
-					case BIRCH_DOOR:
 					case WOODEN_DOOR:
-					case SPRUCE_DOOR:
-					case JUNGLE_DOOR:
-					case ACACIA_DOOR:
-					case DARK_OAK_DOOR:
-					case FENCE_GATE:
-					case BIRCH_FENCE_GATE:
-					case SPRUCE_FENCE_GATE:
-					case JUNGLE_FENCE_GATE:
-					case ACACIA_FENCE_GATE:
-						case DARK_OAK_FENCE_GATE:
+					case IRON_DOOR:
 						return;
 					default:
 						break;
@@ -1182,9 +1189,9 @@ public class BlockListener implements Listener {
 			}
 		}
 
-		ItemStack inHand = event.getPlayer().getInventory().getItemInMainHand();
-//		ItemStack offHand = event.getPlayer().getInventory().getItemInOffHand();
+		ItemStack inHand = event.getPlayer().getItemInHand();
 			if (inHand != null) {
+
 				boolean denyBreeding = false;
 				switch (event.getRightClicked().getType()) {
 				case COW:
@@ -1195,45 +1202,7 @@ public class BlockListener implements Listener {
 					}
 					break;
 				case PIG:
-					if (inHand.getType().equals(Material.CARROT_ITEM) ||
-						inHand.getType().equals(Material.POTATO_ITEM) ||
-						inHand.getType().equals(Material.BEETROOT)) {
-						denyBreeding = true;
-					}
-					break;
-				case CHICKEN:
-					if (inHand.getType().equals(Material.SEEDS) ||
-						inHand.getType().equals(Material.MELON_SEEDS) ||
-						inHand.getType().equals(Material.PUMPKIN_SEEDS) ||
-						inHand.getType().equals(Material.BEETROOT_SEEDS)) {
-						denyBreeding = true;
-					}
-					break;
-				case RABBIT:
-					if (inHand.getType().equals(Material.YELLOW_FLOWER) ||
-						inHand.getType().equals(Material.CARROT_ITEM) ||
-						inHand.getType().equals(Material.GOLDEN_CARROT)) {
-						denyBreeding = true;
-					}
-					break;
-				case WOLF:
-					if (inHand.getType().equals(Material.PORK) ||
-						inHand.getType().equals(Material.RAW_BEEF) ||
-						inHand.getType().equals(Material.RAW_CHICKEN) ||
-						inHand.getType().equals(Material.RABBIT) ||
-						inHand.getType().equals(Material.MUTTON) ||
-						inHand.getType().equals(Material.ROTTEN_FLESH) ||
-						inHand.getType().equals(Material.GRILLED_PORK) ||
-						inHand.getType().equals(Material.COOKED_BEEF) ||
-						inHand.getType().equals(Material.COOKED_CHICKEN) ||
-						inHand.getType().equals(Material.COOKED_RABBIT) ||
-						inHand.getType().equals(Material.COOKED_MUTTON)) {
-						denyBreeding = true;
-					}
-					break;
-				case OCELOT:
-					if (inHand.getType().equals(Material.RAW_FISH) ||
-						inHand.getType().equals(Material.COOKED_FISH)) {
+					if (inHand.getType().equals(Material.CARROT_ITEM)) {
 						denyBreeding = true;
 					}
 					break;
@@ -1245,6 +1214,13 @@ public class BlockListener implements Listener {
 						return;
 					}
 					break;
+				case CHICKEN:
+					if (inHand.getType().equals(Material.SEEDS) ||
+						inHand.getType().equals(Material.MELON_SEEDS) ||
+						inHand.getType().equals(Material.PUMPKIN_SEEDS)) {
+						denyBreeding = true;
+					}
+					break;
 				default:
 					break;
 				}
@@ -1252,22 +1228,25 @@ public class BlockListener implements Listener {
 				if (denyBreeding) {
 					ChunkCoord coord = new ChunkCoord(event.getPlayer().getLocation());
 					Pasture pasture = Pasture.pastureChunks.get(coord);
+
 					if (pasture == null) {
-						CivMessage.sendError(event.getPlayer(), "You cannot breed mobs in the wild, take them to a pasture first.");
+						CivMessage.sendError(event.getPlayer(), "You cannot breed mobs in the wild, take them to a pasture.");
 						event.setCancelled(true);
 					} else {
-						int loveTicks;
-						NBTTagCompound tag = new NBTTagCompound();
-						((CraftEntity)event.getRightClicked()).getHandle().c(tag);
-						loveTicks = tag.getInt("InLove");
-						if (loveTicks == 0) {	
-							if(!pasture.processMobBreed(event.getPlayer(), event.getRightClicked().getType())) {
+							int loveTicks;
+							NBTTagCompound tag = new NBTTagCompound();
+							((CraftEntity)event.getRightClicked()).getHandle().c(tag);
+							loveTicks = tag.getInt("InLove");
+
+							if (loveTicks == 0) {	
+								if(!pasture.processMobBreed(event.getPlayer(), event.getRightClicked().getType())) {
+									event.setCancelled(true);
+								}
+							} else {
 								event.setCancelled(true);
 							}
-						} else {
-							event.setCancelled(true);
-						}
 					}
+
 					return;			
 				}
 			}
@@ -1381,14 +1360,7 @@ public class BlockListener implements Listener {
 		}
 
 		for (org.bukkit.entity.Entity ent : event.getChunk().getEntities()) {
-			if (ent.getType().equals(EntityType.ZOMBIE) || ent.getType().equals(EntityType.SKELETON) ||
-					ent.getType().equals(EntityType.CREEPER) || ent.getType().equals(EntityType.SPIDER) ||
-					ent.getType().equals(EntityType.CAVE_SPIDER) || ent.getType().equals(EntityType.ENDERMAN) ||
-					ent.getType().equals(EntityType.WITCH) || ent.getType().equals(EntityType.BLAZE) ||
-					ent.getType().equals(EntityType.SILVERFISH) || ent.getType().equals(EntityType.ENDERMITE) ||
-					ent.getType().equals(EntityType.GHAST) || ent.getType().equals(EntityType.MAGMA_CUBE) ||
-					ent.getType().equals(EntityType.SLIME) || ent.getType().equals(EntityType.IRON_GOLEM) ||
-					ent.getType().equals(EntityType.BAT) || ent.getType().equals(EntityType.PIG_ZOMBIE)) {
+			if (ent.getType().equals(EntityType.ZOMBIE)) {
 				ent.remove();
 			}
 		}
@@ -1482,7 +1454,7 @@ public class BlockListener implements Listener {
 		}
 		
 		if (event.getEntity().getType().equals(EntityType.CHICKEN)) {
-			if (event.getSpawnReason().equals(SpawnReason.EGG) || event.getSpawnReason().equals(SpawnReason.DISPENSE_EGG)) {
+			if (event.getSpawnReason().equals(SpawnReason.EGG)) {
 				event.setCancelled(true);
 				return;
 			}
@@ -1492,73 +1464,33 @@ public class BlockListener implements Listener {
 				return;			
 			}
 		}
-		
-		if (event.getEntity().getType().equals(EntityType.IRON_GOLEM) && event.getSpawnReason().equals(SpawnReason.BUILD_IRONGOLEM)) {
-			event.setCancelled(true);
+
+		if (event.getEntity().getType().equals(EntityType.IRON_GOLEM) &&
+			event.getSpawnReason().equals(SpawnReason.BUILD_IRONGOLEM)) {
+				event.setCancelled(true);
+				return;
+		}
+
+		if (MobLib.isMobLibEntity(event.getEntity())) {
 			return;
 		}
-		
-		if (event.getEntity().getType().equals(EntityType.SNOWMAN) && event.getSpawnReason().equals(SpawnReason.BUILD_SNOWMAN)) {
-			event.setCancelled(true);
-			return;
-		}
-		
-		if (event.getEntity().getType().equals(EntityType.SILVERFISH) && event.getSpawnReason().equals(SpawnReason.SILVERFISH_BLOCK)) {
-			event.setCancelled(true);
-			return;
-		}
-		
-		if (event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) && event.getSpawnReason().equals(SpawnReason.NETHER_PORTAL)) {
-			event.setCancelled(true);
-			return;
-		}
-		
-		if (event.getEntity().getType().equals(EntityType.WITHER) && event.getSpawnReason().equals(SpawnReason.BUILD_WITHER)) {
-			event.setCancelled(true);
-			return;
-		}
-		
-		if (event.getEntity().getType().equals(EntityType.ENDERMITE) && event.getSpawnReason().equals(SpawnReason.ENDER_PEARL)) {
-			event.setCancelled(true);
-			return;
-		}
-		
-		//False, we want them to be cute to players
-		if (event.getEntity().getType().equals(EntityType.SLIME) && event.getSpawnReason().equals(SpawnReason.SLIME_SPLIT)) {
-			event.setCancelled(false);
-			return;
-		}
-		
-		if (event.getEntity().getType().equals(EntityType.BAT) ||
-//			event.getEntity().getType().equals(EntityType.WITCH) ||
-//			event.getEntity().getType().equals(EntityType.GUARDIAN) ||
-//			event.getEntity().getType().equals(EntityType.ZOMBIE) ||
+
+		if (event.getEntity().getType().equals(EntityType.ZOMBIE) ||
 			event.getEntity().getType().equals(EntityType.SKELETON) ||
-			event.getEntity().getType().equals(EntityType.CREEPER) ||
+			event.getEntity().getType().equals(EntityType.BAT) ||
+			event.getEntity().getType().equals(EntityType.CAVE_SPIDER) ||
 			event.getEntity().getType().equals(EntityType.SPIDER) ||
-//			event.getEntity().getType().equals(EntityType.CAVE_SPIDER) ||
-			event.getEntity().getType().equals(EntityType.SILVERFISH) ||
-			event.getEntity().getType().equals(EntityType.ENDERMITE) ||
-//			event.getEntity().getType().equals(EntityType.ENDERMAN) ||
+			event.getEntity().getType().equals(EntityType.CREEPER) ||
 			event.getEntity().getType().equals(EntityType.WOLF) ||
+			event.getEntity().getType().equals(EntityType.SILVERFISH) ||
 			event.getEntity().getType().equals(EntityType.OCELOT) ||
-			
-			//1.10 or 1.11
-/*			event.getEntity().getType().equals(EntityType.HUSK) ||
-			event.getEntity().getType().equals(EntityType.STRAY) ||
-			event.getEntity().getType().equals(EntityType.VEX) ||
-			event.getEntity().getType().equals(EntityType.EVOKER) ||
-			event.getEntity().getType().equals(EntityType.EVOKER_FANGS) ||
-			event.getEntity().getType().equals(EntityType.VINDICATOR) ||*/
-			
-			event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) ||
-			event.getEntity().getType().equals(EntityType.MAGMA_CUBE) ||
-			event.getEntity().getType().equals(EntityType.GHAST) ||
-			event.getEntity().getType().equals(EntityType.BLAZE)) {
+			event.getEntity().getType().equals(EntityType.WITCH) ||
+			event.getEntity().getType().equals(EntityType.ENDERMAN)) {
+
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		if (event.getSpawnReason().equals(SpawnReason.SPAWNER)) {
 			event.setCancelled(true);
 			return;
@@ -1627,7 +1559,8 @@ public class BlockListener implements Listener {
 	public void onBlockPistonExtendEvent(BlockPistonExtendEvent event) {
 
 		/* UGH. If we extend into 'air' it doesnt count them as blocks...
-		 * we need to check air to prevent breaking of item frames... */
+		 * we need to check air to prevent breaking of item frames...
+		 */
 		final int PISTON_EXTEND_LENGTH = 13;
 		Block currentBlock = event.getBlock().getRelative(event.getDirection());
 		for (int i = 0; i < PISTON_EXTEND_LENGTH; i++) {
@@ -1672,29 +1605,29 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST) 
 	public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
-		for (Block block: event.getBlocks()) {
-			if (!allowPistonAction(block.getLocation())) {
-				event.setCancelled(true);
-				return;
-			}
+		if (!allowPistonAction(event.getRetractLocation())) {
+			event.setCancelled(true);
+			return;
 		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST) 
 	public void onPotionSplashEvent(PotionSplashEvent event) {
 		ThrownPotion potion = event.getPotion();
+
 		if (!(potion.getShooter() instanceof Player)) {
 			return;
 		} 
 
 		Player attacker = (Player)potion.getShooter();
+
 		for (PotionEffect effect : potion.getEffects()) {
 			if (effect.getType().equals(PotionEffectType.INVISIBILITY)) {
 				event.setCancelled(true);
 				return;
 			}
 		}
-		
+
 		boolean protect = false;
 		for (PotionEffect effect : potion.getEffects()) {
 			if (effect.getType().equals(PotionEffectType.BLINDNESS) ||
@@ -1705,6 +1638,7 @@ public class BlockListener implements Listener {
 				effect.getType().equals(PotionEffectType.SLOW_DIGGING) ||
 				effect.getType().equals(PotionEffectType.WEAKNESS) ||
 				effect.getType().equals(PotionEffectType.WITHER)) {
+
 				protect = true;
 				break;
 			}
@@ -1745,16 +1679,13 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL) 
 	public void onBlockRedstoneEvent(BlockRedstoneEvent event) {
+		
 		bcoord.setFromLocation(event.getBlock().getLocation());
 
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
-			if (ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR ||
-					ItemManager.getId(event.getBlock()) == CivData.BIRCH_DOOR||
-					ItemManager.getId(event.getBlock()) == CivData.SPRUCE_DOOR||
-					ItemManager.getId(event.getBlock()) == CivData.JUNGLE_DOOR||
-					ItemManager.getId(event.getBlock()) == CivData.ACACIA_DOOR||
-					ItemManager.getId(event.getBlock()) == CivData.DARK_OAK_DOOR) {
+			if (ItemManager.getId(event.getBlock()) == CivData.WOOD_DOOR ||
+					ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR) {
 				event.setNewCurrent(0);
 				return;
 			}
@@ -1830,11 +1761,5 @@ public class BlockListener implements Listener {
 	public void onEntityPortalCreate(EntityCreatePortalEvent event) {
 		event.setCancelled(true);
 	}
-	
-/*	@EventHandler(priority = EventPriority.NORMAL)
-	public void onBrewEvent(BrewEvent event) {
-		Material material = event.getContents().getIngredient().getType();
-		if (material == Material.DIRT) {
-		}
-	}*/
+
 }

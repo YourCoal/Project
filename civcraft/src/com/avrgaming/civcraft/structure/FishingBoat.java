@@ -127,9 +127,9 @@ public class FishingBoat extends TradeOutpost {
 		this.addStructureBlock(sb.getCoord(), false);
 		
 		/* Place the itemframe. */
-		b = centerLoc.getBlock().getRelative(1,1,0);
+		b = centerLoc.getBlock().getRelative(0,1,0);
 		this.addStructureBlock(new BlockCoord(b), false);
-		Block b2 = b.getRelative(0, 0, 0);
+		Block b2 = b.getRelative(1, 0, 0);
 		Entity entity = CivGlobal.getEntityAtLocation(b2.getLocation());
 		
 		if (entity == null || (!(entity instanceof ItemFrame))) {
@@ -149,7 +149,7 @@ public class FishingBoat extends TradeOutpost {
 				center.getYaw(), center.getPitch());
 		
 		// Reposition tile improvements
-		if (this.isTile()) {
+		if (this.isTileImprovement()) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 			//loc = center.getChunk().getBlock(arg0, arg1, arg2)

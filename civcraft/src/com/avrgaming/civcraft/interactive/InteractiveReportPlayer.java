@@ -12,8 +12,9 @@ import com.avrgaming.global.reports.ReportManager;
 import com.avrgaming.global.reports.ReportManager.ReportType;
 
 public class InteractiveReportPlayer implements InteractiveResponse {
-	
+
 	String playerName;
+	
 	public InteractiveReportPlayer(String playerName) {
 		this.playerName = playerName;
 	}
@@ -26,7 +27,7 @@ public class InteractiveReportPlayer implements InteractiveResponse {
 		} catch (CivException e) {
 			return;
 		}
-		
+
 		if (message.equalsIgnoreCase("cancel")) {
 			CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"Report cancelled.");
 			resident.clearInteractiveMode();
@@ -48,5 +49,7 @@ public class InteractiveReportPlayer implements InteractiveResponse {
 		
 		CivMessage.send(player, CivColor.Yellow+ChatColor.BOLD+"Please enter a description of what happened:");
 		resident.setInteractiveMode(new InteractiveReportPlayerMessage(playerName, selectedType));		
+		
 	}
+
 }

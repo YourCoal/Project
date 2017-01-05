@@ -33,7 +33,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.avrgaming.civcraft.books.Tutorial;
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
@@ -53,6 +52,7 @@ import com.avrgaming.civcraft.questions.JoinTownResponse;
 import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
+import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -96,12 +96,6 @@ public class TownCommand extends CommandBase {
 		commands.put("claimmayor", "claim yourself as mayor of this town. All current mayors must be inactive.");
 		commands.put("movestructure", "[coord] [town] moves the structure specified by the coord to the specfied town.");
 		commands.put("enablestructure", "[coord] attempts to enable the specified structure if its currently disabled.");
-		commands.put("civic", "Manage this town's civics.");
-	}
-	
-	public void civic_cmd() {
-		TownCivicCommand cmd = new TownCivicCommand();	
-		cmd.onCommand(sender, null, "civic", this.stripArgs(args, 1));
 	}
 	
 	public void enablestructure_cmd() throws CivException {
@@ -204,7 +198,7 @@ public class TownCommand extends CommandBase {
 	public void templates_cmd() throws CivException {
 		Player player = getPlayer();
 		Town town = getSelectedTown();
-		Inventory inv = Bukkit.getServer().createInventory(player, Tutorial.MAX_CHEST_SIZE*9, town.getName()+" Perks");
+		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9, town.getName()+" Perks");
 
 		for (ConfigBuildableInfo info : CivSettings.structures.values()) {
 			for (Perk p : CustomTemplate.getTemplatePerksForBuildable(town, info.template_base_name)) {
@@ -687,8 +681,8 @@ public class TownCommand extends CommandBase {
 			throw new CivException("Cannot invite players to town during WarTime.");
 		}
 
-		if (War.isWithinWarDeclareDaysCutOff() && town.getCiv().getDiplomacyManager().isAtWar()) {
-			throw new CivException("Cannot invite players to a civ that is at war within "+War.getDeclareDaysCutOff()+" days before WarTime.");
+		if (War.isWithinWarDeclareDays() && town.getCiv().getDiplomacyManager().isAtWar()) {
+			throw new CivException("Cannot invite players to a civ that is at war within "+War.getTimeDeclareDays()+" days before WarTime.");
 		}
 		
 		if (newResident.hasCamp()) {

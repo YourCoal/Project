@@ -105,7 +105,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (buildable.getTown().getMotherCiv() != null) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while we're conquered by "+buildable.getTown().getCiv().getName());
 					try {
-						Thread.sleep(90000); //1.5 min notify.
+						Thread.sleep(1800000); //30 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -115,7 +115,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (inProgress != null && inProgress != buildable) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while we're constructing a "+inProgress.getDisplayName());
 					try {
-						Thread.sleep(90000); //1.5 min notify.
+						Thread.sleep(600000); //10 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 
@@ -124,7 +124,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 				if (buildable.getTown().getTownHall() == null) {
 					CivMessage.sendTown(buildable.getTown(), "Wonder production halted while you have no town hall.");
 					try {
-						Thread.sleep(300000); //5 min notify.
+						Thread.sleep(600000); //10 min notify.
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} 

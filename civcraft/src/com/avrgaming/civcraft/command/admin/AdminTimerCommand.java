@@ -27,8 +27,6 @@ import com.avrgaming.civcraft.event.EventTimer;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.threading.timers.SyncTownHallBonusChest;
 
 public class AdminTimerCommand extends CommandBase {
 
@@ -38,14 +36,9 @@ public class AdminTimerCommand extends CommandBase {
 		displayName = "Admin Timer";
 		
 		commands.put("set", "[name] [date] DAY:MONTH:YEAR:HOUR:MIN (24 hour time)");
-		commands.put("run", "[name] Runs this timer event.");
-		commands.put("thbonus", "Runs town bonus chest timer.");
+		commands.put("run", "[name] Runs this timer event.");		
 	}
-	
-	public void thbonus_cmd() throws CivException {
-		TaskMaster.syncTask(new SyncTownHallBonusChest(), 0);
-		CivMessage.sendSuccess(sender, "Town Bonus Chest Ran.");
-	}
+
 	
 	public void run_cmd() throws CivException {
 		if (args.length < 2) {
@@ -64,10 +57,12 @@ public class AdminTimerCommand extends CommandBase {
 			e.printStackTrace();
 			throw new CivException("Invalid configuration, cant run timer.");
 		}
+
 		timer.getEventFunction().process();
 		timer.setLast(EventTimer.getCalendarInServerTimeZone());
 		timer.setNext(next);
 		timer.save();
+		
 		CivMessage.sendSuccess(sender, "Timer Ran");
 	}
 	
@@ -84,6 +79,7 @@ public class AdminTimerCommand extends CommandBase {
 		
 		String dateStr = args[2];
 		SimpleDateFormat parser = new SimpleDateFormat("d:M:y:H:m");
+		
 		Calendar next = EventTimer.getCalendarInServerTimeZone();
 		try {
 			next.setTime(parser.parse(dateStr));
@@ -93,6 +89,7 @@ public class AdminTimerCommand extends CommandBase {
 		} catch (ParseException e) {
 			throw new CivException("Couldnt parse "+args[2]+" into a date, use format: DAY:MONTH:YEAR:HOUR:MIN");
 		}
+		
 	}
 	
 	@Override
@@ -109,4 +106,5 @@ public class AdminTimerCommand extends CommandBase {
 	public void permissionCheck() throws CivException {
 		
 	}
+
 }

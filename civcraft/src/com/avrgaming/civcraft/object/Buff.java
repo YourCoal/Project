@@ -30,8 +30,7 @@ public class Buff {
 	public static final String CONSTRUCTION = "buff_construction";
 	public static final String GROWTH_RATE = "buff_year_of_plenty";
 	public static final String TRADE = "buff_monopoly";
-	public static final String REDUCE_CONSUME_GROWTH = "buff_preservative_growth";
-	public static final String REDUCE_CONSUME_PRODUCTION = "buff_preservative_production";
+	public static final String REDUCE_CONSUME = "buff_preservative";	
 	public static final String SCIENCE_RATE = "buff_innovation";
 	public static final String EXTRA_CULTURE = "buff_doesnotexist";
 	public static final String COTTAGE_RATE = "buff_doesnotexist";

@@ -70,31 +70,31 @@ public class Bank extends Structure {
 		double exchange_rate = 0.0;
 		switch (level) {
 		case 1:
-			exchange_rate = 0.4;
+			exchange_rate = 0.40;
 			break;
 		case 2:
-			exchange_rate = 0.5;
+			exchange_rate = 0.50;
 			break;
 		case 3:
-			exchange_rate = 0.6;
+			exchange_rate = 0.60;
 			break;
 		case 4:
-			exchange_rate = 0.7;
+			exchange_rate = 0.70;
 			break;
 		case 5:
-			exchange_rate = 0.8;
+			exchange_rate = 0.80;
 			break;
 		case 6:
-			exchange_rate = 0.9;
+			exchange_rate = 0.90;
 			break;
 		case 7:
 			exchange_rate = 1;
 			break;
 		case 8:
-			exchange_rate = 1.25;
+			exchange_rate = 1.20;
 			break;
 		case 9:
-			exchange_rate = 1.5;
+			exchange_rate = 1.50;
 			break;
 		case 10:
 			exchange_rate = 2;
@@ -203,7 +203,7 @@ public class Bank extends Structure {
 		
 		try {
 			
-			if (LoreMaterial.isCustom(player.getInventory().getItemInMainHand())) {
+			if (LoreMaterial.isCustom(player.getItemInHand())) {
 				throw new CivException("You cannot exchange this item at the bank.");
 			}
 			
@@ -347,7 +347,7 @@ public class Bank extends Structure {
 	@Override
 	public void onPostBuild(BlockCoord absCoord, SimpleBlock commandBlock) {
 		this.level = getTown().saved_bank_level;
-		this.interestRate = getTown().saved_bank_interest;
+		this.interestRate = getTown().saved_bank_interest_amount;
 	}
 
 	public NonMemberFeeComponent getNonMemberFeeComponent() {

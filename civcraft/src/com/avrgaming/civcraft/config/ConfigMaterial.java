@@ -28,16 +28,11 @@ public class ConfigMaterial {
 	public String[] lore = null;
 	public boolean craftable = false;
 	public String required_tech = null;
-	public String required_civic = null;
 	public boolean shaped = false;
-	public boolean shiny = false;
 	public HashMap<String, ConfigIngredient> ingredients;
 	public String[] shape;
 	public List<HashMap<String, String>> components = new LinkedList<HashMap<String, String>>();
-	public boolean mineable = false;
-	public boolean farmable = false;
 	public boolean vanilla = false;
-	public boolean quest = false;
 	public int amount = 1;
 	
 	@SuppressWarnings("unchecked")
@@ -47,13 +42,12 @@ public class ConfigMaterial {
 		for (Map<?, ?> b : configMaterials) {
 			ConfigMaterial mat = new ConfigMaterial();
 			
-			/* Mandatory Settings */
+			/* Manditory Settings */
 			mat.id = (String)b.get("id");
 			mat.item_id = (Integer)b.get("item_id");
 			mat.item_data = (Integer)b.get("item_data");
 			mat.name = (String)b.get("name");
 			mat.name = CivColor.colorize(mat.name);
-			
 			
 			String category = (String)b.get("category");
 			if (category != null) {
@@ -97,30 +91,10 @@ public class ConfigMaterial {
 			if (shaped != null) {
 				mat.shaped = shaped;
 			}
-
-			Boolean isShiny = (Boolean)b.get("shiny");
-			if (isShiny != null) {
-				mat.shiny = isShiny;
-			}
-			
-			Boolean mineable = (Boolean)b.get("mineable");
-			if (mineable != null) {
-				mat.mineable = mineable;
-			}
-			
-			Boolean farmable = (Boolean)b.get("farmable");
-			if (farmable != null) {
-				mat.farmable = farmable;
-			}
 			
 			Boolean vanilla = (Boolean)b.get("vanilla");
 			if (vanilla != null) {
 				mat.vanilla = vanilla;
-			}
-			
-			Boolean quest = (Boolean)b.get("quest");
-			if (quest != null) {
-				mat.quest = quest;
 			}
 			
 			Integer amount = (Integer)b.get("amount");
@@ -131,11 +105,6 @@ public class ConfigMaterial {
 			String required_tech = (String)b.get("required_techs");
 			if (required_tech != null) {
 				mat.required_tech = required_tech;
-			}
-			
-			String required_civic = (String)b.get("required_civics");
-			if (required_civic != null) {
-				mat.required_civic = required_civic;
 			}
 			
 			List<Map<?,?>> comps = (List<Map<?,?>>)b.get("components");
@@ -153,6 +122,7 @@ public class ConfigMaterial {
 			List<Map<?, ?>> configIngredients = (List<Map<?,?>>)b.get("ingredients");
 			if (configIngredients != null) {
 				mat.ingredients = new HashMap<String, ConfigIngredient>();
+				
 				for (Map<?, ?> ingred : configIngredients) {
 					ConfigIngredient ingredient = new ConfigIngredient();
 					ingredient.type_id = (Integer)ingred.get("type_id");
@@ -184,6 +154,9 @@ public class ConfigMaterial {
 					if (letter != null) {
 						ingredient.letter = letter;
 					}
+					
+					
+					
 					mat.ingredients.put(key, ingredient);
 					//ConfigIngredient.ingredientMap.put(ingredient.custom_id, ingredient);
 				}
@@ -230,31 +203,11 @@ public class ConfigMaterial {
 		String[] split = this.required_tech.split(",");
 		for (String tech : split) {
 			tech = tech.replace(" ", "");
-			if (!resident.getCiv().hasRequiredTech(tech)) {
+			if (!resident.getCiv().hasTechnology(tech)) {
 				return false;
 			}
 		}
-		return true;	
-	}
-	
-	public boolean playerHasCivic(Player player) {
-		if (this.required_civic == null) {
-			return true;
-		}
 		
-		Resident resident = CivGlobal.getResident(player);
-		if (resident == null || !resident.hasTown()) {
-			return false;
-		}
-		
-		/* Parse technoloies */
-		String[] split = this.required_civic.split(",");
-		for (String civic : split) {
-			civic = civic.replace(" ", "");
-			if (!resident.getTown().hasRequiredCivic(civic)) {
-				return false;
-			}
-		}
 		return true;	
 	}
 	
@@ -273,7 +226,8 @@ public class ConfigMaterial {
 				out += technology.name+", ";
 			}
 		}
+		
 		return out;
 	}
+	
 }
-

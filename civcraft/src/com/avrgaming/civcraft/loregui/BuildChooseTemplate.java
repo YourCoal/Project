@@ -9,7 +9,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.avrgaming.civcraft.books.Tutorial;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
 import com.avrgaming.civcraft.exception.CivException;
@@ -19,6 +18,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.global.perks.Perk;
@@ -46,7 +46,7 @@ public class BuildChooseTemplate implements GuiAction {
 		resident.pendingBuildable = struct;
 		
 		/* Build an inventory full of templates to select. */
-		Inventory inv = Bukkit.getServer().createInventory(player, Tutorial.MAX_CHEST_SIZE*9);
+		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9);
 		ItemStack infoRec = LoreGuiItem.build("Default "+struct.getDisplayName(), 
 				ItemManager.getId(Material.WRITTEN_BOOK), 
 				0, CivColor.Gold+"<Click To Build>");
@@ -54,28 +54,29 @@ public class BuildChooseTemplate implements GuiAction {
 		inv.addItem(infoRec);
 		
 		for (Perk perk : perkList) {
-			if (!perk.getIdent().contains("template")) {
-				infoRec = LoreGuiItem.build(perk.getDisplayName(), perk.configPerk.type_id, perk.configPerk.data,
-					CivColor.Gold+"<Click To Build>", CivColor.Gray+"Provided by: "+CivColor.LightBlue+perk.provider);
-				infoRec = LoreGuiItem.setAction(infoRec, "BuildWithTemplate");
-				infoRec = LoreGuiItem.setActionData(infoRec, "perk", perk.getIdent());
+			infoRec = LoreGuiItem.build(perk.getDisplayName(), 
+					perk.configPerk.type_id, 
+					perk.configPerk.data, CivColor.Gold+"<Click To Build>",
+					CivColor.Gray+"Provided by: "+CivColor.LightBlue+perk.provider);
+			infoRec = LoreGuiItem.setAction(infoRec, "BuildWithTemplate");
+			infoRec = LoreGuiItem.setActionData(infoRec, "perk", perk.getIdent());
 			inv.addItem(infoRec);
-			}
 		}
 		
 		for (Perk perk : personalUnboundPerks) {
-			if (!perk.getIdent().contains("template")) {
-				infoRec = LoreGuiItem.build(perk.getDisplayName(), CivData.BEDROCK, perk.configPerk.data, CivColor.Gold+"<Click To Bind>",
+			infoRec = LoreGuiItem.build(perk.getDisplayName(), 
+					CivData.BEDROCK, 
+					perk.configPerk.data, CivColor.Gold+"<Click To Bind>",
 					CivColor.Gray+"Unbound Temple",
 					CivColor.Gray+"You own this template.",
 					CivColor.Gray+"The town is missing it.",
 					CivColor.Gray+"Click to bind to town first.",
 					CivColor.Gray+"Then build again.");				
-				infoRec = LoreGuiItem.setAction(infoRec, "ActivatePerk");
-				infoRec = LoreGuiItem.setActionData(infoRec, "perk", perk.getIdent());
-			}
+			infoRec = LoreGuiItem.setAction(infoRec, "ActivatePerk");
+			infoRec = LoreGuiItem.setActionData(infoRec, "perk", perk.getIdent());
 			
 		}
+		
 		TaskMaster.syncTask(new OpenInventoryTask(player, inv));
 		return;		
 	}

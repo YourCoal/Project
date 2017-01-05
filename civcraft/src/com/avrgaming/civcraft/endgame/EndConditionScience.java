@@ -21,7 +21,7 @@ public class EndConditionScience extends EndGameCondition {
 	@Override
 	public boolean check(Civilization civ) {
 		
-		if (!civ.hasRequiredTech(techname)) {
+		if (!civ.hasTechnology(techname)) {
 			return false;
 		}
 

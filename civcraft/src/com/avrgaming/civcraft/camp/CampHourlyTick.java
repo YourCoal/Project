@@ -35,4 +35,5 @@ public class CampHourlyTick implements Runnable {
 			}
 		}
 	}
+
 }

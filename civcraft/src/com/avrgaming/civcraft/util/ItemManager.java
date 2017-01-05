@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 
+
 /*
  * The ItemManager class is going to be used to wrap itemstack operations that have now
  * been deprecated by Bukkit. If bukkit ever actually takes these methods away from us,
@@ -79,10 +80,6 @@ public class ItemManager {
 		return block.getData();
 	}
 	
-	public static int getCivData(int civ) {
-		return civ;
-	}
-	
 	public static short getData(ItemStack stack) {
 		return stack.getDurability();
 	}
@@ -111,11 +108,6 @@ public class ItemManager {
 	public static Material getMaterial(int material) {
 		return Material.getMaterial(material);
 	}
-	
-	//TODO Find out of this works, then enable it. I just made it!
-//	public static LoreMaterial getMaterial(LoreMaterial material) {
-//		return LoreMaterial.materialMap.get(material);
-//	}
 	
 	@SuppressWarnings("deprecation")
 	public static int getBlockTypeId(ChunkSnapshot snapshot, int x, int y, int z) {

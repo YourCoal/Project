@@ -161,9 +161,9 @@ public class LoreCraftableMaterial extends LoreMaterial {
 			LoreCraftableMaterial loreMat = new LoreCraftableMaterial(cfgMat.id, cfgMat.item_id, (short)cfgMat.item_data);
 			
 			loreMat.setName(cfgMat.name);
-//			if (cfgMat.lore != null) {
-//				loreMat.setLore(cfgMat.lore);
-//			}
+			if (cfgMat.lore != null) {
+				loreMat.setLore(cfgMat.lore);
+			}
 			
 			loreMat.setCraftable(cfgMat.craftable);
 			loreMat.setShaped(cfgMat.shaped);
@@ -206,7 +206,9 @@ public class LoreCraftableMaterial extends LoreMaterial {
 	}
 
 	public static void buildRecipes() {
-		/* Loads in materials from configuration file. */
+		/*
+		 * Loads in materials from configuration file.
+		 */
 		for (LoreCraftableMaterial loreMat : materials.values()) {
 			if (!loreMat.isCraftable()) {
 				continue;
@@ -216,7 +218,7 @@ public class LoreCraftableMaterial extends LoreMaterial {
 			ConfigMaterial configMaterial = loreMat.configMaterial;
 			
 			if (loreMat.isShaped()) {
-				ItemStack[] matrix = new ItemStack[9];
+				ItemStack[] matrix = new ItemStack[10];
 				ShapedRecipe recipe = new ShapedRecipe(stack);
 				recipe.shape(configMaterial.shape[0], configMaterial.shape[1], configMaterial.shape[2]);
 				
@@ -262,6 +264,7 @@ public class LoreCraftableMaterial extends LoreMaterial {
 				String key = getShapedRecipeKey(matrix);
 				shapedKeys.put(key, loreMat);
 				
+
 				/* Register recipe with server. */
 				Bukkit.getServer().addRecipe(recipe);
 			} else {
@@ -415,6 +418,7 @@ public class LoreCraftableMaterial extends LoreMaterial {
 	@Override
 	public void onItemCraft(CraftItemEvent event) {
 		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
@@ -504,7 +508,7 @@ public class LoreCraftableMaterial extends LoreMaterial {
 	public void setCraftable(boolean craftable) {
 		this.craftable = craftable;
 	}
-	
+
 	public boolean isShaped() {
 		return shaped;
 	}
@@ -623,30 +627,22 @@ public class LoreCraftableMaterial extends LoreMaterial {
 		}
 	}
 	
-	public boolean isMineable() {
-		return this.configMaterial.mineable;
-	}
-	
-	public boolean isFarmable() {
-		return this.configMaterial.farmable;
-	}
-	
-	public boolean isQuest() {
-		return this.configMaterial.quest;
-	}
 	
 	public boolean isVanilla() {
 		return this.configMaterial.vanilla;
 	}
-	
+
+
 	public int getCraftAmount() {
 		return this.configMaterial.amount;
 	}
-	
+
+
 	public void rebuildLore() {
 		
 	}
-	
+
+
 	public static String serializeEnhancements(ItemStack stack) {
 		String out = "";
 		

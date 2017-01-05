@@ -1,11 +1,11 @@
 package com.avrgaming.civcraft.loreenhancements;
 
+import gpl.AttributeUtil;
+
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.util.CivColor;
-
-import gpl.AttributeUtil;
 
 public class LoreEnhancementSoulBound extends LoreEnhancement {
 	
@@ -15,26 +15,13 @@ public class LoreEnhancementSoulBound extends LoreEnhancement {
 		return attrs;
 	}
 	
-	//TODO FIX THIS so it rolls correctly and when it finds 1 erorr, it doesn't kill all items
-	public boolean onDeath(PlayerDeathEvent event, ItemStack stack) {
-/*		Random r = new Random();
-		int destroy = r.nextInt(1 + 100) + 1;
-		if (destroy <= 25) {
-			CivMessage.send(event.getEntity().getPlayer(), CivColor.Gold+"[Soulbound] "+CivColor.Rose+"Rolled "+destroy);
-			event.getEntity().getInventory().remove(stack);
-			return true;
-		} else {
-			CivMessage.send(event.getEntity().getPlayer(), CivColor.Gold+"[Soulbound] "+CivColor.LightGreen+"Rolled "+destroy);
-			return true;
-		}*/
-		
-		
+	public boolean onDeath(final PlayerDeathEvent event, final ItemStack stack) {
 		event.getDrops().remove(stack);
 		return true;
-	}
+	};
 	
 	public boolean canEnchantItem(ItemStack item) {
-		return isWeaponArmorTool(item);
+		return isWeaponOrArmor(item);
 	}
 	
 	public boolean hasEnchantment(ItemStack item) {
@@ -50,7 +37,7 @@ public class LoreEnhancementSoulBound extends LoreEnhancement {
 	public String serialize(ItemStack stack) {
 		return "";
 	}
-	
+
 	@Override
 	public ItemStack deserialize(ItemStack stack, String data) {
 		return stack;

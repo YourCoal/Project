@@ -20,7 +20,6 @@ package com.avrgaming.civcraft.structure;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.HashSet;
 
 import org.bukkit.Location;
@@ -34,7 +33,6 @@ import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Buff;
-import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Relation;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
@@ -162,6 +160,7 @@ public class ScoutTower extends Structure {
 				default:
 					break;
 				}
+				
 				relationName = relation.name();
 				relationColor = Relation.getRelationColor(relation);
 			} else {
@@ -169,24 +168,20 @@ public class ScoutTower extends Structure {
 				relationColor = CivColor.Yellow;
 			}
 			
+			
 			if (center.getWorld() != this.getCorner().getLocation().getWorld()) {
-				scoutDebug("Wrong World");
+				scoutDebug("wrong world");
 				continue;
 			}
 			
-			Collection<CultureChunk> cc = this.getTown().getCultureChunks();
-			if (center.distance(player.getLocation()) <= range) {
-				/* If the player isn't in culture borders, we do not want them to know where they are. */
-				if (player.getLocation().getChunk() != cc) {
-					/* Notify the town or civ. */
-					CivMessage.sendScout(this.getCiv(), "Scout tower detected "+relationColor+player.getName()+"("+relationName+")"+CivColor.White+
-							" near our borders "+CivColor.LightGray+" (Must be in culture borders to find location)"+CivColor.White+" in "+this.getTown().getName());
-					alreadyAnnounced.add(this.getCiv().getName()+":"+player.getName());
-				}
+			if (center.distance(player.getLocation()) < range) {
 				/* Notify the town or civ. */
-				CivMessage.sendScout(this.getCiv(), "Scout tower detected "+relationColor+player.getName()+"("+relationName+")"+CivColor.White+
-						" at ("+player.getLocation().getBlockX()+","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()+") in "+this.getTown().getName());
-				alreadyAnnounced.add(this.getCiv().getName()+":"+player.getName());
+					CivMessage.sendScout(this.getCiv(), "Scout tower detected "+relationColor+
+							player.getName()+"("+relationName+")"+CivColor.White+
+							" at ("+player.getLocation().getBlockX()+","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()+") in "+
+							this.getTown().getName());
+					alreadyAnnounced.add(this.getCiv().getName()+":"+player.getName());
+				
 			}
 		}
 		

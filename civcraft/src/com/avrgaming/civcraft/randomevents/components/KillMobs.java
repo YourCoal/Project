@@ -24,7 +24,7 @@ public class KillMobs extends RandomEventComponent implements Listener {
 		final PluginManager pluginManager = CivCraft.getPlugin().getServer().getPluginManager();
 		pluginManager.registerEvents(this, CivCraft.getPlugin());
 		requireMobs = Integer.valueOf(this.getString("amount"));
-		target = EntityType.valueOf(getString("what"));
+		target = EntityType.valueOf(getString("what"));		
 	}
 	
 	@Override

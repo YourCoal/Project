@@ -43,9 +43,12 @@ public class ScoutTowerTask implements Runnable {
 				if (struct instanceof ScoutTower) {
 					((ScoutTower)struct).process(announced);
 				}
+				
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 }

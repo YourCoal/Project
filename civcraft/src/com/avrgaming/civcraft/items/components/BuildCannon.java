@@ -33,7 +33,7 @@ public class BuildCannon extends ItemComponent {
 					event.getPlayer().getLocation().getBlockZ());
 			
 			ItemStack newStack = new ItemStack(Material.AIR);
-			event.getPlayer().getInventory().setItemInMainHand(newStack);
+			event.getPlayer().setItemInHand(newStack);
 		} catch (CivException e) {
 			CivMessage.sendError(event.getPlayer(), e.getMessage());
 		}

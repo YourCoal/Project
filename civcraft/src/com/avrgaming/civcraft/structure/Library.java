@@ -52,29 +52,15 @@ public class Library extends Structure {
 	
 	public static Enchantment getEnchantFromString(String name) {
 		
-		// Curse Enchantments
-//		if (name.equalsIgnoreCase("curse_binding")) {
-//			return Enchantment.BINDING_CURSE;
-//		}
-//		if (name.equalsIgnoreCase("curse_vanishing")) {
-//			return Enchantment.VANISHING_CURSE;
-//		}
-		
 		// Armor Enchantments
-		if (name.equalsIgnoreCase("thorns")) {
-			return Enchantment.THORNS;
-		}
-		if (name.equalsIgnoreCase("respiration")) {
-			return Enchantment.OXYGEN;
-		}
-		if (name.equalsIgnoreCase("aqua_affinity")) {
-			return Enchantment.WATER_WORKER;
-		}
 		if (name.equalsIgnoreCase("protection")) {
 			return Enchantment.PROTECTION_ENVIRONMENTAL;
 		}
 		if (name.equalsIgnoreCase("fire_protection")) {
 			return Enchantment.PROTECTION_FIRE;
+		}
+		if (name.equalsIgnoreCase("feather_falling")) {
+			return Enchantment.PROTECTION_FALL;
 		}
 		if (name.equalsIgnoreCase("blast_protection")) {
 			return Enchantment.PROTECTION_EXPLOSIONS;
@@ -82,14 +68,11 @@ public class Library extends Structure {
 		if (name.equalsIgnoreCase("projectile_protection")) {
 			return Enchantment.PROTECTION_PROJECTILE;
 		}
-		if (name.equalsIgnoreCase("feather_falling")) {
-			return Enchantment.PROTECTION_FALL;
+		if (name.equalsIgnoreCase("respiration")) {
+			return Enchantment.OXYGEN;
 		}
-		if (name.equalsIgnoreCase("depth_strider")) {
-			return Enchantment.DEPTH_STRIDER;
-		}
-		if (name.equalsIgnoreCase("frost_walker")) {
-			return Enchantment.FROST_WALKER;
+		if (name.equalsIgnoreCase("aqua_affinity")) {
+			return Enchantment.WATER_WORKER;
 		}
 		
 		// Sword Enchantments
@@ -112,6 +95,20 @@ public class Library extends Structure {
 			return Enchantment.LOOT_BONUS_MOBS;
 		}
 		
+		// Tool Enchantments
+		if (name.equalsIgnoreCase("efficiency")) {
+			return Enchantment.DIG_SPEED;
+		}
+		if (name.equalsIgnoreCase("silk_touch")) {
+			return Enchantment.SILK_TOUCH;
+		}
+		if (name.equalsIgnoreCase("unbreaking")) {
+			return Enchantment.DURABILITY;
+		}
+		if (name.equalsIgnoreCase("fortune")) {
+			return Enchantment.LOOT_BONUS_BLOCKS;
+		}
+		
 		// Bow Enchantments
 		if (name.equalsIgnoreCase("power")) {
 			return Enchantment.ARROW_DAMAGE;
@@ -126,34 +123,8 @@ public class Library extends Structure {
 			return Enchantment.ARROW_INFINITE;
 		}
 		
-		// Tool Enchantments
-		if (name.equalsIgnoreCase("efficiency")) {
-			return Enchantment.DIG_SPEED;
-		}
-		if (name.equalsIgnoreCase("unbreaking")) {
-			return Enchantment.DURABILITY;
-		}
-		if (name.equalsIgnoreCase("silk_touch")) {
-			return Enchantment.SILK_TOUCH;
-		}
-		if (name.equalsIgnoreCase("fortune")) {
-			return Enchantment.LOOT_BONUS_BLOCKS;
-		}
-		
-		// Fishing Rod Enchantments
-		if (name.equalsIgnoreCase("luck")) {
-			return Enchantment.LUCK;
-		}
-		if (name.equalsIgnoreCase("lure")) {
-			return Enchantment.LURE;
-		}
-		
-		// Any Item Enchantments
-		if (name.equalsIgnoreCase("mending")) {
-			return Enchantment.MENDING;
-		}
-		
 		return null;
+		
 	}
 
 	public double getNonResidentFee() {
@@ -308,7 +279,7 @@ public class Library extends Structure {
 				
 		// Successful payment, process enchantment.
 		ItemStack newStack = this.addEnchantment(item, ench);
-		player.getInventory().setItemInMainHand(newStack);
+		player.setItemInHand(newStack);
 		CivMessage.send(player, CivColor.LightGreen+"Enchanted with "+ench.displayName+"!");
 	}
 

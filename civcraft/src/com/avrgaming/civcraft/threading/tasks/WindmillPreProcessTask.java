@@ -53,7 +53,7 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 		try {
 			plant_max = CivSettings.getInteger(CivSettings.structureConfig, "windmill.plant_max");
 			
-			if (windmill.getCiv().hasRequiredTech("tech_machinery")) {
+			if (windmill.getCiv().hasTechnology("tech_machinery")) {
 				plant_max *= 2;
 			}
 		} catch (InvalidConfiguration e) {
@@ -85,7 +85,6 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 		int breadCount = 0;
 		int carrotCount = 0;
 		int potatoCount = 0;
-		int beetrootCount = 0;
 		for (ItemStack stack : source_inv.getContents()) {
 			if (stack == null) {
 				continue;
@@ -100,9 +99,6 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 				break;
 			case CivData.POTATO_ITEM:
 				potatoCount += stack.getAmount();
-				break;
-			case CivData.BEETROOT_SEED:
-				beetrootCount += stack.getAmount();
 				break;
 			default:
 				continue;
@@ -123,13 +119,16 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
 					for (int y = 0; y < 255; y++) {
+						
+						
 						if (ItemManager.getBlockTypeId(snapshot, x, y, z) == CivData.FARMLAND) {
 							if (ItemManager.getBlockTypeId(snapshot, x, y+1, z) == CivData.AIR) {
 								int blockx = (snapshot.getX()*16) + x;
 								int blocky = y+1;
 								int blockz = (snapshot.getZ()*16) + z;
 								
-								blocks.add(new BlockCoord(this.windmill.getCorner().getWorldname(), blockx, blocky, blockz));
+								blocks.add(new BlockCoord(this.windmill.getCorner().getWorldname(),
+										blockx, blocky, blockz));
 							}
 						}
 					}
@@ -152,6 +151,8 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 				
 		// Fire off a sync task to complete the operation.
 		TaskMaster.syncTask(new WindmillPostProcessSyncTask(windmill, plantBlocks,
-				breadCount, carrotCount, potatoCount, beetrootCount, source_inv));
+				breadCount, carrotCount, potatoCount, source_inv));
+
 	}
+
 }

@@ -18,23 +18,21 @@
  */
 package com.avrgaming.civcraft.listener;
 
+import gpl.AttributeUtil;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
-import org.bukkit.CropState;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -53,12 +51,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.material.Crops;
 
 import com.avrgaming.civcraft.cache.ArrowFiredCache;
 import com.avrgaming.civcraft.cache.CivCache;
@@ -77,12 +73,12 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.mobs.components.MobComponent;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
-
-import gpl.AttributeUtil;
+import com.avrgaming.moblib.MobLib;
 
 public class CustomItemManager implements Listener {
 	
@@ -97,615 +93,42 @@ public class CustomItemManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
-//		this.onItemDurabilityChange(event.getPlayer(), event.getPlayer().getInventory().getItemInMainHand());
-//		for (ItemStack stack : event.getBlock().getDrops()) {
-//			event.setCancelled(true);
-//			event.getBlock().setType(Material.AIR);
-//			event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stack);
-//		}
-	}
-	
-	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerWheatCropBreak(BlockBreakEvent event) {
-		if (event.getBlock().getType().equals(Material.CROPS)) {
-			Crops crops = (Crops) event.getBlock().getState().getData();
-			if (crops.getState() != CropState.RIPE) {
-				return;
-			}
-			
-			event.setCancelled(true);
-			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-			try {
-				Random randSeeds = new Random();
-				int minSeeds = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.seeds.min");
-				int maxSeeds;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxSeeds = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.seeds.max_fortune");
-				} else {
-					maxSeeds = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.seeds.max");
-				}
-				int randSeedAmt = randSeeds.nextInt(minSeeds + maxSeeds);
-				randSeedAmt -= minSeeds;
-				if (randSeedAmt <= 0) {
-					randSeedAmt = 1;
-				}
-				
-				for (int i = 0; i < randSeedAmt; i++) {
-					int randExtraSeedsAmt = randSeeds.nextInt(1 + 40);
-					int randExtraSeedsNum = randSeeds.nextInt(1 + 40);
-					ItemStack stackSeeds = new ItemStack(Material.SEEDS);
-					if (randExtraSeedsAmt == randExtraSeedsNum) {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackSeeds);
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackSeeds);
-						CivMessage.send(event.getPlayer(), CivColor.LightGray+"Double Seeds!");
-					} else {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackSeeds);
-					}
-				}
-				
-				Random randWheat = new Random();
-				int minWheat = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.wheat.min");
-				int maxWheat;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxWheat = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.wheat.max_fortune");
-				} else {
-					maxWheat = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.wheat.max");
-				}
-				int randWheatAmt = randWheat.nextInt(minWheat + maxWheat);
-				randWheatAmt -= minWheat;
-				if (randWheatAmt <= 0) {
-					randWheatAmt = 1;
-				}
-				
-				for (int i = 0; i < randWheatAmt; i++) {
-					ItemStack stackWheat = new ItemStack(Material.WHEAT);
-					int randExtraWheatAmt = randSeeds.nextInt(1 + 40);
-					int randExtraWheatNum = randSeeds.nextInt(1 + 40);
-					if (randExtraWheatAmt == randExtraWheatNum) {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackWheat);
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackWheat);
-						CivMessage.send(event.getPlayer(), CivColor.LightGray+"Double Wheat!");
-					} else {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackWheat);
-					}
-				}
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-		}
+	//	this.onItemDurabilityChange(event.getPlayer(), event.getPlayer().getItemInHand());
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerCarrotCropBreak(BlockBreakEvent event) {
-		if (event.getBlock().getType().equals(Material.CARROT)) {
-			Crops crops = (Crops) event.getBlock().getState().getData();
-			if (crops.getState() != CropState.RIPE) {
-				return;
-			}
-			
-			event.setCancelled(true);
-			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-			try {
-				Random randCarrots = new Random();
-				int minCarrots = CivSettings.getInteger(CivSettings.dropsConfig, "carrotcrop.carrots.min");
-				int maxCarrots;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxCarrots = CivSettings.getInteger(CivSettings.dropsConfig, "carrotcrop.carrots.max_fortune");
-				} else {
-					maxCarrots = CivSettings.getInteger(CivSettings.dropsConfig, "carrotcrop.carrots.max");
-				}
-				int randCarrotAmt = randCarrots.nextInt(minCarrots + maxCarrots);
-				randCarrotAmt -= minCarrots;
-				if (randCarrotAmt <= 0) {
-					randCarrotAmt = 1;
-				}
-				
-				for (int i = 0; i < randCarrotAmt; i++) {
-					int randExtraCarrotsAmt = randCarrots.nextInt(1 + 40);
-					int randExtraCarrotsNum = randCarrots.nextInt(1 + 40);
-					ItemStack stackCarrots = new ItemStack(Material.CARROT_ITEM);
-					if (randExtraCarrotsAmt == randExtraCarrotsNum) {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackCarrots);
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackCarrots);
-						CivMessage.send(event.getPlayer(), CivColor.LightGray+"Double Carrots!");
-					} else {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackCarrots);
-					}
-				}
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerPotatoCropBreak(BlockBreakEvent event) {
-		if (event.getBlock().getType().equals(Material.POTATO)) {
-			Crops crops = (Crops) event.getBlock().getState().getData();
-			if (crops.getState() != CropState.RIPE) {
-				return;
-			}
-			
-			event.setCancelled(true);
-			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-			try {
-				Random randPotatoes = new Random();
-				int minPotatoes = CivSettings.getInteger(CivSettings.dropsConfig, "potatocrop.potatoes.min");
-				int maxPotatoes;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxPotatoes = CivSettings.getInteger(CivSettings.dropsConfig, "potatocrop.potatoes.max_fortune");
-				} else {
-					maxPotatoes = CivSettings.getInteger(CivSettings.dropsConfig, "potatocrop.potatoes.max");
-				}
-				int randPotatoAmt = randPotatoes.nextInt(minPotatoes + maxPotatoes);
-				randPotatoAmt -= minPotatoes;
-				if (randPotatoAmt <= 0) {
-					randPotatoAmt = 1;
-				}
-				
-				for (int i = 0; i < randPotatoAmt; i++) {
-					int randExtraPotatoesAmt = randPotatoes.nextInt(1 + 40);
-					int randExtraPotatoesNum = randPotatoes.nextInt(1 + 40);
-					ItemStack stackPotatoes = new ItemStack(Material.POTATO_ITEM);
-					if (randExtraPotatoesAmt == randExtraPotatoesNum) {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackPotatoes);
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackPotatoes);
-						CivMessage.send(event.getPlayer(), CivColor.LightGray+"Double Potatoes!");
-					} else {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackPotatoes);
-					}
-				}
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerBeetrootCropBreak(BlockBreakEvent event) {
-		if (event.getBlock().getType().equals(Material.BEETROOT_BLOCK)) {
-			Crops crops = (Crops) event.getBlock().getState().getData();
-			if (crops.getState() != CropState.RIPE) {
-				return;
-			}
-			
-			event.setCancelled(true);
-			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-			try {
-				Random randSeeds = new Random();
-				int minSeeds = CivSettings.getInteger(CivSettings.dropsConfig, "beetrootcrop.seeds.min");
-				int maxSeeds;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxSeeds = CivSettings.getInteger(CivSettings.dropsConfig, "beetrootcrop.seeds.max_fortune");
-				} else {
-					maxSeeds = CivSettings.getInteger(CivSettings.dropsConfig, "beetrootcrop.seeds.max");
-				}
-				int randSeedAmt = randSeeds.nextInt(minSeeds + maxSeeds);
-				randSeedAmt -= minSeeds;
-				if (randSeedAmt <= 0) {
-					randSeedAmt = 1;
-				}
-				
-				for (int i = 0; i < randSeedAmt; i++) {
-					int randExtraSeedsAmt = randSeeds.nextInt(1 + 40);
-					int randExtraSeedsNum = randSeeds.nextInt(1 + 40);
-					ItemStack stackSeeds = new ItemStack(Material.BEETROOT_SEEDS);
-					if (randExtraSeedsAmt == randExtraSeedsNum) {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackSeeds);
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackSeeds);
-						CivMessage.send(event.getPlayer(), CivColor.LightGray+"Double Beetroot Seeds!");
-					} else {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackSeeds);
-					}
-				}
-				
-				Random randBeetroot = new Random();
-				int minBeetroot = CivSettings.getInteger(CivSettings.dropsConfig, "beetrootcrop.beetroots.min");
-				int maxBeetroot;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxBeetroot = CivSettings.getInteger(CivSettings.dropsConfig, "beetrootcrop.beetroots.max_fortune");
-				} else {
-					maxBeetroot = CivSettings.getInteger(CivSettings.dropsConfig, "beetrootcrop.beetroots.max");
-				}
-				int randBeetrootAmt = randBeetroot.nextInt(minBeetroot + maxBeetroot);
-				randBeetrootAmt -= minBeetroot;
-				if (randBeetrootAmt <= 0) {
-					randBeetrootAmt = 1;
-				}
-				
-				for (int i = 0; i < randBeetrootAmt; i++) {
-					ItemStack stackBeetroots = new ItemStack(Material.BEETROOT);
-					int randExtraBeetrootAmt = randSeeds.nextInt(1 + 40);
-					int randExtraBeetrootNum = randSeeds.nextInt(1 + 40);
-					if (randExtraBeetrootAmt == randExtraBeetrootNum) {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackBeetroots);
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackBeetroots);
-						CivMessage.send(event.getPlayer(), CivColor.LightGray+"Double Beetroots!");
-					} else {
-						event.getPlayer().getWorld().dropItem(new Location(event.getBlock().getWorld(), event.getBlock().getX(), event.getBlock().getY()+0.5, event.getBlock().getZ()), stackBeetroots);
-					}
-				}
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-	}
-	
-	
-	
-	//XXX TODO Fix water breaking crops events for not dropping right items
-	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onWaterBreaksCropEvent(BlockFromToEvent event) {
-		//XXX Fully Grown Wheat Crop
-		if (event.getBlock().getType().equals(Material.WATER) || event.getBlock().getType().equals(Material.STATIONARY_WATER)
-					&& event.getToBlock().getType().equals(Material.CROPS)) {
-			if (event.getToBlock().getType().equals(Material.CROPS)) {
-				Crops crops = (Crops) event.getToBlock().getState().getData();
-				if (crops.getState() != CropState.RIPE) {
-					return;
-				}
-				
-				ItemManager.setTypeIdAndData(event.getToBlock(), CivData.AIR, (byte)0, true);
-				try { //Drop seeds
-					Random rand = new Random();
-					int min = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.water_broken.minseeds");
-					int max = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.water_broken.maxseeds");
-					int randAmount = rand.nextInt(max - min) + 1;
-					randAmount -= min;
-					if (randAmount <= 0) {
-						randAmount = 1;
-					}
-					
-					for (int i = 0; i < randAmount; i++) {
-						ItemStack stack = new ItemStack(Material.SEEDS);
-						event.getToBlock().getWorld().dropItem(event.getBlock().getLocation(), stack);
-					}
-				} catch (InvalidConfiguration e) {
-					e.printStackTrace();
-					return;
-				} try { //Drop Wheat
-					Random rand = new Random();
-					int min = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.water_broken.minwheat");
-					int max = CivSettings.getInteger(CivSettings.dropsConfig, "wheatcrop.water_broken.maxwheat");
-					int randAmount = rand.nextInt(max - min) + 1;
-					randAmount -= min;
-					if (randAmount <= 0) {
-						randAmount = 1;
-					}
-					
-					for (int i = 0; i < randAmount; i++) {
-						ItemStack stack = new ItemStack(Material.WHEAT);
-						event.getToBlock().getWorld().dropItem(event.getBlock().getLocation(), stack);
-					}
-				} catch (InvalidConfiguration e) {
-					e.printStackTrace();
-					return;
-				}
-			}
-		}
-		
-		//XXX Fully Grown Carrot Crop
-		if (event.getBlock().getType().equals(Material.WATER) || event.getBlock().getType().equals(Material.STATIONARY_WATER)
-					&& event.getToBlock().getType().equals(Material.CARROT)) {
-			if (event.getToBlock().getType().equals(Material.CARROT)) {
-				Crops crops = (Crops) event.getToBlock().getState().getData();
-				if (crops.getState() != CropState.RIPE) {
-					return;
-				}
-				
-				ItemManager.setTypeIdAndData(event.getToBlock(), CivData.AIR, (byte)0, true);
-				try { //Drop seeds
-					Random rand = new Random();
-					int min = CivSettings.getInteger(CivSettings.dropsConfig, "carrotcrop.water_broken.mincarrot");
-					int max = CivSettings.getInteger(CivSettings.dropsConfig, "carrotcrop.water_broken.maxcarrot");
-					int randAmount = rand.nextInt(max - min) + 1;
-					randAmount -= min;
-					if (randAmount <= 0) {
-						randAmount = 1;
-					}
-					
-					for (int i = 0; i < randAmount; i++) {
-						ItemStack stack = new ItemStack(Material.CARROT_ITEM);
-						event.getToBlock().getWorld().dropItem(event.getBlock().getLocation(), stack);
-					}
-				} catch (InvalidConfiguration e) {
-					e.printStackTrace();
-					return;
-				}
-			}
-		}
-		
-		//XXX Fully Grown Potato Crop
-		if (event.getBlock().getType().equals(Material.WATER) || event.getBlock().getType().equals(Material.STATIONARY_WATER)
-					&& event.getToBlock().getType().equals(Material.POTATO)) {
-			if (event.getToBlock().getType().equals(Material.POTATO)) {
-				Crops crops = (Crops) event.getToBlock().getState().getData();
-				if (crops.getState() != CropState.RIPE) {
-					return;
-				}
-				
-				ItemManager.setTypeIdAndData(event.getToBlock(), CivData.AIR, (byte)0, true);
-				try { //Drop seeds
-					Random rand = new Random();
-					int min = CivSettings.getInteger(CivSettings.dropsConfig, "potatocrop.water_broken.minpotato");
-					int max = CivSettings.getInteger(CivSettings.dropsConfig, "potatocrop.water_broken.maxpotato");
-					int randAmount = rand.nextInt(max - min) + 1;
-					randAmount -= min;
-					if (randAmount <= 0) {
-						randAmount = 1;
-					}
-					
-					for (int i = 0; i < randAmount; i++) {
-						ItemStack stack = new ItemStack(Material.POTATO_ITEM);
-						event.getToBlock().getWorld().dropItem(event.getBlock().getLocation(), stack);
-					}
-				} catch (InvalidConfiguration e) {
-					e.printStackTrace();
-					return;
-				}
-			}
-		}
-		
-		//XXX Fully Grown Beetroot Crop
-		if (event.getBlock().getType().equals(Material.WATER) || event.getBlock().getType().equals(Material.STATIONARY_WATER)
-					&& event.getToBlock().getType().equals(Material.BEETROOT_BLOCK)) {
-			if (event.getToBlock().getType().equals(Material.BEETROOT_BLOCK)) {
-				Crops crops = (Crops) event.getToBlock().getState().getData();
-				if (crops.getState() != CropState.RIPE) {
-					return;
-				}
-				
-				ItemManager.setTypeIdAndData(event.getToBlock(), CivData.AIR, (byte)0, true);
-				try { //Drop seeds
-					Random rand = new Random();
-					int min = CivSettings.getInteger(CivSettings.dropsConfig, "beetrootcrop.water_broken.minbeetroot");
-					int max = CivSettings.getInteger(CivSettings.dropsConfig, "beetrootcrop.water_broken.maxbeetroot");
-					int randAmount = rand.nextInt(max - min) + 1;
-					randAmount -= min;
-					if (randAmount <= 0) {
-						randAmount = 1;
-					}
-					
-					for (int i = 0; i < randAmount; i++) {
-						ItemStack stack = new ItemStack(Material.BEETROOT);
-						event.getToBlock().getWorld().dropItem(event.getBlock().getLocation(), stack);
-					}
-				} catch (InvalidConfiguration e) {
-					e.printStackTrace();
-					return;
-				}
-			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onOreBlockBreakEvent(BlockBreakEvent event) {
-		//XXX Lapis Ore
+	public void onBlockBreakSpawnItems(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
-			try {
-				boolean canSilk = CivSettings.getBoolean(CivSettings.dropsConfig, "lapisore.canSilk");
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH) && canSilk == true) {
-					return;
-				}
-				
-				event.getBlock().breakNaturally();
-				ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-				Random rand = new Random();
-				//Drop EXP
-				int minXP = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.exp.min");
-				int maxXP = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.exp.max");
-				
-				int randAmtXP = rand.nextInt(minXP + maxXP);
-				randAmtXP -= minXP;
-				if (randAmtXP <= 0) {
-					randAmtXP = 1;
-				}
-				//Drop Tungsten
-				int minOre = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.item.min");
-				int maxOre;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.item.max_fortune");
-				} else {
-					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.item.max");
-				}
-				
-				int randAmt = rand.nextInt(minOre + maxOre);
-				randAmt -= minOre;
-				if (randAmt <= 0) {
-					randAmt = 1;
-				}
-				//Drop Lapis
-				int minLap = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.item.min");
-				int maxLap;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxLap = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.item.max_fortune");
-				} else {
-					maxLap = CivSettings.getInteger(CivSettings.dropsConfig, "lapisore.item.max");
-				}
-				
-				int randAmtLap = rand.nextInt(minLap + maxLap);
-				randAmtLap -= minLap;
-				if (randAmtLap <= 4) {
-					randAmtLap = 4;
-				}
-				
-				for (int i = 0; i < randAmt; i++) {
-					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:tungsten_ore"));
-					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack1);
-				}
-				for (int i = 0; i < randAmtLap; i++) {
-					ItemStack stack2 = new ItemStack(Material.INK_SACK, randAmtLap/6, (short)4);
-					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack2);
-				}
-				ExperienceOrb exp = event.getPlayer().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
-				exp.setExperience(randAmtXP);
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
+			if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
 				return;
 			}
-		}
-		
-		//XXX Redstone Ore
-		if (event.getBlock().getType().equals(Material.REDSTONE_ORE) || event.getBlock().getType().equals(Material.GLOWING_REDSTONE_ORE)) {
+			
+			event.setCancelled(true);
+			
+			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
+			
 			try {
-				boolean canSilk = CivSettings.getBoolean(CivSettings.dropsConfig, "redstoneore.canSilk");
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH) && canSilk == true) {
-					return;
-				}
-				
-				event.setCancelled(true);
-				ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
 				Random rand = new Random();
-				//Drop EXP
-				int minXP = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.exp.min");
-				int maxXP = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.exp.max");
-				
-				int randAmtXP = rand.nextInt(minXP + maxXP);
-				randAmtXP -= minXP;
-				if (randAmtXP <= 0) {
-					randAmtXP = 1;
-				}
-				//Drop Chromium
-				int minOre = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.dust.min");
-				int maxOre;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.dust.max_fortune");
+
+				int min = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_min_drop");
+				int max;
+				if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+					max = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_max_drop_with_fortune");
 				} else {
-					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.dust.max");
+					max = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_max_drop");
 				}
 				
-				int randAmt = rand.nextInt(minOre + maxOre);
-				randAmt -= minOre;
-				if (randAmt <= 0) {
-					randAmt = 1;
-				}
-				//Drop Redstone
-				int minRed = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.item.min");
-				int maxRed;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxRed = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.item.max_fortune");
-				} else {
-					maxRed = CivSettings.getInteger(CivSettings.dropsConfig, "redstoneore.item.max");
+				int randAmount = rand.nextInt(min + max);
+				randAmount -= min;
+				if (randAmount <= 0) {
+					randAmount = 1;
 				}
 				
-				int randAmtRed = rand.nextInt(minRed + maxRed);
-				randAmtRed -= minRed;
-				if (randAmtRed <= 4) {
-					randAmtRed = 4;
+				for (int i = 0; i < randAmount; i++) {
+					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_tungsten_ore"));
+					event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 				}
 				
-				for (int i = 0; i < randAmt; i++) {
-					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:steel_ore"));
-					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack1);
-				}
-				for (int i = 0; i < randAmtRed; i++) {
-					ItemStack stack2 = new ItemStack(Material.REDSTONE);
-					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack2);
-				}
-				ExperienceOrb exp = event.getPlayer().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
-				exp.setExperience(randAmtXP);
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-		
-		//XXX Gold Ore
-		if (event.getBlock().getType().equals(Material.GOLD_ORE)) {
-			try {
-				boolean canSilk = CivSettings.getBoolean(CivSettings.dropsConfig, "goldore.canSilk");
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH) && canSilk == true) {
-					return;
-				}
-				
-				event.setCancelled(true);
-				ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-				Random rand = new Random();
-				//Drop EXP
-				int minXP = CivSettings.getInteger(CivSettings.dropsConfig, "goldore.exp.min");
-				int maxXP = CivSettings.getInteger(CivSettings.dropsConfig, "goldore.exp.max");
-				
-				int randAmtXP = rand.nextInt(minXP + maxXP);
-				randAmtXP -= minXP;
-				if (randAmtXP <= 0) {
-					randAmtXP = 1;
-				}
-				//Drop Chromium
-				int minOre = CivSettings.getInteger(CivSettings.dropsConfig, "goldore.item.min");
-				int maxOre;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "goldore.item.max_fortune");
-				} else {
-					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "goldore.item.max");
-				}
-				
-				int randAmt = rand.nextInt(minOre + maxOre);
-				randAmt -= minOre;
-				if (randAmt <= 0) {
-					randAmt = 1;
-				}
-				
-				for (int i = 0; i < randAmt; i++) {
-					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:bronze_ore"));
-					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack1);
-				}
-				ItemStack stack2 = new ItemStack(Material.GOLD_ORE, 1);
-				event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack2);
-				ExperienceOrb exp = event.getPlayer().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
-				exp.setExperience(randAmtXP);
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-		
-		//XXX Iron Ore
-		if (event.getBlock().getType().equals(Material.IRON_ORE)) {
-			try {
-				boolean canSilk = CivSettings.getBoolean(CivSettings.dropsConfig, "ironore.canSilk");
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH) && canSilk == true) {
-					return;
-				}
-				
-				event.setCancelled(true);
-				ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
-				Random rand = new Random();
-				//Drop EXP
-				int minXP = CivSettings.getInteger(CivSettings.dropsConfig, "ironore.exp.min");
-				int maxXP = CivSettings.getInteger(CivSettings.dropsConfig, "ironore.exp.max");
-				
-				int randAmtXP = rand.nextInt(minXP + maxXP);
-				randAmtXP -= minXP;
-				if (randAmtXP <= 0) {
-					randAmtXP = 1;
-				}
-				//Drop Chromium
-				int minOre = CivSettings.getInteger(CivSettings.dropsConfig, "ironore.item.min");
-				int maxOre;
-				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
-					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "ironore.item.max_fortune");
-				} else {
-					maxOre = CivSettings.getInteger(CivSettings.dropsConfig, "ironore.item.max");
-				}
-				
-				int randAmt = rand.nextInt(minOre + maxOre);
-				randAmt -= minOre;
-				if (randAmt <= 0) {
-					randAmt = 1;
-				}
-				
-				for (int i = 0; i < randAmt; i++) {
-					ItemStack stack1 = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:iron_ore"));
-					event.getPlayer().getWorld().dropItem(event.getBlock().getLocation(), stack1);
-				}
-				ExperienceOrb exp = event.getPlayer().getWorld().spawn(event.getBlock().getLocation(), ExperienceOrb.class);
-				exp.setExperience(randAmtXP);
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				return;
@@ -715,7 +138,7 @@ public class CustomItemManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST) 
 	public void onBlockPlace(BlockPlaceEvent event) {
-		ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
+		ItemStack stack = event.getPlayer().getItemInHand();
 		if (stack == null || stack.getType().equals(Material.AIR)) {
 			return;
 		}
@@ -731,12 +154,7 @@ public class CustomItemManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 	
-		ItemStack stack = null;
-		if (event.getHand() == EquipmentSlot.OFF_HAND) {
-			 stack = event.getPlayer().getInventory().getItemInOffHand();
-		} else {
-			 stack = event.getPlayer().getInventory().getItemInMainHand();
-		}
+		ItemStack stack = event.getPlayer().getItemInHand();
 		if (stack == null) {
 			return;
 		}
@@ -753,7 +171,7 @@ public class CustomItemManager implements Listener {
 			return;
 		}
 		
-		ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
+		ItemStack stack = event.getPlayer().getItemInHand();
 		if (stack == null) {
 			return;
 		}
@@ -771,7 +189,7 @@ public class CustomItemManager implements Listener {
 			return;
 		}
 		
-		ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
+		ItemStack stack = event.getPlayer().getItemInHand();
 		if (stack == null) {
 			return;
 		}
@@ -787,41 +205,23 @@ public class CustomItemManager implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-		
 		ItemStack stack = event.getItemDrop().getItemStack();
+
 		if (LoreMaterial.isCustom(stack)) {
 			LoreMaterial.getMaterial(stack).onItemDrop(event);
-			return;
-		}
-		
-		String custom = isCustomDrop(stack);
-		if (custom != null) {
-			event.setCancelled(true);
 		}
 	}	
 	
-	private static String isCustomDrop(ItemStack stack) {
-		if (stack == null || ItemManager.getId(stack) != 166) {
-			return null;
-		}
-		
-		if(LoreGuiItem.isGUIItem(stack)) {
-			return null;
-		}
-		return stack.getItemMeta().getDisplayName();
-	}
-	
-	/* Prevent the player from using goodies in crafting recipies. */
+	/*
+	 * Prevent the player from using goodies in crafting recipies.
+	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnCraftItemEvent(CraftItemEvent event) {	
 		for (ItemStack stack : event.getInventory().getMatrix()) {
 			if (stack != null) {
+
 				if (LoreMaterial.isCustom(stack)) {
 					LoreMaterial.getMaterial(stack).onItemCraft(event);
-//					String id = LoreMaterial.getMaterial(stack).getId();
-//					CivLog.craft((Player) event.getWhoClicked(), id, stack.getAmount());
-//				} else {
-//					CivLog.craft((Player) event.getWhoClicked(), stack.getType(), stack.getAmount());
 				}
 			}
 		}
@@ -830,6 +230,7 @@ public class CustomItemManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnPlayerItemPickup(PlayerPickupItemEvent event) {
 		ItemStack stack = event.getItem().getItemStack();
+
 		if (LoreMaterial.isCustom(stack)) {
 			LoreMaterial.getMaterial(stack).onItemPickup(event);
 		}
@@ -838,45 +239,9 @@ public class CustomItemManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnItemSpawn(ItemSpawnEvent event) {
 		ItemStack stack = event.getEntity().getItemStack();
+
 		if (LoreMaterial.isCustom(stack)) {
-			
-			
-/*			if (stack.getType() == Material.GOLD_SWORD ||
-					stack.getType() == Material.WOOD_SWORD ||
-					stack.getType() == Material.IRON_SWORD ||
-					stack.getType() == Material.STONE_SWORD ||
-					stack.getType() == Material.DIAMOND_SWORD) {
-				
-				net.minecraft.server.v1_10_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
-				NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-				NBTTagList modifiers = new NBTTagList();
-				NBTTagCompound damage = new NBTTagCompound();
-				
-				damage.set("AttributeName", new NBTTagString("generic.attackDamage"));
-				damage.set("Name", new NBTTagString("generic.attackDamage"));
-				damage.set("Operation", new NBTTagInt(0));
-				damage.set("UUIDLeast", new NBTTagInt(894654));
-				damage.set("UUIDMost", new NBTTagInt(2872));
-				damage.set("Slot", new NBTTagString("mainhand"));
-				
-				modifiers.add(damage);
-				compound.set("AttributeModifiers", modifiers);
-				nmsStack.setTag(compound);
-				stack = CraftItemStack.asBukkitCopy(nmsStack);
-				LoreMaterial.getMaterial(stack).onItemSpawn(event);
-			}*/
-			
-			
 			LoreMaterial.getMaterial(stack).onItemSpawn(event);
-			return;
-		}
-		
-		String custom = isCustomDrop(stack);
-		if (custom != null) {
-			ItemStack newStack = LoreMaterial.spawn(LoreMaterial.materialMap.get(custom), stack.getAmount());
-			event.getEntity().getWorld().dropItemNaturally(event.getLocation(), newStack);
-			event.setCancelled(true);
-			return;
 		}
 		
 		if (isUnwantedVanillaItem(stack)) {
@@ -903,7 +268,7 @@ public class CustomItemManager implements Listener {
 			LivingEntity shooter = (LivingEntity) ((Arrow)event.getDamager()).getShooter();
 			
 			if (shooter instanceof Player) {
-				ItemStack inHand = ((Player)shooter).getInventory().getItemInMainHand();
+				ItemStack inHand = ((Player)shooter).getItemInHand();
 				if (LoreMaterial.isCustom(inHand)) {
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(inHand);
 					craftMat.onRangedAttack(event, inHand);
@@ -929,18 +294,21 @@ public class CustomItemManager implements Listener {
 				}
 			}
 		} else if (event.getDamager() instanceof Player) {
-			ItemStack inHand = ((Player)event.getDamager()).getInventory().getItemInMainHand();
+			ItemStack inHand = ((Player)event.getDamager()).getItemInHand();
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(inHand);
 			if (craftMat != null) {
 				craftMat.onAttack(event, inHand);
 			} else {
 				/* Non-civcraft items only do 0.5 damage. */
-				event.setDamage(1.0);
+				event.setDamage(0.5);
 			}
 		}
 		
 		if (defendingPlayer == null) {
 			if (event.getEntity() instanceof LivingEntity) {
+				if (MobLib.isMobLibEntity((LivingEntity) event.getEntity())) {
+					MobComponent.onDefense(event.getEntity(), event);
+				}	
 			}
 			return;
 		} else {
@@ -1144,25 +512,10 @@ public class CustomItemManager implements Listener {
 		event.getDrops().removeAll(removed);
 	}
 	
-	//XXX Controls minecraft-to-custom item converting
 	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onItemPickup(PlayerPickupItemEvent event) {
-		if (ItemManager.getId(event.getItem().getItemStack()) == ItemManager.getId(Material.IRON_INGOT)) {
-			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getItem().getItemStack());
-			if (craftMat == null) {
-				/* Found a vanilla iron ingot. */
-				LoreCraftableMaterial iron = LoreCraftableMaterial.getCraftMaterialFromId("civ:iron_ingot");
-				ItemStack newStack = LoreCraftableMaterial.spawn(iron, event.getItem().getItemStack().getAmount());
-				event.getPlayer().getInventory().addItem(newStack);
-				event.getPlayer().updateInventory();
-				event.getItem().remove();
-				event.setCancelled(true);
-				CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've picked up "+CivColor.LightPurple+event.getItem().getItemStack().getAmount()+CivColor.White+" Iron Ingot");
-			}
-		}
-		
-		
+
 		if (ItemManager.getId(event.getItem().getItemStack()) == ItemManager.getId(Material.SLIME_BALL)) {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getItem().getItemStack());
 			if (craftMat == null) {
@@ -1210,22 +563,12 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
-	/* XXX Called when we click on an object, used for conversion to fix up reverse compat problems. */
+	/* Called when we click on an object, used for conversion to fix up reverse compat problems. */
 	public void convertLegacyItem(InventoryClickEvent event) {
 		boolean currentEmpty = (event.getCurrentItem() == null) || (ItemManager.getId(event.getCurrentItem()) == CivData.AIR);
 
 		if (currentEmpty) {
 			return;
-		}
-		
-		if (ItemManager.getId(event.getCurrentItem()) == ItemManager.getId(Material.IRON_INGOT)) {
-			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getCurrentItem());
-			if (craftMat == null) {
-				/* Found a vanilla iron ingot. */
-				LoreCraftableMaterial iron = LoreCraftableMaterial.getCraftMaterialFromId("civ:iron_ingot");
-				ItemStack newStack = LoreCraftableMaterial.spawn(iron, event.getCurrentItem().getAmount());
-				event.setCurrentItem(newStack);
-			}
 		}
 		
 		if (ItemManager.getId(event.getCurrentItem()) == ItemManager.getId(Material.SLIME_BALL)) {
@@ -1371,7 +714,7 @@ public class CustomItemManager implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerInteractEntityEvent (PlayerInteractEntityEvent event) {
 			
-		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getInventory().getItemInMainHand());
+		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getItemInHand());
 		if (craftMat == null) {
 			return;
 		}
@@ -1381,7 +724,7 @@ public class CustomItemManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerLeashEvent(PlayerLeashEntityEvent event) {
-		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getInventory().getItemInMainHand());
+		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getItemInHand());
 		if (craftMat == null) {
 			return;
 		}
@@ -1408,7 +751,7 @@ public class CustomItemManager implements Listener {
 		
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 		if (craftMat != null) {
-			/* Assume that if it's custom, it's good to go. */			
+			/* Assume that if it's custom. It's good to go. */			
 			return false;
 		}
 		
@@ -1435,7 +778,7 @@ public class CustomItemManager implements Listener {
 				// Only allow fortune 1
 			} else if (stack.containsEnchantment(Enchantment.DIG_SPEED) &&
 					   stack.getEnchantmentLevel(Enchantment.DIG_SPEED) > 5) {
-				// only allow efficiency 5
+				// only allow effiencey 5
 			} else {
 				/* Not in removed list, so allow it. */
 				return false;				

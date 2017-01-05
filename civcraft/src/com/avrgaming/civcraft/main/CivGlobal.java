@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,8 @@ import java.util.Queue;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -51,6 +54,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.camp.CampBlock;
 import com.avrgaming.civcraft.camp.WarCamp;
@@ -60,6 +64,8 @@ import com.avrgaming.civcraft.endgame.EndGameCondition;
 import com.avrgaming.civcraft.event.EventTimer;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
+import com.avrgaming.civcraft.exception.InvalidNameException;
+import com.avrgaming.civcraft.exception.InvalidObjectException;
 import com.avrgaming.civcraft.items.BonusGoodie;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
@@ -109,10 +115,8 @@ import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
 import com.avrgaming.global.perks.PerkManager;
 
-import net.milkbowl.vault.economy.Economy;
-
 public class CivGlobal {
-	
+
 	public static final double MIN_FRAME_DISTANCE = 3.0;
 	
 	public static Economy econ;
@@ -121,7 +125,7 @@ public class CivGlobal {
 	public static Map<String, CivQuestionTask> civQuestions = new ConcurrentHashMap<String, CivQuestionTask>();
 	private static Map<String, Resident> residents = new ConcurrentHashMap<String, Resident>();
 	private static Map<UUID, Resident> residentsViaUUID = new ConcurrentHashMap<UUID, Resident>();
-	
+
 	private static Map<String, Town> towns = new ConcurrentHashMap<String, Town>();
 	private static Map<String, Civilization> civs = new ConcurrentHashMap<String, Civilization>();
 	private static Map<String, Civilization> conqueredCivs = new ConcurrentHashMap<String, Civilization>();
@@ -132,6 +136,7 @@ public class CivGlobal {
 	private static Map<BlockCoord, Structure> structures = new ConcurrentHashMap<BlockCoord, Structure>();
 	private static Map<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
 	private static Map<BlockCoord, StructureBlock> structureBlocks = new ConcurrentHashMap<BlockCoord, StructureBlock>();
+	//private static Map<BlockCoord, LinkedList<StructureBlock>> structureBlocksIn2D = new ConcurrentHashMap<BlockCoord, LinkedList<StructureBlock>>();
 	private static Map<String, HashSet<Buildable>> buildablesInChunk = new ConcurrentHashMap<String, HashSet<Buildable>>();
 	private static Map<BlockCoord, CampBlock> campBlocks = new ConcurrentHashMap<BlockCoord, CampBlock>();
 	private static Map<BlockCoord, StructureSign> structureSigns = new ConcurrentHashMap<BlockCoord, StructureSign>();
@@ -150,35 +155,34 @@ public class CivGlobal {
 	private static Map<ChunkCoord, Camp> campChunks = new ConcurrentHashMap<ChunkCoord, Camp>();
 	public static HashSet<BlockCoord> vanillaGrowthLocations = new HashSet<BlockCoord>();
 	private static Map<BlockCoord, Market> markets = new ConcurrentHashMap<BlockCoord, Market>();
-	
 	public static HashSet<String> researchedTechs = new HashSet<String>();
-	public static HashSet<String> researchedCivics = new HashSet<String>();
+	
+	/* TODO change this to true for MC 1.8 */
+	public static boolean useUUID = false;
 	
 	public static Map<Integer, Boolean> CivColorInUse = new ConcurrentHashMap<Integer, Boolean>();
-	public static TradeGoodPreGenerate tradeGoodPreGenerator = new TradeGoodPreGenerate();
+	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
 	
 	//TODO fix the duplicate score issue...
 	public static TreeMap<Integer, Civilization> civilizationScores = new TreeMap<Integer, Civilization>();
 	public static TreeMap<Integer, Town> townScores = new TreeMap<Integer, Town>();
 
 	public static HashMap<String, Date> playerFirstLoginMap = new HashMap<String, Date>();
+	public static HashSet<String> banWords = new HashSet<String>();
 			
-//	public static Scoreboard sboard;
+	//public static Scoreboard globalBoard;
 	
+	public static Integer maxPlayers = -1;
 	public static HashSet<String> betaPlayers = new HashSet<String>();
+	public static String fullMessage = "Server is full for now, come back later.";
 	public static Boolean betaOnly = false;
 	
 	//TODO convert this to completely static?
 	private static SessionDatabase sdb;
-	
-	public static boolean growthEnabled = true;
-	public static boolean fisheriesEnabled = true;
-	public static boolean granariesEnabled = true;
-	public static boolean sawmillsEnabled = true;
+
 	public static boolean trommelsEnabled = true;
-	public static boolean quarriesEnabled = true;
-	
 	public static boolean towersEnabled = true;
+	public static boolean growthEnabled = true;
 	public static Boolean banWordsAlways = false;
 	public static boolean banWordsActive = false;
 	public static boolean scoringEnabled = true;
@@ -195,11 +199,10 @@ public class CivGlobal {
 	public static PerkManager perkManager = null;
 	public static boolean installMode = false;
 	
-	public static int highestCivEra = 0;
-	
 	public static void loadGlobals() throws SQLException, CivException {
-		CivLog.heading("Loading CivCraft Objects From Database");
 		
+		CivLog.heading("Loading CivCraft Objects From Database");
+			
 		sdb = new SessionDatabase();
 		loadCamps();
 		loadCivs();
@@ -213,8 +216,10 @@ public class CivGlobal {
 		loadWallBlocks();
 		loadRoadBlocks();
 		loadTradeGoods();
+		loadTradeGoodies();
 		loadRandomEvents();
 		loadProtectedBlocks();
+		loadTeams();
 		EventTimer.loadGlobalEvents();
 		EndGameCondition.init();
 		War.init();
@@ -223,6 +228,7 @@ public class CivGlobal {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+
 		CivLog.heading("--- Done <3 ---");
 		
 		/* Load in upgrades after all of our objects are loaded, resolves dependencies */
@@ -232,16 +238,17 @@ public class CivGlobal {
 		/* Finish with an onLoad event. */
 		onLoadTask postBuildSyncTask = new onLoadTask();
 		TaskMaster.syncTask(postBuildSyncTask);
-		
+				
 		/* Check for orphan civs now */
 		for (Civilization civ : civs.values()) {
 			Town capitol = civ.getTown(civ.getCapitolName());
+			
 			if (capitol == null) {
 				orphanCivs.add(civ);
 			}
+			
 		}
 		
-		//TODO See if this works...
 	/*	ScoreboardManager manager = Bukkit.getScoreboardManager();
 		CivGlobal.globalBoard = manager.getNewScoreboard();
 		Team team = globalBoard.registerNewTeam("everybody");
@@ -265,42 +272,6 @@ public class CivGlobal {
 		loadCompleted = true;
 	}
 	
-	public static void setCurrentEra(int era, Civilization civ) {
-		if (era > highestCivEra) {
-			highestCivEra = era;
-			String newEra = "";
-			switch (highestCivEra) {
-				case 0: //ANCIENT
-					newEra = "The Ancient Era";
-					return;
-				case 1: //CLASSICAL
-					newEra = "The Classical Era";
-					break;
-				case 2: //MEDIEVAL
-					newEra = "The Midieval Era";
-					break;
-				case 3: //RENAISSANCE
-					newEra = "The Renaissance Era";
-					break;
-				case 4: //INDUSTRIAL
-					newEra = "The Industrial Era";
-					break;
-				case 5: //MODERN
-					newEra = "The Modern Era";
-					break;
-				case 6: //ATOMIC
-					newEra = "The Atomic Era";
-					break;
-				case 7: //INFORMATION
-					newEra = "The Information Era";
-					break;
-				default:
-					break;
-			}
-			CivMessage.global(CivColor.LightPurple+CivColor.ITALIC+newEra+" "+CivColor.LightGray+" has been achieved by "+CivColor.White+CivColor.ITALIC+civ.getName());
-		}
-	}
-	
 	public static void checkForInvalidStructures() {
 		Iterator<Entry<BlockCoord, Structure>> iter = CivGlobal.getStructureIterator();
 		while(iter.hasNext()) {
@@ -316,7 +287,39 @@ public class CivGlobal {
 		}
 	}
 	
-	private static void loadTradeGoods() throws SQLException {
+	private static void loadTradeGoods() {
+		
+	}
+	
+	private static void loadTeams() throws SQLException {
+		Connection context = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+		
+		try {
+			context = SQL.getGameConnection();		
+			ps = context.prepareStatement("SELECT * FROM "+SQL.tb_prefix+ArenaTeam.TABLE_NAME);
+			rs = ps.executeQuery();
+	
+			while(rs.next()) {
+				try {
+					new ArenaTeam(rs);
+				} catch (InvalidNameException | InvalidObjectException
+						| CivException e) {
+					e.printStackTrace();
+				}
+			}
+	
+			Collections.sort(ArenaTeam.teamRankings);
+			Collections.reverse(ArenaTeam.teamRankings); //Lazy method.
+			
+			CivLog.info("Loaded "+ArenaTeam.arenaTeams.size()+" Arena Teams");
+		} finally {
+			SQL.close(rs, ps, context);
+		}
+	}
+	
+	private static void loadTradeGoodies() throws SQLException {
 		Connection context = null;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
@@ -335,6 +338,7 @@ public class CivGlobal {
 					e.printStackTrace();
 				}
 			}
+	
 			CivLog.info("Loaded "+tradeGoods.size()+" Trade Goods");
 		} finally {
 			SQL.close(rs, ps, context);
@@ -365,10 +369,6 @@ public class CivGlobal {
 			while(rs.next()) {
 				try {
 					Civilization civ = new Civilization(rs);
-					if (highestCivEra < civ.getCurrentEra()) {
-						highestCivEra = civ.getCurrentEra();
-					}
-					
 					if (!civ.isConquered()) {
 						CivGlobal.addCiv(civ);
 					} else {
@@ -717,29 +717,29 @@ public class CivGlobal {
 	}
 	
 	public static Resident getResident(Player player) {
-		return residents.get(player.getName());
+		return residents.get(player.getName().toLowerCase());
 	}
 	
 	public static Resident getResident(Resident resident) {
-		return residents.get(resident.getName());
+		return residents.get(resident.getName().toLowerCase());
 	}
 
 	public static boolean hasResident(String name) {
-		return residents.containsKey(name);
+		return residents.containsKey(name.toLowerCase());
 	}
 
 	public static void addResident(Resident res) {
-		residents.put(res.getName(), res);
+		residents.put(res.getName().toLowerCase(), res);
 		residentsViaUUID.put(res.getUUID(), res);
 	}
 	
 	public static void removeResident(Resident res) {
-		residents.remove(res.getName());
+		residents.remove(res.getName().toLowerCase());
 		residentsViaUUID.remove(res.getUUID());
 	}
 
 	public static Resident getResident(String name) {
-		return residents.get(name);
+		return residents.get(name.toLowerCase());
 	}
 	
 	public static Resident getResidentViaUUID(UUID uuid) {
@@ -997,6 +997,15 @@ public class CivGlobal {
 		}
 		buildables.add(owner);
 		buildablesInChunk.put(key, buildables);
+		
+//		BlockCoord xz = new BlockCoord(coord.getWorldname(), coord.getX(), 0, coord.getZ());
+//		LinkedList<StructureBlock> sbList = structureBlocksIn2D.get(xz);
+//		if (sbList == null) {
+//			sbList = new LinkedList<StructureBlock>();
+//		}
+//		
+//		sbList.add(sb);
+//		structureBlocksIn2D.put(xz, sbList);
 	}
 	
 	public static void removeStructureBlock(BlockCoord coord) {
@@ -1088,10 +1097,6 @@ public class CivGlobal {
 	
 	public static ProtectedBlock getProtectedBlock(BlockCoord coord) {
 		return protectedBlocks.get(coord);
-	}
-	
-	public static ProtectedBlock removeProtectedBlock(BlockCoord coord) {
-		return protectedBlocks.remove(coord);
 	}
 
 	public static SessionDatabase getSessionDB() {
@@ -1386,7 +1391,7 @@ public class CivGlobal {
 		double lowest_distance = Double.MAX_VALUE;
 		
 		for (Buildable struct : structures.values()) {
-			double distance = struct.getCenterLocation().getLocation().distance(location);
+			double distance = struct.getCorner().getLocation().distance(location);
 			if (distance < lowest_distance ) {
 				lowest_distance = distance;
 				nearest = struct;
@@ -1394,7 +1399,7 @@ public class CivGlobal {
 		}
 		
 		for (Buildable struct : wonders.values()) {
-			double distance = struct.getCenterLocation().getLocation().distance(location);
+			double distance = struct.getCorner().getLocation().distance(location);
 			if (distance < lowest_distance ) {
 				lowest_distance = distance;
 				nearest = struct;

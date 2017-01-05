@@ -28,34 +28,18 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.CultureProcessAsyncTask;
 import com.avrgaming.civcraft.threading.timers.EffectEventTimer;
-import com.avrgaming.civcraft.threading.timers.SyncTownHallBonusChest;
 import com.avrgaming.civcraft.threading.timers.SyncTradeTimer;
 
 public class HourlyTickEvent implements EventInterface {
 
 	@Override
 	public void process() {
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					CivLog.info("TimerEvent: Hourly - Started ----------------------");
-					Thread.sleep(1000);
-					TaskMaster.syncTask(new SyncTownHallBonusChest(), 0);
-					Thread.sleep(4000);
-					TaskMaster.syncTask(new SyncTradeTimer(), 0);
-					TaskMaster.syncTask(new CampHourlyTick(), 0);
-					Thread.sleep(5000);
-					TaskMaster.asyncTask("EffectEventTimer", new EffectEventTimer(), 0);
-					Thread.sleep(15000);
-					TaskMaster.asyncTask("cultureProcess", new CultureProcessAsyncTask(), 0);
-					Thread.sleep(1000);
-					CivLog.info("TimerEvent: Hourly - Finished ---------------------");
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
-		
+		CivLog.info("TimerEvent: Hourly -------------------------------------");
+		TaskMaster.asyncTask("cultureProcess", new CultureProcessAsyncTask(), 0);
+		TaskMaster.asyncTask("EffectEventTimer", new EffectEventTimer(), 0);
+		TaskMaster.syncTask(new SyncTradeTimer(), 0);
+		TaskMaster.syncTask(new CampHourlyTick(), 0);
+		CivLog.info("TimerEvent: Hourly Finished -----------------------------");
 	}
 
 	@Override
@@ -70,4 +54,5 @@ public class HourlyTickEvent implements EventInterface {
 		sdf.setTimeZone(cal.getTimeZone());
 		return cal;
 	}
+
 }

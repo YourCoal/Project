@@ -25,14 +25,15 @@ import java.util.Map;
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.CivSettings;
-import com.avrgaming.civcraft.config.ConfigLabLevel;
+import com.avrgaming.civcraft.config.ConfigCottageLevel;
 import com.avrgaming.civcraft.config.ConfigMineLevel;
 import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
-import com.avrgaming.civcraft.structure.Lab;
+import com.avrgaming.civcraft.structure.Cottage;
 import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.ItemManager;
@@ -45,9 +46,6 @@ public class ConsumeLevelComponent extends Component {
 	
 	/* Current count we have in this level. */
 	private int count;
-	
-	/* Data */
-	private int data;
 	
 	/* Last result. */
 	private Result lastResult;
@@ -89,18 +87,18 @@ public class ConsumeLevelComponent extends Component {
 		
 		//XXX make both mine/cottage/longhouse levels similar in the yml so they can be loaded
 		// without this check.
-		if (buildable instanceof Mine) {
+		if (buildable instanceof Cottage) {
+			for (ConfigCottageLevel lvl : CivSettings.cottageLevels.values()) {
+				this.addLevel(lvl.level, lvl.count);
+				this.setConsumes(lvl.level, lvl.consumes);
+			}
+		} else if (buildable instanceof Mine) {
 			for (ConfigMineLevel lvl : CivSettings.mineLevels.values()) {
 				this.addLevel(lvl.level, lvl.count);
-				this.setConsumes(lvl.level, lvl.consumes);
-				this.setData(lvl.data);
-			}
-		}
-		if (buildable instanceof Lab) {
-			for (ConfigLabLevel lvl : CivSettings.labLevels.values()) {
-				this.addLevel(lvl.level, lvl.count);
-				this.setConsumes(lvl.level, lvl.consumes);
-				this.setData(lvl.data);
+				
+				HashMap<Integer, Integer> redstoneAmounts = new HashMap<Integer, Integer>();
+				redstoneAmounts.put(CivData.REDSTONE_DUST, lvl.amount);
+				this.setConsumes(lvl.level, redstoneAmounts);
 			}
 		}
 		
@@ -188,10 +186,6 @@ public class ConsumeLevelComponent extends Component {
 	
 	public void setConsumes(int level, Map<Integer, Integer> consumes) {
 		this.consumptions.put(level, consumes);
-	}
-	
-	public void setData(int data) {
-		this.data = data;
 	}
 	
 	public void addEquivExchange(int baseType, int altType, int basePerAlt) {
@@ -299,8 +293,8 @@ public class ConsumeLevelComponent extends Component {
 		}
 		
 		Map<Integer, Integer> thisLevelConsumptions = consumptions.get(this.level);
+
 		for (Integer typeID : thisLevelConsumptions.keySet()) {
-			Integer data = this.data;
 			Integer amount = thisLevelConsumptions.get(typeID);
 			Integer count = foundCounts.get(typeID);
 		
@@ -368,12 +362,6 @@ public class ConsumeLevelComponent extends Component {
 			} else {
 				/* We had enough of our base item, consume it. */
 				try {
-					if (typeID == 351 && data == 4) {
-						source.removeItem(typeID, (short)4, getConsumedAmount(amount));
-					} else if (typeID == 351 && data != 4) {
-						CivLog.warning("A structure tried consuming illegal dye.");
-						//Do not consume item.
-					}
 					source.removeItem(typeID, getConsumedAmount(amount));
 				} catch (CivException e) {
 					e.printStackTrace();

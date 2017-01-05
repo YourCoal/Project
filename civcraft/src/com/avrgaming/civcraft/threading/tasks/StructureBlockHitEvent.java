@@ -19,7 +19,7 @@
 package com.avrgaming.civcraft.threading.tasks;
 
 import gpl.AttributeUtil;
-import net.minecraft.server.v1_10_R1.Material;
+import net.minecraft.server.v1_7_R4.Material;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -54,6 +54,7 @@ public class StructureBlockHitEvent implements Runnable {
 	
 	@Override
 	public void run() {
+		
 		if (playerName == null) {
 			return;
 		}
@@ -64,39 +65,29 @@ public class StructureBlockHitEvent implements Runnable {
 			//Player offline now?
 			return;
 		}
-		
 		if (dmgBlock.allowDamageNow(player)) {
 			/* Do our damage. */
 			int damage = 1;
-			LoreMaterial material = LoreMaterial.getMaterial(player.getInventory().getItemInMainHand());
+			LoreMaterial material = LoreMaterial.getMaterial(player.getItemInHand());
 			if (material != null) {
 				damage = material.onStructureBlockBreak(dmgBlock, damage);
 			}
 			
-			if (player.getInventory().getItemInMainHand() != null && !player.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
-				AttributeUtil attrs = new AttributeUtil(player.getInventory().getItemInMainHand());
+			if (player.getItemInHand() != null && !player.getItemInHand().getType().equals(Material.AIR)) {
+				AttributeUtil attrs = new AttributeUtil(player.getItemInHand());
 				for (LoreEnhancement enhance : attrs.getEnhancements()) {
 					damage = enhance.onStructureBlockBreak(dmgBlock, damage);
 				}
 			}
 			
 			if (damage > 1) {
-				//TODO FIX THIS
-/*				if (dmgBlock.getCoord().getBlock() == dmgBlock.getTown().getTownHall().getControlPoints()) {
-					CivMessage.send(player, CivColor.LightGray+"if this works im bad.");
-					damage = 1;
-				}
-				
-				if (dmgBlock.getCiv().getCapitolStructure().getControlPoints().equals(dmgBlock)) {
-					CivMessage.send(player, CivColor.LightGray+"Punchout has been voided because you broke a control block.");
-					damage = 1;
-				}*/
 				CivMessage.send(player, CivColor.LightGray+"Punchout does "+(damage-1)+" extra damage!");
 			}
-			
+				
 			dmgBlock.getOwner().onDamage(damage, world, player, dmgBlock.getCoord(), dmgBlock);
 		} else {
-			CivMessage.sendErrorNoRepeat(player, "This block belongs to a "+dmgBlock.getOwner().getDisplayName()+" and cannot be destroyed right now.");
+			CivMessage.sendErrorNoRepeat(player, 
+					"This block belongs to a "+dmgBlock.getOwner().getDisplayName()+" and cannot be destroyed right now.");
 		}
 	}
 }

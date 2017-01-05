@@ -65,6 +65,8 @@ public class WarEvent implements EventInterface {
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
 		}
+		
 		return cal;
 	}
+
 }

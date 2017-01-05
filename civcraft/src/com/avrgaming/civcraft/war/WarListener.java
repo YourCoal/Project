@@ -44,7 +44,7 @@ public class WarListener implements Listener {
 		if (!cc.getCiv().getDiplomacyManager().isAtWar()) {
 			return;
 		}
-		
+				
 		if (event.getBlock().getType().equals(Material.DIRT) || 
 			event.getBlock().getType().equals(Material.GRASS) ||
 			event.getBlock().getType().equals(Material.SAND) ||
@@ -86,17 +86,17 @@ public class WarListener implements Listener {
 			return;
 		}
 				
-			if (event.getBlock().getType().equals(Material.DIRT) || 
-				event.getBlock().getType().equals(Material.GRASS) ||
-				event.getBlock().getType().equals(Material.SAND) ||
-				event.getBlock().getType().equals(Material.GRAVEL) ||
-				event.getBlock().getType().equals(Material.TORCH) ||
-				event.getBlock().getType().equals(Material.REDSTONE_TORCH_OFF) ||
-				event.getBlock().getType().equals(Material.REDSTONE_TORCH_ON) ||
-				event.getBlock().getType().equals(Material.REDSTONE) ||
-				event.getBlock().getType().equals(Material.TNT) ||
-				event.getBlock().getType().equals(Material.LADDER) ||
-				event.getBlock().getType().equals(Material.VINE)) {
+		if (event.getBlock().getType().equals(Material.DIRT) || 
+			event.getBlock().getType().equals(Material.GRASS) ||
+			event.getBlock().getType().equals(Material.SAND) ||
+			event.getBlock().getType().equals(Material.GRAVEL) ||
+			event.getBlock().getType().equals(Material.TORCH) ||
+			event.getBlock().getType().equals(Material.REDSTONE_TORCH_OFF) ||
+			event.getBlock().getType().equals(Material.REDSTONE_TORCH_ON) ||
+			event.getBlock().getType().equals(Material.REDSTONE) ||
+			event.getBlock().getType().equals(Material.LADDER) ||
+			event.getBlock().getType().equals(Material.VINE) ||
+			event.getBlock().getType().equals(Material.TNT)) {
 			
 			if (event.getBlock().getLocation().subtract(0, 1, 0).getBlock().getType() != Material.AIR) {
 				return;

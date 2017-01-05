@@ -1,13 +1,13 @@
 package com.avrgaming.civcraft.items.components;
 
+import gpl.AttributeUtil;
+
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.avrgaming.civcraft.books.Information;
+import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.CivColor;
-
-import gpl.AttributeUtil;
 
 public class TutorialBook extends ItemComponent {
 
@@ -27,7 +27,7 @@ public class TutorialBook extends ItemComponent {
 		}
 		
 		//CivTutorial.showCraftingHelp(event.getPlayer());
-		Information.spawnGuiBook(event.getPlayer());
+		CivTutorial.spawnGuiBook(event.getPlayer());
 
 	}
 	

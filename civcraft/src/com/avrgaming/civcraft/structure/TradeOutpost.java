@@ -111,6 +111,7 @@ public class TradeOutpost extends Structure {
 				}
 			}
 		}
+		
 		throw new CivException("Cannot demolish when bonus goodie is not in item frame.");
 	}
 	
@@ -177,9 +178,9 @@ public class TradeOutpost extends Structure {
 		this.addStructureBlock(sb.getCoord(), false);
 		
 		/* Place the itemframe. */
-		b = centerLoc.getBlock().getRelative(1,1,0);
+		b = centerLoc.getBlock().getRelative(0,1,0);
 		this.addStructureBlock(new BlockCoord(b), false);
-		Block b2 = b.getRelative(0, 0, 0);
+		Block b2 = b.getRelative(1, 0, 0);
 		Entity entity = CivGlobal.getEntityAtLocation(b2.getLocation());
 		this.addStructureBlock(new BlockCoord(b2), false);
 		

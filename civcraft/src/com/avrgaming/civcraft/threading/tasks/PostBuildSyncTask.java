@@ -68,13 +68,13 @@ public class PostBuildSyncTask implements Runnable {
 			}
 		}
 			
-//		for (BlockCoord relativeCoord : tpl.attachableLocations) {
+//	for (BlockCoord relativeCoord : tpl.attachableLocations) {
 //			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
 //			BlockCoord absCoord = new BlockCoord(buildable.getCorner().getBlock().getRelative(relativeCoord.getX(), relativeCoord.getY(), relativeCoord.getZ()));
-//		
+//
 //			Block block = absCoord.getBlock();
-//			if (ItemManager.getId(block) != sb.getType()) {
-//				ItemManager.setTypeIdAndData(block, sb.getType(), (byte)sb.getData(), false);
+//			if (block.getTypeId() != sb.getType()) {
+//				block.setTypeIdAndData(sb.getType(), (byte)sb.getData(), false);
 //			}
 //		}
 		
@@ -105,39 +105,32 @@ public class PostBuildSyncTask implements Runnable {
 					
 				}
 				break;
+			
 			case "/techbar":
 				if (buildable instanceof TownHall) {
 					TownHall townhall = (TownHall)buildable;
+					
 					int index = Integer.valueOf(sb.keyvalues.get("id"));
 					townhall.addTechBarBlock(absCoord, index);
+					
 				}
 				break;
 			case "/techname":
 				if (buildable instanceof TownHall) {
 					TownHall townhall = (TownHall)buildable;
+					
 					townhall.setTechnameSign(absCoord);
 					townhall.setTechnameSignData((byte)sb.getData());
+					
 				}							
 				break;
 			case "/techdata":
 				if (buildable instanceof TownHall) {
 					TownHall townhall = (TownHall)buildable;
+					
 					townhall.setTechdataSign(absCoord);
 					townhall.setTechdataSignData((byte)sb.getData());
-				}
-				break;
-			case "/civicname":
-				if (buildable instanceof TownHall) {
-					TownHall townhall = (TownHall)buildable;
-					townhall.setCivicnameSign(absCoord);
-					townhall.setCivicnameSignData((byte)sb.getData());
-				}							
-				break;
-			case "/civicdata":
-				if (buildable instanceof TownHall) {
-					TownHall townhall = (TownHall)buildable;
-					townhall.setCivicdataSign(absCoord);
-					townhall.setCivicdataSignData((byte)sb.getData());
+					
 				}
 				break;
 			case "/itemframe":

@@ -125,7 +125,7 @@ public class GreatLibrary extends Wonder {
 			return;
 		}
 		
-		ItemStack hand = player.getInventory().getItemInMainHand();
+		ItemStack hand = player.getItemInHand();
 		ConfigEnchant configEnchant;
 		
 		switch (sign.getAction()) {
@@ -200,7 +200,7 @@ public class GreatLibrary extends Wonder {
 				
 				resident.getTreasury().withdraw(configEnchant.cost);
 				ItemStack newItem = LoreMaterial.addEnhancement(hand, LoreEnhancement.enhancements.get(configEnchant.enchant_id));				
-				player.getInventory().setItemInMainHand(newItem);
+				player.setItemInHand(newItem);
 				break;
 			default:
 				CivMessage.sendError(player, "You can only add this enchantment to pickaxes.");

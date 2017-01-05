@@ -18,6 +18,8 @@
  */
 package com.avrgaming.civcraft.lorestorage;
 
+import gpl.AttributeUtil;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -46,8 +48,6 @@ import com.avrgaming.civcraft.object.BuildableDamageBlock;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
-import gpl.AttributeUtil;
-
 public abstract class LoreMaterial {
 
 	private String id;
@@ -56,10 +56,8 @@ public abstract class LoreMaterial {
 
 	private LinkedList<String> lore = new LinkedList<String>();
 	private String name;
-	
-	//TODO Remove materialMap and make it matMap, because I want to compact code
+		
 	public static Map<String, LoreMaterial> materialMap = new HashMap<String, LoreMaterial>();
-//	public static Map<String, LoreMaterial> matMap = new HashMap<String, LoreMaterial>();
 	public static final String MID_TAG = CivColor.Black+"MID";
 	
 	public LoreMaterial(String id, int typeID, short damage) {
@@ -136,13 +134,6 @@ public abstract class LoreMaterial {
 		return materialMap.get(getMID(stack));
 	}
 	
-	public static LoreMaterial getMaterial(LoreMaterial stack) {
-		if (stack == null) {
-			return null;
-		}
-		return materialMap.get(stack);
-	}
-	
 	/*
 	 * Moves an item stack off of this slot by trying
 	 * to re-add it to the inventory, if it fails, then
@@ -173,23 +164,18 @@ public abstract class LoreMaterial {
 		}
 		return null;
 	}
-	
+
 	public static ItemStack spawn(LoreMaterial material) {
-		return spawn(material, 1);
-	}
-	
-	public static ItemStack spawn(LoreMaterial material, int amount) {
-		ItemStack stack = ItemManager.createItemStack(material.getTypeID(), amount, material.getDamage());
+		ItemStack stack = ItemManager.createItemStack(material.getTypeID(), 1, material.getDamage());
 		AttributeUtil attrs = new AttributeUtil(stack);
 		setMIDAndName(attrs, material.getId(), material.getName());
 		
 		if (material instanceof LoreCraftableMaterial) {
 			LoreCraftableMaterial craftMat = (LoreCraftableMaterial)material;
+			//craftMat.getConfigMaterial().category
 			attrs.addLore(CivColor.ITALIC+craftMat.getConfigMaterial().category);
-			if (craftMat.getConfigMaterial().shiny) {
-				attrs.setShiny();
-			}
 		}
+		
 		material.applyAttributes(attrs);
 		return attrs.getStack();
 	}
@@ -237,14 +223,6 @@ public abstract class LoreMaterial {
 	public String getName() {
 		return name;
 	}
-	
-	//Does not work.
-/*	public void addEnchantment(ItemStack stack) {
-		ItemMeta meta = stack.getItemMeta();
-		meta.addEnchant(Enchantment.LURE, 1, false);
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		stack.setItemMeta(meta);
-	}*/
 	
 	public static ItemStack addEnhancement(ItemStack stack, LoreEnhancement enhancement) {
 		AttributeUtil attrs = new AttributeUtil(stack);

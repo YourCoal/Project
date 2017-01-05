@@ -50,7 +50,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.avrgaming.civcraft.books.Tutorial;
 import com.avrgaming.civcraft.components.Component;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
@@ -82,6 +81,7 @@ import com.avrgaming.civcraft.template.Template.TemplateType;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
+import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.AABB;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.BukkitObjects;
@@ -98,7 +98,7 @@ import com.wimbli.WorldBorder.Config;
 
 public abstract class Buildable extends SQLObject {
 	
-	protected Town town;
+	private Town town;
 	protected BlockCoord corner;
 	public ConfigBuildableInfo info = new ConfigBuildableInfo(); //Blank buildable info for buildables which do not have configs.
 	protected int hitpoints;
@@ -116,7 +116,7 @@ public abstract class Buildable extends SQLObject {
 	private int templateZ;
 	
 	// Number of blocks to shift the structure away from us when built.
-	public static final int SHIFT_OUT = 0;
+	public static final double SHIFT_OUT = 0;
 	public static final int MIN_DISTANCE = 7;
 	
 	private Map<BlockCoord, StructureSign> structureSigns = new ConcurrentHashMap<BlockCoord, StructureSign>();
@@ -126,11 +126,12 @@ public abstract class Buildable extends SQLObject {
 	protected Map<BlockCoord, Boolean> structureBlocks = new ConcurrentHashMap<BlockCoord, Boolean>();
 	private BlockCoord centerLocation;
 	
+	// XXX this is a bad hack to get the townchunks to load in the proper order when saving asynchronously
 	public ArrayList<TownChunk> townChunksToSave = new ArrayList<TownChunk>();
 	public ArrayList<Component> attachedComponents = new ArrayList<Component>();
 	
 	private boolean valid = true;
-	public static double validPercentRequirement = 0.85;
+	public static double validPercentRequirement = 0.8;
 	public static HashSet<Buildable> invalidBuildables = new HashSet<Buildable>();
 	public HashMap<Integer, BuildableLayer> layerValidPercentages = new HashMap<Integer, BuildableLayer>();
 	public boolean validated = false;
@@ -160,6 +161,7 @@ public abstract class Buildable extends SQLObject {
 		return corner.toString();
 	}
 	
+	
 	public String getConfigId() {
 		return info.id;
 	}
@@ -171,10 +173,12 @@ public abstract class Buildable extends SQLObject {
 	public String getDisplayName() {
 		return info.displayName;
 	}
+
 	
 	public int getMaxHitPoints() {
 		return info.max_hitpoints;
 	}
+
 	
 	public double getCost() {
 		return info.cost;
@@ -184,8 +188,10 @@ public abstract class Buildable extends SQLObject {
 		if (this.info.regenRate == null) {
 			return 0;
 		}
+		
 		return info.regenRate;
 	}
+
 	
 	public double getHammerCost() {
 		double rate = 1;
@@ -195,21 +201,26 @@ public abstract class Buildable extends SQLObject {
 		return rate*info.hammer_cost;
 	}
 	
+	
 	public double getUpkeepCost() {
 		return info.upkeep;
 	}
+	
 	
 	public int getTemplateYShift() {
 		return info.templateYShift;
 	}
 	
+	
 	public String getRequiredUpgrade() {
 		return info.require_upgrade;
 	}
+
 	
 	public String getRequiredTechnology() {
 		return info.require_tech;
 	}
+	
 	
 	public String getUpdateEvent() {
 		return info.update_event;
@@ -237,12 +248,8 @@ public abstract class Buildable extends SQLObject {
 		return info.allow_demolish;
 	}
 	
-	public boolean isTile() {
-		return info.tile;
-	}
-	
-	public boolean isOutpost() {
-		return info.outpost;
+	public boolean isTileImprovement() {
+		return info.tile_improvement;
 	}
 	
 	public boolean isActive() {	
@@ -284,7 +291,7 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	public abstract void updateBuildProgess();
-	
+
 	public BlockCoord getCorner() {
 		return corner;
 	}
@@ -301,6 +308,7 @@ public abstract class Buildable extends SQLObject {
 			
 			this.centerLocation = new BlockCoord(this.getCorner().getWorldname(), centerX, centerY, centerZ);
 		}
+		
 		return this.centerLocation;
 	}
 	
@@ -384,7 +392,7 @@ public abstract class Buildable extends SQLObject {
 			resident.pendingBuildable = this;
 			
 			/* Build an inventory full of templates to select. */
-			Inventory inv = Bukkit.getServer().createInventory(player, Tutorial.MAX_CHEST_SIZE*9);
+			Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9);
 			ItemStack infoRec = LoreGuiItem.build("Default "+this.getDisplayName(), 
 					ItemManager.getId(Material.WRITTEN_BOOK), 
 					0, CivColor.Gold+"<Click To Build>");
@@ -476,7 +484,7 @@ public abstract class Buildable extends SQLObject {
 			resident.pendingCallback = callback;
 
 			/* Build an inventory full of templates to select. */
-			Inventory inv = Bukkit.getServer().createInventory(player, Tutorial.MAX_CHEST_SIZE*9);
+			Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9);
 			ItemStack infoRec = LoreGuiItem.build("Default "+info.displayName, 
 					ItemManager.getId(Material.WRITTEN_BOOK), 
 					0, CivColor.Gold+"<Click To Build>");
@@ -532,12 +540,18 @@ public abstract class Buildable extends SQLObject {
 		}
 	}
 	
-	//XXX this is called only on structures which do not have towns yet (Capitols, Camps, and Town Halls)
+	/*
+	 * XXX this is called only on structures which do not have towns yet.
+	 * For Example Capitols, Camps and Town Halls.
+	 */
 	public static Location repositionCenterStatic(Location center, ConfigBuildableInfo info, String dir, double x_size, double z_size) throws CivException {
-		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
+		Location loc = new Location(center.getWorld(), 
+				center.getX(), center.getY(), center.getZ(), 
+				center.getYaw(), center.getPitch());
+		
 		
 		// Reposition tile improvements
-		if (info.tile || info.outpost) {
+		if (info.tile_improvement) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else { 
@@ -545,70 +559,83 @@ public abstract class Buildable extends SQLObject {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() + SHIFT_OUT);				
-			} else if (dir.equalsIgnoreCase("west")) {
+			}
+			else if (dir.equalsIgnoreCase("west")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
+			}
+			else if (dir.equalsIgnoreCase("north")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
+			}
+			else if (dir.equalsIgnoreCase("south")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() + SHIFT_OUT);
 			}
-		}
-		
+		}   
 		if (info.templateYShift != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
 			loc.setY(loc.getY() + info.templateYShift);
+			
 			if (loc.getY() < 1) {
 				throw new CivException("Cannot build here, too close to bedrock.");
 			}
-		}	
+		}
+				
 		return loc;
 	}
 	
 	protected Location repositionCenter(Location center, String dir, double x_size, double z_size) throws CivException {
-		Location loc = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ(), center.getYaw(), center.getPitch());
+		Location loc = new Location(center.getWorld(), 
+				center.getX(), center.getY(), center.getZ(), 
+				center.getYaw(), center.getPitch());
+		
 		
 		// Reposition tile improvements
-		if (info.tile || info.outpost) {
+		if (this.isTileImprovement()) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-		} else { 
-			if (dir.equalsIgnoreCase("east")) {				
+		} else {  
+			if (dir.equalsIgnoreCase("east")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() + SHIFT_OUT);				
-			} else if (dir.equalsIgnoreCase("west")) {
+				loc.setX(loc.getX() + SHIFT_OUT);
+			}
+			else if (dir.equalsIgnoreCase("west")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			} else if (dir.equalsIgnoreCase("north")) {
+			}
+			else if (dir.equalsIgnoreCase("north")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			} else if (dir.equalsIgnoreCase("south")) {
+			}
+			else if (dir.equalsIgnoreCase("south")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() + SHIFT_OUT);
 			}
-		}
-		
+		}  
 		if (this.getTemplateYShift() != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
 			loc.setY(loc.getY() + this.getTemplateYShift());
+			
 			if (loc.getY() < 1) {
 				throw new CivException("Cannot build here, too close to bedrock.");
 			}
-		}	
+		}
+				
 		return loc;
 	}
 	
-	public void resumeBuildFromTemplate() throws Exception {
+	public void resumeBuildFromTemplate() throws Exception
+	{
 		Template tpl;
+		
 		Location corner = getCorner().getLocation();
 
 		try {
@@ -714,7 +741,7 @@ public abstract class Buildable extends SQLObject {
 		
 		if (this.getConfigId().equals("s_shipyard")) {
 			if (!centerBlock.getBiome().equals(Biome.OCEAN) && 
-				!centerBlock.getBiome().equals(Biome.BEACHES) &&
+				!centerBlock.getBiome().equals(Biome.BEACH) &&
 				!centerBlock.getBiome().equals(Biome.DEEP_OCEAN) &&
 				!centerBlock.getBiome().equals(Biome.RIVER) &&
 				!centerBlock.getBiome().equals(Biome.FROZEN_OCEAN) &&
@@ -734,17 +761,17 @@ public abstract class Buildable extends SQLObject {
 			validateDistanceFromSpawn(centerBlock.getLocation());
 		}
 		
-		if (this.isTile()) {
+		if (this.isTileImprovement()) {
 			ignoreBorders = true;
 			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
 			
-			if (getTown().getTileCount() >= level.tiles) {
-				throw new CivException("Cannot build tile. Already at tile limit.");
+			if (getTown().getTileImprovementCount() >= level.tile_improvements) {
+				throw new CivException("Cannot build tile improvement. Already at tile improvement limit.");
 			}
 			
 			ChunkCoord coord = new ChunkCoord(centerBlock.getLocation());
 			for (Structure s : getTown().getStructures()) {
-				if (!s.isTile()) {
+				if (!s.isTileImprovement()) {
 					continue;
 				}
 				ChunkCoord sCoord = new ChunkCoord(s.getCorner());
@@ -1107,10 +1134,6 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	public void onDamage(int amount, World world, Player player, BlockCoord coord, BuildableDamageBlock hit) {
-		if (!this.getCiv().getDiplomacyManager().isAtWar()) {
-			return;
-		}
-		
 		boolean wasTenPercent = false;
 		
 		if(hit.getOwner().isDestroyed()) {
@@ -1133,7 +1156,7 @@ public abstract class Buildable extends SQLObject {
 			
 		this.damage(amount);
 		
-		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
+		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
 		world.playEffect(hit.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		if ((hit.getOwner().getDamagePercentage() % 10) == 0 && !wasTenPercent) {
@@ -1272,9 +1295,6 @@ public abstract class Buildable extends SQLObject {
 	}
 	
 	public void onTechUpdate() {
-	}
-	
-	public void onCivicUpdate() {
 	}
 	
 	public void processRegen() {
@@ -1461,51 +1481,18 @@ public abstract class Buildable extends SQLObject {
 	
 	public static int getReinforcementValue(int typeId) {
 		switch (typeId) {
-		case CivData.AIR:
-		case CivData.SAPLING:
+		case CivData.WATER:
 		case CivData.WATER_RUNNING:
-		case CivData.WATER_STILL:
+		case CivData.LAVA:
 		case CivData.LAVA_RUNNING:
-		case CivData.LAVA_STILL:
-		case CivData.LEAF:
-		case CivData.SPONGE:
+		case CivData.AIR:
 		case CivData.COBWEB:
-		case CivData.TALL_GRASS:
-		case CivData.DEAD_BUSH:
-		case CivData.YELLOW_FLOWER:
-		case CivData.OTHER_FLOWERS:
-		case CivData.BROWNMUSHROOM:
-		case CivData.REDMUSHROOM:
-		case CivData.TORCH:
-		case CivData.FIRE:
-		case CivData.WHEAT:
-		case CivData.REDSTONE_WIRE:
-		case CivData.SUGARCANE:
-		case CivData.LILY_PAD:
-		case CivData.TRIPWIRE:
-		case CivData.CARROTS:
-		case CivData.POTATOES:
-		case CivData.BEETROOT_CROP:
-		case CivData.ANVIL:
-		case CivData.LEAF2:
-		case CivData.SLIME_BLOCK:
-		case CivData.CARPET:
-		case CivData.DOUBLE_FLOWER:
 			return 0;
-		case CivData.DIAMOND_BLOCK:
-		case CivData.EMERALD_BLOCK:
-			return 5;
-		case CivData.GOLD_BLOCK:
 		case CivData.IRON_BLOCK:
-		case CivData.OBSIDIAN:
 			return 4;
 		case CivData.STONE_BRICK:
-		case CivData.COAL_BLOCK:
 			return 3;
 		case CivData.STONE:
-		case CivData.COBBLESTONE:
-		case CivData.STAINED_CLAY:
-		case CivData.HARDENED_CLAY:
 			return 2;
 		default:
 			return 1;

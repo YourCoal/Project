@@ -27,8 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
@@ -43,7 +41,6 @@ import com.avrgaming.civcraft.components.Component;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuff;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
-import com.avrgaming.civcraft.config.ConfigCivic;
 import com.avrgaming.civcraft.config.ConfigCultureLevel;
 import com.avrgaming.civcraft.config.ConfigGovernment;
 import com.avrgaming.civcraft.config.ConfigHappinessState;
@@ -66,7 +63,6 @@ import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
 import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.structure.Buildable;
-import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.structure.TradeOutpost;
@@ -76,7 +72,6 @@ import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.sync.SyncUpdateTags;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
-import com.avrgaming.civcraft.threading.tasks.UpdateCivicBar;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -88,16 +83,12 @@ import com.avrgaming.global.perks.Perk;
 import com.avrgaming.global.perks.components.CustomTemplate;
 
 public class Town extends SQLObject {
-	
-	private Map<String, ConfigCivic> civics = new ConcurrentHashMap<String, ConfigCivic>();
-	private ConfigCivic CivicResearch = null;
-	private double CivicResearchProgress = 0.0;
-	/* Used to prevent spam of civic % complete message. */
-	private int lastCivicPercentage = 0;
-	
+
 	private ConcurrentHashMap<String, Resident> residents = new ConcurrentHashMap<String, Resident>();
-	
+	private ConcurrentHashMap<String, Resident> fakeResidents = new ConcurrentHashMap<String, Resident>();
+
 	private ConcurrentHashMap<ChunkCoord, TownChunk> townChunks = new ConcurrentHashMap<ChunkCoord, TownChunk>();
+	private ConcurrentHashMap<ChunkCoord, TownChunk> outposts = new ConcurrentHashMap<ChunkCoord, TownChunk>();
 	private ConcurrentHashMap<ChunkCoord, CultureChunk> cultureChunks = new ConcurrentHashMap<ChunkCoord, CultureChunk>();
 	
 	private ConcurrentHashMap<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
@@ -111,26 +102,21 @@ public class Town extends SQLObject {
 	private Civilization motherCiv;
 	private int daysInDebt;
 	
-	public boolean canTeleport = false;
-	
 	/* Hammers */
 	private double baseHammers = 1.0;
 	private double extraHammers;
 	public Buildable currentStructureInProgress;
 	public Buildable currentWonderInProgress;
 	
-	/* Beakers */
-	private double unusedBeakers;
-	
 	/* Culture */
 	private int culture;
-	
-	private EconObject treasury;
-	private FoodObject food;
 	
 	private PermissionGroup defaultGroup;
 	private PermissionGroup mayorGroup;
 	private PermissionGroup assistantGroup;
+	
+	/* Beakers */
+	private double unusedBeakers;
 	
 	// These are used to resolve reverse references after the database loads.
 	private String defaultGroupName;
@@ -141,6 +127,7 @@ public class Town extends SQLObject {
 	public HashSet<Town> townTouchList = new HashSet<Town>();
 	
 	private ConcurrentHashMap<String, PermissionGroup> groups = new ConcurrentHashMap<String, PermissionGroup>();
+	private EconObject treasury;
 	private ConcurrentHashMap<String, ConfigTownUpgrade> upgrades = new ConcurrentHashMap<String, ConfigTownUpgrade>();
 			
 	/* This gets populated periodically from a synchronous timer so it will be accessible from async tasks. */
@@ -162,14 +149,8 @@ public class Town extends SQLObject {
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
-	public int saved_bank_level = 1; //Default 1
-	public double saved_bank_interest = 0; //Default 0
-	
-	public int saved_farm_level= 1; //Default 1
-	public int saved_granary_level= 1; //Default 1
-	public int saved_cottage_level= 1; //Default 1
-	public int saved_trommel_level= 1; //Default 1
-	public int saved_quarry_level= 1; //Default 1
+	public int saved_bank_level = 1;
+	public double saved_bank_interest_amount = 0;
 	
 	/* Happiness Stuff */
 	private double baseHappy = 0.0;
@@ -211,11 +192,6 @@ public class Town extends SQLObject {
 					"`debt` double DEFAULT 0," +
 					"`coins` double DEFAULT 0," +
 					"`daysInDebt` int(11) DEFAULT 0,"+
-					"`foodCount` double DEFAULT 0," +
-					"`civics` mediumtext DEFAULT NULL," +
-					"`researchCivic` mediumtext DEFAULT NULL,"+
-					"`researchCivicProgress` float NOT NULL DEFAULT 0,"+
-					"`researchedCivics` mediumtext DEFAULT NULL, "+
 					"`flat_tax` double NOT NULL DEFAULT '0'," + 
 					"`tax_rate` double DEFAULT 0," + 
 					"`extra_hammers` double DEFAULT 0," +
@@ -272,10 +248,6 @@ public class Town extends SQLObject {
 		this.setTaxRate(rs.getDouble("tax_rate"));
 		this.setUpgradesFromString(rs.getString("upgrades"));
 		
-		this.setCivicResearch(CivSettings.civics.get(rs.getString("researchCivic")));
-		this.setCivicResearchProgress(rs.getDouble("researchCivicProgress"));
-		this.loadResearchedCivics(rs.getString("researchedCivics"));
-		
 		//this.setHomeChunk(rs.getInt("homechunk_id"));
 		this.setExtraHammers(rs.getDouble("extra_hammers"));
 		this.setAccumulatedCulture(rs.getInt("culture"));
@@ -287,9 +259,6 @@ public class Town extends SQLObject {
 		this.setTreasury(new EconObject(this));
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
 		this.setDebt(rs.getDouble("debt"));
-		
-		this.setFood(new FoodObject(this));
-		this.getFood().setFoodCount(rs.getDouble("foodCount"), false);
 		
 		String outlawRaw = rs.getString("outlaws");
 		if (outlawRaw != null) {
@@ -340,16 +309,7 @@ public class Town extends SQLObject {
 		hashmap.put("culture", this.getAccumulatedCulture());
 		hashmap.put("upgrades", this.getUpgradesString());
 		hashmap.put("coins", this.getTreasury().getBalance());
-		hashmap.put("foodCount", this.getFood().getFoodCount());
 		hashmap.put("dbg_civ_name", this.getCiv().getName());
-		
-		if (this.getCivicResearch() != null) {
-			hashmap.put("researchCivic", this.getCivicResearch().id);
-		} else {
-			hashmap.put("researchCivic", null);
-		}
-		hashmap.put("researchCivicProgress", this.getCivicResearchProgress());
-		hashmap.put("researchedCivics", this.saveResearchedCivics());
 		
 		if (this.created_date != null) {
 			hashmap.put("created_date", this.created_date.getTime());
@@ -434,10 +394,8 @@ public class Town extends SQLObject {
 		this.setAccumulatedCulture(0);
 		this.setTreasury(new EconObject(this));	
 		this.getTreasury().setBalance(0, false);
-		this.setFood(new FoodObject(this));	
-		this.getFood().setFoodCount(0, false);
-		
 		this.created_date = new Date();
+
 		loadSettings();
 	}
 	
@@ -701,11 +659,13 @@ public class Town extends SQLObject {
 		}
 		return;
 	}
-	
+
+
 	public double getExtraHammers() {
 		return extraHammers;
 	}
-	
+
+
 	public void setExtraHammers(double extraHammers) {
 		this.extraHammers = extraHammers;
 	}
@@ -713,56 +673,38 @@ public class Town extends SQLObject {
 	public AttrSource getHammerRate() {
 		double rate = 1.0;
 		HashMap<String, Double> rates = new HashMap<String, Double>();
+		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
 
 		/* Happiness */
-		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
-		double hapRate = 1.0 * state.hammer_rate;
-		rates.put("Happiness", hapRate - 1.0);
+		double newRate = rate * state.hammer_rate;
+		rates.put("Happiness", newRate - rate);
+		rate = newRate;
 		
 		/* Government */
-		double govRate = 1.0 * getGovernment().hammer_rate;
-		rates.put("Government", govRate - 1.0);
+		newRate = rate * getGovernment().hammer_rate;
+		rates.put("Government", newRate - rate);
+		rate = newRate;
 		
-		/* Random Event */
-		double ranRate = 1.0 * RandomEvent.getHammerRate(this);
-		rates.put("Random Events", ranRate - 1.0);
-		
-		double buffRate1 = getBuffManager().getEffectiveDouble(Buff.CONSTRUCTION);
-		double buffRateTotal = 1.0 * (buffRate1);
-		rates.put("Trade Buffs", buffRateTotal - 1.0);
-		
-		/* Civics */ //TODO Fix, does not work.
-/*		double cvcRate = 1.0;
-		for (ConfigCivic c : this.getCivics()) {
-			if (c.bonus_factors == "hammers_mines") {
-				int bonus = c.bonus_factors.length()/10;
-				
-				cvcRate = 1 + (double)bonus;
-				cvcRate = 1.0 * cvcRate;
-				rates.put("Civics", cvcRate - 1.0);
-			}
-		}*/
+		double randomRate = RandomEvent.getHammerRate(this);
+		newRate = rate * randomRate;
+		rates.put("Random Events", newRate - rate);
+		rate = newRate;
 		
 		/* Captured Town Penalty */
-		double capRate = 1.0;
 		if (this.motherCiv != null) {
 			try {
-				capRate = 1.0 * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");	
-				rates.put("Captured Penalty", capRate - 1.0);
+				newRate = rate * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");	
+				rates.put("Captured Penalty", newRate - rate);
+				rate = newRate;
+				
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
 		}
-		
-		//595.2 hammers old formula
-		//372.0 hammers new formula
-		rate = (hapRate + govRate + ranRate + buffRateTotal + capRate) / 5; // all rates added / # of rates
-		double finRate = Math.round(rate); //make it a sexy whole number
-		return new AttrSource(rates, finRate, null);
+		return new AttrSource(rates, rate, null);
 	}
 	
 	public AttrSource getHammers() {
-		HashMap<String, Double> sources = new HashMap<String, Double>();
 		double total = 0;
 		
 		AttrCache cache = this.attributeCache.get("HAMMERS");
@@ -777,19 +719,21 @@ public class Town extends SQLObject {
 				return cache.sources;
 			}
 		}
+	
+		HashMap<String, Double> sources = new HashMap<String, Double>();
+				
+		/* Wonders and Goodies. */
+		double wonderGoodies = this.getBuffManager().getEffectiveInt(Buff.CONSTRUCTION);
+		sources.put("Wonders/Goodies", wonderGoodies);
+		total += wonderGoodies;
 		
 		double cultureHammers = this.getHammersFromCulture();
 		sources.put("Culture Biomes", cultureHammers);
 		total += cultureHammers; 
 		
-		/* Grab hammers generated from structures with components. */
+		/* Grab happiness generated from structures with components. */
 		double structures = 0;
-		double mines = 0;
 		for (Structure struct : this.structures.values()) {
-			if (struct instanceof Mine) {
-				Mine mine = (Mine)struct;
-				mines += mine.getProducedHammers(); 
-			}
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
 					AttributeBase as = (AttributeBase)comp;
@@ -800,10 +744,9 @@ public class Town extends SQLObject {
 			}
 		}
 
-		total += mines;
-		sources.put("Mine Structures", mines);
 		total += structures;
 		sources.put("Structures", structures);
+		
 		
 		sources.put("Base Hammers", this.baseHammers);
 		total += this.baseHammers;
@@ -825,14 +768,12 @@ public class Town extends SQLObject {
 		this.baseHammers = hammerRate;
 	}
 	
-	public static Town newTown(Resident resident, String name, Civilization civ, boolean free, boolean capitol, Location loc) throws CivException {
+	public static Town newTown(Resident resident, String name, Civilization civ, boolean free, boolean capitol, 
+			Location loc) throws CivException {
 		try {
+			
 			if (War.isWarTime() && !free && civ.getDiplomacyManager().isAtWar()) {
 				throw new CivException("Cannot start towns during WarTime if you're at war.");
-			}
-			
-			if (War.isWithinNewTownDaysCutOff() && civ.getDiplomacyManager().isAtWar()) {
-				throw new CivException("Cannot make new towns within "+War.getNewTownDaysCutOff()+" days before WarTime when you're at war.");
 			}
 			
 			if (civ == null) {
@@ -986,7 +927,7 @@ public class Town extends SQLObject {
 			
 			if (!free) {
 				ItemStack newStack = new ItemStack(Material.AIR);
-				player.getInventory().setItemInMainHand(newStack);	
+				player.setItemInHand(newStack);	
 				Unit.removeUnit(player);
 			}
 			
@@ -1362,6 +1303,7 @@ public class Town extends SQLObject {
 		upkeep += this.getBaseUpkeep();
 		//upkeep += this.getSpreadUpkeep();
 		upkeep += this.getStructureUpkeep();
+		upkeep += this.getOutpostUpkeep();
 		
 		upkeep *= getGovernment().upkeep_rate;
 		
@@ -1461,7 +1403,7 @@ public class Town extends SQLObject {
 	}
 
 	public boolean hasTechnology(String require_tech) {
-		return this.getCiv().hasRequiredTech(require_tech);
+		return this.getCiv().hasTechnology(require_tech);
 	}
 	
 	public String getDynmapDescription() {
@@ -1732,14 +1674,9 @@ public class Town extends SQLObject {
 	public boolean isStructureAddable(Structure struct) {
 		int count = this.getStructureTypeCount(struct.getConfigId());
 
-		if (struct.isTile()) {
+		if (struct.isTileImprovement()) {
 			ConfigTownLevel level = CivSettings.townLevels.get(this.getLevel());
-			if (this.getTileCount() > level.tiles) {
-				return false;
-			}
-		} else  if (struct.isOutpost()) {
-			ConfigTownLevel level = CivSettings.townLevels.get(this.getLevel());
-			if (this.getOutpostCount() > level.outposts) {
+			if (this.getTileImprovementCount() > level.tile_improvements) {
 				return false;
 			}
 		} else if ((struct.getLimit() != 0) && (count > struct.getLimit())) {
@@ -1933,6 +1870,17 @@ public class Town extends SQLObject {
 		this.attributeCache.put("GROWTH", cache);
 		return as;	
 	}
+	
+	public double getCottageRate() {
+		double rate = getGovernment().cottage_rate;
+
+		double additional = rate*this.getBuffManager().getEffectiveDouble(Buff.COTTAGE_RATE);
+		rate += additional;
+		
+		/* Adjust for happiness state. */
+		rate *= this.getHappinessState().coin_rate;
+		return rate;
+	}
 
 	public double getSpreadUpkeep() throws InvalidConfiguration {
 		double total = 0.0;
@@ -1970,7 +1918,7 @@ public class Town extends SQLObject {
 	}
 
 	public double getTotalUpkeep() throws InvalidConfiguration {
-		return this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep();
+		return this.getBaseUpkeep() + this.getStructureUpkeep() + this.getSpreadUpkeep() + this.getOutpostUpkeep();
 	}
 
 	public double getTradeRate() {
@@ -1999,88 +1947,22 @@ public class Town extends SQLObject {
 		return rate;
 	}
 
-	public int getTileCount() {
+	public int getTileImprovementCount() {
 		int count = 0;
 		for (Structure struct : getStructures()) {
-			if (struct.isTile()) {
+			if (struct.isTileImprovement()) {
 				count++;
 			}
 		}
 		return count;
-	}
-	
-	public int getOutpostCount() {
-		int count = 0;
-		for (Structure struct : getStructures()) {
-			if (struct.isOutpost()) {
-				count++;
-			}
-		}
-		return count;
-	}
-	
-	public int getCottageCount() {
-		int count = 0;
-		for (Structure struct : getStructures()) {
-			if (struct.getConfigId() == "ti_cottage") {
-				count++;
-			}
-		}
-		return count;
-	}
-	
-	public AttrSource getPopulation() {
-		double population = 0;
-		HashMap<String, Double> sources = new HashMap<String, Double>();
-		
-		/* Default every town */
-		double defaultTown = 2;
-		sources.put("Default", defaultTown);
-		population += defaultTown;
-		
-		/* 2 Population per Cottage */
-		double cottages = getCottageCount();
-		sources.put("Cottages", cottages);
-		population += cottages*2;
-		
-		/* Can never go below default (should never happen) */
-		if (population < 2) {
-			population = defaultTown;
-		}
-		population = (int)population;
-		
-		AttrSource as = new AttrSource(sources, population, null);
-		return as;
-	}
-	
-	public AttrSource getPopulationCount() {
-		double population = 0;
-		HashMap<String, Double> sources = new HashMap<String, Double>();
-		
-		/* Default every town */
-		double residents = 0;
-		residents = this.getResidentCount();
-		sources.put("Default", residents);
-		population += residents;
-		
-		//TODO This will grab the workers in the town.
-/*		// 2 Population per Cottage
-		double cottages = getCottageCount();
-		sources.put("Cottages", cottages);
-		population += cottages*2;
-		
-		// Can never go below default (should never happen)
-		if (population < 2) {
-			population = defaultTown;
-		}*/
-		population = (int)population;
-		
-		AttrSource as = new AttrSource(sources, population, null);
-		return as;
 	}
 
 	public void removeTownChunk(TownChunk tc) {
-		this.townChunks.remove(tc.getChunkCoord());
+		if (tc.isOutpost()) {
+			this.outposts.remove(tc.getChunkCoord());
+		} else {
+			this.townChunks.remove(tc.getChunkCoord());
+		}
 	}
 
 	public Double getHammersFromCulture() {
@@ -2132,7 +2014,7 @@ public class Town extends SQLObject {
 		
 		for (Structure struct : getStructures()) {
 			double distance = struct.getCenterLocation().getLocation().distance(location);
-			if (distance < lowest_distance) {
+			if (distance < lowest_distance ) {
 				lowest_distance = distance;
 				nearest = struct;
 			}
@@ -2444,22 +2326,42 @@ public class Town extends SQLObject {
 		
 		return points;
 	}
-	
+
+	public void addOutpostChunk(TownChunk tc) throws AlreadyRegisteredException {
+		if (outposts.containsKey(tc.getChunkCoord())) {
+			throw new AlreadyRegisteredException("Outpost at "+tc.getChunkCoord()+" already registered to town "+this.getName());
+		}
+		outposts.put(tc.getChunkCoord(), tc);	
+	}
+
+	public Collection<TownChunk> getOutpostChunks() {
+		return outposts.values();
+	}
+
+	public double getOutpostUpkeep() {
+//		double outpost_upkeep;
+//		try {
+//			outpost_upkeep = CivSettings.getDouble(CivSettings.townConfig, "town.outpost_upkeep");
+//		} catch (InvalidConfiguration e) {
+//			e.printStackTrace();
+//			return 0.0;
+//		}
+		//return outpost_upkeep*outposts.size();
+		return 0;
+	}
+
 	public boolean isOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		return this.outlaws.contains(res.getUUIDString());
+		return this.outlaws.contains(name);
 	}
 	
 	public void addOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.add(res.getUUIDString());
-		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
+		this.outlaws.add(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void removeOutlaw(String name) {
-		Resident res = CivGlobal.getResident(name);
-		this.outlaws.remove(res.getUUIDString());
-		TaskMaster.syncTask(new SyncUpdateTags(res.getUUIDString(), this.residents.values()));
+		this.outlaws.remove(name);
+		TaskMaster.syncTask(new SyncUpdateTags(name, this.residents.values()));
 	}
 	
 	public void changeCiv(Civilization newCiv) {
@@ -2476,11 +2378,9 @@ public class Town extends SQLObject {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			if (outlaw.length() >= 2){
-				Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
-				if (newCiv.hasResident(resident)) {
-					removeUs.add(outlaw);
-				}
+			Resident resident = CivGlobal.getResident(outlaw);
+			if (newCiv.hasResident(resident)) {
+				removeUs.add(outlaw);
 			}
 		}
 		
@@ -2622,6 +2522,11 @@ public class Town extends SQLObject {
 				//player offline
 			}
 		}
+		
+		for (Resident resident : this.fakeResidents.values()) {
+			residents.add(resident);
+		}
+		
 		return residents;
 	}
 
@@ -2655,57 +2560,8 @@ public class Town extends SQLObject {
 		return this.getCiv().getGovernment();
 	}
 	
-	public AttrSource getBeakerRate() {
-		double rate = 1.0;
-		HashMap<String, Double> rates = new HashMap<String, Double>();
-
-		/* Happiness */
-		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
-		double hapRate = 1.0 * state.beaker_rate;
-		rates.put("Happiness", hapRate - 1.0);
-		
-		/* Government */
-		double govRate = 1.0 * getGovernment().beaker_rate;
-		rates.put("Government", govRate - 1.0);
-		
-		/* Random Event */
-		double ranRate = 1.0 * RandomEvent.getBeakerRate(this);
-		rates.put("Random Events", ranRate - 1.0);
-		
-		double buffRate1 = getBuffManager().getEffectiveDouble(Buff.SCIENCE_RATE);
-		double buffRate2 = getBuffManager().getEffectiveDouble("buff_greatlibrary_extra_beakers");
-		double buffRateTotal = 1.0 * (buffRate1 + buffRate2);
-		rates.put("Buffs", buffRateTotal - 1.0);
-		
-		/* Civics */ //TODO Fix, does not work.
-/*		double cvcRate = 1.0;
-		for (ConfigCivic c : this.getCivics()) {
-			if (c.bonus_factors == "beakers_labs") {
-				int bonus = c.bonus_factors.length()/10;
-				
-				cvcRate = 1 + (double)bonus;
-				cvcRate = 1.0 * cvcRate;
-				rates.put("Civics", cvcRate - 1.0);
-			}
-		}*/
-		
-		/* Captured Town Penalty */
-		double capRate = 1.0;
-		if (this.motherCiv != null) {
-			try {
-				capRate = 1.0 * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");	
-				rates.put("Captured Penalty", capRate - 1.0);
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
-		
-		rate = (hapRate + govRate + ranRate + buffRateTotal + capRate) / 5; // all rates added / # of rates
-		double finRate = Math.round(rate); //make it a sexy whole number
-		return new AttrSource(rates, finRate, null);
-	}
 	
-/*	public AttrSource getBeakerRateOld() {
+	public AttrSource getBeakerRate() {
 		double rate = 1.0;
 		HashMap<String, Double> rates = new HashMap<String, Double>();
 		
@@ -2718,15 +2574,15 @@ public class Town extends SQLObject {
 		rates.put("Government", newRate - rate);
 		rate = newRate;
 	
-		// Additional rate increases from buffs.
-		// Great Library buff is made to not stack with Science_Rate 
+		/* Additional rate increases from buffs. */
+		/* Great Library buff is made to not stack with Science_Rate */
 		double additional = rate*getBuffManager().getEffectiveDouble(Buff.SCIENCE_RATE);
 		additional += rate*getBuffManager().getEffectiveDouble("buff_greatlibrary_extra_beakers");
 		rate += additional;
 		rates.put("Goodies/Wonders", additional);
 
 		return new AttrSource(rates, rate, null);
-	}*/
+	}
 	
 	public AttrSource getBeakers() {
 		AttrCache cache = this.attributeCache.get("BEAKERS");
@@ -2789,8 +2645,7 @@ public class Town extends SQLObject {
 		AttrSource as = new AttrSource(sources, beakers, null);
 		cache.sources = as;
 		this.attributeCache.put("BEAKERS", cache);
-		return as;
-	}
+		return as;	}
 	
 	/* 
 	 * Gets the basic amount of happiness for a town.
@@ -3037,6 +2892,10 @@ public class Town extends SQLObject {
 
 	public void setCurrentWonderInProgress(Buildable currentWonderInProgress) {
 		this.currentWonderInProgress = currentWonderInProgress;
+	}
+
+	public void addFakeResident(Resident fake) {
+		this.fakeResidents.put(fake.getName(), fake);
 	}
 
 	private static String lastMessage = null;
@@ -3294,286 +3153,18 @@ public class Town extends SQLObject {
 			struct.save();
 		}
 	}
-	
+
 	public boolean hasDisabledStructures() {
 		if (this.disabledBuildables.size() == 0) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	public Collection<Buildable> getDisabledBuildables() {
 		return this.disabledBuildables.values();
 	}
-	
-	
-/*	public boolean hasEmbassy() {
-		if (this.structures.values() == this.getStructureByType("s_embassy")) {
-			return true;
-		}
-		return false;
-	}
-	
-	public Structure getEmbassy() {
-		return this.getStructureByType("s_embassy");
-	}
-	
-	public boolean canTeleport() {
-		if (hasEmbassy() == true) {
-			return true;
-		}
-		return false;
-	}*/
-	
-	
-	//XXX Civics
-	public boolean hasRequiredCivic(String require_civic) {
-		if (require_civic != null) {
-			String split[] = require_civic.split(":");
-			for (String str : split) {
-				if (!hasCivic(str)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	public boolean hasCivic(String configId) {
-		if (configId == null || configId.equals("")) {
-			return true;
-		}
-		return civics.containsKey(configId);
-	}
-	
-	public void addCivic(ConfigCivic c) {
-		CivGlobal.researchedCivics.add(c.id.toLowerCase());
-		civics.put(c.id, c);
-		
-		if (c.era > this.getCiv().getCurrentEra()) {
-			this.getCiv().setCurrentEra(c.era);
-		}
-		this.onCivicUpdate();
-	}
-	
-	public void removeCivic(ConfigCivic c) {
-		removeCivic(c.id);
-	}
-	
-	public void removeCivic(String configId) {
-		civics.remove(configId);
-		this.onCivicUpdate();
-	}
-	
-	public void onCivicUpdate() {
-		try {
-			for (Structure struct : this.structures.values()) {
-				if (struct.isActive()) {
-					struct.onCivicUpdate();
-				}
-			}
-			
-			for (Wonder wonder : this.wonders.values()) {
-				if (wonder.isActive()) {
-					wonder.onCivicUpdate();
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			//continue in case some structure/wonder had an error.
-		}
-	}
-	
-	public void startCivicResearch(ConfigCivic cvc) throws CivException {		
-		if (this.getCivicResearch() != null) {
-			throw new CivException("Current researching civic "+this.getCivicResearch().name+". " +
-					"If you want to change your focus, use /town civic switch instead.");
-		}
-		
-		if (!this.getTreasury().hasEnough(cvc.cost)) {
-			throw new CivException("Our Town's treasury does have the required "+cvc.cost+" coins to start this civic research.");
-		}
-		
-		if (this.hasCivic(cvc.id)) {
-			throw new CivException("You already have this civic.");
-		}
-		
-		if (!cvc.isAvailable(this)) {
-			throw new CivException("You or your Civilization do not have the required civic or technology to research this civic.");
-		}
-		
-		this.setCivicResearch(cvc);
-		this.setCivicResearchProgress(0.0);
-		
-		this.getTreasury().withdraw(cvc.cost);
-		TaskMaster.asyncTask(new UpdateCivicBar(this),0);
-	}
 
-	public ConfigCivic getCivicResearch() {
-		return CivicResearch;
-	}
 
-	public void setCivicResearch(ConfigCivic researchCvc) {
-		this.CivicResearch = researchCvc;
-	}
 
-	public double getCivicResearchProgress() {
-		return CivicResearchProgress;
-	}
-
-	public void setCivicResearchProgress(double CivicResearchProgress) {
-		this.CivicResearchProgress = CivicResearchProgress;
-	}
-	
-	public Collection<ConfigCivic> getCivics() {
-		return this.civics.values();
-	}
-	
-	public double getCultureForCivics() {
-		double total = this.getAccumulatedCulture();
-		return total;
-	}
-
-	public void addCultureForCivics(double culture) {
-		if (culture == 0) {
-			return;
-		}	
-		
-		TaskMaster.asyncTask(new UpdateCivicBar(this), 0);
-		setCivicResearchProgress(getCivicResearchProgress() + culture);
-		
-		if (getCivicResearchProgress() >= getCivicResearch().culture_cost) {
-			CivMessage.sendTown(this, "Our town has researched the civic "+getCivicResearch().name+"!");
-			this.addCivic(this.getCivicResearch());
-			this.setCivicResearchProgress(0);
-			this.setCivicResearch(null);
-			this.save();
-			return;
-		}
-		
-		int percentageComplete = (int)((getCivicResearchProgress() / this.getCivicResearch().culture_cost)*100);
-		if ((percentageComplete % 10) == 0) {
-			if (percentageComplete != lastCivicPercentage) {
-				CivMessage.sendTown(this, "Our towns civic research progress on "+getCivicResearch().name+" is now "+percentageComplete+"% completed!");
-				lastCivicPercentage = percentageComplete;
-			}
-		}
-		this.save();
-	}
-	
-	private void loadResearchedCivics(String civicstring) {
-		if (civicstring == null || civicstring.equals("")) {
-			return;
-		}
-		
-		String[] civics = civicstring.split(",");
-		for (String civic : civics) {
-			ConfigCivic c = CivSettings.civics.get(civic);
-			if (c != null) {
-				CivGlobal.researchedCivics.add(c.id.toLowerCase());
-				this.civics.put(civic, c);
-			}
-		}
-	}
-	
-	private Object saveResearchedCivics() {
-		String out = "";
-		for (ConfigCivic cvc : this.civics.values()) {
-			out += cvc.id+",";
-		}
-		return out;
-	}
-	
-	
-	//XXX Food
-	public FoodObject getFood() {
-		return food;
-	}
-	
-	public void giveFood(double amount) {
-		this.food.giveFood(amount);
-	}
-	
-/*	public void depositTaxed(double amount) {
-		double taxAmount = amount*this.getDepositCiv().getIncomeTaxRate();
-		amount -= taxAmount;
-		
-		if (this.getMotherCiv() != null) {
-			double capturedPenalty;
-			try {
-				capturedPenalty = CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-			
-			double capturePayment = amount * capturedPenalty;
-			CivMessage.sendTown(this, CivColor.Yellow+"Your town paid "+(amount - capturePayment)+" coins due to being captured by "+this.getCiv().getName());
-			amount = capturePayment;
-		}
-		
-		this.treasury.deposit(amount);	
-		this.getDepositCiv().taxPayment(this, taxAmount);
-	}*/
-
-	public void takeFood(double amount)  {
-		this.food.takeFood(amount);
-	}
-	
-	public double getFoodCount() {
-		return this.food.getFoodCount();
-	}
-	
-	public boolean hasEnoughFood(double amount) {
-		return this.food.hasEnoughFood(amount);
-	}
-	
-	public void setFood(FoodObject food) {
-		this.food = food;
-	}
-	
-	//XXX Structure Rates
-	public double getCottageRate() {
-		double rate = getGovernment().cottage_rate;
-
-		double additional = rate*this.getBuffManager().getEffectiveDouble(Buff.COTTAGE_RATE);
-		rate += additional;
-		
-		/* Adjust for happiness state. */
-		rate *= this.getHappinessState().coin_rate;
-		return rate;
-	}
-	
-	public double getMonumentRate() {
-		double rate = getGovernment().culture_rate;
-		//TODO make a new buff that works for mines/labs
-//		double additional = rate*this.getBuffManager().getEffectiveDouble(Buff.COTTAGE_RATE);
-//		rate += additional;
-		
-		/* Adjust for happiness state. */
-		rate *= this.getHappinessState().culture_rate;
-		return rate;
-	}
-	
-	public double getMineRate() {
-		double rate = getGovernment().hammer_rate;
-		//TODO make a new buff that works for mines/labs
-//		double additional = rate*this.getBuffManager().getEffectiveDouble(Buff.COTTAGE_RATE);
-//		rate += additional;
-		
-		/* Adjust for happiness state. */
-		rate *= this.getHappinessState().hammer_rate;
-		return rate;
-	}
-	
-	public double getLabRate() {
-		double rate = getGovernment().beaker_rate;
-		//TODO make a new buff that works for mines/labs
-//		double additional = rate*this.getBuffManager().getEffectiveDouble(Buff.COTTAGE_RATE);
-//		rate += additional;
-		
-		/* Adjust for happiness state. */
-		rate *= this.getHappinessState().beaker_rate;
-		return rate;
-	}
 }

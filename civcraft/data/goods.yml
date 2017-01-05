@@ -5,7 +5,7 @@
 # Configuration for them is identical, however as you might expect... water 
 # goods never spawn on land and land goods never spawn on water.
 #
-#http://civilization.wikia.com/wiki/Resources_(Civ6)
+#
 #
 
 ######## Global Trade Good Options #######
@@ -17,8 +17,7 @@ trade_good_multiplier_max: 3
 # repo'd they go back to the trade outpost that spawned them.
 trade_goodie_repo_days: 5
 
-#How tall to make the bedrock pillars
-bedrock_height: 3
+
 
 ########### Trade Good Generation Options #######
 generation:

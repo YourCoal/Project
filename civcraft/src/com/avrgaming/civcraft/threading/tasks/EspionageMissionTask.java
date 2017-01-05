@@ -89,11 +89,13 @@ public class EspionageMissionTask implements Runnable {
 				resident.setSpyExposure(resident.getSpyExposure() + exposePerSecond);
 				
 				/* Add players nearby exposure */
+				//PlayerLocationCache.lock.lock();
 				try {
 					int playerCount = PlayerLocationCache.getNearbyPlayers(new BlockCoord(player.getLocation()), 600).size();
 					playerCount--;
 					resident.setSpyExposure(resident.getSpyExposure() + (playerCount*exposePerPlayer));
 				} finally {
+				//	PlayerLocationCache.lock.unlock();
 				}
 				
 				/* Add scout tower exposure */

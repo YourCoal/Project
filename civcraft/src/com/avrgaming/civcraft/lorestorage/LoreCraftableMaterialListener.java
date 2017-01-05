@@ -63,12 +63,6 @@ public class LoreCraftableMaterialListener implements Listener {
 				return;
 			}
 			
-			if (!craftMat.getConfigMaterial().playerHasCivic(player)) {
-				CivMessage.sendError(player, "You do not have the required civic ("+craftMat.getConfigMaterial().getRequireString()+") to craft this item.");
-				event.setCancelled(true);
-				return;
-			}
-			
 //			if (craftMat.hasComponent("Tagged")) {
 //				String tag = Tagged.matrixHasSameTag(event.getInventory().getMatrix());
 //				if (tag == null) {
@@ -230,16 +224,12 @@ public class LoreCraftableMaterialListener implements Listener {
 			
 			ItemStack newStack;
 			if (!loreMat.isVanilla()) {
-				newStack = LoreMaterial.spawn(loreMat, loreMat.getCraftAmount());
+				newStack = LoreMaterial.spawn(loreMat);
 				AttributeUtil attrs = new AttributeUtil(newStack);
 				loreMat.applyAttributes(attrs);
+				newStack.setAmount(loreMat.getCraftAmount());
 			} else {
 				newStack = ItemManager.createItemStack(loreMat.getTypeID(), loreMat.getCraftAmount());
-				if (loreMat.getConfigMaterial().shiny) {
-					AttributeUtil attrs = new AttributeUtil(newStack);
-					attrs.setShiny();
-					loreMat.applyAttributes(attrs);
-				}
 			}
 			
 			event.getInventory().setResult(newStack);
@@ -272,16 +262,12 @@ public class LoreCraftableMaterialListener implements Listener {
 			
 			ItemStack newStack;
 			if (!loreMat.isVanilla()) {
-				newStack = LoreMaterial.spawn(loreMat, loreMat.getCraftAmount());
+				newStack = LoreMaterial.spawn(loreMat);
 				AttributeUtil attrs = new AttributeUtil(newStack);
 				loreMat.applyAttributes(attrs);
+				newStack.setAmount(loreMat.getCraftAmount());
 			} else {
 				newStack = ItemManager.createItemStack(loreMat.getTypeID(), loreMat.getCraftAmount());
-				if (loreMat.getConfigMaterial().shiny) {
-					AttributeUtil attrs = new AttributeUtil(newStack);
-					attrs.setShiny();
-					loreMat.applyAttributes(attrs);
-				}
 			}	
 			
 			event.getInventory().setResult(newStack);

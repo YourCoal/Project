@@ -39,7 +39,6 @@ import com.avrgaming.civcraft.config.ConfigMaterialCategory;
 import com.avrgaming.civcraft.config.ConfigUnit;
 import com.avrgaming.civcraft.endgame.EndGameCondition;
 import com.avrgaming.civcraft.exception.CivException;
-import com.avrgaming.civcraft.listener.HolographicDisplaysListener;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
@@ -56,7 +55,6 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
-@SuppressWarnings("deprecation")
 public class AdminCommand extends CommandBase {
 
 	@Override
@@ -89,28 +87,15 @@ public class AdminCommand extends CommandBase {
 		commands.put("road", "Road management commands");
 		commands.put("clearendgame", "[key] [civ] - clears this end game condition for this civ.");
 		commands.put("endworld", "Starts the Apocalypse.");
+		commands.put("arena", "Arena management commands.");
 		commands.put("perk", "Admin perk management.");
-		
-		commands.put("tradeholo", "Enables all trade good holograms.");
+		commands.put("mob", "Mob management commands");
 	}
 	
-	public void tradeholo_cmd() {
-		HolographicDisplaysListener.generateTradeGoodHolograms();
-		CivMessage.sendSuccess(sender, "Updated holograms.");
+	public void mob_cmd() {
+		AdminMobCommand cmd = new AdminMobCommand();	
+		cmd.onCommand(sender, null, "mob", this.stripArgs(args, 1));
 	}
-	
-/*	public void scoreboard_cmd() throws InterruptedException {
-		Scoreboard sboard;
-		sboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
-		for (Civilization civ : CivGlobal.getCivs()) {
-			String civName = civ.getName();
-			Team team = sboard.registerNewTeam(civName);
-			team.setSuffix(CivColor.BoldLightPurple+" ["+civName.substring(0, 2)+"]");
-			team.setDisplayName(CivColor.BoldLightPurple+" ["+civName.substring(0, 2)+"]");
-			team.setCanSeeFriendlyInvisibles(true);
-			team.setAllowFriendlyFire(true);
-		}
-	}*/
 	
 	public void perk_cmd() {
 		AdminPerkCommand cmd = new AdminPerkCommand();	
@@ -119,7 +104,7 @@ public class AdminCommand extends CommandBase {
 	
 	public void endworld_cmd() {
 		CivGlobal.endWorld = !CivGlobal.endWorld;
-		if (CivGlobal.endWorld) {
+		if (CivGlobal.endWorld) {			
 			CivMessage.sendSuccess(sender, "It's the end of the world as we know it.");
 		} else {
 			CivMessage.sendSuccess(sender, "I feel fine.");
@@ -159,42 +144,16 @@ public class AdminCommand extends CommandBase {
 			
 			/* Build the Category Inventory. */
 			for (ConfigMaterialCategory cat : ConfigMaterialCategory.getCategories()) {
-				
-				int material;
-//				if (cat.name.contains("Fish")) {
-//					material = ItemManager.getId(Material.RAW_FISH);
-//				} else if (cat.name.contains("Catalyst")) {
-				if (cat.name.contains("Catalyst")) {
-					material = ItemManager.getId(Material.BOOK);
-				} else if (cat.name.contains("Materials")) {
-					material = ItemManager.getId(Material.WORKBENCH);
-				} else if (cat.name.contains("Gear Tier 0")) {
-					material = ItemManager.getId(Material.COAL_BLOCK);
-				} else if (cat.name.contains("Gear Tier 1")) {
-					material = ItemManager.getId(Material.IRON_BLOCK);
-				} else if (cat.name.contains("Gear Tier 2")) {
-					material = ItemManager.getId(Material.GOLD_BLOCK);
-				} else if (cat.name.contains("Gear Tier 3")) {
-					material = ItemManager.getId(Material.LAPIS_BLOCK);
-				} else if (cat.name.contains("Gear Tier 4")) {
-					material = ItemManager.getId(Material.DIAMOND_BLOCK);
-				} else if (cat.name.contains("Tools")) {
-					material = ItemManager.getId(Material.SHEARS);
-//				} else if (cat.name.contains("Eggs")) {
-//					material = ItemManager.getId(Material.MONSTER_EGG);
-				} else if (cat.name.contains("Hidden")) {
-					material = ItemManager.getId(Material.BARRIER);
-				} else {
-					material = ItemManager.getId(Material.WRITTEN_BOOK);
-				}
-				
-				ItemStack infoRec = LoreGuiItem.build(cat.name, material, 0, 
-						CivColor.LightBlue+cat.materials.size()+" Items", CivColor.Gold+"<Click To Open>");
+				ItemStack infoRec = LoreGuiItem.build(cat.name, 
+						ItemManager.getId(Material.WRITTEN_BOOK), 
+						0, 
+						CivColor.LightBlue+cat.materials.size()+" Items",
+						CivColor.Gold+"<Click To Open>");
 						infoRec = LoreGuiItem.setAction(infoRec, "OpenInventory");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invType", "showGuiInv");
 						infoRec = LoreGuiItem.setActionData(infoRec, "invName", cat.name+" Spawn");
-				spawnInventory.addItem(infoRec);
-				
+						spawnInventory.addItem(infoRec);
+						
 				/* Build a new GUI Inventory. */
 				Inventory inv = Bukkit.createInventory(player, LoreGuiItem.MAX_INV_SIZE, cat.name+" Spawn");
 				for (ConfigMaterial mat : cat.materials.values()) {
@@ -206,8 +165,16 @@ public class AdminCommand extends CommandBase {
 					LoreGuiItemListener.guiInventories.put(inv.getName(), inv);			
 				}
 			}
+			
+
 		}
+		
 		player.openInventory(spawnInventory);
+	}
+	
+	public void arena_cmd() {
+		AdminArenaCommand cmd = new AdminArenaCommand();	
+		cmd.onCommand(sender, null, "arena", this.stripArgs(args, 1));
 	}
 	
 	public void road_cmd() {
@@ -317,7 +284,22 @@ public class AdminCommand extends CommandBase {
 		AdminCivCommand cmd = new AdminCivCommand();	
 		cmd.onCommand(sender, null, "civ", this.stripArgs(args, 1));
 	}
+
+	public void setfullmessage_cmd() {
+		if (args.length < 2) {
+			CivMessage.send(sender, "Current:"+CivGlobal.fullMessage);
+			return;
+		}
+		
+		synchronized(CivGlobal.maxPlayers) {
+			CivGlobal.fullMessage = args[1];
+		}
+		
+		CivMessage.sendSuccess(sender, "Set to:"+args[1]);
+		
+	}
 	
+	@SuppressWarnings("deprecation")
 	public void unban_cmd() throws CivException {
 		if (args.length < 2) {
 			throw new CivException("Enter a player name to ban");
@@ -404,13 +386,14 @@ public class AdminCommand extends CommandBase {
 
 	@Override
 	public void permissionCheck() throws CivException {
+		
 		if (sender instanceof Player) {
-			if (((Player)sender).hasPermission(CivSettings.ADMIN)) {
+			if (((Player)sender).hasPermission(CivSettings.MINI_ADMIN)) {
 				return;
 			}
 		}
 		
-		//TODO Remove OPs from having powers?
+		
 		if (sender.isOp() == false) {
 			throw new CivException("Only admins can use this command.");			
 		}

@@ -22,7 +22,6 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.SQLObject;
 import com.avrgaming.civcraft.object.Town;
-import com.avrgaming.civcraft.randomevents.components.BeakerRate;
 import com.avrgaming.civcraft.randomevents.components.HammerRate;
 import com.avrgaming.civcraft.randomevents.components.Happiness;
 import com.avrgaming.civcraft.randomevents.components.Unhappiness;
@@ -402,24 +401,30 @@ public class RandomEvent extends SQLObject {
 		for (SessionEntry entry : removed) {
 			CivGlobal.getSessionDB().delete(entry.request_id, entry.key);
 		}
+		
 		return happy;
 	}
-	
+
 	public static double getHammerRate(Town town) {
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(HammerRate.getKey(town));
 		double hammerrate = 1.0;
+		
 		ArrayList<SessionEntry> removed = new ArrayList<SessionEntry>();
 		for (SessionEntry entry : entries) {
 			String[] split = entry.value.split(":");
 			double rate = Double.valueOf(split[0]);
 			int duration = Integer.valueOf(split[1]);
+
+			
 			Date start = new Date(entry.time);
 			Date now = new Date();
+			
 			if (now.getTime() > (start.getTime() + (duration*RandomEventSweeper.MILLISECONDS_PER_HOUR))) {
 				/* Entry is expired, delete it and continue. */
 				removed.add(entry);
 				continue;
 			}
+			
 			hammerrate *= rate;
 		}
 		
@@ -427,38 +432,14 @@ public class RandomEvent extends SQLObject {
 		for (SessionEntry entry : removed) {
 			CivGlobal.getSessionDB().delete(entry.request_id, entry.key);
 		}
+		
 		return hammerrate;	
 	}
-	
-	public static double getBeakerRate(Town town) {
-		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(BeakerRate.getKey(town));
-		double beakerrate = 1.0;
-		ArrayList<SessionEntry> removed = new ArrayList<SessionEntry>();
-		for (SessionEntry entry : entries) {
-			String[] split = entry.value.split(":");
-			double rate = Double.valueOf(split[0]);
-			int duration = Integer.valueOf(split[1]);
-			Date start = new Date(entry.time);
-			Date now = new Date();
-			if (now.getTime() > (start.getTime() + (duration*RandomEventSweeper.MILLISECONDS_PER_HOUR))) {
-				/* Entry is expired, delete it and continue. */
-				removed.add(entry);
-				continue;
-			}
-			beakerrate *= rate;
-		}
-		
-		/* Remove any expired entries */
-		for (SessionEntry entry : removed) {
-			CivGlobal.getSessionDB().delete(entry.request_id, entry.key);
-		}
-		return beakerrate;	
-	}
-	
+
 	public List<String> getMessages() {
 		return savedMessages;
 	}
-	
+
 	public Date getEndDate() {
 		Date end = new Date(this.startDate.getTime() + (this.configRandomEvent.length * RandomEventSweeper.MILLISECONDS_PER_HOUR));
 		return end;

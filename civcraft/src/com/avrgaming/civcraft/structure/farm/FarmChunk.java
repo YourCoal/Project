@@ -31,6 +31,7 @@ import org.bukkit.block.Block;
 
 import com.avrgaming.civcraft.components.ActivateOnBiome;
 import com.avrgaming.civcraft.components.Component;
+import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.InvalidBlockLocation;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.object.Town;
@@ -139,9 +140,9 @@ public class FarmChunk {
 		}
 		
 		if (bs.getTypeId() == CivData.MELON_STEM) {
-			addGrowBlock("World", freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.MELON, 0x0, true);
+			addGrowBlock("world", freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.MELON, 0x0, true);
 		} else {
-			addGrowBlock("World", freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.PUMPKIN, 0x0, true);
+			addGrowBlock("world", freeBlock.getX(), freeBlock.getY(), freeBlock.getZ(), CivData.PUMPKIN, 0x0, true);
 		}
 		return;
 	}
@@ -159,32 +160,32 @@ public class FarmChunk {
 		case CivData.CARROTS:
 		case CivData.POTATOES:
 			if (bs.getData() < 0x7) {
-				addGrowBlock("World", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}
 			break;
 		case CivData.NETHERWART:
-		case CivData.BEETROOT_CROP:
 			if (bs.getData() < 0x3) {
-				addGrowBlock("World", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}
 			break;
 		case CivData.MELON_STEM:
 		case CivData.PUMPKIN_STEM:
 			if (bs.getData() < 0x7) {
-				addGrowBlock("World", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
+				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			} else if (bs.getData() == 0x7) {
 				spawnMelonOrPumpkin(bs, task);
 			}
 			break;
 		case CivData.COCOAPOD:	
 			if (CivData.canCocoaGrow(bs)) {
-				addGrowBlock("World", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(),CivData.getNextCocoaValue(bs), false);
+				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(),CivData.getNextCocoaValue(bs), false);
 			}
 			break;
 		}
 	}
 	
 	public void processGrowth(CivAsyncTask task) throws InterruptedException {
+		
 		if (this.getStruct().isActive() == false) {
 			return;
 		}
@@ -198,7 +199,7 @@ public class FarmChunk {
 		// So for example, if we have a 120% growth rate, every 10 ticks 1 crop *always* grows,
 		// and another has a 20% chance to grow.
 		
-		double effectiveGrowthRate = this.town.getGrowth().total / 100;
+		double effectiveGrowthRate = (double)this.town.getGrowth().total / (double)100;
 		
 		for (Component comp : this.getFarm().attachedComponents) {
 			if (comp instanceof ActivateOnBiome) {
@@ -210,16 +211,8 @@ public class FarmChunk {
 		}
 		this.getFarm().setLastEffectiveGrowth(effectiveGrowthRate);
 		
-		//TODO Make sure our new thing works...
-		int town_level = this.town.getLevel(); //1 crop per level
-		int farm_level = this.town.saved_farm_level; //1 crop per farm level
-		int grow_rate = (int) Math.round(this.town.getGrowth().total / 250); //1 crop per 250 growth
-		int total_count = town_level + farm_level + grow_rate;
-		
-		int numberOfCropsToGrow = (int) (effectiveGrowthRate * total_count);
-		
-//		int crops_per_growth_tick = (int)CivSettings.getIntegerStructure("farm.grows_per_tick");
-//		int numberOfCropsToGrow = (int)(effectiveGrowthRate * crops_per_growth_tick); //Since this is a double, 1.0 means 100% so int cast is # of crops
+		int crops_per_growth_tick = (int)CivSettings.getIntegerStructure("farm.grows_per_tick");
+		int numberOfCropsToGrow = (int)(effectiveGrowthRate * crops_per_growth_tick); //Since this is a double, 1.0 means 100% so int cast is # of crops
 		int chanceForLast = (int) (this.town.getGrowth().total % 100);
 		
 		this.lastGrownCrops.clear();

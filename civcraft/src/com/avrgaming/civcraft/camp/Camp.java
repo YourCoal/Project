@@ -156,7 +156,7 @@ public class Camp extends Buildable {
 						throw new CivException("A camp named "+name+" already exists!");
 					}
 					
-					ItemStack stack = player.getInventory().getItemInMainHand();
+					ItemStack stack = player.getItemInHand();
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 					if (craftMat == null || !craftMat.hasComponent("FoundCamp")) {
 						throw new CivException("You must be holding an item that can found a camp.");
@@ -170,7 +170,7 @@ public class Camp extends Buildable {
 				
 					CivMessage.sendSuccess(player, "You have set up camp!");
 					ItemStack newStack = new ItemStack(Material.AIR);
-					player.getInventory().setItemInMainHand(newStack);
+					player.setItemInHand(newStack);
 					resident.clearInteractiveMode();
 				} catch (CivException e) {
 					CivMessage.sendError(player, e.getMessage());
@@ -182,7 +182,7 @@ public class Camp extends Buildable {
 	}
 	
 	public Camp(Resident owner, String name, Location corner) throws CivException {
-		this.ownerName = owner.getUUID().toString();
+		this.ownerName = owner.getName();
 		this.corner = new BlockCoord(corner);
 		try {
 			this.setName(name);
@@ -213,11 +213,11 @@ public class Camp extends Buildable {
 			coal_per_firepoint = CivSettings.getInteger(CivSettings.campConfig, "camp.coal_per_firepoint");
 			maxFirePoints = CivSettings.getInteger(CivSettings.campConfig, "camp.firepoints");
 			
-			raidLength = CivSettings.getInteger(CivSettings.campConfig, "camp.raid_length");
-			
 			// Setup sifter
 			double gold_nugget_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_gold_nugget_chance");
 			double iron_ignot_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_iron_ingot_chance");
+			
+			raidLength = CivSettings.getInteger(CivSettings.campConfig, "camp.raid_length");
 			
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_nugget_chance, ItemManager.getId(Material.GOLD_NUGGET), (short)0, 1);
 			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, iron_ignot_chance, ItemManager.getId(Material.IRON_INGOT), (short)0, 1);
@@ -230,9 +230,12 @@ public class Camp extends Buildable {
 				consumeComponent.setConsumes(lvl.level, lvl.consumes);
 			}
 			this.consumeComponent.onLoad();
+
 		} catch (InvalidConfiguration e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public static final String TABLE_NAME = "CAMPS";
@@ -266,7 +269,11 @@ public class Camp extends Buildable {
 			InvalidObjectException, CivException {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));
-		this.ownerName = rs.getString("owner_name");	
+		if (CivGlobal.useUUID) {
+			this.ownerName = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("owner_name"))).getName();		
+		} else {
+			this.ownerName = rs.getString("owner_name");
+		}
 		this.corner = new BlockCoord(rs.getString("corner"));
 		this.nextRaidDate = new Date(rs.getLong("next_raid_date"));
 		this.setTemplateName(rs.getString("template_name"));
@@ -298,7 +305,11 @@ public class Camp extends Buildable {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-		hashmap.put("owner_name", this.getOwner().getUUIDString());		
+		if (CivGlobal.useUUID) {
+			hashmap.put("owner_name", this.getOwner().getUUIDString());		
+		} else {
+			hashmap.put("owner_name", this.getOwner().getName());
+		}
 		hashmap.put("firepoints", this.firepoints);
 		hashmap.put("corner", this.corner.toString());
 		hashmap.put("next_raid_date", this.nextRaidDate.getTime());
@@ -310,6 +321,7 @@ public class Camp extends Buildable {
 	
 	@Override
 	public void delete() throws SQLException {
+		
 		for (Resident resident : this.members.values()) {
 			resident.setCamp(null);
 			resident.save();
@@ -732,11 +744,10 @@ public class Camp extends Buildable {
 			ItemStack token = LoreCraftableMaterial.spawn(craftMat);
 			
 			Tagged tag = (Tagged) craftMat.getComponent("Tagged");
-			Resident res = CivGlobal.getResident(this.getOwnerName());
-			token = tag.addTag(token, res.getUUIDString());
+			token = tag.addTag(token, this.getOwnerName());
 	
 			AttributeUtil attrs = new AttributeUtil(token);
-			attrs.addLore(CivColor.LightGray+res.getName());
+			attrs.addLore(CivColor.LightGray+this.getOwnerName());
 			token = attrs.getStack();
 			
 			mInv.addItem(token);
@@ -1002,12 +1013,12 @@ public class Camp extends Buildable {
 	}
 
 	public Resident getOwner() {
-		return CivGlobal.getResidentViaUUID(UUID.fromString(ownerName));
+		return CivGlobal.getResident(ownerName);
 	}
 
 
 	public void setOwner(Resident owner) {
-		this.ownerName = owner.getUUID().toString();
+		this.ownerName = owner.getName();
 	}
 
 
@@ -1202,8 +1213,7 @@ public class Camp extends Buildable {
 	}
 
 	public String getOwnerName() {
-		Resident res = CivGlobal.getResidentViaUUID(UUID.fromString(ownerName));
-		return res.getName();
+		return ownerName;
 	}
 
 	public void setOwnerName(String ownerName) {
@@ -1227,7 +1237,7 @@ public class Camp extends Buildable {
 	}
 
 	public void onControlBlockHit(ControlPoint cp, World world, Player player) {
-		world.playSound(cp.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
+		world.playSound(cp.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
 		world.playEffect(cp.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		CivMessage.send(player, CivColor.LightGray+"Damaged Control Block ("+cp.getHitpoints()+" / "+cp.getMaxHitpoints()+")");
@@ -1237,8 +1247,8 @@ public class Camp extends Buildable {
 	
 	public void onControlBlockDestroy(ControlPoint cp, World world, Player player) {		
 		ItemManager.setTypeId(cp.getCoord().getLocation().getBlock(), CivData.AIR);
-		world.playSound(cp.getCoord().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1.0f, -1.0f);
-		world.playSound(cp.getCoord().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+		world.playSound(cp.getCoord().getLocation(), Sound.ANVIL_BREAK, 1.0f, -1.0f);
+		world.playSound(cp.getCoord().getLocation(), Sound.EXPLODE, 1.0f, 1.0f);
 		
 		FireworkEffect effect = FireworkEffect.builder().with(org.bukkit.FireworkEffect.Type.BURST).withColor(Color.YELLOW).withColor(Color.RED).withTrail().withFlicker().build();
 		FireworkEffectPlayer fePlayer = new FireworkEffectPlayer();

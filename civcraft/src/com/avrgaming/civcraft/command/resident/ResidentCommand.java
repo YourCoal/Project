@@ -134,12 +134,12 @@ public class ResidentCommand extends CommandBase {
 				continue;
 			}
 			
-			if (craftMat.getConfigId().equals("civ_tutorial_book")) {
+			if (craftMat.getConfigId().equals("mat_tutorial_book")) {
 				throw new CivException("You already have a help book.");
 			}
 		}
 		
-		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId("civ_tutorial_book");
+		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId("mat_tutorial_book");
 		ItemStack helpBook = LoreCraftableMaterial.spawn(craftMat);
 		
 		HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(helpBook);

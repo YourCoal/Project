@@ -32,30 +32,43 @@ import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigMineLevel;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.CivTaskAbortException;
-import com.avrgaming.civcraft.exception.InvalidConfiguration;
-import com.avrgaming.civcraft.main.CivData;
-import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Buff;
 import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.object.Town;
-import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
 import com.avrgaming.civcraft.util.CivColor;
-import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.MultiInventory;
 
 public class Mine extends Structure {
-	
-	private double produced_hammers = 0;
+
 	private ConsumeLevelComponent consumeComp = null;
 	
 	protected Mine(Location center, String id, Town town) throws CivException {
 		super(center, id, town);
 	}
-	
+
 	public Mine(ResultSet rs) throws SQLException, CivException {
 		super(rs);
+	}
+		
+	@Override
+	public void loadSettings() {
+		super.loadSettings();
+	}
+	
+	public String getkey() {
+		return getTown().getName()+"_"+this.getConfigId()+"_"+this.getCorner().toString(); 
+	}
+		
+	@Override
+	public String getDynmapDescription() {
+		return null;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "hammer";
 	}
 	
 	public ConsumeLevelComponent getConsumeComponent() {
@@ -65,242 +78,92 @@ public class Mine extends Structure {
 		return consumeComp;
 	}
 	
-	@Override
-	public void loadSettings() {
-		super.loadSettings();
-	}
-	
-	@Override
-	public String getDynmapDescription() {
-		if (getConsumeComponent() == null) {
-			return "";
-		}
-		String out = "";
-		out += "Level: "+getConsumeComponent().getLevel()+" "+getConsumeComponent().getCountString();
-		return out;
-	}
-	
-	@Override
-	public String getMarkerIconName() {
-		return "hammer";
-	}
-	
-	public String getkey() {
-		return this.getTown().getName()+"_"+this.getConfigId()+"_"+this.getCorner().toString(); 
-	}
+	public Result consume(CivAsyncTask task) throws InterruptedException {
+		
+		//Look for the mine's chest.
+		if (this.getChests().size() == 0)
+			return Result.STAGNATE;	
 
-	/* Returns true if the mine has been poisoned, false otherwise. */
-	public boolean processFatigue(MultiInventory inv) {
-		//Check to make sure the granary has not been poisoned!
-		String key = "fatiguemine:"+getTown().getName();
-		ArrayList<SessionEntry> entries;
-		entries = CivGlobal.getSessionDB().lookup(key);
-		int max_fatigue_ticks = -1;
-		for (SessionEntry entry : entries) {
-			int next = Integer.valueOf(entry.value);
-			
-			if (next > max_fatigue_ticks) {
-				max_fatigue_ticks = next;
-			} 
-		}
-		
-		if (max_fatigue_ticks > 0) {
-			CivGlobal.getSessionDB().delete_all(key);
-			max_fatigue_ticks--;
-			
-			if (max_fatigue_ticks > 0)
-				CivGlobal.getSessionDB().add(key, ""+max_fatigue_ticks, this.getTown().getCiv().getId(), this.getTown().getId(), this.getId());
-	
-			// Add some rotten flesh to the chest lol
-			CivMessage.sendTown(this.getTown(), CivColor.Rose+"Our mines have been fatiged!!");
-			inv.addItem(ItemManager.createItemStack(CivData.ROTTEN_FLESH, 4));
-			return true;
-		}
-		return false;
-	}
-	
-	public void generateHammers(CivAsyncTask task) {
-		if (!this.isActive()) {
-			return;
-		}
-		
-		/* Build a multi-inv from mines. */
 		MultiInventory multiInv = new MultiInventory();
-		for (Structure struct : this.getTown().getStructures()) {
-			if (struct instanceof Mine) {
-				ArrayList<StructureChest> chests = struct.getAllChestsById(0);
-				// Make sure the chunk is loaded and add it to the inventory.
-				try {
-					for (StructureChest c : chests) {
-						task.syncLoadChunk(c.getCoord().getWorldname(), c.getCoord().getX(), c.getCoord().getZ());
-						Inventory tmp;
-						try {
-							tmp = task.getChestInventory(c.getCoord().getWorldname(), c.getCoord().getX(), c.getCoord().getY(), c.getCoord().getZ(), true);
-							multiInv.addInventory(tmp);
-						} catch (CivTaskAbortException e) {
-							e.printStackTrace();
-						}
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		
+		ArrayList<StructureChest> chests = this.getAllChestsById(0);
+		
+		// Make sure the chest is loaded and add it to the multi inv.
+		for (StructureChest c : chests) {
+			task.syncLoadChunk(c.getCoord().getWorldname(), c.getCoord().getX(), c.getCoord().getZ());
+			Inventory tmp;
+			try {
+				tmp = task.getChestInventory(c.getCoord().getWorldname(), c.getCoord().getX(), c.getCoord().getY(), c.getCoord().getZ(), true);
+			} catch (CivTaskAbortException e) {
+				return Result.STAGNATE;
 			}
+			multiInv.addInventory(tmp);
 		}
 		getConsumeComponent().setSource(multiInv);
-		
-		double mine_consume_mod = 1.0; //allows buildings and govs to change the totals for mine consumption
-		
-		if (this.getTown().getBuffManager().hasBuff(Buff.REDUCE_CONSUME_PRODUCTION)) {
-			mine_consume_mod *= this.getTown().getBuffManager().getEffectiveDouble(Buff.REDUCE_CONSUME_PRODUCTION);
-		}
-		
-		//TODO make a new buff that works for mines/labs
-//		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_consume")) {
-//			mine_consume_mod *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_consume");
-//		}
-		
-		//TODO make a new buff that works for mines/labs
-//		if (this.getTown().getBuffManager().hasBuff(Buff.FISHING)) {
-//			int breadPerFish = this.getTown().getBuffManager().getEffectiveInt(Buff.FISHING);
-//			getConsumeComponent().addEquivExchange(CivData.BREAD, CivData.FISH_RAW, breadPerFish);
-//		}
-		
-		getConsumeComponent().setConsumeRate(mine_consume_mod);
+		getConsumeComponent().setConsumeRate(1.0);
 		Result result = getConsumeComponent().processConsumption();
-		getConsumeComponent().onSave();
-		getConsumeComponent().clearEquivExchanges();
-		
-		/* Bail early for results that do not generate coins. */
+		getConsumeComponent().onSave();		
+		return result;
+	}
+	
+	public void process_mine(CivAsyncTask task) throws InterruptedException {	
+		Result result = this.consume(task);
 		switch (result) {
 		case STARVE:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+CivColor.Rose+"starved"+
-					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no hammers.");
-			return;
-		case LEVELDOWN:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+(getConsumeComponent().getLevel()+1)+" mine "+CivColor.Red+"leveled-down"+
-					CivColor.LightGreen+" and generated no hammers.");
-			return;
-		case STAGNATE:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+CivColor.Yellow+"stagnated"+
-					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no hammers.");
-			return;
-		case UNKNOWN:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+CivColor.LightGreen+"Something "+CivColor.DarkPurple+" UnKnOwN "+CivColor.LightGreen+" happened to a mine. It generates no hammers.");
-			return;
-		default:
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine's production "+
+					CivColor.Rose+"fell. "+CivColor.LightGreen+getConsumeComponent().getCountString());
 			break;
-		}
-		
-		if (processFatigue(multiInv)) {
-			return;
-		}
-		
-		/* Calculate how much money we made. */
-		/* leveling down doesnt generate coins, so we don't have to check it here. */
-		ConfigMineLevel lvl = null;
-		if (result == Result.LEVELUP) {
-			lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel()-1);	
-		} else {
-			lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel());
-		}
-				
-		int total_hammers = (int)Math.round(lvl.hammers*this.getTown().getMineRate());
-		//TODO make a new buff that works for mines/labs
-//		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
-//			total_hammers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
-//		}
-		
-		if (this.getCiv().hasTech("tech_taxation")) {
-			double tech_bonus;
-			try {
-				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_mine_buff");
-				total_hammers *= tech_bonus;
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-		}
-		
-		setProducedHammers(total_hammers);
-		produced_hammers = total_hammers;
-		
-		String stateMessage = "";
-		switch (result) {
+		case LEVELDOWN:
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A mine ran out of redstone and "+
+					CivColor.Rose+"lost"+CivColor.LightGreen+" a level. It is now level "+getConsumeComponent().getLevel());
+			break;
+		case STAGNATE:
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+
+					getConsumeComponent().getLevel()+" mine "+CivColor.Yellow+"stagnated "+CivColor.LightGreen+getConsumeComponent().getCountString());
+			break;
 		case GROW:
-			stateMessage = CivColor.Green+"grew"+getConsumeComponent().getCountString()+CivColor.LightGreen;
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine's production "+
+					CivColor.Green+"rose. "+CivColor.LightGreen+getConsumeComponent().getCountString());
 			break;
 		case LEVELUP:
-			stateMessage = CivColor.Green+"leveled up"+CivColor.LightGreen;
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A mine "+CivColor.Green+"gained"+CivColor.LightGreen+
+					" a level. It is now level "+getConsumeComponent().getLevel());
 			break;
 		case MAXED:
-			stateMessage = CivColor.Green+"is maxed"+getConsumeComponent().getCountString()+CivColor.LightGreen;
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine is "+
+					CivColor.Green+"maxed. "+CivColor.LightGreen+getConsumeComponent().getCountString());
 			break;
 		default:
 			break;
 		}
-		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+stateMessage+" and generated "+total_hammers+" hammers!");
 	}
-	
+
 	public int getLevel() {
-		return getConsumeComponent().getLevel();
-	}
-	
-	public int getCount() {
-		return getConsumeComponent().getCount();
-	}
-	
-	public Result getLastResult() {
-		return getConsumeComponent().getLastResult();
-	}
-	
-	public int getMaxCount() {
-		int level = getLevel();
-		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
-		return lvl.count;
-	}
-	
-	public double getProducedHammers() {
-		if (!this.isComplete()) {
-			return 0.0;
-		}
-		return produced_hammers;
-	}
-	
-	public double setProducedHammers(double amount) {
-		if (!this.isComplete()) {
-			amount = 0;
-		}
-		return amount;
+		return this.getConsumeComponent().getLevel();
 	}
 	
 	public double getHammersPerTile() {
 		AttributeBiomeRadiusPerLevel attrBiome = (AttributeBiomeRadiusPerLevel)this.getComponent("AttributeBiomeRadiusPerLevel");
 		double base = attrBiome.getBaseValue();
+	
 		double rate = 1;
 		rate += this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
 		return (rate*base);
 	}
-	
-	public void delevel() {
-		int currentLevel = getLevel();
-		if (currentLevel > 1) {
-			getConsumeComponent().setLevel(getLevel()-1);
-			getConsumeComponent().setCount(0);
-			getConsumeComponent().onSave();
-		}
+
+	public int getCount() {
+		return this.getConsumeComponent().getCount();
 	}
-	
-	@Override
-	public void delete() throws SQLException {
-		super.delete();
-		if (getConsumeComponent() != null) {
-			getConsumeComponent().onDelete();
-		}
+
+	public int getMaxCount() {
+		int level = getLevel();
+		
+		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
+		return lvl.count;	
 	}
-	
-	public void onDestroy() {
-		super.onDestroy();
-		getConsumeComponent().setLevel(1);
-		getConsumeComponent().setCount(0);
-		getConsumeComponent().onSave();
+
+	public Result getLastResult() {
+		return this.getConsumeComponent().getLastResult();
 	}
+
 }

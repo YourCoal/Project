@@ -23,8 +23,6 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.avrgaming.civcraft.exception.CivException;
@@ -52,14 +50,6 @@ public class CivLog {
 	
 	public static void heading(String title) {
 		plugin.getLogger().info("========= "+title+" =========");
-	}
-	
-	public static void craft(Player p, String item, int amt) {
-		plugin.getLogger().info("[CRAFT] "+p+", "+item+", "+amt);
-	}
-	
-	public static void craft(Player p, Material mt, int amt) {
-		plugin.getLogger().info("[CRAFT] "+p+", "+mt+", "+amt);
 	}
 	
 	public static void info(String message) {

@@ -32,6 +32,10 @@ public class SyncTradeTimer implements Runnable {
 	}
 	
 	public void processTownsTradePayments(Town town) {
+		
+		//goodies = town.getEffectiveBonusGoodies();
+		
+		//double payment = TradeGood.getTownTradePayment(town, goodies);
 		double payment = TradeGood.getTownTradePayment(town);
 		DecimalFormat df = new DecimalFormat();
 		
@@ -44,6 +48,7 @@ public class SyncTradeTimer implements Runnable {
 			} else {
 				CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.Yellow+df.format(payment)+CivColor.LightGreen+" coins from trade.");
 			}
+			
 			town.getTreasury().deposit(payment - taxesPaid);
 			town.getDepositCiv().taxPayment(town, taxesPaid);
 		}

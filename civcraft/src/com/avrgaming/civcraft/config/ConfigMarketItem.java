@@ -299,7 +299,8 @@ public class ConfigMarketItem {
 		if (this.custom_id == null) {
 			newStack = new ItemStack(this.type_id, amount, (short)this.data);
 		} else {
-			newStack = LoreMaterial.spawn(LoreMaterial.materialMap.get(this.custom_id), amount);
+			newStack = LoreMaterial.spawn(LoreMaterial.materialMap.get(this.custom_id));
+			newStack.setAmount(amount);
 		}
 
 		HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(newStack);

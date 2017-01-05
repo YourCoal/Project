@@ -294,7 +294,7 @@ public class BonusGoodieManager implements Listener {
 			return;
 		}
 		
-		LoreMaterial material = LoreMaterial.getMaterial(event.getPlayer().getInventory().getItemInMainHand());
+		LoreMaterial material = LoreMaterial.getMaterial(event.getPlayer().getItemInHand());
 		if (material != null) {
 			if (material instanceof UnitItemMaterial ||
 					material instanceof UnitMaterial) {
@@ -304,7 +304,7 @@ public class BonusGoodieManager implements Listener {
 			}
 		}
 		
-		BonusGoodie goodie = CivGlobal.getBonusGoodie(event.getPlayer().getInventory().getItemInMainHand());
+		BonusGoodie goodie = CivGlobal.getBonusGoodie(event.getPlayer().getItemInHand());
 		ItemFrame frame = (ItemFrame)event.getRightClicked();
 		ItemFrameStorage frameStore = CivGlobal.getProtectedItemFrame(frame.getUniqueId());
 		
@@ -335,7 +335,7 @@ public class BonusGoodieManager implements Listener {
 		}
 		
 		
-//		BonusGoodie goodie = CivGlobal.getBonusGoodie(event.getPlayer().getInventory().getItemInMainHand());
+//		BonusGoodie goodie = CivGlobal.getBonusGoodie(event.getPlayer().getItemInHand());
 //		ItemFrame frame = (ItemFrame)event.getRightClicked();
 //		if (frame.getItem() == null || frame.getItem().getType() == Material.AIR) {
 //			
@@ -353,7 +353,7 @@ public class BonusGoodieManager implements Listener {
 //				return;
 //			}
 //			
-//			if (goodie == null && event.getPlayer().getInventory().getItemInMainHand().getTypeId() != CivData.AIR) {
+//			if (goodie == null && event.getPlayer().getItemInHand().getTypeId() != CivData.AIR) {
 //				CivMessage.sendError(event.getPlayer(), "You cannot place non-trade goodie items in a trade goodie item frame.");
 //				event.setCancelled(true);
 //				return;
@@ -380,7 +380,7 @@ public class BonusGoodieManager implements Listener {
 //			 * survival and creative to use the same code, so just cancel the event and 
 //			 * do it ourselves.
 //			 */
-//			ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
+//			ItemStack stack = event.getPlayer().getItemInHand();
 //			frameStore.setItem(stack);
 //			
 //			if (stack.getAmount() > 1) {
@@ -462,8 +462,8 @@ public class BonusGoodieManager implements Listener {
 			CivMessage.send(player, CivColor.LightGray+"You unsocket the trade goodie from the frame.");
 		} else if (goodie != null) {
 			//Item frame was empty, add goodie to it.
-			frame.setItem(player.getInventory().getItemInMainHand());
-			player.getInventory().remove(player.getInventory().getItemInMainHand());
+			frame.setItem(player.getItemInHand());
+			player.getInventory().remove(player.getItemInHand());
 			CivMessage.send(player, CivColor.LightGray+"You socket the trade goodie into the frame");
 			clickedFrame.getTown().onGoodiePlaceIntoFrame(clickedFrame, goodie);
 			
@@ -486,7 +486,7 @@ public class BonusGoodieManager implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerInteractEvent(PlayerInteractEvent event) {
 		
-		ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+		ItemStack item = event.getPlayer().getItemInHand();
 		BonusGoodie goodie = CivGlobal.getBonusGoodie(item);
 		if (goodie == null) {
 			return;

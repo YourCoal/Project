@@ -31,4 +31,5 @@ public class MoveSpeed extends ItemComponent {
 				amount(this.getDouble("value")).
 				build());
 	}
+
 }

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -57,7 +56,6 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.StructureBlock;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
-import com.avrgaming.civcraft.siege.CannonProjectile;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -80,12 +78,6 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 	private BlockCoord techdataSign;
 	private byte techdataSignData; //Hold the sign's orientation
 	
-	private BlockCoord civicnameSign;
-	private byte civicnameSignData; //Hold the sign's orientation
-	
-	private BlockCoord civicdataSign;
-	private byte civicdataSignData; //Hold the sign's orientation
-	
 	private ArrayList<ItemFrameStorage> goodieFrames = new ArrayList<ItemFrameStorage>();
 	private ArrayList<BlockCoord> respawnPoints = new ArrayList<BlockCoord>();
 	private ArrayList<BlockCoord> revivePoints = new ArrayList<BlockCoord>();
@@ -94,7 +86,8 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 	public ArrayList<BlockCoord> nextGoodieFramePoint = new ArrayList<BlockCoord>();
 	public ArrayList<Integer> nextGoodieFrameDirection = new ArrayList<Integer>();
 
-	protected TownHall(Location center, String id, Town town) throws CivException {
+	protected TownHall(Location center, String id, Town town)
+			throws CivException {
 		super(center, id, town);
 	}
 
@@ -172,38 +165,6 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 	public void setTechnameSignData(byte technameSignData) {
 		this.technameSignData = technameSignData;
 	}
-	
-	public BlockCoord getCivicnameSign() {
-		return civicnameSign;
-	}
-
-	public void setCivicnameSign(BlockCoord civicnameSign) {
-		this.civicnameSign = civicnameSign;
-	}
-
-	public BlockCoord getCivicdataSign() {
-		return civicdataSign;
-	}
-
-	public void setCivicdataSign(BlockCoord civicdataSign) {
-		this.civicdataSign = civicdataSign;
-	}
-
-	public byte getCivicdataSignData() {
-		return civicdataSignData;
-	}
-
-	public void setCivicdataSignData(byte civicdataSignData) {
-		this.civicdataSignData = civicdataSignData;
-	}
-
-	public byte getCivicnameSignData() {
-		return civicnameSignData;
-	}
-
-	public void setCivicnameSignData(byte civicnameSignData) {
-		this.civicnameSignData = civicnameSignData;
-	}
 
 	public BlockCoord getTechBar(int i) {
 		return techbar[i];
@@ -224,19 +185,19 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 
 		switch (direction) {
 		case CivData.DATA_SIGN_EAST:
-			attachedBlock = absCoord.getBlock();
+			attachedBlock = absCoord.getBlock().getRelative(BlockFace.WEST);
 			facingDirection = BlockFace.EAST;
 			break;
 		case CivData.DATA_SIGN_WEST:
-			attachedBlock = absCoord.getBlock();
+			attachedBlock = absCoord.getBlock().getRelative(BlockFace.EAST);
 			facingDirection = BlockFace.WEST;
 			break;
 		case CivData.DATA_SIGN_NORTH:
-			attachedBlock = absCoord.getBlock();
+			attachedBlock = absCoord.getBlock().getRelative(BlockFace.SOUTH);
 			facingDirection = BlockFace.NORTH;
 			break;
 		case CivData.DATA_SIGN_SOUTH:
-			attachedBlock = absCoord.getBlock();
+			attachedBlock = absCoord.getBlock().getRelative(BlockFace.NORTH);
 			facingDirection = BlockFace.SOUTH;
 			break;
 		default:
@@ -262,9 +223,9 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 				e.printStackTrace();
 				return;
 			}
-			if (facingDirection != BlockFace.EAST) {
-				itemStore.setFacingDirection(facingDirection);
-			}
+			//if (facingDirection != BlockFace.EAST) {
+				//itemStore.setFacingDirection(facingDirection);
+			//}
 		}
 		
 		itemStore.setBuildable(this);
@@ -374,8 +335,8 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 		Resident attacker = CivGlobal.getResident(player);
 		
 		ItemManager.setTypeId(hit.getCoord().getLocation().getBlock(), CivData.AIR);
-		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1.0f, -1.0f);
-		world.playSound(hit.getCoord().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
+		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_BREAK, 1.0f, -1.0f);
+		world.playSound(hit.getCoord().getLocation(), Sound.EXPLODE, 1.0f, 1.0f);
 		
 		FireworkEffect effect = FireworkEffect.builder().with(Type.BURST).withColor(Color.YELLOW).withColor(Color.RED).withTrail().withFlicker().build();
 		FireworkEffectPlayer fePlayer = new FireworkEffectPlayer();
@@ -394,7 +355,7 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 				break;
 			}
 		}
-		CivMessage.sendTownSound(hit.getTown(), Sound.AMBIENT_CAVE, 1.0f, 0.5f);
+		CivMessage.sendTownSound(hit.getTown(), Sound.AMBIENCE_CAVE, 1.0f, 0.5f);
 
 		if (allDestroyed) {
 			
@@ -434,7 +395,7 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 	}
 	
 	public void onControlBlockHit(ControlPoint cp, World world, Player player, StructureBlock hit) {
-		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
+		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
 		world.playEffect(hit.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		CivMessage.send(player, CivColor.LightGray+"Damaged Control Block ("+cp.getHitpoints()+" / "+cp.getMaxHitpoints()+")");
@@ -531,120 +492,34 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 			e.printStackTrace();
 			return;
 		}
+		
 		CivMessage.sendTown(this.getTown(), CivColor.Rose+CivColor.BOLD+"Our town's town hall cannot be supported by the blocks underneath!"+
 				" It will take us an extra "+invalid_respawn_penalty+" mins to respawn during war if its not fixed in time!");
 	}
-	
+
 	@Override
 	public List<BlockCoord> getRespawnPoints() {
 		return this.revivePoints;
 	}
-	
+
 	@Override
 	public String getRespawnName() {
 		return "Town Hall\n"+this.getTown().getName();
 	}	
 	
-	public HashMap<BlockCoord, ControlPoint> getControlPoints() {
+	public HashMap<BlockCoord, ControlPoint> getControlPoints()
+	{
 		return this.controlPoints;
 	}
-	
-	public void onCannonDamage(int damage, CannonProjectile projectile) throws CivException {
+
+	public void onCannonDamage(int damage) {
 		this.hitpoints -= damage;
+		
 		if (hitpoints <= 0) {
-			for (BlockCoord coord : this.controlPoints.keySet()) {
-				ControlPoint cp = this.controlPoints.get(coord);				
-				if (cp != null) {
-					if (cp.getHitpoints() > CannonProjectile.controlBlockHP) {
-						cp.damage(cp.getHitpoints()-1);
-						this.hitpoints = this.getMaxHitPoints()/2;
-						CivMessage.sendCiv(getCiv(), "Our "+this.getDisplayName()+" has been hit by a cannon and a control block was set to "+CannonProjectile.controlBlockHP+" HP!");
-						CivMessage.sendCiv(getCiv(), "Our "+this.getDisplayName()+" has regenerated "+this.getMaxHitPoints()/2+" HP! If it drops to zero, we will lose another Control Point.");
-						return;
-					}
-				}
-			}
-			CivMessage.sendCiv(getCiv(), "Our "+this.getDisplayName()+" is out of hitpoints, walls can be destroyed by cannon and TNT blasts!");
+			CivMessage.sendCiv(getCiv(), "Our "+this.getDisplayName()+" is out of hitpoints, walls can be destroyed by cannon blasts!");
 			hitpoints = 0;
 		}
-		CivMessage.sendCiv(getCiv(), "Our "+this.getDisplayName()+" has been hit by a cannon! ("+this.hitpoints+"/"+this.getMaxHitPoints()+")");
-	}
-	
-	public void onTNTDamage(int damage) {
-		if (hitpoints >= damage+1) {
-			this.hitpoints -= damage;
-			CivMessage.sendCiv(getCiv(), "Our "+this.getDisplayName()+" has been hit by TNT! ("+this.hitpoints+"/"+this.getMaxHitPoints()+")");
-		}
-	}
-	
-	//End Basic Town Hall Needs
-	
-	
-	
-	
-	
-	//Start Bonus Town Hall Chest
-	public static final int BONUS_MAX = CivSettings.getIntegerStructure("townhall_bonus.bonus_max");
-	private static final double HAMMER_ITEM_RATE = CivSettings.getDoubleStructure("townhall_bonus.hammer_rate");
-	private static final double BEAKER_ITEM_RATE = CivSettings.getDoubleStructure("townhall_bonus.beaker_rate");
-	private static final double T1_PACKAGE_RATE = CivSettings.getDoubleStructure("townhall_bonus.t1_package_rate");
-	private static final double T2_PACKAGE_RATE = CivSettings.getDoubleStructure("townhall_bonus.t2_package_rate");
-	private static final double T3_PACKAGE_RATE = CivSettings.getDoubleStructure("townhall_bonus.t3_package_rate");
-	private static final double T4_PACKAGE_RATE = CivSettings.getDoubleStructure("townhall_bonus.t4_package_rate");
-	
-	public int skippedCounter = 0;
-	public ReentrantLock lock = new ReentrantLock();
-	
-	public enum THBonus {
-		T1PACKAGE,
-		T2PACKAGE,
-		T3PACKAGE,
-		T4PACKAGE,
-		BEAKER,
-		HAMMER
-	}
-	
-	public double getTHBonus(THBonus thBonus) {
-		double chance = 0;
-		switch (thBonus) {
-		case T4PACKAGE:
-			chance = T4_PACKAGE_RATE;
-			break;
-		case T3PACKAGE:
-			chance = T3_PACKAGE_RATE;
-			break;
-		case T2PACKAGE:
-			chance = T2_PACKAGE_RATE;
-			break;
-		case T1PACKAGE:
-			chance = T1_PACKAGE_RATE;
-			break;
-		case BEAKER:
-			chance = BEAKER_ITEM_RATE;
-			break;
-		case HAMMER:
-			chance = HAMMER_ITEM_RATE;
-			break;
-		default:
-			break;
-		}
-		return this.modifyChance(chance);
-	}
-	
-	private double modifyChance(Double chance) {
-		//TODO Make a buff for this
-//		double increase = chance*this.getTown().getBuffManager().getEffectiveDouble(Buff.EXTRACTION);
-//		chance += increase;
 		
-/*		try {
-			if (this.getTown().getGovernment().id.equals("gov_despotism")) {
-				chance *= CivSettings.getDouble(CivSettings.structureConfig, "trommel.despotism_rate");
-			} else if (this.getTown().getGovernment().id.equals("gov_theocracy") || this.getTown().getGovernment().id.equals("gov_monarchy")) {
-				chance *= CivSettings.getDouble(CivSettings.structureConfig, "trommel.penalty_rate");
-			}
-		} catch (InvalidConfiguration e) {
-			e.printStackTrace();
-		}*/
-		return chance;
+		CivMessage.sendCiv(getCiv(), "Our "+this.getDisplayName()+" has been hit by a cannon! ("+this.hitpoints+"/"+this.getMaxHitPoints()+")");
 	}
 }

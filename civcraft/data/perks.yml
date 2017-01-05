@@ -50,48 +50,13 @@ perks:
 
     - id: 'perk_sunny_weather'
       display_name: 'Sunny Weather!'
-      item_id: 8
+      item_id: 347
       data: 0
       components:
-         - name: 'ChangeWeather'
-
-    - id: 'template_arctic'
-      display_name: 'Arctic Templates'
-      item_id: 79
-      data: 0
-      components:
-          - name: 'CustomTemplate'
-
-    - id: 'template_aztec'
-      display_name: 'Aztec Templates'
-      item_id: 98
-      data: 2
-      components:
-          - name: 'CustomTemplate'
-
-    - id: 'template_egyptian'
-      display_name: 'Egyptian Templates'
-      item_id: 24
-      data: 2
-      components:
-          - name: 'CustomTemplate'
-
-    - id: 'template_roman'
-      display_name: 'Roman Templates'
-      item_id: 155
-      data: 2
-      components:
-          - name: 'CustomTemplate'
-
-    - id: 'template_hell'
-      display_name: 'Hell Template'
-      item_id: 87
-      data: 0
-      components:
-          - name: 'CustomTemplate'
+         - name: 'ChangeWeather' 
 
 ############ ARCTIC THEME
-    - id: 'prem_tpl_arctic_camp'
+    - id: 'tpl_arctic_camp'
       display_name: 'Arctic Camp'
       item_id: 387
       data: 0
@@ -101,7 +66,7 @@ perks:
             template: 'camp'
             id: 'camp'
 
-    - id: 'prem_tpl_arctic_arrow_tower'
+    - id: 'tpl_arctic_arrow_tower'
       display_name: 'Arctic Arrow Tower Template'
       item_id: 387
       data: 0
@@ -110,7 +75,7 @@ perks:
             theme: 'arctic'
             template: 'arrow_tower'
     
-    - id: 'prem_tpl_arctic_bank'
+    - id: 'tpl_arctic_bank'
       display_name: 'Arctic Bank Template'
       item_id: 387
       data: 0
@@ -119,7 +84,7 @@ perks:
             theme: 'arctic'
             template: 'bank'
 
-    - id: 'prem_tpl_arctic_barracks'
+    - id: 'tpl_arctic_barracks'
       display_name: 'Arctic Barracks Template'
       item_id: 387
       data: 0
@@ -128,7 +93,7 @@ perks:
             theme: 'arctic'
             template: 'barracks'
 
-    - id: 'prem_tpl_arctic_cannon_tower'
+    - id: 'tpl_arctic_cannon_tower'
       display_name: 'Arctic Cannon Tower Template'
       item_id: 387
       data: 0
@@ -137,7 +102,7 @@ perks:
             theme: 'arctic'
             template: 'cannon_tower'
    
-    - id: 'prem_tpl_arctic_capitol'
+    - id: 'tpl_arctic_capitol'
       display_name: 'Arctic Capitol Template'
       item_id: 387
       data: 0
@@ -147,7 +112,7 @@ perks:
             template: 'capital' #misspelt on purpose, easier to leave as is.
             id: 's_capitol'
     
-    - id: 'prem_tpl_arctic_cottage'
+    - id: 'tpl_arctic_cottage'
       display_name: 'Arctic Cottage Template'
       item_id: 387
       data: 0
@@ -156,7 +121,7 @@ perks:
             theme: 'arctic'
             template: 'cottage'
     
-    - id: 'prem_tpl_arctic_granary'
+    - id: 'tpl_arctic_granary'
       display_name: 'Arctic Granary Template'
       item_id: 387
       data: 0
@@ -165,7 +130,7 @@ perks:
             theme: 'arctic'
             template: 'granary'
 
-    - id: 'prem_tpl_arctic_grocer'
+    - id: 'tpl_arctic_grocer'
       display_name: 'Arctic Grocer Template'
       item_id: 387
       data: 0
@@ -174,7 +139,7 @@ perks:
             theme: 'arctic'
             template: 'grocer'
 
-    - id: 'prem_tpl_arctic_library'
+    - id: 'tpl_arctic_library'
       display_name: 'Arctic Library Template'
       item_id: 387
       data: 0
@@ -183,7 +148,7 @@ perks:
             theme: 'arctic'
             template: 'library'
     
-    - id: 'prem_tpl_arctic_market'
+    - id: 'tpl_arctic_market'
       display_name: 'Arctic Market Template'
       item_id: 387
       data: 0
@@ -192,7 +157,7 @@ perks:
             theme: 'arctic'
             template: 'market'
     
-    - id: 'prem_tpl_arctic_mine'
+    - id: 'tpl_arctic_mine'
       display_name: 'Arctic Mine Template'
       item_id: 387
       data: 0
@@ -201,7 +166,7 @@ perks:
             theme: 'arctic'
             template: 'mine'
 
-    - id: 'prem_tpl_arctic_monument'
+    - id: 'tpl_arctic_monument'
       display_name: 'Arctic Monument Template'
       item_id: 387
       data: 0
@@ -210,7 +175,7 @@ perks:
             theme: 'arctic'
             template: 'monument'
 
-    - id: 'prem_tpl_arctic_pasture'
+    - id: 'tpl_arctic_pasture'
       display_name: 'Arctic Pasture Template'
       item_id: 387
       data: 0
@@ -219,7 +184,7 @@ perks:
             theme: 'arctic'
             template: 'pasture'
 
-    - id: 'prem_tpl_arctic_scout_tower'
+    - id: 'tpl_arctic_scout_tower'
       display_name: 'Arctic Scout Tower Template'
       item_id: 387
       data: 0
@@ -228,7 +193,7 @@ perks:
             theme: 'arctic'
             template: 'scout_tower'
     
-    - id: 'prem_tpl_arctic_shipyard'
+    - id: 'tpl_arctic_shipyard'
       display_name: 'Arctic Shipyard Template'
       item_id: 387
       data: 0
@@ -237,7 +202,7 @@ perks:
             theme: 'arctic'
             template: 'shipyard'
     
-    - id: 'prem_tpl_arctic_stable'
+    - id: 'tpl_arctic_stable'
       display_name: 'Arctic Stable Template'
       item_id: 387
       data: 0
@@ -246,7 +211,7 @@ perks:
             theme: 'arctic'
             template: 'stable'
     
-    - id: 'prem_tpl_arctic_temple'
+    - id: 'tpl_arctic_temple'
       display_name: 'Arctic Temple Template'
       item_id: 387
       data: 0
@@ -255,7 +220,7 @@ perks:
             theme: 'arctic'
             template: 'temple'
 
-    - id: 'prem_tpl_arctic_trommel'
+    - id: 'tpl_arctic_trommel'
       display_name: 'Arctic Trommel Template'
       item_id: 387
       data: 0
@@ -264,7 +229,7 @@ perks:
             theme: 'arctic'
             template: 'trommel'
     
-    - id: 'prem_tpl_arctic_town_hall'
+    - id: 'tpl_arctic_town_hall'
       display_name: 'Arctic Town Hall Template'
       item_id: 387
       data: 0
@@ -274,7 +239,7 @@ perks:
             template: 'town_hall'
             id: 's_townhall'
     
-    - id: 'prem_tpl_arctic_windmill'
+    - id: 'tpl_arctic_windmill'
       display_name: 'Arctic Windmill Template'
       item_id: 387
       data: 0
@@ -283,7 +248,7 @@ perks:
             theme: 'arctic'
             template: 'windmill'
 
-    - id: 'prem_tpl_arctic_blacksmith'
+    - id: 'tpl_arctic_blacksmith'
       display_name: 'Arctic Blacksmith Template'
       item_id: 387
       data: 0
@@ -292,7 +257,7 @@ perks:
             theme: 'arctic'
             template: 'blacksmith'
 
-    - id: 'prem_tpl_arctic_store'
+    - id: 'tpl_arctic_store'
       display_name: 'Arctic Store Template'
       item_id: 387
       data: 0
@@ -304,7 +269,7 @@ perks:
 
 ############ AZTEC THEME
 
-    - id: 'prem_tpl_aztec_camp'
+    - id: 'tpl_aztec_camp'
       display_name: 'Aztec Camp'
       item_id: 387
       data: 0
@@ -314,7 +279,7 @@ perks:
             template: 'camp'
             id: 'camp'
 
-    - id: 'prem_tpl_aztec_arrow_tower'
+    - id: 'tpl_aztec_arrow_tower'
       display_name: 'Aztec Arrow Tower Template'
       item_id: 387
       data: 0
@@ -323,7 +288,7 @@ perks:
             theme: 'aztec'
             template: 'arrow_tower'
 
-    - id: 'prem_tpl_aztec_blacksmith'
+    - id: 'tpl_aztec_blacksmith'
       display_name: 'Aztec Blacksmith Template'
       item_id: 387
       data: 0
@@ -332,7 +297,7 @@ perks:
             theme: 'aztec'
             template: 'blacksmith'
     
-    - id: 'prem_tpl_aztec_bank'
+    - id: 'tpl_aztec_bank'
       display_name: 'Aztec Bank Template'
       item_id: 387
       data: 0
@@ -341,7 +306,7 @@ perks:
             theme: 'aztec'
             template: 'bank'
 
-    - id: 'prem_tpl_aztec_barracks'
+    - id: 'tpl_aztec_barracks'
       display_name: 'Aztec Barracks Template'
       item_id: 387
       data: 0
@@ -350,7 +315,7 @@ perks:
             theme: 'aztec'
             template: 'barracks'
 
-    - id: 'prem_tpl_aztec_cannon_tower'
+    - id: 'tpl_aztec_cannon_tower'
       display_name: 'Aztec Cannon Tower Template'
       item_id: 387
       data: 0
@@ -359,7 +324,7 @@ perks:
             theme: 'aztec'
             template: 'cannon_tower'
    
-    - id: 'prem_tpl_aztec_capitol'
+    - id: 'tpl_aztec_capitol'
       display_name: 'Aztec Capitol Template'
       item_id: 387
       data: 0
@@ -369,7 +334,7 @@ perks:
             template: 'capital' #misspelt on purpose, easier to leave as is.
             id: 's_capitol'
     
-    - id: 'prem_tpl_aztec_cottage'
+    - id: 'tpl_aztec_cottage'
       display_name: 'Aztec Cottage Template'
       item_id: 387
       data: 0
@@ -378,7 +343,7 @@ perks:
             theme: 'aztec'
             template: 'cottage'
     
-    - id: 'prem_tpl_aztec_granary'
+    - id: 'tpl_aztec_granary'
       display_name: 'Aztec Granary Template'
       item_id: 387
       data: 0
@@ -387,7 +352,7 @@ perks:
             theme: 'aztec'
             template: 'granary'
 
-    - id: 'prem_tpl_aztec_grocer'
+    - id: 'tpl_aztec_grocer'
       display_name: 'Aztec Grocer Template'
       item_id: 387
       data: 0
@@ -396,7 +361,7 @@ perks:
             theme: 'aztec'
             template: 'grocer'
 
-    - id: 'prem_tpl_aztec_library'
+    - id: 'tpl_aztec_library'
       display_name: 'Aztec Library Template'
       item_id: 387
       data: 0
@@ -405,7 +370,7 @@ perks:
             theme: 'aztec'
             template: 'library'
     
-    - id: 'prem_tpl_aztec_market'
+    - id: 'tpl_aztec_market'
       display_name: 'Aztec Market Template'
       item_id: 387
       data: 0
@@ -414,7 +379,7 @@ perks:
             theme: 'aztec'
             template: 'market'
     
-    - id: 'prem_tpl_aztec_mine'
+    - id: 'tpl_aztec_mine'
       display_name: 'Aztec Mine Template'
       item_id: 387
       data: 0
@@ -423,7 +388,7 @@ perks:
             theme: 'aztec'
             template: 'mine'
 
-    - id: 'prem_tpl_aztec_monument'
+    - id: 'tpl_aztec_monument'
       display_name: 'Aztec Monument Template'
       item_id: 387
       data: 0
@@ -432,7 +397,7 @@ perks:
             theme: 'aztec'
             template: 'monument'
 
-    - id: 'prem_tpl_aztec_pasture'
+    - id: 'tpl_aztec_pasture'
       display_name: 'Aztec Pasture Template'
       item_id: 387
       data: 0
@@ -441,7 +406,7 @@ perks:
             theme: 'aztec'
             template: 'pasture'
 
-    - id: 'prem_tpl_aztec_scout_tower'
+    - id: 'tpl_aztec_scout_tower'
       display_name: 'Aztec Scout Tower Template'
       item_id: 387
       data: 0
@@ -450,7 +415,7 @@ perks:
             theme: 'aztec'
             template: 'scout_tower'
     
-    - id: 'prem_tpl_aztec_shipyard'
+    - id: 'tpl_aztec_shipyard'
       display_name: 'Aztec Shipyard Template'
       item_id: 387
       data: 0
@@ -459,7 +424,7 @@ perks:
             theme: 'aztec'
             template: 'shipyard'
     
-    - id: 'prem_tpl_aztec_stable'
+    - id: 'tpl_aztec_stable'
       display_name: 'Aztec Stable Template'
       item_id: 387
       data: 0
@@ -468,7 +433,7 @@ perks:
             theme: 'aztec'
             template: 'stable'
     
-    - id: 'prem_tpl_aztec_temple'
+    - id: 'tpl_aztec_temple'
       display_name: 'Aztec Temple Template'
       item_id: 387
       data: 0
@@ -477,7 +442,7 @@ perks:
             theme: 'aztec'
             template: 'temple'
 
-    - id: 'prem_tpl_aztec_trommel'
+    - id: 'tpl_aztec_trommel'
       display_name: 'Aztec Trommel Template'
       item_id: 387
       data: 0
@@ -486,7 +451,7 @@ perks:
             theme: 'aztec'
             template: 'trommel'
     
-    - id: 'prem_tpl_aztec_town_hall'
+    - id: 'tpl_aztec_town_hall'
       display_name: 'Aztec Town Hall Template'
       item_id: 387
       data: 0
@@ -496,7 +461,7 @@ perks:
             template: 'town_hall'
             id: 's_townhall'
     
-    - id: 'prem_tpl_aztec_windmill'
+    - id: 'tpl_aztec_windmill'
       display_name: 'Aztec Windmill Template'
       item_id: 387
       data: 0
@@ -505,7 +470,7 @@ perks:
             theme: 'aztec'
             template: 'windmill'
 
-    - id: 'prem_tpl_aztec_store'
+    - id: 'tpl_aztec_store'
       display_name: 'Aztec Store Template'
       item_id: 387
       data: 0
@@ -517,7 +482,7 @@ perks:
 
 # ===== EGYPTIAN TEMPLATES
 
-    - id: 'prem_tpl_egyptian_camp'
+    - id: 'tpl_egyptian_camp'
       display_name: 'Egyptian Camp'
       item_id: 387
       data: 0
@@ -527,7 +492,7 @@ perks:
             template: 'camp'
             id: 'camp'
 
-    - id: 'prem_tpl_egyptian_arrow_tower'
+    - id: 'tpl_egyptian_arrow_tower'
       display_name: 'Egyptian Arrow Tower Template'
       item_id: 387
       data: 0
@@ -536,7 +501,7 @@ perks:
             theme: 'egyptian'
             template: 'arrow_tower'
     
-    - id: 'prem_tpl_egyptian_bank'
+    - id: 'tpl_egyptian_bank'
       display_name: 'Egyptian Bank Template'
       item_id: 387
       data: 0
@@ -545,7 +510,7 @@ perks:
             theme: 'egyptian'
             template: 'bank'
 
-    - id: 'prem_tpl_egyptian_barracks'
+    - id: 'tpl_egyptian_barracks'
       display_name: 'Egyptian Barracks Template'
       item_id: 387
       data: 0
@@ -554,7 +519,7 @@ perks:
             theme: 'egyptian'
             template: 'barracks'
 
-    - id: 'prem_tpl_egyptian_cannon_tower'
+    - id: 'tpl_egyptian_cannon_tower'
       display_name: 'Egyptian Cannon Tower Template'
       item_id: 387
       data: 0
@@ -563,7 +528,7 @@ perks:
             theme: 'egyptian'
             template: 'cannon_tower'
    
-    - id: 'prem_tpl_egyptian_capitol'
+    - id: 'tpl_egyptian_capitol'
       display_name: 'Egyptian Capitol Template'
       item_id: 387
       data: 0
@@ -573,7 +538,7 @@ perks:
             template: 'capital' #misspelt on purpose, easier to leave as is.
             id: 's_capitol'
     
-    - id: 'prem_tpl_egyptian_cottage'
+    - id: 'tpl_egyptian_cottage'
       display_name: 'Egyptian Cottage Template'
       item_id: 387
       data: 0
@@ -582,7 +547,7 @@ perks:
             theme: 'egyptian'
             template: 'cottage'
     
-    - id: 'prem_tpl_egyptian_granary'
+    - id: 'tpl_egyptian_granary'
       display_name: 'Egyptian Granary Template'
       item_id: 387
       data: 0
@@ -591,7 +556,7 @@ perks:
             theme: 'egyptian'
             template: 'granary'
 
-    - id: 'prem_tpl_egyptian_grocer'
+    - id: 'tpl_egyptian_grocer'
       display_name: 'Egyptian Grocer Template'
       item_id: 387
       data: 0
@@ -600,7 +565,7 @@ perks:
             theme: 'egyptian'
             template: 'grocer'
 
-    - id: 'prem_tpl_egyptian_library'
+    - id: 'tpl_egyptian_library'
       display_name: 'Egyptian Library Template'
       item_id: 387
       data: 0
@@ -609,7 +574,7 @@ perks:
             theme: 'egyptian'
             template: 'library'
     
-    - id: 'prem_tpl_egyptian_market'
+    - id: 'tpl_egyptian_market'
       display_name: 'Egyptian Market Template'
       item_id: 387
       data: 0
@@ -618,7 +583,7 @@ perks:
             theme: 'egyptian'
             template: 'market'
     
-    - id: 'prem_tpl_egyptian_mine'
+    - id: 'tpl_egyptian_mine'
       display_name: 'Egyptian Mine Template'
       item_id: 387
       data: 0
@@ -627,7 +592,7 @@ perks:
             theme: 'egyptian'
             template: 'mine'
 
-    - id: 'prem_tpl_egyptian_monument'
+    - id: 'tpl_egyptian_monument'
       display_name: 'Egyptian Monument Template'
       item_id: 387
       data: 0
@@ -636,7 +601,7 @@ perks:
             theme: 'egyptian'
             template: 'monument'
 
-    - id: 'prem_tpl_egyptian_pasture'
+    - id: 'tpl_egyptian_pasture'
       display_name: 'Egyptian Pasture Template'
       item_id: 387
       data: 0
@@ -645,7 +610,7 @@ perks:
             theme: 'egyptian'
             template: 'pasture'
 
-    - id: 'prem_tpl_egyptian_scout_tower'
+    - id: 'tpl_egyptian_scout_tower'
       display_name: 'Egyptian Scout Tower Template'
       item_id: 387
       data: 0
@@ -654,7 +619,7 @@ perks:
             theme: 'egyptian'
             template: 'scout_tower'
     
-    - id: 'prem_tpl_egyptian_shipyard'
+    - id: 'tpl_egyptian_shipyard'
       display_name: 'Egyptian Shipyard Template'
       item_id: 387
       data: 0
@@ -663,7 +628,7 @@ perks:
             theme: 'egyptian'
             template: 'shipyard'
     
-    - id: 'prem_tpl_egyptian_stable'
+    - id: 'tpl_egyptian_stable'
       display_name: 'Egyptian Stable Template'
       item_id: 387
       data: 0
@@ -672,7 +637,7 @@ perks:
             theme: 'egyptian'
             template: 'stable'
     
-    - id: 'prem_tpl_egyptian_temple'
+    - id: 'tpl_egyptian_temple'
       display_name: 'Egyptian Temple Template'
       item_id: 387
       data: 0
@@ -681,7 +646,7 @@ perks:
             theme: 'egyptian'
             template: 'temple'
 
-    - id: 'prem_tpl_egyptian_trommel'
+    - id: 'tpl_egyptian_trommel'
       display_name: 'Egyptian Trommel Template'
       item_id: 387
       data: 0
@@ -690,7 +655,7 @@ perks:
             theme: 'egyptian'
             template: 'trommel'
     
-    - id: 'prem_tpl_egyptian_town_hall'
+    - id: 'tpl_egyptian_town_hall'
       display_name: 'Egyptian Town Hall Template'
       item_id: 387
       data: 0
@@ -700,7 +665,7 @@ perks:
             template: 'town_hall'
             id: 's_townhall'
     
-    - id: 'prem_tpl_egyptian_windmill'
+    - id: 'tpl_egyptian_windmill'
       display_name: 'Egyptian Windmill Template'
       item_id: 387
       data: 0
@@ -709,7 +674,7 @@ perks:
             theme: 'egyptian'
             template: 'windmill'
 
-    - id: 'prem_tpl_egyptian_blacksmith'
+    - id: 'tpl_egyptian_blacksmith'
       display_name: 'Egyptian Blacksmith Template'
       item_id: 387
       data: 0
@@ -718,7 +683,7 @@ perks:
             theme: 'egyptian'
             template: 'blacksmith'
 
-    - id: 'prem_tpl_egyptian_store'
+    - id: 'tpl_egyptian_store'
       display_name: 'Egyptian Store Template'
       item_id: 387
       data: 0
@@ -729,7 +694,7 @@ perks:
 
 # ===== ROMAN TEMPLATES
 
-    - id: 'prem_tpl_roman_camp'
+    - id: 'tpl_roman_camp'
       display_name: 'Roman Camp'
       item_id: 387
       data: 0
@@ -739,7 +704,7 @@ perks:
             template: 'camp'
             id: 'camp'
 
-    - id: 'prem_tpl_roman_arrow_tower'
+    - id: 'tpl_roman_arrow_tower'
       display_name: 'Roman Arrow Tower Template'
       item_id: 387
       data: 0
@@ -748,7 +713,7 @@ perks:
             theme: 'roman'
             template: 'arrow_tower'
     
-    - id: 'prem_tpl_roman_bank'
+    - id: 'tpl_roman_bank'
       display_name: 'Roman Bank Template'
       item_id: 387
       data: 0
@@ -757,7 +722,7 @@ perks:
             theme: 'roman'
             template: 'bank'
 
-    - id: 'prem_tpl_roman_barracks'
+    - id: 'tpl_roman_barracks'
       display_name: 'Roman Barracks Template'
       item_id: 387
       data: 0
@@ -766,7 +731,7 @@ perks:
             theme: 'roman'
             template: 'barracks'
 
-    - id: 'prem_tpl_roman_cannon_tower'
+    - id: 'tpl_roman_cannon_tower'
       display_name: 'Roman Cannon Tower Template'
       item_id: 387
       data: 0
@@ -775,7 +740,7 @@ perks:
             theme: 'roman'
             template: 'cannon_tower'
    
-    - id: 'prem_tpl_roman_capitol'
+    - id: 'tpl_roman_capitol'
       display_name: 'Roman Capitol Template'
       item_id: 387
       data: 0
@@ -785,7 +750,7 @@ perks:
             template: 'capital' #misspelt on purpose, easier to leave as is.
             id: 's_capitol'
     
-    - id: 'prem_tpl_roman_cottage'
+    - id: 'tpl_roman_cottage'
       display_name: 'Roman Cottage Template'
       item_id: 387
       data: 0
@@ -794,7 +759,7 @@ perks:
             theme: 'roman'
             template: 'cottage'
     
-    - id: 'prem_tpl_roman_granary'
+    - id: 'tpl_roman_granary'
       display_name: 'Roman Granary Template'
       item_id: 387
       data: 0
@@ -803,7 +768,7 @@ perks:
             theme: 'roman'
             template: 'granary'
 
-    - id: 'prem_tpl_roman_grocer'
+    - id: 'tpl_roman_grocer'
       display_name: 'Roman Grocer Template'
       item_id: 387
       data: 0
@@ -812,7 +777,7 @@ perks:
             theme: 'roman'
             template: 'grocer'
 
-    - id: 'prem_tpl_roman_library'
+    - id: 'tpl_roman_library'
       display_name: 'Roman Library Template'
       item_id: 387
       data: 0
@@ -821,7 +786,7 @@ perks:
             theme: 'roman'
             template: 'library'
     
-    - id: 'prem_tpl_roman_market'
+    - id: 'tpl_roman_market'
       display_name: 'Roman Market Template'
       item_id: 387
       data: 0
@@ -830,7 +795,7 @@ perks:
             theme: 'roman'
             template: 'market'
     
-    - id: 'prem_tpl_roman_mine'
+    - id: 'tpl_roman_mine'
       display_name: 'Roman Mine Template'
       item_id: 387
       data: 0
@@ -839,7 +804,7 @@ perks:
             theme: 'roman'
             template: 'mine'
 
-    - id: 'prem_tpl_roman_monument'
+    - id: 'tpl_roman_monument'
       display_name: 'Roman Monument Template'
       item_id: 387
       data: 0
@@ -848,7 +813,7 @@ perks:
             theme: 'roman'
             template: 'monument'
 
-    - id: 'prem_tpl_roman_pasture'
+    - id: 'tpl_roman_pasture'
       display_name: 'Roman Pasture Template'
       item_id: 387
       data: 0
@@ -857,7 +822,7 @@ perks:
             theme: 'roman'
             template: 'pasture'
 
-    - id: 'prem_tpl_roman_scout_tower'
+    - id: 'tpl_roman_scout_tower'
       display_name: 'Roman Scout Tower Template'
       item_id: 387
       data: 0
@@ -866,7 +831,7 @@ perks:
             theme: 'roman'
             template: 'scout_tower'
     
-    - id: 'prem_tpl_roman_shipyard'
+    - id: 'tpl_roman_shipyard'
       display_name: 'Roman Shipyard Template'
       item_id: 387
       data: 0
@@ -875,7 +840,7 @@ perks:
             theme: 'roman'
             template: 'shipyard'
     
-    - id: 'prem_tpl_roman_stable'
+    - id: 'tpl_roman_stable'
       display_name: 'Roman Stable Template'
       item_id: 387
       data: 0
@@ -884,7 +849,7 @@ perks:
             theme: 'roman'
             template: 'stable'
     
-    - id: 'prem_tpl_roman_temple'
+    - id: 'tpl_roman_temple'
       display_name: 'Roman Temple Template'
       item_id: 387
       data: 0
@@ -893,7 +858,7 @@ perks:
             theme: 'roman'
             template: 'temple'
 
-    - id: 'prem_tpl_roman_trommel'
+    - id: 'tpl_roman_trommel'
       display_name: 'Roman Trommel Template'
       item_id: 387
       data: 0
@@ -902,7 +867,7 @@ perks:
             theme: 'roman'
             template: 'trommel'
     
-    - id: 'prem_tpl_roman_town_hall'
+    - id: 'tpl_roman_town_hall'
       display_name: 'Roman Town Hall Template'
       item_id: 387
       data: 0
@@ -912,7 +877,7 @@ perks:
             template: 'town_hall'
             id: 's_townhall'
     
-    - id: 'prem_tpl_roman_windmill'
+    - id: 'tpl_roman_windmill'
       display_name: 'Roman Windmill Template'
       item_id: 387
       data: 0
@@ -921,7 +886,7 @@ perks:
             theme: 'roman'
             template: 'windmill'
 
-    - id: 'prem_tpl_roman_blacksmith'
+    - id: 'tpl_roman_blacksmith'
       display_name: 'Roman Blacksmith Template'
       item_id: 387
       data: 0
@@ -930,7 +895,7 @@ perks:
             theme: 'roman'
             template: 'blacksmith'
 
-    - id: 'prem_tpl_roman_store'
+    - id: 'tpl_roman_store'
       display_name: 'Roman Store Template'
       item_id: 387
       data: 0
@@ -941,7 +906,7 @@ perks:
 
 # ===== HELL TEMPLATES
 
-    - id: 'prem_tpl_hell_camp'
+    - id: 'tpl_hell_camp'
       display_name: 'Hell Camp'
       item_id: 387
       data: 0
@@ -951,7 +916,7 @@ perks:
             template: 'camp'
             id: 'camp'
 
-    - id: 'prem_tpl_hell_arrow_tower'
+    - id: 'tpl_hell_arrow_tower'
       display_name: 'Hell Arrow Tower Template'
       item_id: 387
       data: 0
@@ -960,7 +925,7 @@ perks:
             theme: 'hell'
             template: 'arrow_tower'
     
-    - id: 'prem_tpl_hell_bank'
+    - id: 'tpl_hell_bank'
       display_name: 'Hell Bank Template'
       item_id: 387
       data: 0
@@ -969,7 +934,7 @@ perks:
             theme: 'hell'
             template: 'bank'
 
-    - id: 'prem_tpl_hell_barracks'
+    - id: 'tpl_hell_barracks'
       display_name: 'Hell Barracks Template'
       item_id: 387
       data: 0
@@ -978,7 +943,7 @@ perks:
             theme: 'hell'
             template: 'barracks'
 
-    - id: 'prem_tpl_hell_cannon_tower'
+    - id: 'tpl_hell_cannon_tower'
       display_name: 'Hell Cannon Tower Template'
       item_id: 387
       data: 0
@@ -987,7 +952,7 @@ perks:
             theme: 'hell'
             template: 'cannon_tower'
    
-    - id: 'prem_tpl_hell_capitol'
+    - id: 'tpl_hell_capitol'
       display_name: 'Hell Capitol Template'
       item_id: 387
       data: 0
@@ -997,7 +962,7 @@ perks:
             template: 'capital' #misspelt on purpose, easier to leave as is.
             id: 's_capitol'
     
-    - id: 'prem_tpl_hell_cottage'
+    - id: 'tpl_hell_cottage'
       display_name: 'Hell Cottage Template'
       item_id: 387
       data: 0
@@ -1006,7 +971,7 @@ perks:
             theme: 'hell'
             template: 'cottage'
     
-    - id: 'prem_tpl_hell_granary'
+    - id: 'tpl_hell_granary'
       display_name: 'Hell Granary Template'
       item_id: 387
       data: 0
@@ -1015,7 +980,7 @@ perks:
             theme: 'hell'
             template: 'granary'
 
-    - id: 'prem_tpl_hell_grocer'
+    - id: 'tpl_hell_grocer'
       display_name: 'Hell Grocer Template'
       item_id: 387
       data: 0
@@ -1024,7 +989,7 @@ perks:
             theme: 'hell'
             template: 'grocer'
 
-    - id: 'prem_tpl_hell_library'
+    - id: 'tpl_hell_library'
       display_name: 'Hell Library Template'
       item_id: 387
       data: 0
@@ -1033,7 +998,7 @@ perks:
             theme: 'hell'
             template: 'library'
     
-    - id: 'prem_tpl_hell_market'
+    - id: 'tpl_hell_market'
       display_name: 'Hell Market Template'
       item_id: 387
       data: 0
@@ -1042,7 +1007,7 @@ perks:
             theme: 'hell'
             template: 'market'
     
-    - id: 'prem_tpl_hell_mine'
+    - id: 'tpl_hell_mine'
       display_name: 'Hell Mine Template'
       item_id: 387
       data: 0
@@ -1051,7 +1016,7 @@ perks:
             theme: 'hell'
             template: 'mine'
 
-    - id: 'prem_tpl_hell_monument'
+    - id: 'tpl_hell_monument'
       display_name: 'Hell Monument Template'
       item_id: 387
       data: 0
@@ -1060,7 +1025,7 @@ perks:
             theme: 'hell'
             template: 'monument'
 
-    - id: 'prem_tpl_hell_pasture'
+    - id: 'tpl_hell_pasture'
       display_name: 'Hell Pasture Template'
       item_id: 387
       data: 0
@@ -1069,7 +1034,7 @@ perks:
             theme: 'hell'
             template: 'pasture'
 
-    - id: 'prem_tpl_hell_scout_tower'
+    - id: 'tpl_hell_scout_tower'
       display_name: 'Hell Scout Tower Template'
       item_id: 387
       data: 0
@@ -1078,7 +1043,7 @@ perks:
             theme: 'hell'
             template: 'scout_tower'
     
-    - id: 'prem_tpl_hell_shipyard'
+    - id: 'tpl_hell_shipyard'
       display_name: 'Hell Shipyard Template'
       item_id: 387
       data: 0
@@ -1087,7 +1052,7 @@ perks:
             theme: 'hell'
             template: 'shipyard'
     
-    - id: 'prem_tpl_hell_stable'
+    - id: 'tpl_hell_stable'
       display_name: 'Hell Stable Template'
       item_id: 387
       data: 0
@@ -1096,7 +1061,7 @@ perks:
             theme: 'hell'
             template: 'stable'
     
-    - id: 'prem_tpl_hell_temple'
+    - id: 'tpl_hell_temple'
       display_name: 'Hell Temple Template'
       item_id: 387
       data: 0
@@ -1105,7 +1070,7 @@ perks:
             theme: 'hell'
             template: 'temple'
 
-    - id: 'prem_tpl_hell_trommel'
+    - id: 'tpl_hell_trommel'
       display_name: 'Hell Trommel Template'
       item_id: 387
       data: 0
@@ -1114,7 +1079,7 @@ perks:
             theme: 'hell'
             template: 'trommel'
     
-    - id: 'prem_tpl_hell_town_hall'
+    - id: 'tpl_hell_town_hall'
       display_name: 'Hell Town Hall Template'
       item_id: 387
       data: 0
@@ -1124,7 +1089,7 @@ perks:
             template: 'town_hall'
             id: 's_townhall'
     
-    - id: 'prem_tpl_hell_windmill'
+    - id: 'tpl_hell_windmill'
       display_name: 'Hell Windmill Template'
       item_id: 387
       data: 0
@@ -1133,7 +1098,7 @@ perks:
             theme: 'hell'
             template: 'windmill'
 
-    - id: 'prem_tpl_hell_blacksmith'
+    - id: 'tpl_hell_blacksmith'
       display_name: 'Hell Blacksmith Template'
       item_id: 387
       data: 0
@@ -1142,7 +1107,7 @@ perks:
             theme: 'hell'
             template: 'blacksmith'
 
-    - id: 'prem_tpl_hell_store'
+    - id: 'tpl_hell_store'
       display_name: 'Hell Store Template'
       item_id: 387
       data: 0
