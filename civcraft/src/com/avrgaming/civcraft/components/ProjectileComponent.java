@@ -20,11 +20,9 @@ package com.avrgaming.civcraft.components;
 
 import java.util.HashSet;
 
-import net.minecraft.server.v1_11_R1.Vec3D;
-
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -37,6 +35,8 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.BlockCoord;
+
+import net.minecraft.server.v1_10_R1.Vec3D;
 
 public abstract class ProjectileComponent extends Component {
 
@@ -144,12 +144,6 @@ public abstract class ProjectileComponent extends Component {
 		return false;
 	}
 	
-	private boolean isLit(Player player) {
-		Location loc1 = player.getLocation();
-		return ((loc1.getWorld()).getBlockAt(loc1).getLightFromSky() >= 15);
-
-	}
-	
 	private boolean canSee(Player player, Location loc2) {
 		Location loc1 = player.getLocation();
 		Vec3D vec1 = new Vec3D(loc1.getX(), loc1.getY() + player.getEyeHeight(), loc1.getZ());
@@ -219,15 +213,14 @@ public abstract class ProjectileComponent extends Component {
 				return;
 			}
 			
-			if (!this.getBuildable().getConfigId().equals("s_teslatower")) {
-				// XXX todo convert this to not use a player so we can async...
-				if (!this.canSee(player, turretLoc)) {
-					continue;
-				}
-			} else {
-				if (!this.isLit(player)) {
-					continue;
-				}
+			if (player.getGameMode() == GameMode.CREATIVE ||
+					player.getGameMode() == GameMode.SPECTATOR) {
+				return;
+			}
+			
+			// XXX todo convert this to not use a player so we can async...
+			if (!this.canSee(player, turretLoc)) {
+				continue;
 			}
 		
 			if (isWithinRange(player.getLocation(), range)) {
@@ -244,11 +237,6 @@ public abstract class ProjectileComponent extends Component {
 		}
 		
 		if (nearestPlayer == null || turretLoc == null) {
-			return;
-		}
-		
-		if (nearestPlayer.getGameMode() == GameMode.CREATIVE ||
-				nearestPlayer.getGameMode() == GameMode.SPECTATOR) {
 			return;
 		}
 		
@@ -275,4 +263,3 @@ public abstract class ProjectileComponent extends Component {
 	}
 	
 }
-

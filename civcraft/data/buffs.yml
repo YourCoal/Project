@@ -13,15 +13,22 @@ buffs:
 #
   - id: 'buff_advanced_tooling'
     name: 'Advanced Tooling'
-    description: 'Increases <lightgreen>Lab and Mine<italicwhite> production by <yellow>50%<r> <green>Stackable<r>'
-    value: '0.5'
+    description: 'Increases <lightgreen>Mine<italicwhite> production by <yellow>20%<r> <green>Stackable<r>'
+    value: '0.25'
+    stackable: true
+    parent:
+#
+  - id: 'buff_advanced_experiment'
+    name: 'Advanced Experiment'
+    description: 'Increases <lightgreen>Lab<italicwhite> production by <yellow>20%<r> <green>Stackable<r>'
+    value: '0.25'
     stackable: true
     parent:
 #
   - id: 'buff_preservative_production'
     name: 'Preservative (Labs/Mines)'
     description: 'Reduces consumption of <lightgreen>Labs and Mines<italicwhite> by <yellow>25%<r> <red>Non-Stackable<r>'
-    value: '25%'
+    value: '0.75'
     stackable: false
     parent:
 #
@@ -98,7 +105,7 @@ buffs:
   - id: 'buff_fire_bomb'
     name: 'Fire Bomb'
     description: 'Increases damage of arrow/cannon towers by a <lightgreen>10%<r> Also makes arrow towers shoot flaming arrows <gold>Stackable<r>'
-    value: '1.0'
+    value: '0.1'
     stackable: false
     parent:
 

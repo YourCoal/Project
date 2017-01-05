@@ -99,22 +99,20 @@ public class ShowRecipe implements GuiAction {
 		}
 		
 		//Row 4, Left 1
-//		if (craftMat.getConfigMaterial().required_tech != null) {
-			Resident resident = CivGlobal.getResident(player);
-			ConfigTech tech = CivSettings.techs.get(craftMat.getConfigMaterial().required_tech);
-			if (tech != null) {
-				if (resident.hasTown() && resident.getCiv().hasRequiredTech(craftMat.getConfigMaterial().required_tech)) {
-					stack = LoreGuiItem.build("You Have Required Technology", ItemManager.getId(Material.EMERALD_BLOCK), 0, tech.name);
-					recInv.setItem(27, stack);
-				} else if (!resident.hasTown() || !resident.getCiv().hasRequiredTech(craftMat.getConfigMaterial().required_tech)) {
-					stack = LoreGuiItem.build("You Don't Have Required Technology", ItemManager.getId(Material.REDSTONE_BLOCK), 0, tech.name);
-					recInv.setItem(27, stack);
-				}
-			} else {
-				stack = LoreGuiItem.build("Doesn't Require Technology", ItemManager.getId(Material.LAPIS_BLOCK), 0, "");
+		Resident resident = CivGlobal.getResident(player);
+		ConfigTech tech = CivSettings.techs.get(craftMat.getConfigMaterial().required_tech);
+		if (tech != null) {
+			if (resident.hasTown() && resident.getCiv().hasRequiredTech(craftMat.getConfigMaterial().required_tech)) {
+				stack = LoreGuiItem.build("You Have Required Technology", ItemManager.getId(Material.EMERALD_BLOCK), 0, tech.name);
+				recInv.setItem(27, stack);
+			} else if (!resident.hasTown() || !resident.getCiv().hasRequiredTech(craftMat.getConfigMaterial().required_tech)) {
+				stack = LoreGuiItem.build("You Don't Have Required Technology", ItemManager.getId(Material.REDSTONE_BLOCK), 0, tech.name);
 				recInv.setItem(27, stack);
 			}
-//		}
+		} else {
+			stack = LoreGuiItem.build("Doesn't Require Technology", ItemManager.getId(Material.LAPIS_BLOCK), 0, "");
+			recInv.setItem(27, stack);
+		}
 		
 		
 		//Row 1, Right 1

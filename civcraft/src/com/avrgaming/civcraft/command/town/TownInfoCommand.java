@@ -47,6 +47,8 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.structure.Bank;
 import com.avrgaming.civcraft.structure.Buildable;
+import com.avrgaming.civcraft.structure.Cottage;
+import com.avrgaming.civcraft.structure.Lab;
 import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
@@ -79,7 +81,42 @@ public class TownInfoCommand extends CommandBase {
 	}
 	
 	public void cottage_cmd() throws CivException {
-		CivMessage.send(sender, "Currently disabled/non-functional.");
+		Town town = getSelectedTown();
+		ArrayList<String> out = new ArrayList<String>();	
+		
+		CivMessage.sendHeading(sender, town.getName()+" Cottage Info");
+		double total = 0;
+		
+		for (Structure struct : town.getStructures()) {
+			if (!struct.getConfigId().equals("ti_cottage")) {
+				continue;
+			}
+			
+			Cottage cottage = (Cottage)struct;
+			String color;
+			if (struct.isActive()) {
+				color = CivColor.LightGreen;
+			} else {
+				color = CivColor.Rose;
+			}
+			
+			double coins = cottage.getTotalCoins();
+			
+			if (!struct.isDestroyed()) {
+				out.add(color+"Cottage ("+struct.getCorner()+")");
+				out.add(CivColor.Green+"    Level: "+CivColor.Yellow+town.saved_cottage_level+
+				out.add(CivColor.Green+"    Coins: "+CivColor.Yellow+coins));
+			} else {
+				out.add(color+"Cottage ("+struct.getCorner()+")");
+				out.add(CivColor.Rose+"    DESTROYED ");
+			}
+			total += Math.round(coins);
+		}
+		out.add(CivColor.Green+"----------------------------");
+		out.add(CivColor.Green+"Total: "+CivColor.Yellow+total+" coins.");
+		out.add(CivColor.Green+"Cottage Rate: "+CivColor.Yellow+df.format(town.getCottageRate()*100)+"%");
+		total *= town.getCottageRate();
+		CivMessage.send(sender, out);
 	}
 	
 	public void disabled_cmd() throws CivException {
@@ -380,13 +417,11 @@ public class TownInfoCommand extends CommandBase {
 		for (Wonder wonder : town.getWonders()) {
 			CivMessage.send(sender, CivColor.Green+wonder.getDisplayName()+" Upkeep: "+CivColor.LightGreen+wonder.getUpkeepCost());
 		}
-			
 	}
 	
 	public void mine_cmd() throws CivException {
 		Town town = getSelectedTown();
 		ArrayList<String> out = new ArrayList<String>();	
-		
 		CivMessage.sendHeading(sender, town.getName()+" Mine Info");
 		double total = 0;
 		
@@ -396,27 +431,57 @@ public class TownInfoCommand extends CommandBase {
 			}
 			
 			Mine mine = (Mine)struct;
-			
 			String color;
 			if (struct.isActive()) {
 				color = CivColor.LightGreen;
 			} else {
 				color = CivColor.Rose;
 			}
-									
+			
 			out.add(color+"Mine ("+struct.getCorner()+")");
 			out.add(CivColor.Green+"    level: "+CivColor.Yellow+mine.getLevel()+
 					CivColor.Green+" count: "+CivColor.Yellow+"("+mine.getCount()+"/"+mine.getMaxCount()+")");
 			out.add(CivColor.Green+"    hammers per tile: "+CivColor.Yellow+mine.getHammersPerTile()+
 					CivColor.Green+" Last Result: "+CivColor.Yellow+mine.getLastResult().name());
-			
 			total += mine.getHammersPerTile()*9; //XXX estimate based on tile radius of 1.
 			
 		}
 		out.add(CivColor.Green+"----------------------------");
 		out.add(CivColor.Green+"Sub Total: "+CivColor.Yellow+total);
-		out.add(CivColor.Green+"Total: "+CivColor.Yellow+df.format(total)+" hammers (estimate).");
+		out.add(CivColor.Green+"Total: "+CivColor.Yellow+df.format(total)+" Hammers (estimate).");
+		CivMessage.send(sender, out);
+	}
+	
+	public void lab_cmd() throws CivException {
+		Town town = getSelectedTown();
+		ArrayList<String> out = new ArrayList<String>();	
+		CivMessage.sendHeading(sender, town.getName()+" Lab Info");
+		double total = 0;
 		
+		for (Structure struct : town.getStructures()) {
+			if (!struct.getConfigId().equals("ti_lab")) {
+				continue;
+			}
+			
+			Lab lab = (Lab)struct;
+			String color;
+			if (struct.isActive()) {
+				color = CivColor.LightGreen;
+			} else {
+				color = CivColor.Rose;
+			}
+			
+			out.add(color+"Lab ("+struct.getCorner()+")");
+			out.add(CivColor.Green+"    level: "+CivColor.Yellow+lab.getLevel()+
+					CivColor.Green+" count: "+CivColor.Yellow+"("+lab.getCount()+"/"+lab.getMaxCount()+")");
+			out.add(CivColor.Green+"    hammers per tile: "+CivColor.Yellow+lab.getBeakersPerTile()+
+					CivColor.Green+" Last Result: "+CivColor.Yellow+lab.getLastResult().name());
+			total += lab.getBeakersPerTile()*9; //XXX estimate based on tile radius of 1.
+			
+		}
+		out.add(CivColor.Green+"----------------------------");
+		out.add(CivColor.Green+"Sub Total: "+CivColor.Yellow+total);
+		out.add(CivColor.Green+"Total: "+CivColor.Yellow+df.format(total)+" Beakers (estimate).");
 		CivMessage.send(sender, out);
 	}
 	

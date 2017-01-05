@@ -1,39 +1,44 @@
 package com.avrgaming.civcraft.threading.timers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.listener.ActionBar;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.object.Resident;
-
-import net.minecraft.server.v1_11_R1.IChatBaseComponent;
-import net.minecraft.server.v1_11_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_11_R1.PacketPlayOutChat;
+import com.avrgaming.civcraft.util.CivColor;
 
 public class ActionBarUpdateTimer implements Runnable {
 	
 	@Override
 	public void run() {
-		for (Player p : Bukkit.getOnlinePlayers()) {
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			Resident res = CivGlobal.getResident(p);
-			try {
-				Player pl = CivGlobal.getPlayer(res);
-				
-				String town = res.getTown().getName();
-				double treasury = res.getTown().getTreasury().getBalance();
-				
-				sendActionBar(pl, "Town: "+town+"  Treasury: "+treasury);
-			} catch (CivException e) {
-				e.printStackTrace();
+			
+			String civ;
+			if (res.getCiv() == null) {
+				civ = "-----";
+			} else {
+				civ = res.getCiv().getName();
 			}
+			
+			String town;
+			if (res.getTown() == null) {
+				town = "-----";
+			} else {
+				town = res.getTown().getName();
+			}
+			
+			int money = (int) res.getTreasury().getBalance();
+			int exposure = (int) res.getSpyExposure();
+			
+			ActionBar abl = new ActionBar(
+					CivColor.ItalicLightGreen+money+CivColor.BoldGold+" Coins"
+					+CivColor.BoldGray+" |"
+					+CivColor.BoldGold+" Citizen of: "+CivColor.ItalicLightGreen+town+", "+CivColor.BoldGreen+civ
+					+CivColor.BoldGray+ " |"
+					+CivColor.BoldGold+" Spy Exposure: "+CivColor.ItalicLightGreen+exposure);
+			abl.sendToAll();
 		}
-	}
-	
-	public void sendActionBar(Player p, String msg) {
-		IChatBaseComponent cbc = ChatSerializer.a("{\"text\": \"" + msg +"\"}");
-		PacketPlayOutChat ppoc = new PacketPlayOutChat(cbc,(byte) 2);
-		((CraftPlayer) p).getHandle().playerConnection.sendPacket(ppoc);
 	}
 }

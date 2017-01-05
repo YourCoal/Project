@@ -276,13 +276,6 @@ public class Structure extends Buildable {
 				struct = (Stable) new Stable(rs);
 			}
 			break;
-		case "s_llamastable":
-			if (rs == null) {
-				struct = (StableLlama) new StableLlama(center, id, town);
-			} else {
-				struct = (StableLlama) new StableLlama(rs);
-			}
-			break;
 		case "ti_pasture":
 			if (rs == null) {
 				struct = (Pasture) new Pasture(center, id, town);

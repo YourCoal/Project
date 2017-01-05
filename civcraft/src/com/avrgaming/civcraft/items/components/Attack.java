@@ -5,6 +5,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
@@ -25,29 +27,6 @@ public class Attack extends ItemComponent {
 		return;
 	}
 	
-/*	@Override
-	public void onInteract(PlayerInteractEvent event) {
-		ItemStack stack = event.getItem();
-		
-		net.minecraft.server.v1_10_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);
-		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-		NBTTagList modifiers = new NBTTagList();
-		NBTTagCompound damage = new NBTTagCompound();
-		
-		damage.set("AttributeName", new NBTTagString("generic.attackDamage"));
-		damage.set("Name", new NBTTagString("generic.attackDamage"));
-		damage.set("Operation", new NBTTagInt(0));
-		damage.set("UUIDLeast", new NBTTagInt(894654));
-		damage.set("UUIDMost", new NBTTagInt(2872));
-		damage.set("Slot", new NBTTagString("mainhand"));
-		
-		modifiers.add(damage);
-		compound.set("AttributeModifiers", modifiers);
-		nmsStack.setTag(compound);
-		stack = CraftItemStack.asBukkitCopy(nmsStack);
-		LoreMaterial.getMaterial(stack).onInteract(event);
-	}*/
-	
 	@Override
 	public void onHold(PlayerItemHeldEvent event) {	
 		Resident resident = CivGlobal.getResident(event.getPlayer());
@@ -59,17 +38,27 @@ public class Attack extends ItemComponent {
 	
 	@Override
 	public void onAttack(EntityDamageByEntityEvent event, ItemStack inHand) {
+		AttributeUtil attrs = new AttributeUtil(inHand);
 		double dmg = this.getDouble("value");
+		double extraAtt = 0.0;
+		/* Try to get any extra attack enhancements from this item. */
+		for (LoreEnhancement enh : attrs.getEnhancements()) {
+			if (enh instanceof LoreEnhancementAttack) {
+				extraAtt +=  ((LoreEnhancementAttack)enh).getExtraAttack(attrs);
+			}
+		}
+		
+		dmg += extraAtt;
 		if (event.getDamager() instanceof Player) {
 			Resident resident = CivGlobal.getResident(((Player)event.getDamager()));
 			if (!resident.hasTechForItem(inHand)) {
-				dmg = dmg/2;
+				dmg = dmg / 2;
 			}
 		}
-//		if (dmg < 0.5) {
-//		/* Always do at least 0.5 damage. */
-//		dmg = 0.5;
-//	}
+		
+		if (dmg < 0.5) { /* Always do at least 0.5 damage. */
+			dmg = 0.5;
+		}
 		event.setDamage(dmg);
 	}
 }

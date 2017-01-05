@@ -1,18 +1,20 @@
 package com.avrgaming.civcraft.items.components;
 
-import gpl.AttributeUtil;
-import gpl.AttributeUtil.Attribute;
-import gpl.AttributeUtil.AttributeType;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.CivColor;
+
+import gpl.AttributeUtil;
+import gpl.AttributeUtil.Attribute;
+import gpl.AttributeUtil.AttributeType;
 
 public class Armor extends ItemComponent {
 	
@@ -36,9 +38,17 @@ public class Armor extends ItemComponent {
 	
 	@Override
 	public void onDefense(EntityDamageByEntityEvent event, ItemStack stack) {
-		double defValue = this.getDouble("value");	
-		double dmg = event.getDamage();
+		double defValue = this.getDouble("value");
+		double extraDef = 0;
+		AttributeUtil attrs = new AttributeUtil(stack);
+		/* Try to get any extra defense enhancements from this item. */
+		for (LoreEnhancement enh : attrs.getEnhancements()) {
+			if (enh instanceof LoreEnhancementDefense) {
+				extraDef += ((LoreEnhancementDefense)enh).getExtraDefense(attrs);
+			}
+		}
 		
+		defValue += extraDef;
 		if (event.getEntity() instanceof Player) {
 			Resident resident = CivGlobal.getResident(((Player)event.getEntity()));
 			if (!resident.hasTechForItem(stack)) {
@@ -46,11 +56,11 @@ public class Armor extends ItemComponent {
 			}
 		}
 		
-		dmg -= defValue*2; //Make armor toughness extra stong TODO Make this only for extra protection?
-//		if (dmg < 0.5) {
-//			/* Always do at least 0.5 damage. */
-//			dmg = 0.5;
-//		}
+		double dmg = event.getDamage();
+		dmg -= defValue;
+		if (dmg < 0.5) { /* Always do at least 0.5 damage. */
+			dmg = 0.5;
+		}
 		event.setDamage(dmg);
 	}
 }

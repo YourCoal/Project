@@ -701,13 +701,11 @@ public class Town extends SQLObject {
 		}
 		return;
 	}
-
-
+	
 	public double getExtraHammers() {
 		return extraHammers;
 	}
-
-
+	
 	public void setExtraHammers(double extraHammers) {
 		this.extraHammers = extraHammers;
 	}

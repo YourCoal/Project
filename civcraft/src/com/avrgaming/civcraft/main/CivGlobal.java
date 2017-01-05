@@ -39,8 +39,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -111,6 +109,8 @@ import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
 import com.avrgaming.global.perks.PerkManager;
 
+import net.milkbowl.vault.economy.Economy;
+
 public class CivGlobal {
 	
 	public static final double MIN_FRAME_DISTANCE = 3.0;
@@ -155,7 +155,7 @@ public class CivGlobal {
 	public static HashSet<String> researchedCivics = new HashSet<String>();
 	
 	public static Map<Integer, Boolean> CivColorInUse = new ConcurrentHashMap<Integer, Boolean>();
-	public static TradeGoodPreGenerate preGenerator = new TradeGoodPreGenerate();
+	public static TradeGoodPreGenerate tradeGoodPreGenerator = new TradeGoodPreGenerate();
 	
 	//TODO fix the duplicate score issue...
 	public static TreeMap<Integer, Civilization> civilizationScores = new TreeMap<Integer, Civilization>();
@@ -163,7 +163,7 @@ public class CivGlobal {
 
 	public static HashMap<String, Date> playerFirstLoginMap = new HashMap<String, Date>();
 			
-	//public static Scoreboard globalBoard;
+//	public static Scoreboard sboard;
 	
 	public static HashSet<String> betaPlayers = new HashSet<String>();
 	public static Boolean betaOnly = false;
@@ -213,7 +213,6 @@ public class CivGlobal {
 		loadWallBlocks();
 		loadRoadBlocks();
 		loadTradeGoods();
-		loadTradeGoodies();
 		loadRandomEvents();
 		loadProtectedBlocks();
 		EventTimer.loadGlobalEvents();
@@ -317,10 +316,7 @@ public class CivGlobal {
 		}
 	}
 	
-	private static void loadTradeGoods() {
-	}
-	
-	private static void loadTradeGoodies() throws SQLException {
+	private static void loadTradeGoods() throws SQLException {
 		Connection context = null;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
@@ -339,7 +335,6 @@ public class CivGlobal {
 					e.printStackTrace();
 				}
 			}
-	
 			CivLog.info("Loaded "+tradeGoods.size()+" Trade Goods");
 		} finally {
 			SQL.close(rs, ps, context);

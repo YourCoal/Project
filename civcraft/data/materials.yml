@@ -2187,33 +2187,6 @@ materials:
        - "scs"
        - " s "
 # Checked 12/01/2016
-   - id: 'civ:shulker_box'
-     item_id: 229
-     item_data: 0
-     name: 'Shulker Box'
-     required_civics: 'civic_civil_service'
-     craftable: true
-     shaped: true
-     vanilla: true
-     category: '<white>Vanilla'
-     components:
-       - name: 'AllowBlockPlace'
-     ingredients:
-       - type_id: 0
-         custom_id: 'civ:titanium_ingot'
-         data: 0
-         letter: 't'
-       - type_id: 450
-         data: 0
-         letter: 's'
-       - type_id: 54
-         data: 0
-         letter: 'c'
-     shape:
-       - " t "
-       - "scs"
-       - " t "
-# Checked 12/01/2016
    - id: 'civ:vanilla_brewing_stand'
      item_id: 379
      item_data: 0
@@ -4914,10 +4887,6 @@ removed_recipes:
     - type_id: 283
       data: 0
 
-    # iron chestplate
-    - type_id: 307
-      data: 0
-
     # enchantment table
     - type_id: 116
       data: 0
@@ -5024,9 +4993,6 @@ removed_recipes:
       data: 0
     # Elytra
     - type_id: 443
-      data: 0
-    # Totem of Undying
-    - type_id: 449
       data: 0
 
 #### Fixed with new recipes ####

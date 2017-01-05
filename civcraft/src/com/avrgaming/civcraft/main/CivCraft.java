@@ -92,6 +92,7 @@ import com.avrgaming.civcraft.threading.sync.SyncUpdateInventory;
 import com.avrgaming.civcraft.threading.tasks.ArrowProjectileTask;
 import com.avrgaming.civcraft.threading.tasks.ProjectileComponentTimer;
 import com.avrgaming.civcraft.threading.tasks.ScoutTowerTask;
+import com.avrgaming.civcraft.threading.timers.ActionBarUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.AnnouncementTimer;
 import com.avrgaming.civcraft.threading.timers.BeakerTimer;
 import com.avrgaming.civcraft.threading.timers.ChangeGovernmentTimer;
@@ -101,6 +102,7 @@ import com.avrgaming.civcraft.threading.timers.PlayerProximityComponentTimer;
 import com.avrgaming.civcraft.threading.timers.ReduceExposureTimer;
 import com.avrgaming.civcraft.threading.timers.RegenTimer;
 import com.avrgaming.civcraft.threading.timers.UnitTrainTimer;
+import com.avrgaming.civcraft.threading.timers.Update5MinuteEventTimer;
 import com.avrgaming.civcraft.threading.timers.UpdateSecond1EventTimer;
 import com.avrgaming.civcraft.threading.timers.WindmillTimer;
 import com.avrgaming.civcraft.util.BukkitObjects;
@@ -134,13 +136,13 @@ public final class CivCraft extends JavaPlugin {
 		
 		TaskMaster.asyncTimer("RandomEventSweeper", new RandomEventSweeper(), 0, TimeTools.toTicks(10));
 		
-//		TaskMaster.asyncTimer("ActionBarUpdateTimer", new ActionBarUpdateTimer(), 0, TimeTools.toTicks(5));
+		TaskMaster.asyncTimer("ActionBarUpdateTimer", new ActionBarUpdateTimer(), 0, TimeTools.toTicks(2));
 		
 		// Structure event timers
 		TaskMaster.asyncTimer("UpdateSecond1EventTimer", new UpdateSecond1EventTimer(), TimeTools.toTicks(1));
 //		TaskMaster.asyncTimer("UpdateSecond30EventTimer", new UpdateSecond30EventTimer(), TimeTools.toTicks(30));
-//		TaskMaster.asyncTimer("Update1MinuteEventTimer", new UpdateEventTimer(), TimeTools.toTicks(60));
-//		TaskMaster.asyncTimer("Update5MinuteEventTimer", new UpdateEventTimer(), TimeTools.toTicks(60*5));
+//		TaskMaster.asyncTimer("Update1MinuteEventTimer", new Update1MinuteEventTimer(), TimeTools.toTicks(60));
+		TaskMaster.asyncTimer("Update5MinuteEventTimer", new Update5MinuteEventTimer(), TimeTools.toTicks(60*5));
 		
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
 
@@ -148,7 +150,7 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("CultureCivicTimer", new CultureCivicTimer(60), TimeTools.toTicks(60));
 		
 		TaskMaster.syncTimer("UnitTrainTimer", new UnitTrainTimer(), TimeTools.toTicks(1));
-		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(4));
+		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(2));
 
 		try {
 			double arrow_firerate = CivSettings.getDouble(CivSettings.warConfig, "arrow_tower.fire_rate");
@@ -239,6 +241,7 @@ public final class CivCraft extends JavaPlugin {
 			CivGlobal.loadGlobals();
 			
 			ACManager.init();
+			
 			try {
 				SLSManager.init();
 			} catch (CivException e1) {
@@ -250,11 +253,6 @@ public final class CivCraft extends JavaPlugin {
 			e.printStackTrace();
 			setError(true);
 			this.onDisable();
-			CivLog.warning("Stopping server to prevent errors!");
-			CivLog.warning("Stopping server to prevent errors!");
-			CivLog.warning("Stopping server to prevent errors!");
-			CivLog.warning("Stopping server to prevent errors!");
-			this.getServer().shutdown();
 			return;
 		}
 		
@@ -324,6 +322,20 @@ public final class CivCraft extends JavaPlugin {
 	
 	public static void addFurnaceRecipes() {
 		FurnaceRecipe recipe1 = new FurnaceRecipe(new ItemStack(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:iron_ingot"), 1)), Material.IRON_ORE);
+		recipe1.setExperience(0.7F);
 		Bukkit.addRecipe(recipe1);
+		
+		FurnaceRecipe recipe2 = new FurnaceRecipe(new ItemStack(Material.INK_SACK, 4, (short) 4), Material.LAPIS_ORE);
+		recipe2.setExperience(0.8F);
+		Bukkit.addRecipe(recipe2);
+		
+		FurnaceRecipe recipe3 = new FurnaceRecipe(new ItemStack(Material.REDSTONE, 4), Material.REDSTONE_ORE);
+		recipe3.setExperience(0.8F);
+		Bukkit.addRecipe(recipe3);
+		
+		@SuppressWarnings("deprecation")
+		FurnaceRecipe recipe4A = new FurnaceRecipe(new ItemStack(Material.STRING, 4), Material.WOOL, 0, 4.0F);
+		recipe4A.setExperience(4.0F);
+		Bukkit.addRecipe(recipe4A);
 	}
 }

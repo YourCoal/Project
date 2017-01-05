@@ -63,6 +63,7 @@ import com.avrgaming.civcraft.event.EventTimer;
 import com.avrgaming.civcraft.event.GoodieRepoEvent;
 import com.avrgaming.civcraft.exception.AlreadyRegisteredException;
 import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.exception.InvalidNameException;
 import com.avrgaming.civcraft.items.BonusGoodie;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementSoulBound;
@@ -199,6 +200,20 @@ public class DebugCommand extends CommandBase {
 		commands.put("cannon", "builds a war cannon.");
 		commands.put("saveinv", "save an inventory");
 		commands.put("restoreinv", "restore your inventory.");
+		commands.put("regentradegoodchunk", "regens every chunk that has a trade good in it.");
+	}
+	
+	public void regentradegoodchunk_cmd() {
+		World world;
+		try {
+			world = Bukkit.getWorld(CivSettings.getString(CivSettings.globalConfig, "worldname"));
+			for(ChunkCoord coord : CivGlobal.tradeGoodPreGenerator.goodPicks.keySet()) {
+				world.regenerateChunk(coord.getX(), coord.getZ());
+				CivMessage.send(sender, "Regened:"+coord);
+			}
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void saveinv_cmd() throws CivException {
@@ -773,10 +788,13 @@ public class DebugCommand extends CommandBase {
 		int y = getNamedInteger(2);
 		int z = getNamedInteger(3);
 		
-		Block b = Bukkit.getWorld("world").getBlockAt(x,y,z);
-		
-		CivMessage.send(sender, "type:"+ItemManager.getId(b)+" data:"+ItemManager.getData(b)+" name:"+b.getType().name());
-		
+		Block b;
+		try {
+			b = Bukkit.getWorld(CivSettings.getString(CivSettings.globalConfig, "worldname")).getBlockAt(x,y,z);
+			CivMessage.send(sender, "type:"+ItemManager.getId(b)+" data:"+ItemManager.getData(b)+" name:"+b.getType().name());
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void camp_cmd() {
@@ -824,16 +842,20 @@ public class DebugCommand extends CommandBase {
 	public void flashedges_cmd() throws CivException {
 		Town town = getNamedTown(1);
 		
-		for (TownChunk chunk : town.savedEdgeBlocks) {
-			for (int x = 0; x < 16; x++) {
-				for (int z = 0; z < 16; z++) {
-					Block b = Bukkit.getWorld("world").getHighestBlockAt(((chunk.getChunkCoord().getX()+x<<4)+x), 
-							((chunk.getChunkCoord().getZ()<<4)+z));
-					Bukkit.getWorld("world").playEffect(b.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+		try {
+			for (TownChunk chunk : town.savedEdgeBlocks) {
+				for (int x = 0; x < 16; x++) {
+					for (int z = 0; z < 16; z++) {
+						Block b = Bukkit.getWorld(CivSettings.getString(CivSettings.globalConfig, "worldname")).getHighestBlockAt(((chunk.getChunkCoord().getX()+x<<4)+x), 
+								((chunk.getChunkCoord().getZ()<<4)+z));
+						Bukkit.getWorld(CivSettings.getString(CivSettings.globalConfig, "worldname")).playEffect(b.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
+					}
 				}
 			}
+			CivMessage.sendSuccess(sender, "flashed");
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
 		}
-		CivMessage.sendSuccess(sender, "flashed");
 	}
 	
 	public void farm_cmd() {
@@ -960,19 +982,6 @@ public class DebugCommand extends CommandBase {
 	public void quickcodereload_cmd() {
 		
 		Bukkit.getPluginManager().getPlugin("QuickCode");
-		
-		
-	}
-	
-	public void regenchunk_cmd() {
-	
-		World world = Bukkit.getWorld("world");
-
-		for(ChunkCoord coord : CivGlobal.preGenerator.goodPicks.keySet()) {
-			
-			world.regenerateChunk(coord.getX(), coord.getZ());
-			CivMessage.send(sender, "Regened:"+coord);
-		}
 		
 		
 	}

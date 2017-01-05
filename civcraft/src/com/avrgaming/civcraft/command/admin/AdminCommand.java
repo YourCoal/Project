@@ -39,6 +39,7 @@ import com.avrgaming.civcraft.config.ConfigMaterialCategory;
 import com.avrgaming.civcraft.config.ConfigUnit;
 import com.avrgaming.civcraft.endgame.EndGameCondition;
 import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.listener.HolographicDisplaysListener;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
@@ -55,6 +56,7 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
+@SuppressWarnings("deprecation")
 public class AdminCommand extends CommandBase {
 
 	@Override
@@ -88,7 +90,27 @@ public class AdminCommand extends CommandBase {
 		commands.put("clearendgame", "[key] [civ] - clears this end game condition for this civ.");
 		commands.put("endworld", "Starts the Apocalypse.");
 		commands.put("perk", "Admin perk management.");
+		
+		commands.put("tradeholo", "Enables all trade good holograms.");
 	}
+	
+	public void tradeholo_cmd() {
+		HolographicDisplaysListener.generateTradeGoodHolograms();
+		CivMessage.sendSuccess(sender, "Updated holograms.");
+	}
+	
+/*	public void scoreboard_cmd() throws InterruptedException {
+		Scoreboard sboard;
+		sboard = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
+		for (Civilization civ : CivGlobal.getCivs()) {
+			String civName = civ.getName();
+			Team team = sboard.registerNewTeam(civName);
+			team.setSuffix(CivColor.BoldLightPurple+" ["+civName.substring(0, 2)+"]");
+			team.setDisplayName(CivColor.BoldLightPurple+" ["+civName.substring(0, 2)+"]");
+			team.setCanSeeFriendlyInvisibles(true);
+			team.setAllowFriendlyFire(true);
+		}
+	}*/
 	
 	public void perk_cmd() {
 		AdminPerkCommand cmd = new AdminPerkCommand();	
@@ -97,7 +119,7 @@ public class AdminCommand extends CommandBase {
 	
 	public void endworld_cmd() {
 		CivGlobal.endWorld = !CivGlobal.endWorld;
-		if (CivGlobal.endWorld) {			
+		if (CivGlobal.endWorld) {
 			CivMessage.sendSuccess(sender, "It's the end of the world as we know it.");
 		} else {
 			CivMessage.sendSuccess(sender, "I feel fine.");
@@ -296,7 +318,6 @@ public class AdminCommand extends CommandBase {
 		cmd.onCommand(sender, null, "civ", this.stripArgs(args, 1));
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void unban_cmd() throws CivException {
 		if (args.length < 2) {
 			throw new CivException("Enter a player name to ban");

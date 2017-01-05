@@ -118,10 +118,10 @@ public class ConfigMaterial {
 				mat.vanilla = vanilla;
 			}
 			
-/*			Boolean quest = (Boolean)b.get("quest");
-			if (vanilla != null) {
+			Boolean quest = (Boolean)b.get("quest");
+			if (quest != null) {
 				mat.quest = quest;
-			}*/
+			}
 			
 			Integer amount = (Integer)b.get("amount");
 			if (amount != null) {

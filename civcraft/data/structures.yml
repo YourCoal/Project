@@ -770,7 +770,7 @@ structures:
     require_tech: 'tech_pottery'
     effect_event:
     check_event: 
-    update_event:
+    update_event: granary_process
     onBuild_event:
     limit: 3
     cost: 2500.0

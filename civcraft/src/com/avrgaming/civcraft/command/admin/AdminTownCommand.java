@@ -44,6 +44,7 @@ import com.avrgaming.civcraft.randomevents.ConfigRandomEvent;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.TownAddOutlawTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 
@@ -76,61 +77,31 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("event", "[town] [event_id] - Runs the named random event in this town.");
 		commands.put("rename", "[town] [new_name] - Renames this town.");
 		
-		commands.put("giveculture", "[town] [amount] - gives this [town] this [amount] of culture.");
-		commands.put("takeculture", "[town] [amount] - removs this [town] this [amount] of culture.");
-		commands.put("setculture", "[town] [amount] - gives this [town] this [amount] of culture.");
-		commands.put("givefood", "[town] [amount] - gives this [town] this [amount] of food.");
-		commands.put("takefood", "[town] [amount] - removes this [town] this [amount] of food.");
-		commands.put("setfood", "[town] [amount] - sets this [town] this [amount] of food.");
+		commands.put("culture", "[town] [amount] - gives this [town] this [amount] of culture.");
+		commands.put("food", "[town] [amount] - gives this [town] this [amount] of food.");
+		
+		commands.put("outlaw", "[town] [resident] - outlaws the [resident] in this [town].");
 	}
 	
-	public void giveculture_cmd() throws CivException {
+	public void outlaw_cmd() throws CivException {
 		Town town = getNamedTown(1);
-		Integer culture = getNamedInteger(2);
-		town.addAccumulatedCulture(0+culture);
-		CivMessage.sendSuccess(sender, town.getName()+" (Add)"+culture+" culture.");
-		town.save();
+		TaskMaster.asyncTask(new TownAddOutlawTask(args[2], town), 10);	
 	}
 	
-	public void setculture_cmd() throws CivException {
+	public void culture_cmd() throws CivException {
 		Town town = getNamedTown(1);
 		Integer culture = getNamedInteger(2);
-		town.addAccumulatedCulture(0-town.getCulture().total);
 		town.addAccumulatedCulture(culture);
-		CivMessage.sendSuccess(sender, town.getName()+" (Set)"+culture+" culture.");
 		town.save();
+		CivMessage.sendSuccess(sender, town.getName()+" was given "+culture+" culture. Total culture: "+town.getAccumulatedCulture());
 	}
 	
-	public void takeculture_cmd() throws CivException {
-		Town town = getNamedTown(1);
-		Integer culture = getNamedInteger(2);
-		town.addAccumulatedCulture(0-culture);
-		CivMessage.sendSuccess(sender, town.getName()+" (Sub)"+culture+" food.");
-		town.save();
-	}
-	
-	public void givefood_cmd() throws CivException {
+	public void food_cmd() throws CivException {
 		Town town = getNamedTown(1);
 		Integer count = getNamedInteger(2);
 		town.getFood().giveFood(count);
-		CivMessage.sendSuccess(sender, town.getName()+" (Add)"+count+" food.");
 		town.save();
-	}
-	
-	public void setfood_cmd() throws CivException {
-		Town town = getNamedTown(1);
-		Integer count = getNamedInteger(2);
-		town.getFood().setFoodCount(count);
-		CivMessage.sendSuccess(sender, town.getName()+" (Set)"+count+" food.");
-		town.save();
-	}
-	
-	public void takefood_cmd() throws CivException {
-		Town town = getNamedTown(1);
-		Integer count = getNamedInteger(2);
-		town.getFood().takeFood(count);
-		CivMessage.sendSuccess(sender, town.getName()+" (Sub)"+count+" food.");
-		town.save();
+		CivMessage.sendSuccess(sender, town.getName()+" was given "+count+" food. Total food: "+town.getFoodCount());
 	}
 	
 	public void rename_cmd() throws CivException, InvalidNameException {

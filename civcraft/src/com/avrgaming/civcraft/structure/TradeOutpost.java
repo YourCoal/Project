@@ -111,7 +111,6 @@ public class TradeOutpost extends Structure {
 				}
 			}
 		}
-		
 		throw new CivException("Cannot demolish when bonus goodie is not in item frame.");
 	}
 	

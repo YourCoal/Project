@@ -28,7 +28,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -117,7 +117,7 @@ import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
 
 import gpl.HorseModifier;
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
 
 public class BlockListener implements Listener {
 
@@ -1216,11 +1216,6 @@ public class BlockListener implements Listener {
 						denyBreeding = true;
 					}
 					break;
-				case LLAMA:
-					if (inHand.getType().equals(Material.HAY_BLOCK)) {
-						denyBreeding = true;
-					}
-					break;
 				case WOLF:
 					if (inHand.getType().equals(Material.PORK) ||
 						inHand.getType().equals(Material.RAW_BEEF) ||
@@ -1547,16 +1542,14 @@ public class BlockListener implements Listener {
 //			event.getEntity().getType().equals(EntityType.ENDERMAN) ||
 			event.getEntity().getType().equals(EntityType.WOLF) ||
 			event.getEntity().getType().equals(EntityType.OCELOT) ||
-			event.getEntity().getType().equals(EntityType.ZOMBIE_HORSE) ||
-			event.getEntity().getType().equals(EntityType.SKELETON_HORSE) ||
 			
 			//1.10 or 1.11
-			event.getEntity().getType().equals(EntityType.HUSK) ||
+/*			event.getEntity().getType().equals(EntityType.HUSK) ||
 			event.getEntity().getType().equals(EntityType.STRAY) ||
 			event.getEntity().getType().equals(EntityType.VEX) ||
 			event.getEntity().getType().equals(EntityType.EVOKER) ||
 			event.getEntity().getType().equals(EntityType.EVOKER_FANGS) ||
-			event.getEntity().getType().equals(EntityType.VINDICATOR) ||
+			event.getEntity().getType().equals(EntityType.VINDICATOR) ||*/
 			
 			event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) ||
 			event.getEntity().getType().equals(EntityType.MAGMA_CUBE) ||

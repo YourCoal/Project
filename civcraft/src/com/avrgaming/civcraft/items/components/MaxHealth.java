@@ -31,5 +31,4 @@ public class MaxHealth extends ItemComponent {
 				amount(this.getDouble("value")).
 				build());
 	}
-
 }

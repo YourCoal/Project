@@ -51,15 +51,13 @@ public class GranaryAsyncTask extends CivAsyncTask {
 		
 		debug(granary, "Processing granary...");
 		ArrayList<StructureChest> sources = granary.getAllChestsById(1);
-		ArrayList<StructureChest> destinations = granary.getAllChestsById(2);
-		if (sources.size() != 2 || destinations.size() != 2) {
-			CivLog.error("Bad chests for granary in town:"+granary.getTown().getName()+" sources:"+sources.size()+" dests:"+destinations.size());
+		if (sources.size() != 2) {
+			CivLog.error("Bad chests for granary in town:"+granary.getTown().getName()+" sources:"+sources.size());
 			return;
 		}
 		
 		// Make sure the chunk is loaded before continuing. Also, add get chest and add it to inventory.
 		MultiInventory source_inv = new MultiInventory();
-		MultiInventory dest_inv = new MultiInventory();
 		
 		try {
 			for (StructureChest src : sources) {			
@@ -76,33 +74,6 @@ public class GranaryAsyncTask extends CivAsyncTask {
 				}
 				source_inv.addInventory(tmp);
 			}
-			
-			boolean full = true;
-			for (StructureChest dst : destinations) {
-				Inventory tmp;
-				try {
-					tmp = this.getChestInventory(dst.getCoord().getWorldname(), dst.getCoord().getX(), dst.getCoord().getY(), dst.getCoord().getZ(), false);
-				} catch (CivTaskAbortException e) {
-					CivLog.warning("Trommel:"+e.getMessage());
-					return;
-				}
-				if (tmp == null) {
-					granary.skippedCounter++;
-					return;
-				}
-				
-				dest_inv.addInventory(tmp);
-				for (ItemStack stack : tmp.getContents()) {
-					if (stack == null) {
-						full = false;
-						break;
-					}
-				}
-			}
-			
-			if (full) {
-				return;
-			}
 		} catch (InterruptedException e) {
 			return;
 		}
@@ -114,6 +85,8 @@ public class GranaryAsyncTask extends CivAsyncTask {
 				if (stack == null) {
 					continue;
 				}
+				
+				int mod = (int) Math.round((granary.getTown().saved_granary_level*1.5)-2);
 				
 				if (this.granary.getLevel() >= 1 && ItemManager.getId(stack) == CivData.BREAD) {
 					try {
@@ -128,36 +101,26 @@ public class GranaryAsyncTask extends CivAsyncTask {
 					Random rand = new Random();
 					int randMax = GranaryUpdate.BREAD_MAX;
 					int rand1 = rand.nextInt(randMax);
-					ItemStack newItem;
 					if (rand1 < ((int)((granary.getBreadChance(Chance.HARD))*randMax))) {
-						int hardtot = hard + (2 * granary.getTown().getLevel());
+						int hardtot = hard + mod;
 						this.granary.getTown().giveFood(hardtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Hard] "+hardtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else if (rand1 < ((int)((granary.getBreadChance(Chance.MEDIUM))*randMax))) {
-						int medmtot = medm + (2 * granary.getTown().getLevel());
+						int medmtot = medm + mod;
 						this.granary.getTown().giveFood(medmtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Medium] "+medmtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else if (rand1 < ((int)((granary.getBreadChance(Chance.EASY))*randMax))) {
-						int easytot = easy + (2 * granary.getTown().getLevel());
+						int easytot = easy + mod;
 						this.granary.getTown().giveFood(easytot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Easy] "+easytot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else {
-						int rglrtot = rglr + (2 * granary.getTown().getLevel());
+						int rglrtot = rglr + mod;
 						this.granary.getTown().giveFood(rglrtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Regular] "+rglrtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
-					} try {
-						debug(granary, "Updating inventory:"+newItem);
-						this.updateInventory(Action.ADD, dest_inv, newItem);
-					} catch (InterruptedException e) {
-						return;
 					}
 					break;
 				}
@@ -175,36 +138,26 @@ public class GranaryAsyncTask extends CivAsyncTask {
 					Random rand = new Random();
 					int randMax = GranaryUpdate.CARROT_MAX;
 					int rand1 = rand.nextInt(randMax);
-					ItemStack newItem;
 					if (rand1 < ((int)((granary.getCarrotChance(Chance.HARD))*randMax))) {
-						int hardtot = hard + (2 * granary.getTown().getLevel());
+						int hardtot = hard + mod;
 						this.granary.getTown().giveFood(hardtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Hard] "+hardtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else if (rand1 < ((int)((granary.getCarrotChance(Chance.MEDIUM))*randMax))) {
-						int medmtot = medm + (2 * granary.getTown().getLevel());
+						int medmtot = medm + mod;
 						this.granary.getTown().giveFood(medmtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Medium] "+medmtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else if (rand1 < ((int)((granary.getCarrotChance(Chance.EASY))*randMax))) {
-						int easytot = easy + (2 * granary.getTown().getLevel());
+						int easytot = easy + mod;
 						this.granary.getTown().giveFood(easytot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Easy] "+easytot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else {
-						int rglrtot = rglr + (2 * granary.getTown().getLevel());
+						int rglrtot = rglr + mod;
 						this.granary.getTown().giveFood(rglrtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Regular] "+rglrtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
-					} try {
-						debug(granary, "Updating inventory:"+newItem);
-						this.updateInventory(Action.ADD, dest_inv, newItem);
-					} catch (InterruptedException e) {
-						return;
 					}
 					break;
 				}
@@ -222,36 +175,26 @@ public class GranaryAsyncTask extends CivAsyncTask {
 					Random rand = new Random();
 					int randMax = GranaryUpdate.POTATO_MAX;
 					int rand1 = rand.nextInt(randMax);
-					ItemStack newItem;
 					if (rand1 < ((int)((granary.getPotatoChance(Chance.HARD))*randMax))) {
-						int hardtot = hard + (2 * granary.getTown().getLevel());
+						int hardtot = hard + mod;
 						this.granary.getTown().giveFood(hardtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Hard] "+hardtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else if (rand1 < ((int)((granary.getPotatoChance(Chance.MEDIUM))*randMax))) {
-						int medmtot = medm + (2 * granary.getTown().getLevel());
+						int medmtot = medm + mod;
 						this.granary.getTown().giveFood(medmtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Medium] "+medmtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else if (rand1 < ((int)((granary.getPotatoChance(Chance.EASY))*randMax))) {
-						int easytot = easy + (2 * granary.getTown().getLevel());
+						int easytot = easy + mod;
 						this.granary.getTown().giveFood(easytot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Easy] "+easytot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
 					} else {
-						int rglrtot = rglr + (2 * granary.getTown().getLevel());
+						int rglrtot = rglr + mod;
 						this.granary.getTown().giveFood(rglrtot);
 						CivMessage.sendTown(granary.getTown(), CivColor.LightGreen+"The town gained "
 								+CivColor.Green+CivColor.BOLD+"[Regular] "+rglrtot+CivColor.LightGreen+" food from the granary.");
-						newItem = ItemManager.createItemStack(CivData.AIR, 1);
-					} try {
-						debug(granary, "Updating inventory:"+newItem);
-						this.updateInventory(Action.ADD, dest_inv, newItem);
-					} catch (InterruptedException e) {
-						return;
 					}
 					break;
 				}

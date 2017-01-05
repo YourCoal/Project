@@ -1,7 +1,7 @@
 name: CivCraft
 author: YourCoal
 main: com.avrgaming.civcraft.main.CivCraft
-softdepends: [TitleAPI]
+softdepends: [TitleAPI, HolographicDisplays]
 version: 0.1.2.1
 
 commands:

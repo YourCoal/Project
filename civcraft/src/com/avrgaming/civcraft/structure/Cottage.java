@@ -141,6 +141,7 @@ public class Cottage extends Structure {
 				this.getTown().getTreasury().deposit(total_coins - taxesPaid);
 				this.getTown().getDepositCiv().taxPayment(this.getTown(), taxesPaid);
 				this.getTown().takeFood(foodCost);
+				setTotalCoins(total_coins);
 				CivMessage.sendTownCottage(town, "Your cottage has eaten "+foodCost+" food. Generated a total of "+total_coins+" coins. "+CivColor.Gold+CivColor.ITALIC+"(Paid "+taxesPaid+" in taxes)");
 			}
 		}
@@ -160,6 +161,18 @@ public class Cottage extends Structure {
 		}
 		ConfigCottageLevel lvl = CivSettings.cottageLevels.get(this.getTown().saved_cottage_level);
 		return lvl.coins;	
+	}
+	
+	double totalCoins = 0;
+	public void setTotalCoins(double coins) {
+		totalCoins = coins;
+	}
+	
+	public double getTotalCoins() {
+		if (!this.isComplete()) {
+			return 0.0;
+		}
+		return totalCoins;
 	}
 	
 	@Override

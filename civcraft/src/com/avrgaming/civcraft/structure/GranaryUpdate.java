@@ -33,12 +33,6 @@ public class GranaryUpdate extends Structure {
 	public int skippedCounter = 0;
 	public ReentrantLock lock = new ReentrantLock();
 	
-	//l1 bread
-	//l2 carrot
-	//l3 potato
-	//l4 beetroot
-	//l5 melon
-	
 	public enum Chance {
 //		REGULAR, (Do not need enabled..)
 		EASY, // 2 base food

@@ -1,0 +1,2899 @@
+#notes:
+#http://minecraft.gamepedia.com/Armor
+
+# NEW --- T0 armor 7, T0 sword 5.5 & 7
+# T1   T2   T3   T4
+#  8 , 12 , 16 , 20   #armor
+# 10 , 14 , 18 , 22   #sword
+
+# iron    , bronze  , steel       , tungsten
+# iron ore, gold ore, redstone ore, lapis ore
+# iron    , gold    , chainmail   , diamond
+
+
+#Othr Ore# ore block (mine) --> ore item (craft) --> ingot item
+#Iron Ore# ore block (mine) , ---------------------, ingot item
+
+
+materials:
+#======================================================#
+#=============[ Primary Materials Tier 1 ]=============#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:iron_ore'
+     item_id: 351
+     item_data: 15
+     name: 'T1 Iron Ore'
+     craftable: false
+     shaped: false
+     vanilla: false
+     mineable: true
+     farmable: false
+     quest: false
+     shiny: true
+     category: '<lightgreen>Tier 1 Materials'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:iron_ingot'
+     item_id: 265
+     item_data: 0
+     name: 'T1 Iron Ingot'
+     craftable: false
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: false
+     quest: false
+     shiny: true
+     category: '<lightgreen>Tier 1 Materials'
+     components:
+       - name: 'NoRightClick'
+# Checked 01/03/2017
+   - id: 'civ:refined_dirt'
+     item_id: 3
+     item_data: 1
+     name: 'T1 Refined Dirt'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: true
+     farmable: true
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 3
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:refined_sand'
+     item_id: 12
+     item_data: 0
+     name: 'T1 Refined Sand'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: true
+     farmable: true
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 12
+         data: -1
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:refined_stone'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Refined Stone'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: true
+     farmable: true
+     quest: true
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 1
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:refined_wood'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Refined Wood'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: true
+     farmable: true
+     quest: true
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 17
+         data: -1
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:crafted_reeds'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Crafted Reeds'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: true
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 7
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:refined_sugar'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Refined Sugar'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: true
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 7
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:carved_string'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Carved String'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: true
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 7
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:carved_leather'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Carved Leather'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: true
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 7
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:single_refined_sulphur'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Single Refined Sulphur'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: false
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 7
+         data: 0
+         count: 4
+# Checked 01/03/2017
+   - id: 'civ:double_refined_sulphur'
+     item_id: 7
+     item_data: 0
+     name: 'T1 '
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: false
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:single_refined_sulphur'
+         data: 0
+         count: 2
+# Checked 01/03/2017
+   - id: 'civ:refined_slime'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Refined SlimeBall'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: true
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 7
+         data: 0
+         count: 2
+       - type_id: 7
+         data: 0
+         count: 2
+# Checked 01/03/2017
+   - id: 'civ:forged_clay'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Forged Clay'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: false
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 7
+         data: 0
+         count: 2
+       - type_id: 7
+         data: 0
+         count: 2
+# Checked 01/03/2017
+   - id: 'civ:defense_wall'
+     item_id: 7
+     item_data: 0
+     name: 'T1 Defense Wall'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: false
+     quest: false
+     category: '<lightgreen>Tier 1 Materials'
+     ingredients:
+       - type_id: 7
+         data: 0
+         count: 2
+       - type_id: 7
+         data: 0
+         count: 2
+#======================================================#
+#============[ Secondary Materials Tier 2 ]============#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:bronze_ore'
+     item_id: 289
+     item_data: 0
+     name: 'T2 Bronze Ore'
+     craftable: false
+     shaped: false
+     shiny: true
+     category: '<yellow>Tier 2 Materials'
+     mineable: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:bronze_ingot'
+     item_id: 406
+     item_data: 0
+     name: 'T2 Bronze Ingot'
+     craftable: true
+     shaped: false
+     shiny: true
+     category: '<yellow>Tier 2 Materials'
+     components:
+       - name: 'NoRightClick'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:bronze_ore'
+         data: 0
+         count: 4
+# Checked 01/03/2017
+   - id: 'civ:crushed_stone'
+     item_id: 7
+     item_data: 0
+     name: 'T2 Crushed Stone'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: false
+     quest: false
+     category: '<yellow>Tier 2 Materials'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:refined_stone'
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:compacted_dirt'
+     item_id: 7
+     item_data: 0
+     name: 'T2 Compacted Dirt'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: false
+     quest: false
+     category: '<yellow>Tier 2 Materials'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:refined_dirt'
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:jewelry_grade_gold'
+     item_id: 7
+     item_data: 0
+     name: 'T2 Jewelry Grade Gold'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: true
+     quest: false
+     category: '<yellow>Tier 2 Materials'
+     ingredients:
+       - type_id: 41
+         data: 0
+         count: 9
+# Checked 01/03/2017
+   - id: 'civ:milled_lumber'
+     item_id: 7
+     item_data: 0
+     name: 'T2 Milled Lumber'
+     craftable: true
+     shaped: false
+     vanilla: false
+     mineable: false
+     farmable: false
+     quest: false
+     category: '<yellow>Tier 2 Materials'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:refined_wood'
+         data: 0
+         count: 9
+#======================================================#
+#=============[ ------- Materials Tier 3 ]=============#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:steel_ore'
+     item_id: 370
+     item_data: 0
+     name: 'T3 Steel Ore'
+     craftable: false
+     shaped: false
+     shiny: true
+     category: '<rose>Tier 3 Materials'
+     mineable: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:steel_ingot'
+     item_id: 399
+     item_data: 0
+     name: 'T3 Steel Ingot'
+     craftable: true
+     shaped: false
+     shiny: true
+     category: '<rose>Tier 3 Materials'
+     components:
+       - name: 'NoRightClick'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:steel_ore'
+         data: 0
+         count: 6
+#======================================================#
+#============[ Advanced Materials Tier 4 ]============##
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:tungsten_ore'
+     item_id: 385
+     item_data: 0
+     name: 'T4 Tungsten Ore'
+     craftable: false
+     shaped: false
+     shiny: true
+     category: '<lightblue>Tier 4 Materials'
+     mineable: true
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:tungsten_ingot'
+     item_id: 336
+     item_data: 0
+     name: 'T4 Tungsten Ingot'
+     craftable: false
+     shaped: false
+     shiny: true
+     category: '<lightblue>Tier 4 Materials'
+     components:
+       - name: 'NoRightClick'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:tungsten_ore'
+         data: 0
+         count: 8
+#======================================================#
+#==========[ Mega Advanced Materials Tier 5 ]==========#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:titanium_ingot'
+     item_id: 148
+     item_data: 0
+     name: 'T5 Titanium Ingot'
+     craftable: true
+     shaped: false
+     category: '<lightpurple>Tier 5 Materials'
+     components:
+       - name: 'NoRightClick'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:bronze_block'
+         data: 0
+         count: 4
+       - type_id: 0
+         custom_id: 'civ:tungsten_block'
+         data: 0
+         count: 2
+#
+#======================================================#
+#================[ Resource Materials ]================#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:base_hammer'
+     item_id: 139
+     item_data: 0
+     name: 'Hammers'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:base_beaker'
+     item_id: 379
+     item_data: 0
+     name: 'Beakers'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t1_mine_package'
+     item_id: 325
+     item_data: 0
+     name: 'T1 Mine Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t1_lab_package'
+     item_id: 368
+     item_data: 0
+     name: 'T1 Lab Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t1_monument_package'
+     item_id: 332
+     item_data: 0
+     name: 'T1 Monument Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t2_mine_package'
+     item_id: 325
+     item_data: 0
+     name: 'T2 Mine Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t2_lab_package'
+     item_id: 368
+     item_data: 0
+     name: 'T2 Lab Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t2_monument_package'
+     item_id: 332
+     item_data: 0
+     name: 'T2 Monument Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t3_mine_package'
+     item_id: 325
+     item_data: 0
+     name: 'T3 Mine Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t3_lab_package'
+     item_id: 368
+     item_data: 0
+     name: 'T3 Lab Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+# Checked 12/01/2016
+   - id: 'civ:t3_monument_package'
+     item_id: 332
+     item_data: 0
+     name: 'T3 Monument Package'
+     quest: true
+     category: '<lightgreen>Resources'
+     components:
+       - name: 'NoRightClick'
+#======================================================#
+#==================[ Resource Goods ]==================#
+#======================================================#
+# Checked 01/04/2017
+   - id: 'civ_rg:rgood_bananas'
+     item_id: 7
+     item_data: 0
+     name: '[RG] Bananas'
+     farmable: true
+     quest: true
+     category: '<lightgreen>Resource Goods'
+     components:
+       - name: 'NoRightClick'
+# Checked 01/04/2017
+   - id: 'civ_rg:rgood_copper'
+     item_id: 7
+     item_data: 0
+     name: '[RG] Copper'
+     farmable: true
+     quest: true
+     category: '<lightgreen>Resource Goods'
+     components:
+       - name: 'NoRightClick'
+# Checked 01/04/2017
+   - id: 'civ_rg:rgood_cattle'
+     item_id: 7
+     item_data: 0
+     name: '[RG] Cattle'
+     farmable: true
+     quest: true
+     category: '<lightgreen>Resource Goods'
+     components:
+       - name: 'NoRightClick'
+# Checked 01/04/2017
+   - id: 'civ_rg:rgood_deer'
+     item_id: 7
+     item_data: 0
+     name: '[RG] Deer'
+     farmable: true
+     quest: true
+     category: '<lightgreen>Resource Goods'
+     components:
+       - name: 'NoRightClick'
+# Checked 01/04/2017
+   - id: 'civ_rg:rgood_sheep'
+     item_id: 7
+     item_data: 0
+     name: '[RG] Sheep'
+     farmable: true
+     quest: true
+     category: '<lightgreen>Resource Goods'
+     components:
+       - name: 'NoRightClick'
+# Checked 01/04/2017
+   - id: 'civ_rg:rgood_copper'
+     item_id: 7
+     item_data: 0
+     name: '[RG] Copper'
+     farmable: true
+     quest: true
+     category: '<lightgreen>Resource Goods'
+     components:
+       - name: 'NoRightClick'
+#======================================================#
+#===============[ Tier 0 Leather Armor ]===============#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:wood_sword'
+     item_id: 268
+     item_data: 0
+     name: 'Wooden Sword'
+     craftable: true
+     shaped: true
+     category: '<gray>Gear Tier 0'
+     components:
+       - name: 'Attack'
+         value: '5.5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 5
+         data: -1
+         letter: 'p'
+       - type_id: 280
+         data: 0
+         letter: 's'
+     shape:
+       - " p "
+       - " p "
+       - " s "
+# Checked 12/01/2016
+   - id: 'civ:stone_sword'
+     item_id: 272
+     item_data: 0
+     name: 'Stone Shank'
+     craftable: true
+     shaped: true
+     category: '<gray>Gear Tier 0'
+     components:
+       - name: 'Attack'
+         value: '7'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 4
+         data: 0
+         letter: 'c'
+       - type_id: 280
+         data: 0
+         letter: 's'
+     shape:
+       - " c "
+       - " c "
+       - " s "
+# Checked 12/01/2016
+   - id: 'civ:leather_helmet'
+     item_id: 298
+     item_data: 0
+     name: 'Leather Helmet'
+     craftable: true
+     shaped: true
+     category: '<gray>Gear Tier 0'
+     components:
+       - name: 'Armor'
+         value: '1'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 334
+         data: 0
+         letter: 'l'
+     shape:
+       - "lll"
+       - "l l"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:leather_chestplate'
+     item_id: 299
+     item_data: 0
+     name: 'Leather Jacket'
+     craftable: true
+     shaped: true
+     category: '<gray>Gear Tier 0'
+     components:
+       - name: 'Armor'
+         value: '3'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 334
+         data: 0
+         letter: 'l'
+     shape:
+       - "l l"
+       - "lll"
+       - "lll"
+# Checked 12/01/2016
+   - id: 'civ:leather_leggings'
+     item_id: 300
+     item_data: 0
+     name: 'Leather Pants'
+     craftable: true
+     shaped: true
+     category: '<gray>Gear Tier 0'
+     components:
+       - name: 'Armor'
+         value: '2'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 334
+         data: 0
+         letter: 'l'
+     shape:
+       - "lll"
+       - "l l"
+       - "l l"
+# Checked 12/01/2016
+   - id: 'civ:leather_Boots'
+     item_id: 301
+     item_data: 0
+     name: 'Leather Moccasins'
+     craftable: true
+     shaped: true
+     category: '<gray>Gear Tier 0'
+     components:
+       - name: 'Armor'
+         value: '1'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 334
+         data: 0
+         letter: 'l'
+     shape:
+       - "   "
+       - "l l"
+       - "l l"
+#
+#======================================================#
+#================[ Tier 1  Iron Armor ]================#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:hunting_bow'
+     item_id: 261
+     item_data: 0
+     name: 'Hunting Bow'
+     craftable: true
+     required_techs: 'tech_archery'
+     shaped: true
+     category: '<green>Gear Tier 1'
+     components:
+       - name: 'RangedAttack'
+         value: '16'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 287
+         data: 0
+         letter: 's'
+       - type_id: 280
+         data: 0
+         letter: 'w'
+     shape:
+       - "sw "
+       - "s w"
+       - "sw "
+# Checked 12/01/2016
+   - id: 'civ:iron_sword'
+     item_id: 267
+     item_data: 0
+     name: 'Iron Shortsword'
+     craftable: true
+     required_techs: 'tech_metal_casting'
+     shaped: true
+     category: '<green>Gear Tier 1'
+     components:
+       - name: 'Attack'
+         value: '12'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 280
+         data: 0
+         letter: 's'
+     shape:
+       - " i "
+       - " i "
+       - " s "
+# Checked 12/01/2016
+   - id: 'civ:iron_helmet'
+     item_id: 306
+     item_data: 0
+     name: 'Iron Helmet'
+     craftable: true
+     required_techs: 'tech_blacksmithing'
+     shaped: true
+     category: '<green>Gear Tier 1'
+     components:
+       - name: 'Armor'
+         value: '2'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "iii"
+       - "i i"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:iron_chestplate'
+     item_id: 307
+     item_data: 0
+     name: 'Iron Chestplate'
+     craftable: true
+     required_techs: 'tech_blacksmithing'
+     shaped: true
+     category: '<green>Gear Tier 1'
+     components:
+       - name: 'Armor'
+         value: '3.5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "i i"
+       - "iii"
+       - "iii"
+# Checked 12/01/2016
+   - id: 'civ:iron_leggings'
+     item_id: 308
+     item_data: 0
+     name: 'Iron Leggings'
+     craftable: true
+     required_techs: 'tech_blacksmithing'
+     shaped: true
+     category: '<green>Gear Tier 1'
+     components:
+       - name: 'Armor'
+         value: '2.5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "iii"
+       - "i i"
+       - "i i"
+# Checked 12/01/2016
+   - id: 'civ:iron_boots'
+     item_id: 309
+     item_data: 0
+     name: 'Iron Boots'
+     craftable: true
+     required_techs: 'tech_blacksmithing'
+     shaped: true
+     category: '<green>Gear Tier 1'
+     components:
+       - name: 'Armor'
+         value: '2'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "i i"
+       - "i i"
+#
+#======================================================#
+#===============[ Tier 2  Bronze Armor ]===============#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:recurve_bow'
+     item_id: 261
+     item_data: 0
+     name: 'Recurve Bow'
+     craftable: true
+     required_techs: 'tech_fletching'
+     shaped: true
+     category: '<gold>Gear Tier 2'
+     components:
+       - name: 'RangedAttack'
+         value: '20'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:aged_wood_stave'
+         letter: 'a'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:crafted_string'
+         letter: 's'
+     shape:
+       - "sa "
+       - "s a"
+       - "sa "
+# Checked 12/01/2016
+   - id: 'civ:bronze_sword'
+     item_id: 283
+     item_data: 0
+     name: 'Bronze Sword'
+     craftable: true
+     required_techs: 'tech_folded_steel'
+     shaped: true
+     category: '<gold>Gear Tier 2'
+     components:
+       - name: 'Attack'
+         value: '16'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:bronze_sword_blade'
+         letter: 'b'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:bronze_sword_hilt'
+         letter: 'h'
+     shape:
+       - " b "
+       - " b "
+       - " h "
+# Checked 12/01/2016
+   - id: 'civ:bronze_helmet'
+     item_id: 314
+     item_data: 0
+     name: 'Bronze Helmet'
+     craftable: true
+     required_techs: 'tech_chemical_bonding'
+     shaped: true
+     category: '<gold>Gear Tier 2'
+     components:
+       - name: 'Armor'
+         value: '3'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:bronze_plate'
+         letter: 'c'
+     shape:
+       - "ccc"
+       - "c c"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:bronze_chestplate'
+     item_id: 315
+     item_data: 0
+     name: 'Bronze Chestplate'
+     craftable: true
+     required_techs: 'tech_chemical_bonding'
+     shaped: true
+     category: '<gold>Gear Tier 2'
+     components:
+       - name: 'Armor'
+         value: '4.5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:bronze_plate'
+         letter: 'c'
+     shape:
+       - "c c"
+       - "ccc"
+       - "ccc"
+# Checked 12/01/2016
+   - id: 'civ:bronze_leggings'
+     item_id: 316
+     item_data: 0
+     name: 'Bronze leggings'
+     craftable: true
+     required_techs: 'tech_chemical_bonding'
+     shaped: true
+     category: '<gold>Gear Tier 2'
+     components:
+       - name: 'Armor'
+         value: '3.5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:bronze_plate'
+         letter: 'c'
+     shape:
+       - "ccc"
+       - "c c"
+       - "c c"
+# Checked 12/01/2016
+   - id: 'civ:bronze_boots'
+     item_id: 317
+     item_data: 0
+     name: 'Bronze Boots'
+     craftable: true
+     required_techs: 'tech_chemical_bonding'
+     shaped: true
+     category: '<gold>Gear Tier 2'
+     components:
+       - name: 'Armor'
+         value: '3'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:bronze_plate'
+         letter: 'c'
+     shape:
+       - "   "
+       - "c c"
+       - "c c"
+#
+#======================================================#
+#================[ Tier 3 Steel Armor ]================#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:longbow'
+     item_id: 261
+     item_data: 0
+     name: 'Longbow'
+     craftable: true
+     required_techs: 'tech_tillering'
+     shaped: true
+     category: '<red>Gear Tier 3'
+     components:
+       - name: 'RangedAttack'
+         value: '24'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:longbow_stave'
+         letter: 'l'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:reinforced_braid'
+         letter: 'b'
+     shape:
+       - "bl "
+       - "b l"
+       - "bl "
+# Checked 12/01/2016
+   - id: 'civ:steel_sword'
+     item_id: 267
+     item_data: 0
+     name: 'Steel Longsword'
+     craftable: true
+     required_techs: 'tech_sword_smithing'
+     shaped: true
+     category: '<red>Gear Tier 3'
+     components:
+       - name: 'Attack'
+         value: '18'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:steel_sword_blade'
+         letter: 'b'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:steel_sword_hilt'
+         letter: 'h'
+     shape:
+       - " b "
+       - " b "
+       - " h "
+# Checked 12/01/2016
+   - id: 'civ:steel_helmet'
+     item_id: 302
+     item_data: 0
+     name: 'Steel Helmet'
+     craftable: true
+     required_techs: 'tech_alloys'
+     shaped: true
+     category: '<red>Gear Tier 3'
+     components:
+       - name: 'Armor'
+         value: '4'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:steel_plate'
+         letter: 's'
+     shape:
+       - "sss"
+       - "s s"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:steel_chestplate'
+     item_id: 303
+     item_data: 0
+     name: 'Steel Chestplate'
+     craftable: true
+     required_techs: 'tech_alloys'
+     shaped: true
+     category: '<red>Gear Tier 3'
+     components:
+       - name: 'Armor'
+         value: '5.5' 
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:steel_plate'
+         letter: 's'
+     shape:
+       - "s s"
+       - "sss"
+       - "sss"
+# Checked 12/01/2016
+   - id: 'civ:steel_leggings'
+     item_id: 304
+     item_data: 0
+     name: 'Steel Leggings'
+     craftable: true
+     required_techs: 'tech_alloys'
+     shaped: true
+     category: '<red>Gear Tier 3'
+     components:
+       - name: 'Armor'
+         value: '4.5' 
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:steel_plate'
+         letter: 's'
+     shape:
+       - "sss"
+       - "s s"
+       - "s s"
+# Checked 12/01/2016
+   - id: 'civ:steel_boots'
+     item_id: 305
+     item_data: 0
+     name: 'Steel Assault Boots'
+     craftable: true
+     required_techs: 'tech_alloys'
+     shaped: true
+     category: '<red>Gear Tier 3'
+     components:
+       - name: 'Armor'
+         value: '4'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:steel_plate'
+         letter: 's'
+     shape:
+       - "   "
+       - "s s"
+       - "s s"
+#
+#======================================================#
+#==============[ Tier 4  Tungsten Armor ]==============#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:marksmen_bow'
+     item_id: 261
+     item_data: 0
+     name: 'Marksmen Bow'
+     craftable: true
+     required_techs: 'tech_laminates'
+     shaped: true
+     category: '<blue>Gear Tier 4'
+     components:
+       - name: 'RangedAttack'
+         value: '28'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:composite_bow_stave'
+         letter: 'c'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:composite_bow_string'
+         letter: 's'
+     shape:
+       - "sc "
+       - "s c"
+       - "sc "
+# Checked 12/01/2016
+   - id: 'civ:tungsten_sword'
+     item_id: 276
+     item_data: 0
+     name: 'Tungsten Broadsword'
+     craftable: true
+     required_techs: 'tech_tempering'
+     shaped: true
+     category: '<blue>Gear Tier 4'
+     components:
+       - name: 'Attack'
+         value: '24'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:tungsten_sword_blade'
+         letter: 'b'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:tungsten_sword_hilt'
+         letter: 'h'
+     shape:
+       - " b "
+       - " b "
+       - " h "
+# Checked 12/01/2016
+   - id: 'civ:tungsten_helmet'
+     item_id: 310
+     item_data: 0
+     name: 'Tungsten Helmet'
+     craftable: true
+     required_techs: 'tech_forging'
+     shaped: true
+     category: '<blue>Gear Tier 4'
+     components:
+       - name: 'Armor'
+         value: '5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:tungsten_plate'
+         letter: 't'
+     shape:
+       - "ttt"
+       - "t t"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:tungsten_chestplate'
+     item_id: 311 
+     item_data: 0
+     name: 'Tungsten Chestplate'
+     craftable: true
+     required_techs: 'tech_forging'
+     shaped: true
+     category: '<blue>Gear Tier 4'
+     components:
+       - name: 'Armor'
+         value: '6.5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:tungsten_plate'
+         letter: 't'
+     shape:
+       - "t t"
+       - "ttt"
+       - "ttt"
+# Checked 12/01/2016
+   - id: 'civ:tungsten_leggings'
+     item_id: 312
+     item_data: 0
+     name: 'Tungsten Leggings'
+     craftable: true
+     required_techs: 'tech_forging'
+     shaped: true
+     category: '<blue>Gear Tier 4'
+     components:
+       - name: 'Armor'
+         value: '5.5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:tungsten_plate'
+         letter: 't'
+     shape:
+       - "ttt"
+       - "t t"
+       - "t t"
+# Checked 12/01/2016
+   - id: 'civ:tungsten_boots'
+     item_id: 313
+     item_data: 0
+     name: 'Tungsten Boots'
+     craftable: true
+     required_techs: 'tech_forging'
+     shaped: true
+     category: '<blue>Gear Tier 4'
+     components:
+       - name: 'Armor'
+         value: '5'
+       - name: 'NoVanillaDurability'
+       - name: 'DurabilityOnDeath'
+         value: '0.1'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:tungsten_plate'
+         letter: 't'
+     shape:
+       - "   "
+       - "t t"
+       - "t t"
+#
+#======================================================#
+#======================[ Tools ]======================##
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:vanilla_wooden_pickaxe'
+     item_id: 270
+     item_data: 0
+     name: 'Wooden Pickaxe'
+     craftable: true
+     shaped: true
+     category: '<blue>Tools'
+     components:
+#       - name: 'Attack'
+#         value: '0.5'
+       - name: 'RepairCost'
+         value: '50.0'
+     ingredients:
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 5
+         data: -1
+         letter: 'm' 
+     shape:
+       - "mmm"
+       - " s "
+       - " s "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_stone_pickaxe'
+     item_id: 274
+     item_data: 0
+     name: 'Stone Pickaxe'
+     craftable: true
+     shaped: true
+     category: '<blue>Tools'
+     components:
+#       - name: 'Attack'
+#         value: '1.0'
+       - name: 'RepairCost'
+         value: '250.0'
+     ingredients:
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 4
+         data: 0
+         letter: 'm' 
+     shape:
+       - "mmm"
+       - " s "
+       - " s "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_iron_pickaxe'
+     item_id: 257
+     item_data: 0
+     name: 'Iron Pickaxe'
+     craftable: true
+     shaped: true
+     category: '<blue>Tools'
+     components:
+#       - name: 'Attack'
+#         value: '1.5'
+       - name: 'RepairCost'
+         value: '1000.0'
+     ingredients:
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 265
+         data: 0
+         letter: 'm' 
+     shape:
+       - "mmm"
+       - " s "
+       - " s "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_gold_pickaxe'
+     item_id: 285
+     item_data: 0
+     name: 'Gold Pickaxe'
+     craftable: true
+     shaped: true
+     category: '<blue>Tools'
+     components:
+#       - name: 'Attack'
+#         value: '0.5'
+       - name: 'RepairCost'
+         value: '500.0'
+     ingredients:
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 266
+         data: 0
+         letter: 'm' 
+     shape:
+       - "mmm"
+       - " s "
+       - " s "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_diamond_pickaxe'
+     item_id: 278
+     item_data: 0
+     name: 'Diamond Pickaxe'
+     craftable: true
+     shaped: true
+     category: '<blue>Tools'
+     components:
+#       - name: 'Attack'
+#         value: '2.0'
+       - name: 'RepairCost'
+         value: '2500.0'
+     ingredients:
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 264
+         data: 0
+         letter: 'm' 
+     shape:
+       - "mmm"
+       - " s "
+       - " s "
+#
+#======================================================#
+#==================[ Hidden Recipes ]==================#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:vanilla_rail_detector'
+     item_id: 28
+     item_data: 0
+     name: 'Detector Rail'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 6
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 331
+         data: 0
+         letter: 'r'
+       - type_id: 70
+         data: 0
+         letter: 'p'
+     shape:
+       - "i i"
+       - "ipi"
+       - "iri"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_piston'
+     item_id: 33
+     item_data: 0
+     name: 'Piston'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 4
+         data: 0
+         letter: 'c'
+       - type_id: 5
+         data: -1
+         letter: 'r'
+       - type_id: 331
+         data: 0
+         letter: 'r'
+     shape:
+       - "www"
+       - "cic"
+       - "crc"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_block_of_iron'
+     item_id: 42
+     item_data: 0
+     name: 'Block of Iron'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "iii"
+       - "iii"
+       - "iii"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_rail'
+     item_id: 66
+     item_data: 0
+     name: 'Rail'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 16
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 280
+         data: 0
+         letter: 's'
+     shape:
+       - "i i"
+       - "isi"
+       - "i i"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_iron_bars1'
+     item_id: 66
+     item_data: 0
+     name: 'Iron Bars'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 16
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "iii"
+       - "iii"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_iron_bars2'
+     item_id: 101
+     item_data: 0
+     name: 'Iron Bars'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 16
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "iii"
+       - "iii"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_tripwire_hook1'
+     item_id: 131
+     item_data: 0
+     name: 'Tripwire Hook'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 5
+         data: -1
+         letter: 'w'
+     shape:
+       - "i  "
+       - "s  "
+       - "w  "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_tripwire_hook2'
+     item_id: 131
+     item_data: 0
+     name: 'Tripwire Hook'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 5
+         data: -1
+         letter: 'w'
+     shape:
+       - " i "
+       - " s "
+       - " w "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_tripwire_hook3'
+     item_id: 131
+     item_data: 0
+     name: 'Tripwire Hook'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 5
+         data: -1
+         letter: 'w'
+     shape:
+       - "  i"
+       - "  s"
+       - "  w"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_weighted_pressure_plate_heavy1'
+     item_id: 148
+     item_data: 0
+     name: 'Weighted Pressure Plate (Heavy)'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "ii "
+       - "   "
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_weighted_pressure_plate_heavy2'
+     item_id: 148
+     item_data: 0
+     name: 'Weighted Pressure Plate (Heavy)'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - " ii"
+       - "   "
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_weighted_pressure_plate_heavy3'
+     item_id: 148
+     item_data: 0
+     name: 'Weighted Pressure Plate (Heavy)'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "ii "
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_weighted_pressure_plate_heavy4'
+     item_id: 148
+     item_data: 0
+     name: 'Weighted Pressure Plate (Heavy)'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - " ii"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_weighted_pressure_plate_heavy5'
+     item_id: 148
+     item_data: 0
+     name: 'Weighted Pressure Plate (Heavy)'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "   "
+       - "ii "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_weighted_pressure_plate_heavy6'
+     item_id: 148
+     item_data: 0
+     name: 'Weighted Pressure Plate (Heavy)'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "   "
+       - " ii"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_rail_activator'
+     item_id: 157
+     item_data: 0
+     name: 'Activator Rail'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 6
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 280
+         data: 0
+         letter: 's'
+       - type_id: 76
+         data: 0
+         letter: 't'
+     shape:
+       - "isi"
+       - "iti"
+       - "isi"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_iron_trapdoor1'
+     item_id: 167
+     item_data: 0
+     name: 'Iron Trapdoor'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "ii "
+       - "ii "
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_iron_trapdoor2'
+     item_id: 167
+     item_data: 0
+     name: 'Iron Trapdoor'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - " ii"
+       - " ii"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_iron_trapdoor3'
+     item_id: 167
+     item_data: 0
+     name: 'Iron Trapdoor'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "ii "
+       - "ii "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_iron_trapdoor4'
+     item_id: 167
+     item_data: 0
+     name: 'Iron Trapdoor'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - " ii"
+       - " ii"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_bucket1'
+     item_id: 325
+     item_data: 0
+     name: 'Bucket'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "i i"
+       - " i "
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_bucket2'
+     item_id: 325
+     item_data: 0
+     name: 'Bucket'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "i i"
+       - " i "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_minecart1'
+     item_id: 328
+     item_data: 0
+     name: 'Minecart'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "i i"
+       - "iii"
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_minecart2'
+     item_id: 328
+     item_data: 0
+     name: 'Minecart'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "i i"
+       - "iii"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_compass'
+     item_id: 345
+     item_data: 0
+     name: 'Compass'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+       - type_id: 331
+         data: 0
+         letter: 'r'
+     shape:
+       - " i "
+       - "iri"
+       - " i "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_shears1'
+     item_id: 359
+     item_data: 0
+     name: 'Shears'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - " i "
+       - "i  "
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_shears2'
+     item_id: 359
+     item_data: 0
+     name: 'Shears'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "  i"
+       - " i "
+       - "   "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_shears3'
+     item_id: 359
+     item_data: 0
+     name: 'Shears'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - " i "
+       - "i  "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_shears4'
+     item_id: 359
+     item_data: 0
+     name: 'Shears'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "   "
+       - "  i"
+       - " i "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_cauldron'
+     item_id: 380
+     item_data: 0
+     name: 'Cauldron'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "i i"
+       - "i i"
+       - "iii"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_flint_and_steel'
+     item_id: 259
+     item_data: 0
+     name: 'Flint and Steel'
+     craftable: true
+     shaped: false
+     vanilla: true
+     category: 'Hidden'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         count: 1
+       - type_id: 318
+         data: 0
+         count: 1
+#======================================================#
+#=====================[ Vanilla! ]=====================#
+#======================================================#
+# Checked 12/01/2016
+   - id: 'civ:vanilla_TNT'
+     item_id: 46
+     item_data: 0
+     name: 'TNT'
+     required_civics: 'civic_defensive_tactics'
+     craftable: true
+     vanilla: true
+     shaped: true
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:single_refined_sulphur'
+         data: 0
+         letter: 'g'
+       - type_id: 0
+         custom_id: 'civ:compacted_sand'
+         data: 0
+         letter: 's'
+     shape:
+       - "g g"
+       - " s "
+       - "g g"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_ender_chest'
+     item_id: 130
+     item_data: 0
+     name: 'Ender Chest'
+     required_civics: 'civic_recorded_history'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:tungsten_plate'
+         data: 0
+         letter: 'p'
+       - type_id: 0
+         custom_id: 'civ:obsidian_panel'
+         data: 0
+         letter: 'l'
+       - type_id: 54
+         data: 0
+         letter: 'c'
+     shape:
+       - "lpl"
+       - "pcp"
+       - "lpl"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_hopper'
+     item_id: 154
+     item_data: 0
+     name: 'Hopper'
+#     required_techs: 'tech_machinery'
+     required_civics: 'civic_games_and_recreation'
+     craftable: true
+     shaped: true
+     vanilla: false
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 's'
+       - type_id: 54
+         data: 0
+         letter: 'c'
+       - type_id: 152
+         data: 0
+         letter: 'r'
+     shape:
+       - "srs"
+       - "scs"
+       - " s "
+# Checked 12/01/2016
+   - id: 'civ:shulker_box'
+     item_id: 229
+     item_data: 0
+     name: 'Shulker Box'
+     required_civics: 'civic_civil_service'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:titanium_ingot'
+         data: 0
+         letter: 't'
+       - type_id: 450
+         data: 0
+         letter: 's'
+       - type_id: 54
+         data: 0
+         letter: 'c'
+     shape:
+       - " t "
+       - "scs"
+       - " t "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_brewing_stand'
+     item_id: 379
+     item_data: 0
+     name: 'Brewing Stand'
+     required_civics: 'civic_theology'
+     craftable: true
+     shaped: true
+     vanilla: true
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:refined_stone'
+         data: 0
+         letter: 's'
+       - type_id: 369
+         data: 0
+         letter: 'r'
+     shape:
+       - "r r"
+       - " r "
+       - "sss"
+# Checked 12/01/2016
+   - id: 'mat_vanilla_iron_door_1'
+     item_id: 330
+     item_data: 0
+     name: 'Wooden Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - "ii "
+       - "ii "
+       - "ii "
+# Checked 12/01/2016
+   - id: 'mat_vanilla_iron_door_2'
+     item_id: 330
+     item_data: 0
+     name: 'Wooden Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 0
+         custom_id: 'civ:iron_ingot'
+         data: 0
+         letter: 'i'
+     shape:
+       - " ii"
+       - " ii"
+       - " ii"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_wood_door_1'
+     item_id: 324
+     item_data: 0
+     name: 'Wooden Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 0
+         letter: 'w'
+     shape:
+       - "ww "
+       - "ww "
+       - "ww "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_wood_door_2'
+     item_id: 324
+     item_data: 0
+     name: 'Wooden Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 0
+         letter: 'w'
+     shape:
+       - " ww"
+       - " ww"
+       - " ww"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_spruce_door_1'
+     item_id: 427
+     item_data: 0
+     name: 'Spruce Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 1
+         letter: 'w'
+     shape:
+       - "ww "
+       - "ww "
+       - "ww "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_spruce_door_2'
+     item_id: 427
+     item_data: 0
+     name: 'Spruce Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 1
+         letter: 'w'
+     shape:
+       - " ww"
+       - " ww"
+       - " ww"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_birch_door_1'
+     item_id: 428
+     item_data: 0
+     name: 'Birch Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 2
+         letter: 'w'
+     shape:
+       - "ww "
+       - "ww "
+       - "ww "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_birch_door_2'
+     item_id: 428
+     item_data: 0
+     name: 'Birch Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 2
+         letter: 'w'
+     shape:
+       - " ww"
+       - " ww"
+       - " ww"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_jungle_door_1'
+     item_id: 429
+     item_data: 0
+     name: 'Jungle Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 3
+         letter: 'w'
+     shape:
+       - "ww "
+       - "ww "
+       - "ww "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_jungle_door_2'
+     item_id: 429
+     item_data: 0
+     name: Jungle Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 3
+         letter: 'w'
+     shape:
+       - " ww"
+       - " ww"
+       - " ww"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_acacia_door_1'
+     item_id: 430
+     item_data: 0
+     name: 'Acacia Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 4
+         letter: 'w'
+     shape:
+       - "ww "
+       - "ww "
+       - "ww "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_acacia_door_2'
+     item_id: 430
+     item_data: 0
+     name: 'Acacia Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 4
+         letter: 'w'
+     shape:
+       - " ww"
+       - " ww"
+       - " ww"
+# Checked 12/01/2016
+   - id: 'civ:vanilla_dark_oak_door_1'
+     item_id: 431
+     item_data: 0
+     name: 'Dark Oak Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 5
+         letter: 'w'
+     shape:
+       - "ww "
+       - "ww "
+       - "ww "
+# Checked 12/01/2016
+   - id: 'civ:vanilla_dark_oak_door_2'
+     item_id: 431
+     item_data: 0
+     name: 'Dark Oak Door'
+     craftable: true
+     shaped: true
+     vanilla: true
+     amount: 2
+     category: '<white>Vanilla'
+     components:
+       - name: 'AllowBlockPlace'
+     ingredients:
+       - type_id: 5
+         data: 5
+         letter: 'w'
+     shape:
+       - " ww"
+       - " ww"
+       - " ww"
+#
+#
+#
+#
+#
+#OLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+# Special Recipes  ===========================================       
+# Checked 12/01/2016
+   - id: 'civ:found_civ'
+     item_id: 387
+     item_data: 0
+     name: 'Founding Civilization Flag'
+     craftable: true
+     shaped: true
+     category: 'Special'
+     components:
+       - name: 'FoundCivilization'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:masonry_mortar'
+         letter: 'm'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:royal_crown'
+         letter: 'r'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:compacted_stone'
+         letter: 's'
+     shape:
+       - "srs"
+       - "sss"
+       - "mmm"
+
+       
+     # XXX mat ID hard coded for camp refund. with /camp undo 
+# Checked 12/01/2016
+   - id: 'civ:found_camp'
+     item_id: 324
+     item_data: 0
+     name: 'Camp'
+     craftable: true
+     shaped: true
+     category: 'Special'
+     components:
+       - name: 'FoundCamp'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:milled_lumber'
+         letter: 'l'
+       - type_id: 173
+         data: 0
+         letter: 'c'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:chieftains_headdress'
+         letter: 'h'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:defense_wall'
+         letter: 'w'
+     shape:
+       - "chc"
+       - "lll"
+       - "www"
+        
+   - id: 'civ:found_warcamp'
+     item_id: 7
+     item_data: 0
+     name: 'War Camp'
+     craftable: true
+     shaped: true
+     category: 'Special'
+     components:
+       - name: 'FoundWarCamp'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:masonry_mortar'
+         letter: 'm'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:milled_lumber'
+         letter: 'l'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:compacted_stone'
+         letter: 'c'
+     shape:
+       - "lll"
+       - "cmc"
+       - "ccc"
+        
+   - id: 'civ:build_cannon'
+     item_id: 154
+     item_data: 0
+     name: 'War Cannon'
+     craftable: true
+     shaped: true
+     category: 'Special'
+     components:
+       - name: 'BuildCannon'
+       - name: 'NoRightClick'
+     ingredients:
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:cannon_barrel_part'
+         letter: 'p'
+       - type_id: 0
+         data: 0
+         custom_id: 'civ:cannon_wheel'
+         letter: 'w'
+     shape:
+       - "ppp"
+       - "ppp"
+       - "wpw"
+
+#
+# This is a list of removed recpies based on the typeID and 
+# data value of the vanilla item.
+#
+removed_recipes:
+    # iron sword
+    - type_id: 267
+      data: 0 
+    
+    # wood sword
+    - type_id: 268
+      data: 0
+ 
+    # stone sword
+    - type_id: 272
+      data: 0
+
+    # Diamond sword
+    - type_id: 276
+      data: 0
+
+    # gold sword
+    - type_id: 283
+      data: 0
+
+    # enchantment table
+    - type_id: 116
+      data: 0
+    
+    # bow
+    - type_id: 261
+      data: 0
+
+    # Leather armor default
+    - type_id: 298
+      data: 0
+    - type_id: 299
+      data: 0
+    - type_id: 300
+      data: 0
+    - type_id: 301
+      data: 0
+    
+    # iron armor default
+    - type_id: 306
+      data: 0
+    - type_id: 307
+      data: 0
+    - type_id: 308
+      data: 0
+    - type_id: 309
+      data: 0
+    
+    # chain armor default
+    - type_id: 302
+      data: 0
+    - type_id: 303
+      data: 0
+    - type_id: 304
+      data: 0
+    - type_id: 305
+      data: 0
+    
+    # gold armor default
+    - type_id: 314
+      data: 0
+    - type_id: 315
+      data: 0
+    - type_id: 316
+      data: 0
+    - type_id: 317
+      data: 0
+
+    # diamond default
+    - type_id: 310
+      data: 0
+    - type_id: 311
+      data: 0
+    - type_id: 312
+      data: 0
+    - type_id: 313
+      data: 0
+
+    # ender pearl
+    - type_id: 368
+      data: 0
+
+    # Golden apples
+    - type_id: 322
+      data: 0
+
+    # Pickaxes
+    - type_id: 257
+      data: 0
+    - type_id: 274
+      data: 0
+    - type_id: 278
+      data: 0
+    - type_id: 285
+      data: 0
+    
+    # Shovels
+    - type_id: 256
+      data: 0
+    - type_id: 284
+      data: 0
+    - type_id: 277
+      data: 0
+
+    # Axes
+    - type_id: 258
+      data: 0
+    - type_id: 286
+      data: 0
+    - type_id: 279
+      data: 0
+        
+    # TNT
+    - type_id: 46
+      data: 0
+    # End Crystal
+    - type_id: 426
+      data: 0
+    # Spectral Arrow
+    - type_id: 439
+      data: 0
+    # Sheild
+    - type_id: 442
+      data: 0
+    # Elytra
+    - type_id: 443
+      data: 0
+
+#### Fixed with new recipes ####
+    # Detector Rail
+    - type_id: 28
+      data: 0
+    # Piston
+    - type_id: 33
+      data: 0
+    # Block of Iron
+    - type_id: 42
+      data: 0
+    # Rail
+    - type_id: 66
+      data: 0
+    # Iron Bars
+    - type_id: 101
+      data: 0
+    # Tripwire Hook
+    - type_id: 131
+      data: 0
+    # Weighted Pressure Plate (Heavy)
+    - type_id: 148
+      data: 0
+    # Activator Rail
+    - type_id: 157
+      data: 0
+    # Iron Trapdoor
+    - type_id: 167
+      data: 0
+    # Flint and Steel
+    - type_id: 259
+      data: 0
+    # Bucket
+    - type_id: 325
+      data: 0
+    # Minecart
+    - type_id: 328
+      data: 0
+    # Compass
+    - type_id: 345
+      data: 0
+    # Shears
+    - type_id: 359
+      data: 0
+    # Cauldron
+    - type_id: 380
+      data: 0
+##### Redid, Vanilla Items #####
+    # Ender Chest
+    - type_id: 130
+      data: 0
+    # Hopper
+    - type_id: 154
+      data: 0
+    # Wood Door
+    - type_id: 324
+      data: 0
+    # Iron Door
+    - type_id: 330
+      data: 0
+    # Spruce Door
+    - type_id: 427
+      data: 0
+    # Birch Door
+    - type_id: 428
+      data: 0
+    # Jungle Door
+    - type_id: 429
+      data: 0
+    # Acacia Door
+    - type_id: 430
+      data: 0
+    # Dark Oak Door
+    - type_id: 431
+      data: 0

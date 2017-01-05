@@ -24,9 +24,12 @@ public class CivColor {
 	public static final String BoldGreen = "\u00A72"+ChatColor.BOLD;
 	public static final String BoldRed = "\u00A74"+ChatColor.BOLD;
 	public static final String BoldGold = "\u00A76"+ChatColor.BOLD;
+	public static final String BoldGray = "\u00A78"+ChatColor.BOLD;
 	public static final String BoldLightGreen = "\u00A7a"+ChatColor.BOLD;
 	public static final String BoldLightPurple = "\u00A7d"+ChatColor.BOLD;
 	
+	public static final String ItalicRed = "\u00A74"+ChatColor.ITALIC;
+	public static final String ItalicLightGreen = "\u00A7a"+ChatColor.ITALIC;
 	public static final String ItalicWhite = "\u00A7f"+ChatColor.ITALIC;
 	
 	public static final String BOLD = ""+ChatColor.BOLD;

@@ -3,13 +3,13 @@
 #
 # The trade goods are divided into two lists, land goods and water goods.
 # Configuration for them is identical, however as you might expect... water 
-# goods never spawn on land and land goods never spawn on water.
+# goods never spawn on land and land goods never spawn on water. Water goods
+# will only spawn in oceans, not in rivers (or any other body of water).
 #
 #http://civilization.wikia.com/wiki/Resources_(Civ6)
 #
 
-######## Global Trade Good Options #######
-
+#======== Global Trade Good Options ========#
 # maximum bonus from same-type goods you can get.
 trade_good_multiplier_max: 3
 
@@ -17,7 +17,7 @@ trade_good_multiplier_max: 3
 # repo'd they go back to the trade outpost that spawned them.
 trade_goodie_repo_days: 7
 
-########### Trade Good Generation Options #######
+#======== Trade Good Generation Options ========#
 generation:
     # Minimum number of chunks trade goods can be apart
     chunks_min: 10
@@ -42,166 +42,355 @@ generation:
 #  By using 0 as a min or max means you dont care.
 hemispheres:
       # The following hemisphere is north.
-      # We dont care about x (east/west) so
-      # they are zero.
-      # the z_min (how far negative we can go) do dont
-      # care about, so it is also zero.
-      # the z_max is set to -400 so that we must be greater than -400 to
-      # registered as a northern hemisphere.
+      # We dont care about x (east/west) so they are zero.
+      # the z_max is set to -400 so that we must be greater than -400 to be in a northern hemisphere.
     - id: 'hemi_north'
       x_min: 0
       x_max: 0
       z_min: 0
       z_max: -500
-        
+#
     - id: 'hemi_south'
       x_min: 0
       x_max: 0
       z_min: 500
       z_max: 0
-      
+#
     - id: 'hemi_east'
       x_min: 500
       x_max: 0
       z_min: 0
       z_max: 0
-
+#
     - id: 'hemi_west'
       x_min: 0
       x_max: -500
       z_min: 0
       z_max: 0
-
-    # Overlapping hemishperes are OK.
+# Overlapping hemishperes are OK.
 #    - id: 'hemi_equator'
 #      x_min: 0
 #      x_max: 0
 #      z_min: -500
 #      z_max: 500
-
+#
     - id: 'hemi_northeast'
       x_min: 500
       x_max: 0
       z_min: 0
       z_max: -500
-
+#
     - id: 'hemi_northwest'
       x_min: 0
       x_max: -500
       z_min: 0
       z_max: -500
-
+#
     - id: 'hemi_southwest'
       x_min: 0
       x_max: -500
       z_min: 500
       z_max: 0
-
+#
     - id: 'hemi_southeast'
       x_min: 500
       x_max: 0
       z_min: 500
       z_max: 0
-
-########## Trade Good Types #######
-# id - unquie ID to identify this good
-# name - Display name shown on goods and messages
-# value - amount of base coins this good generates
-# buffs - list of buff id's that this trade good is using. (See buffs.yml)
-# material - item id of in-game item used for visuals.
-# material_data - data value of in-game item used for visuals.
-#
-#
+#==================================#
+#======== Trade Good Types ========#
+#==================================#
 land_goods:
+#========== Bonus Goods ==========#
     - id: 'good_bananas'
       name: Bananas
+      type: Bonus
       value: 125.0
-      food: 2
-      culture: 0
-      buffs: ''
+      culture: 0.2
+      food: 0
+      buffs: '' #20% more farm growth
       mat: 7
       mat_data: 0
 #
     - id: 'good_copper'
       name: Copper
-      value: 250.0
+      type: Bonus
+      value: 125.0
+      culture: 0.2
       food: 0
-      culture: 0
-      buffs: ''
+      buffs: '' #20% more mine hammer rate production
       mat: 7
       mat_data: 0
 #
     - id: 'good_cattle'
       name: Cattle
-      value: 250.0
-      food: 2
-      culture: 0
-      buffs: ''
+      type: Bonus
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' # n/a                                n/a                                n/a                                n/a                                n/a
       mat: 7
       mat_data: 0
 #
     - id: 'good_deer'
       name: Deer
+      type: Bonus
       value: 125.0
+      culture: 0.2
       food: 0
-      culture: 0
-      buffs: ''
+      buffs: '' #double output of resource goods in trade outposts
       mat: 7
       mat_data: 0
 #
     - id: 'good_sheep'
       name: Sheep
+      type: Bonus
       value: 125.0
-      food: 2
-      culture: 0
-      buffs: ''
-      mat: 7
-      mat_data: 0
-#
-    - id: 'good_stone'
-      name: Stone
-      value: 375.0
+      culture: 0.2
       food: 0
-      culture: 1
-      buffs: ''
+      buffs: '' # n/a                                n/a                                n/a                                n/a                                n/a
       mat: 7
       mat_data: 0
-#
-    - id: 'good_wheat'
-      name: Wheat
+#======== Strategic Goods ========#
+    - id: 'good_horses'
+      name: Horses
+      type: Strategic
       value: 125.0
-      food: 2
-      culture: 0
-      buffs: ''
+      culture: 0.2
+      food: 0
+      buffs: '' #stable price 10% cheaper
       mat: 7
       mat_data: 0
 #
+    - id: 'good_niter'
+      name: Niter
+      type: Strategic
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #50% increased trommel production
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_aluminum'
+      name: Aluminum
+      type: Strategic
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #50% more HP for structures
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_uranium'
+      name: Uranium
+      type: Strategic
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #50% increased quarry production
+      mat: 7
+      mat_data: 0
+#========= Luxury  Goods =========#
+    - id: 'good_citrus'
+      name: Citrus
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #20% increase bakery output
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_coffee'
+      name: Coffee
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #10% reduction of hammers needed for structures (idk wonders, maybe 5%?)
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_cotton'
+      name: Cotton
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' # n/a                                n/a                                n/a                                n/a                                n/a
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_gypsum'
+      name: Gypsum
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #20% more hammer items per mine quest
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_incense'
+      name: Incense
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #10% more beaker rate for town
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_ivory'
+      name: Ivory
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #20% more culture rate production
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_jade'
+      name: Jade
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #20% more beaker items per lab quest
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_marble'
+      name: Marble
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #10% more hammer rate for town
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_silk'
+      name: Silk
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' # n/a                                n/a                                n/a                                n/a                                n/a
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_silver'
+      name: Silver
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #5% more money from trade goods
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_spice'
+      name: Spice
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #reduces food consumption in cottages by 25%
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_tobacco'
+      name: Tobacco
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #5% increase when selling items in bank
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_wine'
+      name: Wine
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #20% more lab beaker rate production
+      mat: 7
+      mat_data: 0
 #
 water_goods:
+#========== Bonus Goods ==========#
     - id: 'good_crabs'
       name: Crabs
-      value: 250.0
+      type: Bonus
+      value: 125.0
+      culture: 0.2
       food: 0
-      culture: 0
-      buffs: ''
+      buffs: '' #double output of resource goods in fishing boats
       mat: 7
       mat_data: 0
 #
     - id: 'good_fish'
       name: Fish
+      type: Bonus
       value: 125.0
-      food: 2
-      culture: 0
-      buffs: ''
+      culture: 0.2
+      food: 0
+      buffs: '' #fish can be used in granary
       mat: 7
       mat_data: 0
 #
     - id: 'good_rice'
       name: Rice
+      type: Bonus
       value: 125.0
-      food: 2
-      culture: 0
-      buffs: ''
+      culture: 0.2
+      food: 0
+      buffs: '' #double drops from farm crops
+      mat: 7
+      mat_data: 0
+#======== Strategic Goods ========#
+    - id: 'good_oil'
+      name: Oil
+      type: Strategic
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #reduce lab/mine items consumption
+      mat: 7
+      mat_data: 0
+#========= Luxury  Goods =========#
+    - id: 'good_pearls'
+      name: Pearls
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' #3% increase bank interest
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_salt'
+      name: Salt
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' # n/a                                n/a                                n/a                                n/a                                n/a
+      mat: 7
+      mat_data: 0
+#
+    - id: 'good_whales'
+      name: Whales
+      type: Luxury
+      value: 125.0
+      culture: 0.2
+      food: 0
+      buffs: '' # n/a                                n/a                                n/a                                n/a                                n/a
       mat: 7
       mat_data: 0
 #

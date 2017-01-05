@@ -25,37 +25,36 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.ConfigTradeGood;
 import com.avrgaming.civcraft.main.CivCraft;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
+import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.object.ProtectedBlock;
-import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
-import com.gmail.filoghost.holograms.api.HolographicDisplaysAPI;
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 
-@SuppressWarnings("deprecation")
 public class TradeGoodPopulator extends BlockPopulator {
 	
 	private static int FLAG_HEIGHT = 3;
-//	private static int FLAG_HEIGHT = 1;
 	
+	@SuppressWarnings("deprecation")
 	public static void buildTradeGoodie(ConfigTradeGood good, BlockCoord coord, World world, boolean sync) {
 		TradeGood new_good = new TradeGood(good, coord);			
 		CivGlobal.addTradeGood(new_good);
-
-    	BlockFace direction = null;
+		
 		Block top = null;
+/*    	BlockFace direction = null;
 		Random random = new Random();
 		int dir = random.nextInt(4);
 		if (dir == 0) {
@@ -66,25 +65,27 @@ public class TradeGoodPopulator extends BlockPopulator {
 			direction = BlockFace.SOUTH;
 		} else {
 			direction = BlockFace.WEST;
-		}
+		}*/
 
 		//clear any stack goodies
 		for (int y = coord.getY(); y < 256; y++) {
 			top = world.getBlockAt(coord.getX(), y, coord.getZ());
-			if (ItemManager.getId(top) == CivData.BEACON) {
+			if (ItemManager.getId(top) == CivData.EMERALD) {
 				ItemManager.setTypeId(top, CivData.AIR);
 			}
 		}
 		
 		for (int y = coord.getY(); y < coord.getY() + FLAG_HEIGHT; y++) {
 			top = world.getBlockAt(coord.getX(), y, coord.getZ());
-			top.setType(Material.BEACON);
+			top.setType(Material.EMERALD_BLOCK);
 			
-			Location loc = new Location(world, coord.getX()+0.5, coord.getY()+FLAG_HEIGHT+2, coord.getZ()+0.5);
-			HolographicDisplaysAPI.createHologram(CivCraft.getPlugin(), loc, 
-					CivColor.BoldGold+"Trade Resource:", 
-					CivColor.BoldLightPurple+good.name,
-					CivColor.BoldLightGreen+"Value: "+good.value).update();
+			
+			Location loc = new Location(coord.getBlock().getWorld(), coord.getBlock().getX()+0.5, coord.getBlock().getY()+5, coord.getBlock().getZ()+0.5);
+			Hologram hologram = HologramsAPI.createHologram(CivCraft.getPlugin(), loc);
+			hologram.appendItemLine(new ItemStack(good.material, 1, (short)good.material_data));
+			hologram.appendTextLine(CivColor.BoldGold+"Trade Resource:");
+			hologram.appendTextLine(CivColor.BoldLightPurple+good.name);
+			
 			
 			ProtectedBlock pb = new ProtectedBlock(new BlockCoord(top), ProtectedBlock.Type.TRADE_MARKER);
 			CivGlobal.addProtectedBlock(pb);
@@ -99,11 +100,8 @@ public class TradeGoodPopulator extends BlockPopulator {
 			}
 		}
 
-		Block signBlock = top.getRelative(direction);
+/*		Block signBlock = top.getRelative(direction);
 		signBlock.setType(Material.WALL_SIGN);
-		//TODO make sign a structure sign?
-				//		  Civ.protectedBlockTable.put(Civ.locationHash(signBlock.getLocation()), 
-		//		  		new ProtectedBlock(signBlock, null, null, null, ProtectedBlock.Type.TRADE_MARKER));
 
 		BlockState state = signBlock.getState();
 
@@ -124,7 +122,7 @@ public class TradeGoodPopulator extends BlockPopulator {
 			structSign.setText(sign.getLines());
 			structSign.setDirection(ItemManager.getData(sign.getData()));
 			CivGlobal.addStructureSign(structSign);
-		}
+		}*/
 		if (sync) {
 		try {
 			new_good.saveNow();
@@ -153,7 +151,7 @@ public class TradeGoodPopulator extends BlockPopulator {
 	@Override
 	public void populate(World world, Random random, Chunk source) {
 		ChunkCoord cCoord = new ChunkCoord(source);
-		TradeGoodPick pick = CivGlobal.preGenerator.goodPicks.get(cCoord);
+		TradeGoodPick pick = CivGlobal.tradeGoodPreGenerator.goodPicks.get(cCoord);
 		if (pick != null) {
 			int centerX = (source.getX() << 4) + 8;
 			int centerZ = (source.getZ() << 4) + 8;
@@ -167,11 +165,18 @@ public class TradeGoodPopulator extends BlockPopulator {
 			// Determine if we should be a water good.
 			ConfigTradeGood good;
 			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_STILL || 
-				ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
-				good = pick.waterPick;
-			}  else {
-				good = pick.landPick;
-			}
+					ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
+					if (coord.getCenteredLocation().getBlock().getBiome() != Biome.OCEAN ||
+						coord.getCenteredLocation().getBlock().getBiome() != Biome.DEEP_OCEAN ||
+						coord.getCenteredLocation().getBlock().getBiome() != Biome.FROZEN_OCEAN) {
+						CivLog.warning(" -------------------------------- ");
+						CivLog.warning("A trade good tried placing on water without proper biome! "+centerX+", "+centerY+", "+centerZ);
+						CivLog.warning(" -------------------------------- ");
+					}
+					good = pick.waterPick;
+				} else {
+					good = pick.landPick;
+				}
 			
 			// Randomly choose a land or water good.
 			if (good == null) {
@@ -182,7 +187,5 @@ public class TradeGoodPopulator extends BlockPopulator {
 			// Create a copy and save it in the global hash table.
 			buildTradeGoodie(good, coord, world, false);
 		}
- 	
 	}
-
 }

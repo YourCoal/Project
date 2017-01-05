@@ -235,6 +235,11 @@ public class LoreCraftableMaterialListener implements Listener {
 				loreMat.applyAttributes(attrs);
 			} else {
 				newStack = ItemManager.createItemStack(loreMat.getTypeID(), loreMat.getCraftAmount());
+				if (loreMat.getConfigMaterial().shiny) {
+					AttributeUtil attrs = new AttributeUtil(newStack);
+					attrs.setShiny();
+					loreMat.applyAttributes(attrs);
+				}
 			}
 			
 			event.getInventory().setResult(newStack);
@@ -272,6 +277,11 @@ public class LoreCraftableMaterialListener implements Listener {
 				loreMat.applyAttributes(attrs);
 			} else {
 				newStack = ItemManager.createItemStack(loreMat.getTypeID(), loreMat.getCraftAmount());
+				if (loreMat.getConfigMaterial().shiny) {
+					AttributeUtil attrs = new AttributeUtil(newStack);
+					attrs.setShiny();
+					loreMat.applyAttributes(attrs);
+				}
 			}	
 			
 			event.getInventory().setResult(newStack);

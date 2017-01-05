@@ -211,6 +211,7 @@ public class CivSettings {
 	public static final String MOD = "civ.moderator";
 	
 	public static boolean hasTitleAPI = false;
+	public static boolean hasHolographicDisplays = false;
 	public static boolean hasVanishNoPacket = false;
 	
 	public static void init(JavaPlugin plugin) throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
@@ -271,6 +272,12 @@ public class CivSettings {
 			hasTitleAPI = true;
 		} else {
 			CivLog.warning("TitleAPI not found, not registering TitleAPI hooks. This is fine if you're not using TitleAPI.");
+		}
+		
+		if (CivSettings.plugin.hasPlugin("HolographicDisplays")) {
+			hasHolographicDisplays = true;
+		} else {
+			CivLog.warning("HolographicDisplays not found, not registering HolographicDisplays hooks. This is fine if you're not using HolographicDisplays.");
 		}
 	}
 	
@@ -392,8 +399,8 @@ public class CivSettings {
 		ConfigValidMod.loadConfig(nocheatConfig, validMods);
 		ConfigFishing.loadConfig(fishingConfig, fishingDrops);
 	
-		ConfigRemovedRecipes.removeRecipes(materialsConfig, removedRecipies );
-		CivGlobal.preGenerator.preGenerate();
+		ConfigRemovedRecipes.removeRecipes(materialsConfig, removedRecipies);
+		CivGlobal.tradeGoodPreGenerator.preGenerate();
 		Wall.init_settings();
 	}
 	

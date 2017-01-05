@@ -53,12 +53,12 @@ public class Library extends Structure {
 	public static Enchantment getEnchantFromString(String name) {
 		
 		// Curse Enchantments
-		if (name.equalsIgnoreCase("curse_binding")) {
-			return Enchantment.BINDING_CURSE;
-		}
-		if (name.equalsIgnoreCase("curse_vanishing")) {
-			return Enchantment.VANISHING_CURSE;
-		}
+//		if (name.equalsIgnoreCase("curse_binding")) {
+//			return Enchantment.BINDING_CURSE;
+//		}
+//		if (name.equalsIgnoreCase("curse_vanishing")) {
+//			return Enchantment.VANISHING_CURSE;
+//		}
 		
 		// Armor Enchantments
 		if (name.equalsIgnoreCase("thorns")) {

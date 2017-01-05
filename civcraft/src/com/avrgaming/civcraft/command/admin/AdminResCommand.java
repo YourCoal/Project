@@ -51,13 +51,19 @@ public class AdminResCommand extends CommandBase {
 		commands.put("giveplat", "[player] [amount] - Gives this player the specified amount of platinum.");
 		commands.put("givereward", "[player] [rewardID] - Gives player this achievement with its plat rewards.");
 		commands.put("rename", "[old_name] [new_name] - Rename this resident. Useful if players change their name.");
+		commands.put("exposure", "[resident] [amount] - Gives/Takes thie [amount] of exposure to a [resident].");
+	}
+	
+	public void exposure_cmd() throws CivException {
+		Resident res = getNamedResident(1);
+		Integer exposure = getNamedInteger(2);
+		res.setSpyExposure(res.getSpyExposure()+exposure);
+		CivMessage.sendSuccess(sender, "Gave "+res.getName()+" "+exposure+" Spy Exposure.");
 	}
 	
 	public void rename_cmd() throws CivException {
 		Resident resident = getNamedResident(1);
 		String newName = getNamedString(2, "Enter a new name");
-
-		
 		
 		Resident newResident = CivGlobal.getResident(newName);
 		if (newResident != null) {
@@ -121,7 +127,6 @@ public class AdminResCommand extends CommandBase {
 		
 		CivMessage.sendError(sender, "Couldn't find reward named:"+rewardID);
 	}
-	
 	
 	public void giveplat_cmd() throws CivException {
 		Resident resident = getNamedResident(1);
