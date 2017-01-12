@@ -100,7 +100,7 @@ public class ConfigTownUpgrade {
 					bank.setLevel(Integer.valueOf(args[1].trim()));
 					bank.updateSignText();
 					town.saved_bank_level = bank.getLevel();
-					CivMessage.sendTown(town, "The bank is now level "+bank.getLevel());
+					CivMessage.sendTown(town, "The Bank is now level "+bank.getLevel());
 				}
 			}
 			break;
@@ -112,7 +112,7 @@ public class ConfigTownUpgrade {
 					bank.setInterestRate(Double.valueOf(args[1].trim()));
 					town.saved_bank_interest_amount = bank.getInterestRate();
 					DecimalFormat df = new DecimalFormat();
-					CivMessage.sendTown(town, "The bank is now provides a "+df.format(bank.getInterestRate()*100)+"% interest rate.");
+					CivMessage.sendTown(town, "The Bank is now provides a "+df.format(bank.getInterestRate()*100)+"% interest rate.");
 				}
 			}
 			break;
@@ -123,7 +123,7 @@ public class ConfigTownUpgrade {
 				if (store.getLevel() < Integer.valueOf(args[1].trim())) {
 					store.setLevel(Integer.valueOf(args[1].trim()));
 					store.updateSignText();
-					CivMessage.sendTown(town, "The store is now level "+store.getLevel());
+					CivMessage.sendTown(town, "The Store is now level "+store.getLevel());
 				}
 			}
 			break;
@@ -134,6 +134,7 @@ public class ConfigTownUpgrade {
 				StoreMaterial mat = new StoreMaterial(args[1].trim(), args[2].trim(), args[3].trim(), args[4].trim());
 				store.addStoreMaterial(mat);
 				store.updateSignText();
+				CivMessage.sendTown(town, "The Store now offers "+mat);
 			}
 			break;
 		case "set_library_level":
@@ -143,7 +144,7 @@ public class ConfigTownUpgrade {
 				if (library.getLevel() < Integer.valueOf(args[1].trim())) {
 					library.setLevel(Integer.valueOf(args[1].trim()));
 					library.updateSignText();
-					CivMessage.sendTown(town, "The library is now level "+library.getLevel());
+					CivMessage.sendTown(town, "The Library is now level "+library.getLevel());
 				}
 			}
 			break;
@@ -154,7 +155,7 @@ public class ConfigTownUpgrade {
 				LibraryEnchantment enchant = new LibraryEnchantment(args[1].trim(), Integer.valueOf(args[2].trim()), Double.valueOf(args[3].trim()));
 				library.addEnchant(enchant);
 				library.updateSignText();
-				CivMessage.sendTown(town, "The library now offers the "+args[1].trim()+" enchantment at level "+args[2]+"!");
+				CivMessage.sendTown(town, "The Library now offers the "+args[1].trim()+" enchantment at level "+args[2]+"!");
 			}
 			break;
 		case "set_grocer_level":
@@ -164,8 +165,28 @@ public class ConfigTownUpgrade {
 				if (grocer.getLevel() < Integer.valueOf(args[1].trim())) {
 					grocer.setLevel(Integer.valueOf(args[1].trim()));
 					grocer.updateSignText();
-					CivMessage.sendTown(town, "The grocer is now level "+grocer.getLevel());
+					CivMessage.sendTown(town, "The Grocer is now level "+grocer.getLevel());
 				}
+			}
+			break;
+		case "set_cottage_level":
+			boolean didCottageUpgrade = false;
+			if (town.saved_cottage_level < Integer.valueOf(args[1].trim())) {
+				didCottageUpgrade = true;
+				town.saved_cottage_level = town.saved_cottage_level + 1;
+			}
+			if (didCottageUpgrade) {
+				CivMessage.sendTown(town, "Our Cottages are now level "+town.saved_cottage_level);
+			}
+			break;
+		case "set_granary_level":
+			boolean didGranaryUpgrade = false;
+			if (town.saved_granary_level < Integer.valueOf(args[1].trim())) {
+				didGranaryUpgrade = true;
+				town.saved_granary_level = town.saved_granary_level + 1;
+			}
+			if (didGranaryUpgrade) {
+				CivMessage.sendTown(town, "Our Granaries are now level "+town.saved_cottage_level);
 			}
 			break;
 		}
@@ -199,8 +220,6 @@ public class ConfigTownUpgrade {
 				}
 			}
 		}
-		
 		return count;
 	}
-		
 }

@@ -55,10 +55,14 @@ public class TownUpgradeCommand extends CommandBase {
 	}
 	
 	private void list_upgrades(String category, Town town) throws CivException {
+		if (category == null) {
+			throw new CivException("Please name a category."+ConfigTownUpgrade.categories.toString());
+		}
+		
 		if (!ConfigTownUpgrade.categories.containsKey(category.toLowerCase()) && !category.equalsIgnoreCase("all")) {
 			throw new CivException("No category called "+category);
 		}
-				
+		
 		for (ConfigTownUpgrade upgrade : CivSettings.townUpgrades.values()) {
 			if (category.equalsIgnoreCase("all") || upgrade.category.equalsIgnoreCase(category)) {	
 				if (upgrade.isAvailable(town)) {
@@ -70,9 +74,7 @@ public class TownUpgradeCommand extends CommandBase {
 	
 	public void list_cmd() throws CivException {
 		Town town = this.getSelectedTown();
-		
 		CivMessage.sendHeading(sender, "Available Upgrades");
-		
 		if (args.length < 2) {
 			CivMessage.send(sender, "- "+CivColor.Gold+"All "+
 					CivColor.LightBlue+"("+ConfigTownUpgrade.getAvailableCategoryCount("all", town)+")");
@@ -82,27 +84,24 @@ public class TownUpgradeCommand extends CommandBase {
 			}
 			return;
 		}
-		
-		list_upgrades(args[1], town);		
-	
+		list_upgrades(args[1], town);
 	}
 	
 	public void buy_cmd() throws CivException {
 		if (args.length < 2) {
-			list_upgrades("all", getSelectedTown());
-			CivMessage.send(sender, "Enter the name of the upgrade you wish to purchase.");
+			CivMessage.sendError(sender, "Enter the name of the upgrade you wish to purchase.");
+			CivMessage.send(sender, CivColor.LightGray+CivColor.ITALIC+"For available upgrades, type '/town upgrade list'.");
 			return;
 		}
 		
 		Town town = this.getSelectedTown();
-		
 		String combinedArgs = "";
 		args = this.stripArgs(args, 1);
 		for (String arg : args) {
 			combinedArgs += arg + " ";
 		}
-		combinedArgs = combinedArgs.trim();
 		
+		combinedArgs = combinedArgs.trim();
 		ConfigTownUpgrade upgrade = CivSettings.getUpgradeByNameRegex(town, combinedArgs);
 		if (upgrade == null) {
 			throw new CivException("No upgrade by the name of "+combinedArgs+" could be found.");
