@@ -1,4 +1,4 @@
-package com.avrgaming.civcraft.tutorial;
+package com.avrgaming.civcraft.book;
 
 import gpl.AttributeUtil;
 
@@ -21,7 +21,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
-public class CivTutorial {
+public class CivBook {
 
 	public static Inventory tutorialInventory = null;
 	public static Inventory craftingHelpInventory = null;
@@ -112,8 +112,6 @@ public class CivTutorial {
 					ChatColor.RESET+"tokens which can be crafted into a civ. The recipe for a camp is below."
 					));
 			
-			tutorialInventory.setItem(18,getInfoBookForItem("mat_found_camp"));
-			
 			tutorialInventory.setItem(10, LoreGuiItem.build(CivColor.LightBlue+ChatColor.BOLD+"QUEST: Found a Civ", ItemManager.getId(Material.BOOK_AND_QUILL), 0, 
 					ChatColor.RESET+"Next, you'll want to start a civilization.",
 					ChatColor.RESET+"To do this, you must first obtain leadership tokens",
@@ -122,8 +120,6 @@ public class CivTutorial {
 					ChatColor.RESET+"You can craft the founding flag item below."
 					));
 			
-			tutorialInventory.setItem(19,getInfoBookForItem("mat_found_civ"));
-			
 			tutorialInventory.setItem(11, LoreGuiItem.build(CivColor.LightBlue+ChatColor.BOLD+"Need to know a recipe?", ItemManager.getId(Material.WORKBENCH), 0, 
 					ChatColor.RESET+"Type /res book to obtain the tutorial book",
 					ChatColor.RESET+"and then click on 'Crafting Recipies'",
@@ -131,7 +127,31 @@ public class CivTutorial {
 					ChatColor.RESET+"along with how to craft them.",
 					ChatColor.RESET+"Good luck!"
 					));
-		
+			for (ConfigMaterialCategory cat : ConfigMaterialCategory.getCategories()) {
+				for (ConfigMaterial mat : cat.materials.values()) {
+					if (mat.id.equals("mat_found_civ")) {
+						ItemStack stack = getInfoBookForItem(mat.id);
+						if (stack != null) {
+							stack = LoreGuiItem.setAction(stack, "TutorialRecipe");
+							tutorialInventory.setItem(19,LoreGuiItem.asGuiItem(stack));
+						}
+					} else if (mat.id.equals("mat_found_camp")) {
+						ItemStack stack = getInfoBookForItem(mat.id);
+						if (stack != null) {
+							stack = LoreGuiItem.setAction(stack, "TutorialRecipe");
+							tutorialInventory.setItem(18,LoreGuiItem.asGuiItem(stack));
+						}
+					}
+				}
+			}
+			
+			/* Add back buttons. */
+			ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Categories");
+			backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
+			backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
+			backButton = LoreGuiItem.setActionData(backButton, "invName", guiInventory.getName());
+			tutorialInventory.setItem(26, backButton);
+			
 			LoreGuiItemListener.guiInventories.put(tutorialInventory.getName(), tutorialInventory);
 		}
 		
@@ -198,6 +218,13 @@ public class CivTutorial {
 				
 				LoreGuiItemListener.guiInventories.put(inv.getName(), inv);
 			}
+			
+			/* Add back buttons. */
+			ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Categories");
+			backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
+			backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
+			backButton = LoreGuiItem.setActionData(backButton, "invName", guiInventory.getName());
+			craftingHelpInventory.setItem(LoreGuiItem.MAX_INV_SIZE-1, backButton);
 			
 			LoreGuiItemListener.guiInventories.put(craftingHelpInventory.getName(), craftingHelpInventory);
 		}

@@ -51,6 +51,7 @@ import org.bukkit.scoreboard.Team;
 
 import com.avrgaming.civcraft.arena.Arena;
 import com.avrgaming.civcraft.arena.ArenaTeam;
+import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
@@ -76,7 +77,6 @@ import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.BuildPreviewAsyncTask;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
@@ -1634,7 +1634,7 @@ public class Resident extends SQLObject {
 			return;
 		}
 		
-		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9, "Perks");
+		Inventory inv = Bukkit.getServer().createInventory(player, CivBook.MAX_CHEST_SIZE*9, "Perks");
 		Paginator paginator = new Paginator();
 		paginator.paginate(perks.values(), pageNumber);
 		
@@ -1661,7 +1661,7 @@ public class Resident extends SQLObject {
 			ItemStack stack = LoreGuiItem.build("Next Page", ItemManager.getId(Material.PAPER), 0, "");
 			stack = LoreGuiItem.setAction(stack, "ShowPerkPage");
 			stack = LoreGuiItem.setActionData(stack, "page", ""+(pageNumber+1));
-			inv.setItem((CivTutorial.MAX_CHEST_SIZE*9)-1, stack);
+			inv.setItem((CivBook.MAX_CHEST_SIZE*9)-1, stack);
 		}
 		
 		player.openInventory(inv);

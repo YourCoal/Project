@@ -4,7 +4,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.avrgaming.civcraft.tutorial.CivTutorial;
+import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.util.CivColor;
 
 import gpl.AttributeUtil;
@@ -24,7 +24,7 @@ public class TutorialBook extends ItemComponent {
 				!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			return;
 		}
-		CivTutorial.spawnGuiBook(event.getPlayer());
+		CivBook.spawnGuiBook(event.getPlayer());
 	}
 	
 	public void onItemSpawn(ItemSpawnEvent event) {

@@ -5,13 +5,13 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
 
 public class OpenInventory implements GuiAction {
 
@@ -41,10 +41,10 @@ public class OpenInventory implements GuiAction {
 				
 				switch (LoreGuiItem.getActionData(stack, "invType")) {
 				case "showTutorialInventory":
-					CivTutorial.showTutorialInventory(player);
+					CivBook.showTutorialInventory(player);
 					break;
 				case "showCraftingHelp":
-					CivTutorial.showCraftingHelp(player);
+					CivBook.showCraftingHelp(player);
 					break;
 				case "showGuiInv":
 					String invName = LoreGuiItem.getActionData(stack, "invName");

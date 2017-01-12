@@ -51,6 +51,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.command.admin.AdminTownCommand;
 import com.avrgaming.civcraft.config.CivSettings;
@@ -102,7 +103,6 @@ import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
 import com.avrgaming.civcraft.threading.tasks.TradeGoodPostGenTask;
 import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
 import com.avrgaming.civcraft.threading.timers.DailyTimer;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.AsciiMap;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
@@ -770,11 +770,11 @@ public class DebugCommand extends CommandBase {
 	}
 	
 	public void showinv_cmd() throws CivException {
-		CivTutorial.spawnGuiBook(getPlayer());
+		CivBook.spawnGuiBook(getPlayer());
 	}
 	
 	public void showcraftinv_cmd() throws CivException {
-		CivTutorial.showCraftingHelp(getPlayer());
+		CivBook.showCraftingHelp(getPlayer());
 	}
 	
 	

@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
@@ -52,7 +53,6 @@ import com.avrgaming.civcraft.questions.JoinTownResponse;
 import com.avrgaming.civcraft.structure.Capitol;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -198,7 +198,7 @@ public class TownCommand extends CommandBase {
 	public void templates_cmd() throws CivException {
 		Player player = getPlayer();
 		Town town = getSelectedTown();
-		Inventory inv = Bukkit.getServer().createInventory(player, CivTutorial.MAX_CHEST_SIZE*9, town.getName()+" Perks");
+		Inventory inv = Bukkit.getServer().createInventory(player, CivBook.MAX_CHEST_SIZE*9, town.getName()+" Perks");
 
 		for (ConfigBuildableInfo info : CivSettings.structures.values()) {
 			for (Perk p : CustomTemplate.getTemplatePerksForBuildable(town, info.template_base_name)) {

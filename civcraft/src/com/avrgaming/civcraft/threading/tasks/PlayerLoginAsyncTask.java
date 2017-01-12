@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.avrgaming.anticheat.ACManager;
+import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.endgame.EndConditionDiplomacy;
 import com.avrgaming.civcraft.exception.CivException;
@@ -38,7 +39,6 @@ import com.avrgaming.civcraft.object.Relation;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.tutorial.CivTutorial;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -90,7 +90,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 				CivGlobal.addResident(resident);
 				CivLog.info("Added resident:"+resident.getName());
 				resident.setRegistered(System.currentTimeMillis());
-				CivTutorial.showTutorialInventory(getPlayer());
+				CivBook.showTutorialInventory(getPlayer());
 				resident.setisProtected(true);
 				int mins;
 				try {
