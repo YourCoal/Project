@@ -306,10 +306,6 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 					
 					yTotal += b.getWorld().getHighestBlockYAt(centerBlock.getX()+x, centerBlock.getZ()+z);
 					yCount++;
-					
-					if (CivGlobal.getRoadBlock(coord) != null) {
-						throw new CivException("Cannot build a war camp on top of an existing road block.");
-					}
 				}
 			}
 		}

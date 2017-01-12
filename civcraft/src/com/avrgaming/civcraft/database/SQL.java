@@ -51,7 +51,6 @@ import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.object.WallBlock;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.sessiondb.SessionDatabase;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
@@ -167,7 +166,6 @@ public class SQL {
 		Structure.init();
 		Wonder.init();
 		WallBlock.init();
-		RoadBlock.init();
 		PermissionGroup.init();
 		TradeGood.init();
 		ProtectedBlock.init();

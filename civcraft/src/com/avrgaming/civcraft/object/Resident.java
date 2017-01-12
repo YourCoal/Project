@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.object;
 
-import gpl.InventorySerializer;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -72,7 +70,6 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.TownHall;
@@ -92,6 +89,8 @@ import com.avrgaming.global.perks.Perk;
 import com.avrgaming.global.perks.PlatinumManager;
 import com.avrgaming.global.perks.components.CustomPersonalTemplate;
 import com.avrgaming.global.perks.components.CustomTemplate;
+
+import gpl.InventorySerializer;
 
 public class Resident extends SQLObject {
 
@@ -173,7 +172,6 @@ public class Resident extends SQLObject {
 	private String lastIP = "";
 	private UUID uid;
 	
-	private boolean onRoad = false;
 	public String debugTown;
 	
 	public Resident(UUID uid, String name) throws InvalidNameException {
@@ -1088,35 +1086,6 @@ public class Resident extends SQLObject {
 
 	public void setPerformingMission(boolean performingMission) {
 		this.performingMission = performingMission;
-	}
-
-	public void onRoadTest(BlockCoord coord, Player player) {
-		/* Test the block beneath us for a road, if so, set the road flag. */
-		BlockCoord feet = new BlockCoord(coord);
-		feet.setY(feet.getY() - 1);
-		RoadBlock rb = CivGlobal.getRoadBlock(feet);
-		
-		if (rb == null) {
-			onRoad = false;
-//			if (player.hasPotionEffect(PotionEffectType.SPEED)) {
-//				player.removePotionEffect(PotionEffectType.SPEED);
-//			}
-		} else {
-			onRoad = true;
-			
-//			if (!player.hasPotionEffect(PotionEffectType.SPEED)) {
-//				CivLog.debug("setting effect.");
-//				player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 5, 5));
-//			}
-		}
-	}
-
-	public boolean isOnRoad() {
-		return onRoad;
-	}
-
-	public void setOnRoad(boolean onRoad) {
-		this.onRoad = onRoad;
 	}
 
 	public void giveAllFreePerks() {

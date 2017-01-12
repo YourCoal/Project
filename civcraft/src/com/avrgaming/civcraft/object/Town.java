@@ -61,7 +61,6 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
-import com.avrgaming.civcraft.road.Road;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.Lab;
 import com.avrgaming.civcraft.structure.Mine;
@@ -1754,9 +1753,10 @@ public class Town extends SQLObject {
 			throw new CivException("Cannot undo, cannot find the last thing built.");
 		}
 		
-		if (!(this.lastBuildableBuilt instanceof Wall) &&
-			 !(this.lastBuildableBuilt instanceof Road)) {
-			throw new CivException("Only wall and road structures can be use build undo.");
+//		if (!(this.lastBuildableBuilt instanceof Wall) &&
+//				 !(this.lastBuildableBuilt instanceof Road)) {
+			if (!(this.lastBuildableBuilt instanceof Wall)) {
+			throw new CivException("Only wall structures can be use with build undo.");
 		}
 		
 		this.lastBuildableBuilt.processUndo();

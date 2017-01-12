@@ -40,8 +40,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -86,7 +84,6 @@ import com.avrgaming.civcraft.populators.TradeGoodPreGenerate;
 import com.avrgaming.civcraft.questions.QuestionBaseTask;
 import com.avrgaming.civcraft.questions.QuestionResponseInterface;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
-import com.avrgaming.civcraft.road.RoadBlock;
 import com.avrgaming.civcraft.sessiondb.SessionDatabase;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
@@ -114,6 +111,8 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
 import com.avrgaming.global.perks.PerkManager;
+
+import net.milkbowl.vault.economy.Economy;
 
 public class CivGlobal {
 
@@ -213,7 +212,6 @@ public class CivGlobal {
 		loadStructures();
 		loadWonders();
 		loadWallBlocks();
-		loadRoadBlocks();
 		loadTradeGoods();
 		loadRandomEvents();
 		loadProtectedBlocks();
@@ -608,33 +606,6 @@ public class CivGlobal {
 			}
 	
 			CivLog.info("Loaded "+count+" Wall Block");	
-		} finally {
-			SQL.close(rs, ps, context);
-		}
-	}
-	
-	private static void loadRoadBlocks() throws SQLException {
-		Connection context = null;
-		ResultSet rs = null;
-		PreparedStatement ps = null;
-		
-		try {
-			context = SQL.getGameConnection();		
-			ps = context.prepareStatement("SELECT * FROM "+SQL.tb_prefix+RoadBlock.TABLE_NAME);
-			rs = ps.executeQuery();
-	
-			int count = 0;
-			while(rs.next()) {
-				try {
-					new RoadBlock(rs);
-					count++;
-				} catch (Exception e) {
-					CivLog.warning(e.getMessage());
-					e.printStackTrace();
-				}
-			}
-	
-			CivLog.info("Loaded "+count+" Road Block");
 		} finally {
 			SQL.close(rs, ps, context);
 		}
