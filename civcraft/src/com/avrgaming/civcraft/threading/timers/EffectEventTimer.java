@@ -140,7 +140,6 @@ public class EffectEventTimer extends CivAsyncTask {
 	
 	@Override
 	public void run() {
-		
 		if (runningLock.tryLock()) {
 			try {
 				processTick();
@@ -149,10 +148,6 @@ public class EffectEventTimer extends CivAsyncTask {
 			}
 		} else {
 			CivLog.error("COULDN'T GET LOCK FOR HOURLY TICK. LAST TICK STILL IN PROGRESS?");
-		}
-		
-				
+		}	
 	}
-	
-
 }

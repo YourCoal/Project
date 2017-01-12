@@ -35,7 +35,7 @@ public class GranaryAsyncTask extends CivAsyncTask {
 
 	public static void debug(Granary granary, String msg) {
 		if (debugTowns.contains(granary.getTown().getName())) {
-			CivLog.warning("TrommelDebug:"+granary.getTown().getName()+":"+msg);
+			CivLog.warning("GranaryDebug:"+granary.getTown().getName()+":"+msg);
 		}
 	}	
 	
@@ -45,14 +45,14 @@ public class GranaryAsyncTask extends CivAsyncTask {
 	
 	public void processGranaryUpdate() {
 		if (!granary.isActive()) {
-			debug(granary, "granary inactive...");
+			debug(granary, "Granary inactive...");
 			return;
 		}
 		
-		debug(granary, "Processing granary...");
+		debug(granary, "Processing Granary...");
 		ArrayList<StructureChest> sources = granary.getAllChestsById(1);
 		if (sources.size() != 2) {
-			CivLog.error("Bad chests for granary in town:"+granary.getTown().getName()+" sources:"+sources.size());
+			CivLog.error("Bad chests for Granary in town:"+granary.getTown().getName()+" sources:"+sources.size());
 			return;
 		}
 		
@@ -216,14 +216,17 @@ public class GranaryAsyncTask extends CivAsyncTask {
 						Double chance = CivSettings.getDouble(CivSettings.structureConfig, "granary.penalty_rate") * 100;
 						if (rand1 < chance) {
 							processGranaryUpdate();
+							processGranaryUpdate();
 							debug(this.granary, "Not penalized");
 						} else {
 							debug(this.granary, "Skip Due to Penalty");
 						}
 					} else {
 						processGranaryUpdate();
+						processGranaryUpdate();
 						if (this.granary.getTown().getGovernment().id.equals("gov_despotism")) {
 							debug(this.granary, "Doing Bonus");
+							processGranaryUpdate();
 							processGranaryUpdate();
 						}
 					}					

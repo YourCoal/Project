@@ -92,7 +92,7 @@ temple:
     sacrifices:
         - entities:
               - 'sheep'
-          reward: 50
+          reward: 2
 #====================[ Mine Settings ]====================#
 mine_levels:
 ##### Coal
@@ -438,7 +438,7 @@ structures:
     require_tech:
     require_upgrade:
     check_event:
-    effect_event: generate_culture:25
+#    effect_event: generate_culture:25
     update_event:
     onBuild_event:
     limit: 2
@@ -449,11 +449,11 @@ structures:
     max_hitpoints: 1000
     allow_demolish: false
     strategic: true
-    components:
-        - name: 'AttributeStatic'
-          type: 'direct'
-          attribute: 'CULTURE'
-          value: '25.0'
+#    components:
+#        - name: 'AttributeStatic'
+#          type: 'direct'
+#          attribute: 'CULTURE'
+#          value: '25.0'
   
   - id: s_capitol
     template: capital #XXX misspelt =( but its easier to leave it that way.
@@ -462,7 +462,7 @@ structures:
     require_tech:
     require_upgrade:
     check_event:
-    effect_event: generate_culture:50
+#    effect_event: generate_culture:50
     update_event:
     onBuild_event:
     limit: 2
@@ -473,11 +473,11 @@ structures:
     max_hitpoints: 2000
     allow_demolish: false
     strategic: true
-    components:
-        - name: 'AttributeStatic'
-          type: 'direct'
-          attribute: 'CULTURE'
-          value: '50.0'
+#    components:
+#        - name: 'AttributeStatic'
+#          type: 'direct'
+#          attribute: 'CULTURE'
+#          value: '50.0'
 
   - id: s_bank
     template: bank
@@ -614,10 +614,7 @@ structures:
     displayName: Granary
     require_upgrade:
     require_tech: 'tech_pottery'
-    effect_event:
-    check_event: 
-    update_event:
-    onBuild_event:
+    update_event: granary_process
     limit: 3
     cost: 2500.0
     upkeep: 1500.0
@@ -655,7 +652,7 @@ structures:
     displayName: Monument
     require_upgrade:
     require_tech: 'tech_religion'
-    effect_event: generate_culture:400
+#    effect_event: generate_culture:400
     check_event: 
     update_event: 
     onBuild_event:
@@ -670,10 +667,10 @@ structures:
           type: 'direct'
           attribute: 'HAPPINESS'
           value: '3.0'
-        - name: 'AttributeStatic'
-          type: 'direct'
-          attribute: 'CULTURE'
-          value: '200.0'
+#        - name: 'AttributeStatic'
+#          type: 'direct'
+#          attribute: 'CULTURE'
+#          value: '200.0'
   
   - id: s_temple
     template: temple
@@ -681,7 +678,7 @@ structures:
     displayName: Temple
     require_upgrade:
     require_tech: 'tech_priesthood'
-    effect_event: generate_culture:250
+#    effect_event: generate_culture:250
     check_event: 
     update_event: check_sacrifice 
     onBuild_event:
@@ -692,10 +689,10 @@ structures:
     points: 4700
     max_hitpoints: 250
     components:
-        - name: 'AttributeStatic'
-          type: 'direct'
-          attribute: 'CULTURE'
-          value: '100.0'
+#        - name: 'AttributeStatic'
+#          type: 'direct'
+#          attribute: 'CULTURE'
+#          value: '100.0'
         - name: 'AttributeStatic'
           type: 'direct'
           attribute: 'HAPPINESS'

@@ -59,9 +59,9 @@ public class AdminLagCommand extends CommandBase {
 	}
 
 	public void trommels_cmd() {
-		CivGlobal.trommelsEnabled = !CivGlobal.trommelsEnabled;
+		CivGlobal.questStructuresEnabled = !CivGlobal.questStructuresEnabled;
 		
-		if (CivGlobal.trommelsEnabled) {
+		if (CivGlobal.questStructuresEnabled) {
 			CivMessage.sendSuccess(sender, "Trommels enabled.");
 		} else {
 			CivMessage.sendError(sender, "Trommels disabled");

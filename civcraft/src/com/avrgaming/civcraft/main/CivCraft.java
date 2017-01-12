@@ -106,13 +106,14 @@ import com.avrgaming.civcraft.threading.timers.ActionBarUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.AnnouncementTimer;
 import com.avrgaming.civcraft.threading.timers.BeakerTimer;
 import com.avrgaming.civcraft.threading.timers.ChangeGovernmentTimer;
+import com.avrgaming.civcraft.threading.timers.Minute5UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
 import com.avrgaming.civcraft.threading.timers.PlayerProximityComponentTimer;
 import com.avrgaming.civcraft.threading.timers.PlayerTagUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.ReduceExposureTimer;
 import com.avrgaming.civcraft.threading.timers.RegenTimer;
+import com.avrgaming.civcraft.threading.timers.Second1UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.UnitTrainTimer;
-import com.avrgaming.civcraft.threading.timers.UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.WindmillTimer;
 import com.avrgaming.civcraft.util.BukkitObjects;
 import com.avrgaming.civcraft.util.ChunkCoord;
@@ -146,9 +147,11 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("RandomEventSweeper", new RandomEventSweeper(), 0, TimeTools.toTicks(10));
 		
 		// Structure event timers
-		TaskMaster.asyncTimer("UpdateEventTimer", new UpdateEventTimer(), TimeTools.toTicks(1));
+		TaskMaster.asyncTimer("Second1UpdateEventTimer", new Second1UpdateEventTimer(), TimeTools.toTicks(1));
+//		TaskMaster.asyncTimer("Second4UpdateEventTimer", new Second4UpdateEventTimer(), TimeTools.toTicks(4));
+		TaskMaster.asyncTimer("Minute5UpdateEventTimer", new Minute5UpdateEventTimer(), TimeTools.toTicks(60*10));
+		
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
-
 		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
 		TaskMaster.syncTimer("UnitTrainTimer", new UnitTrainTimer(), TimeTools.toTicks(1));
 		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(2));

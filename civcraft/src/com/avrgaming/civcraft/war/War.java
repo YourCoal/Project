@@ -155,7 +155,7 @@ public class War {
 			War.processDefeated();
 		
 			CivGlobal.growthEnabled = true;
-			CivGlobal.trommelsEnabled = true;
+			CivGlobal.questStructuresEnabled = true;
 			CivGlobal.tradeEnabled = true;
 			
 			/* Delete any wartime file used to prevent reboots. */
@@ -195,7 +195,7 @@ public class War {
 			}
 			
 			CivGlobal.growthEnabled = false;
-			CivGlobal.trommelsEnabled = false;
+			CivGlobal.questStructuresEnabled = false;
 			CivGlobal.tradeEnabled = false;
 			
 			try {
