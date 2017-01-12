@@ -149,7 +149,6 @@ public class CivGlobal {
 	private static Map<UUID, ItemFrameStorage> protectedItemFrames = new ConcurrentHashMap<UUID, ItemFrameStorage>();
 	private static Map<BlockCoord, BonusGoodie> bonusGoodies = new ConcurrentHashMap<BlockCoord, BonusGoodie>();
 	private static Map<ChunkCoord, HashSet<Wall>> wallChunks = new ConcurrentHashMap<ChunkCoord, HashSet<Wall>>();
-	private static Map<BlockCoord, RoadBlock> roadBlocks = new ConcurrentHashMap<BlockCoord, RoadBlock>();
 	private static Map<BlockCoord, CustomMapMarker> customMapMarkers = new ConcurrentHashMap<BlockCoord, CustomMapMarker>();
 	private static Map<String, Camp> camps = new ConcurrentHashMap<String, Camp>();
 	private static Map<ChunkCoord, Camp> campChunks = new ConcurrentHashMap<ChunkCoord, Camp>();
@@ -216,7 +215,6 @@ public class CivGlobal {
 		loadWallBlocks();
 		loadRoadBlocks();
 		loadTradeGoods();
-		loadTradeGoodies();
 		loadRandomEvents();
 		loadProtectedBlocks();
 		loadTeams();
@@ -287,10 +285,6 @@ public class CivGlobal {
 		}
 	}
 	
-	private static void loadTradeGoods() {
-		
-	}
-	
 	private static void loadTeams() throws SQLException {
 		Connection context = null;
 		ResultSet rs = null;
@@ -319,7 +313,7 @@ public class CivGlobal {
 		}
 	}
 	
-	private static void loadTradeGoodies() throws SQLException {
+	private static void loadTradeGoods() throws SQLException {
 		Connection context = null;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
@@ -1592,7 +1586,7 @@ public class CivGlobal {
 		Resident playerRes = CivGlobal.getResident(player);
 
 		if (CivGlobal.isMutualOutlaw(namedRes, playerRes)) {
-			return CivColor.Red+namedPlayer.getName();
+			return CivColor.Gold+namedPlayer.getName();
 		}
 		
 		if (namedRes == null || !namedRes.hasTown()) {
@@ -1974,18 +1968,6 @@ public class CivGlobal {
 
 	public static void setFarmGrowQueue(Queue<FarmChunk> farmGrowQueue) {
 		CivGlobal.farmGrowQueue = farmGrowQueue;
-	}
-	
-	public static void addRoadBlock(RoadBlock rb) {
-		roadBlocks.put(rb.getCoord(), rb);
-	}
-	
-	public static void removeRoadBlock(RoadBlock rb) {
-		roadBlocks.remove(rb.getCoord());
-	}
-	
-	public static RoadBlock getRoadBlock(BlockCoord coord) {
-		return roadBlocks.get(coord);
 	}
 
 	public static Collection<Civilization> getAdminCivs() {

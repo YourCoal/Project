@@ -166,16 +166,21 @@ public abstract class LoreMaterial {
 	}
 
 	public static ItemStack spawn(LoreMaterial material) {
-		ItemStack stack = ItemManager.createItemStack(material.getTypeID(), 1, material.getDamage());
+		return spawn(material, 1);
+	}
+	
+	public static ItemStack spawn(LoreMaterial material, int amount) {
+		ItemStack stack = ItemManager.createItemStack(material.getTypeID(), amount, material.getDamage());
 		AttributeUtil attrs = new AttributeUtil(stack);
 		setMIDAndName(attrs, material.getId(), material.getName());
 		
 		if (material instanceof LoreCraftableMaterial) {
 			LoreCraftableMaterial craftMat = (LoreCraftableMaterial)material;
-			//craftMat.getConfigMaterial().category
 			attrs.addLore(CivColor.ITALIC+craftMat.getConfigMaterial().category);
+			if (craftMat.getConfigMaterial().shiny) {
+				attrs.setShiny();
+			}
 		}
-		
 		material.applyAttributes(attrs);
 		return attrs.getStack();
 	}

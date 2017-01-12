@@ -20,6 +20,7 @@ package com.avrgaming.civcraft.command.admin;
 
 import java.sql.SQLException;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -51,6 +52,14 @@ public class AdminResCommand extends CommandBase {
 		commands.put("giveplat", "[player] [amount] - Gives this player the specified amount of platinum.");
 		commands.put("givereward", "[player] [rewardID] - Gives player this achievement with its plat rewards.");
 		commands.put("rename", "[old_name] [new_name] - Rename this resident. Useful if players change their name.");
+		commands.put("exposure", "[resident] [amount] - Gives/Takes thie [amount] of exposure to a [resident].");
+	}
+	
+	public void exposure_cmd() throws CivException {
+		Resident res = getNamedResident(1);
+		Integer exposure = getNamedInteger(2);
+		res.setSpyExposure(res.getSpyExposure()+exposure);
+		CivMessage.sendSuccess(sender, "Gave "+res.getName()+" "+exposure+" Spy Exposure.");
 	}
 	
 	public void rename_cmd() throws CivException {
@@ -132,12 +141,18 @@ public class AdminResCommand extends CommandBase {
 	}
 	
 	public void enchant_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
 		String enchant = getNamedString(1, "Enchant name");
 		int level = getNamedInteger(2);
 		
 		
-		ItemStack stack = player.getItemInHand();
+		ItemStack stack = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			stack = p.getInventory().getItemInMainHand();
+		}
 		Enchantment ench = Enchantment.getByName(enchant);
 		if (ench == null) {
 			String out ="";
@@ -148,7 +163,7 @@ public class AdminResCommand extends CommandBase {
 		}
 		
 		stack.addUnsafeEnchantment(ench, level);
-		CivMessage.sendSuccess(sender, "Enchanted.");
+		CivMessage.sendSuccess(p, "Enchanted "+ench+" with Level "+level);
 	}
 	
 	public void cleartown_cmd() throws CivException {

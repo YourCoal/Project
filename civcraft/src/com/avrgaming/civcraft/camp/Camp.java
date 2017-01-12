@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.camp;
 
-import gpl.AttributeUtil;
-
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -87,6 +85,8 @@ import com.avrgaming.civcraft.util.MultiInventory;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.SimpleBlock.Type;
 
+import gpl.AttributeUtil;
+
 public class Camp extends Buildable {
 
 	private String ownerName;
@@ -132,7 +132,7 @@ public class Camp extends Buildable {
 	private Date nextRaidDate;
 	private int raidLength;
 	
-	private HashMap<String, ConfigCampUpgrade> upgrades = new HashMap<String, ConfigCampUpgrade>();
+	public HashMap<String, ConfigCampUpgrade> upgrades = new HashMap<String, ConfigCampUpgrade>();
 	
 	public static void newCamp(Resident resident, Player player, String name) {
 		
@@ -156,7 +156,14 @@ public class Camp extends Buildable {
 						throw new CivException("A camp named "+name+" already exists!");
 					}
 					
-					ItemStack stack = player.getItemInHand();
+					ItemStack stack = null;
+					if (player.getInventory().getItemInOffHand().getType() != Material.AIR) {
+						CivMessage.sendError(player, "You cannot have items in your offhand!");
+						return;
+					} else {
+						stack = player.getInventory().getItemInMainHand();
+					}
+					
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 					if (craftMat == null || !craftMat.hasComponent("FoundCamp")) {
 						throw new CivException("You must be holding an item that can found a camp.");
@@ -167,17 +174,20 @@ public class Camp extends Buildable {
 					camp.setUndoable(true);
 					CivGlobal.addCamp(camp);
 					camp.save();
-				
+					
 					CivMessage.sendSuccess(player, "You have set up camp!");
-					ItemStack newStack = new ItemStack(Material.AIR);
-					player.setItemInHand(newStack);
+					CivMessage.global(player.getName()+" has completed a camp!");
+					if (player.getInventory().getItemInMainHand().getAmount() <= 1) {
+						player.getInventory().getItemInMainHand().setType(Material.AIR);
+					} else {
+						player.getInventory().getItemInMainHand().setAmount(stack.getAmount()-1);
+					}
 					resident.clearInteractiveMode();
 				} catch (CivException e) {
 					CivMessage.sendError(player, e.getMessage());
 				}
 			}
 		}
-		
 		TaskMaster.syncTask(new SyncTask(resident, name, player));
 	}
 	
@@ -210,18 +220,20 @@ public class Camp extends Buildable {
 	@Override
 	public void loadSettings() {
 		try {
+			//Setup the basics for the camp.
 			coal_per_firepoint = CivSettings.getInteger(CivSettings.campConfig, "camp.coal_per_firepoint");
 			maxFirePoints = CivSettings.getInteger(CivSettings.campConfig, "camp.firepoints");
-			
-			// Setup sifter
-			double gold_nugget_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_gold_nugget_chance");
-			double iron_ignot_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter_iron_ingot_chance");
-			
 			raidLength = CivSettings.getInteger(CivSettings.campConfig, "camp.raid_length");
 			
-			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_nugget_chance, ItemManager.getId(Material.GOLD_NUGGET), (short)0, 1);
-			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, iron_ignot_chance, ItemManager.getId(Material.IRON_INGOT), (short)0, 1);
-			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, 1.0, ItemManager.getId(Material.GRAVEL), (short)0, 1);
+			// Setup sifter
+			double coal_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter.coal_chance");
+			double iron_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter.iron_chance");
+			double gold_chance = CivSettings.getDouble(CivSettings.campConfig, "camp.sifter.gold_chance");
+			
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, coal_chance, ItemManager.getId(Material.COAL), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, iron_chance, ItemManager.getId(Material.IRON_INGOT), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, gold_chance, ItemManager.getId(Material.GOLD_INGOT), (short)0, 1);
+			sifter.addSiftItem(ItemManager.getId(Material.COBBLESTONE), (short)0, 1.0, ItemManager.getId(Material.DIRT), (short)0, 1);
 			
 			consumeComponent = new ConsumeLevelComponent();
 			consumeComponent.setBuildable(this);
@@ -230,12 +242,9 @@ public class Camp extends Buildable {
 				consumeComponent.setConsumes(lvl.level, lvl.consumes);
 			}
 			this.consumeComponent.onLoad();
-
 		} catch (InvalidConfiguration e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public static final String TABLE_NAME = "CAMPS";
@@ -1237,7 +1246,7 @@ public class Camp extends Buildable {
 	}
 
 	public void onControlBlockHit(ControlPoint cp, World world, Player player) {
-		world.playSound(cp.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
+		world.playSound(cp.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
 		world.playEffect(cp.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		CivMessage.send(player, CivColor.LightGray+"Damaged Control Block ("+cp.getHitpoints()+" / "+cp.getMaxHitpoints()+")");
@@ -1247,8 +1256,8 @@ public class Camp extends Buildable {
 	
 	public void onControlBlockDestroy(ControlPoint cp, World world, Player player) {		
 		ItemManager.setTypeId(cp.getCoord().getLocation().getBlock(), CivData.AIR);
-		world.playSound(cp.getCoord().getLocation(), Sound.ANVIL_BREAK, 1.0f, -1.0f);
-		world.playSound(cp.getCoord().getLocation(), Sound.EXPLODE, 1.0f, 1.0f);
+		world.playSound(cp.getCoord().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1.0f, -1.0f);
+		world.playSound(cp.getCoord().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 		
 		FireworkEffect effect = FireworkEffect.builder().with(org.bukkit.FireworkEffect.Type.BURST).withColor(Color.YELLOW).withColor(Color.RED).withTrail().withFlicker().build();
 		FireworkEffectPlayer fePlayer = new FireworkEffectPlayer();

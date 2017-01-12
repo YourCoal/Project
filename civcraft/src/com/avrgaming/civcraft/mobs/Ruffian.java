@@ -3,22 +3,6 @@ package com.avrgaming.civcraft.mobs;
 
 import java.util.List;
 
-import net.minecraft.server.v1_7_R4.AxisAlignedBB;
-import net.minecraft.server.v1_7_R4.DamageSource;
-import net.minecraft.server.v1_7_R4.Entity;
-import net.minecraft.server.v1_7_R4.EntityCreature;
-import net.minecraft.server.v1_7_R4.EntityHuman;
-import net.minecraft.server.v1_7_R4.EntityInsentient;
-import net.minecraft.server.v1_7_R4.EntityPlayer;
-import net.minecraft.server.v1_7_R4.IRangedEntity;
-import net.minecraft.server.v1_7_R4.PathfinderGoalArrowAttack;
-import net.minecraft.server.v1_7_R4.PathfinderGoalFloat;
-import net.minecraft.server.v1_7_R4.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_7_R4.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_7_R4.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_7_R4.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_7_R4.PathfinderGoalRandomStroll;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -27,8 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
@@ -39,8 +23,24 @@ import com.avrgaming.civcraft.mobs.components.MobComponentDefense;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.tasks.FireWorkTask;
 import com.avrgaming.civcraft.util.ItemManager;
-import com.avrgaming.mob.ICustomMob;
-import com.avrgaming.mob.MobBaseWitch;
+
+import moblib.mob.ICustomMob;
+import moblib.mob.MobBaseWitch;
+import net.minecraft.server.v1_10_R1.AxisAlignedBB;
+import net.minecraft.server.v1_10_R1.DamageSource;
+import net.minecraft.server.v1_10_R1.Entity;
+import net.minecraft.server.v1_10_R1.EntityCreature;
+import net.minecraft.server.v1_10_R1.EntityHuman;
+import net.minecraft.server.v1_10_R1.EntityInsentient;
+import net.minecraft.server.v1_10_R1.EntityPlayer;
+import net.minecraft.server.v1_10_R1.IRangedEntity;
+import net.minecraft.server.v1_10_R1.PathfinderGoalArrowAttack;
+import net.minecraft.server.v1_10_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_10_R1.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_10_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_10_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_10_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_10_R1.PathfinderGoalRandomStroll;
 
 public class Ruffian extends CommonCustomMob implements ICustomMob {
 
@@ -55,7 +55,7 @@ public class Ruffian extends CommonCustomMob implements ICustomMob {
 	    getGoalSelector().a(3, new PathfinderGoalLookAtPlayer((EntityInsentient) entity, EntityHuman.class, 8.0F));
 	    getGoalSelector().a(3, new PathfinderGoalRandomLookaround((EntityInsentient) entity));
 	    getTargetSelector().a(1, new PathfinderGoalHurtByTarget((EntityCreature) entity, false));
-	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget((EntityCreature) entity, EntityHuman.class, 0, true));
+	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget<EntityHuman>((EntityCreature) entity, EntityHuman.class, true));
 	    this.setName(this.getLevel().getName()+" "+this.getType().getName());
 	}
 
@@ -229,12 +229,9 @@ public class Ruffian extends CommonCustomMob implements ICustomMob {
 				double r = (double)radius;
 				
 				CraftWorld craftWorld = (CraftWorld)attacker.getWorld();
+				AxisAlignedBB bb = new AxisAlignedBB(x-r, y-r, z-r, x+r, y+r, z+r);
 				
-				AxisAlignedBB bb = AxisAlignedBB.a(x-r, y-r, z-r, x+r, y+r, z+r);
-				
-				@SuppressWarnings("unchecked")
 				List<Entity> entities = craftWorld.getHandle().getEntities(((CraftEntity)attacker).getHandle(), bb);
-				
 				for (Entity e : entities) {
 					if (e instanceof EntityPlayer) {
 						EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(attacker, ((EntityPlayer)e).getBukkitEntity(), DamageCause.ENTITY_ATTACK, damage);
@@ -244,7 +241,6 @@ public class Ruffian extends CommonCustomMob implements ICustomMob {
 				}
 				
 			}
-			
 			
 //			private void setFireAt(Location loc, int radius) {
 //				//Set the entire area on fire.
@@ -302,20 +298,18 @@ public class Ruffian extends CommonCustomMob implements ICustomMob {
 	
 	public static void register() {
 	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.JUNGLE);
-	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.MEGA_TAIGA);
+//	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.MEGA_TAIGA);
 	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.JUNGLE_EDGE);
-	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.JUNGLE_EDGE_MOUNTAINS);
+//	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.JUNGLE_EDGE_MOUNTAINS);
 	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.LESSER, Biome.SWAMPLAND);
-
-
-	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.GREATER, Biome.MEGA_SPRUCE_TAIGA_HILLS);
-	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.GREATER, Biome.MEGA_SPRUCE_TAIGA_HILLS);
+	    
+//	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.GREATER, Biome.MEGA_SPRUCE_TAIGA_HILLS);
+//	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.GREATER, Biome.MEGA_SPRUCE_TAIGA_HILLS);
 	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.GREATER, Biome.JUNGLE_HILLS);
-
-
-	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.ELITE, Biome.BIRCH_FOREST_HILLS_MOUNTAINS);
-	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.ELITE, Biome.ROOFED_FOREST_MOUNTAINS);
-	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.BRUTAL, Biome.JUNGLE_MOUNTAINS);
-	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.BRUTAL, Biome.SWAMPLAND_MOUNTAINS);
+	    
+//	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.ELITE, Biome.BIRCH_FOREST_HILLS_MOUNTAINS);
+//	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.ELITE, Biome.ROOFED_FOREST_MOUNTAINS);
+//	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.BRUTAL, Biome.JUNGLE_MOUNTAINS);
+//	    setValidBiome(CustomMobType.RUFFIAN, CustomMobLevel.BRUTAL, Biome.SWAMPLAND_MOUNTAINS);
 	}
 }

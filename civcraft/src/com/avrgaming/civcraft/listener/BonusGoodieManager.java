@@ -20,6 +20,7 @@ package com.avrgaming.civcraft.listener;
 
 import java.util.Map.Entry;
 
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
@@ -288,13 +289,19 @@ public class BonusGoodieManager implements Listener {
 	 * Track the location of the goodie if a player places it in an item frame.
 	 */
 	@EventHandler(priority = EventPriority.LOW) 
-	public void OnPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
-		
+	public void OnPlayerInteractEntityEvent(PlayerInteractEntityEvent event) throws CivException {
+		Player p = event.getPlayer();
 		if (!(event.getRightClicked() instanceof ItemFrame)) {
 			return;
 		}
 		
-		LoreMaterial material = LoreMaterial.getMaterial(event.getPlayer().getItemInHand());
+		LoreMaterial material = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			material = LoreMaterial.getMaterial(event.getPlayer().getInventory().getItemInMainHand());
+		}
 		if (material != null) {
 			if (material instanceof UnitItemMaterial ||
 					material instanceof UnitMaterial) {
@@ -304,7 +311,7 @@ public class BonusGoodieManager implements Listener {
 			}
 		}
 		
-		BonusGoodie goodie = CivGlobal.getBonusGoodie(event.getPlayer().getItemInHand());
+		BonusGoodie goodie = CivGlobal.getBonusGoodie(event.getPlayer().getInventory().getItemInMainHand());
 		ItemFrame frame = (ItemFrame)event.getRightClicked();
 		ItemFrameStorage frameStore = CivGlobal.getProtectedItemFrame(frame.getUniqueId());
 		
@@ -448,7 +455,6 @@ public class BonusGoodieManager implements Listener {
 			BonusGoodie goodieInFrame = CivGlobal.getBonusGoodie(frame.getItem());
 			if (goodieInFrame != null) {
 				clickedFrame.getTown().onGoodieRemoveFromFrame(clickedFrame, goodieInFrame);
-				
 				try {
 					goodieInFrame.setFrame(clickedFrame);
 					goodieInFrame.update(false);
@@ -462,31 +468,31 @@ public class BonusGoodieManager implements Listener {
 			CivMessage.send(player, CivColor.LightGray+"You unsocket the trade goodie from the frame.");
 		} else if (goodie != null) {
 			//Item frame was empty, add goodie to it.
-			frame.setItem(player.getItemInHand());
-			player.getInventory().remove(player.getItemInHand());
+			frame.setItem(player.getInventory().getItemInMainHand());
+			player.getInventory().remove(player.getInventory().getItemInMainHand());
 			CivMessage.send(player, CivColor.LightGray+"You socket the trade goodie into the frame");
 			clickedFrame.getTown().onGoodiePlaceIntoFrame(clickedFrame, goodie);
-			
 			try {
 				goodie.setFrame(clickedFrame);
 				goodie.update(false);
 			} catch (CivException e) {
 				e.printStackTrace();
 			}
-			
 		}
-		
-		
 	}
 	
-	
-	/*
-	 * Prevent the player from using items that are actually trade goodies.
-	 */
+	/* Prevent the player from using items that are actually trade goodies.  */
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerInteractEvent(PlayerInteractEvent event) {
+		Player p = event.getPlayer();
+		ItemStack item = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			item = p.getInventory().getItemInMainHand();
+		}
 		
-		ItemStack item = event.getPlayer().getItemInHand();
 		BonusGoodie goodie = CivGlobal.getBonusGoodie(item);
 		if (goodie == null) {
 			return;
@@ -499,12 +505,10 @@ public class BonusGoodieManager implements Listener {
 		
 		BlockCoord bcoord = new BlockCoord(event.getClickedBlock());		
 		ItemFrameStorage clickedFrame = ItemFrameStorage.attachedBlockMap.get(bcoord);
-		
 		if (clickedFrame != null) {
 			if (clickedFrame.getItemFrame() != null) {
-				if (clickedFrame.getItemFrame().getAttachedFace().getOppositeFace() ==
-						event.getBlockFace()) {
-					onPlayerProtectedFrameInteract(event.getPlayer(), clickedFrame,	goodie, event);
+				if (clickedFrame.getItemFrame().getAttachedFace().getOppositeFace() == event.getBlockFace()) {
+					onPlayerProtectedFrameInteract(p, clickedFrame,	goodie, event);
 					event.setCancelled(true);
 				}
 			}
@@ -512,7 +516,7 @@ public class BonusGoodieManager implements Listener {
 		}
 		
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {				
-			CivMessage.sendError(event.getPlayer(), "Cannot use bonus goodie as a normal item.");
+			CivMessage.sendError(p, "Cannot use bonus goodie as a normal item.");
 			event.setCancelled(true);
 			return;
 		}

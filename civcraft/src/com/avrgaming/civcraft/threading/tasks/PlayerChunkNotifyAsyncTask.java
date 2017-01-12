@@ -54,14 +54,12 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 	}
 	
 	public static String getNotifyColor(CultureChunk toCc, Relation.Status status, Player player) {
-
 		String color = CivColor.White;
 		switch (status) {
 		case NEUTRAL:
 			if (toCc.getTown().isOutlaw(player.getName())) {
-				color = CivColor.Yellow;
+				color = CivColor.Gold;
 			}
-			
 			break;
 		case HOSTILE:
 			color = CivColor.Yellow;
@@ -77,7 +75,6 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 		case ALLY:
 			color = CivColor.Green;
 		}
-		
 		return color;
 	}
 	
@@ -217,9 +214,9 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			return;
 		}
 		lastMessageTime = now;
-
+		
 		cultureEnterTimes.put(borderSpamKey, lastMessageTime);
-		CivMessage.sendCiv(toCc.getCiv(), color+player.getDisplayName()+"("+relationName+") has entered our borders.");
+		CivMessage.sendCiv(toCc.getCiv(), color+player.getDisplayName()+color+" ("+relationName+")"+CivColor.White+" has entered our borders.");
 	}
 
 

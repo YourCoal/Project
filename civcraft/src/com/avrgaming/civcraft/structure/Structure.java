@@ -164,6 +164,13 @@ public class Structure extends Buildable {
 				struct = (Structure) new Mine(rs);
 			}
 			break;
+		case "ti_lab":
+			if (rs == null) {
+				struct = (Structure) new Lab(center, id, town);
+			} else {
+				struct = (Structure) new Lab(rs);
+			}
+			break;
 		case "ti_farm":
 			if (rs == null) {
 				struct = (Structure) new Farm(center, id, town);

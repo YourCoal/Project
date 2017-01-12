@@ -65,6 +65,18 @@ public class Bank extends Structure {
 		nonMemberFeeComponent = new NonMemberFeeComponent(this);
 		nonMemberFeeComponent.onLoad();
 	}
+	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Bank</u></b><br/>";
+		out += "Level: "+this.level;
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "bank";
+	}
 
 	public double getBankExchangeRate() {
 		double exchange_rate = 0.0;
@@ -194,16 +206,13 @@ public class Bank extends Structure {
 	
 	@Override
 	public void processSignAction(Player player, StructureSign sign, PlayerInteractEvent event) {
-		//int special_id = Integer.valueOf(sign.getAction());
 		Resident resident = CivGlobal.getResident(player);
-		
 		if (resident == null) {
 			return;
 		}
 		
 		try {
-			
-			if (LoreMaterial.isCustom(player.getItemInHand())) {
+			if (LoreMaterial.isCustom(player.getInventory().getItemInMainHand()) || LoreMaterial.isCustom(player.getInventory().getItemInOffHand())) {
 				throw new CivException("You cannot exchange this item at the bank.");
 			}
 			
@@ -260,18 +269,6 @@ public class Bank extends Structure {
 			
 			sign.update();
 		}
-	}
-
-	@Override
-	public String getDynmapDescription() {
-		String out = "<u><b>Bank</u></b><br/>";
-		out += "Level: "+this.level;
-		return out;
-	}
-	
-	@Override
-	public String getMarkerIconName() {
-		return "bank";
 	}
 	
 	public int getLevel() {

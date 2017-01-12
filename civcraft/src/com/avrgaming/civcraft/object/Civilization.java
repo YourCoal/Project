@@ -352,7 +352,7 @@ public class Civilization extends SQLObject {
 		return true;
 	}
 	
-	private boolean hasTech(String configId) {
+	public boolean hasTech(String configId) {
 		if (configId == null || configId.equals("")) {
 			return true;
 		}
@@ -486,13 +486,15 @@ public class Civilization extends SQLObject {
 		return (this.incomeTaxRate*100)+"%";
 	}
 
-	public static void newCiv(String name, String capitolName, Resident resident,
-			Player player, Location loc) throws CivException {
-		
-		ItemStack stack = player.getItemInHand();
-		/*
-		 * Verify we have the correct item somewhere in our inventory.
-		 */
+	public static void newCiv(String name, String capitolName, Resident resident, Player p, Location loc) throws CivException {
+		ItemStack stack = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			stack = p.getInventory().getItemInMainHand();
+		}
+		//Verify we have the correct item somewhere in our inventory.
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 		if (craftMat == null || !craftMat.hasComponent("FoundCivilization")) {
 			throw new CivException("You must be holding an item that can found a Civilization.");
@@ -562,8 +564,7 @@ public class Civilization extends SQLObject {
 			}
 			
 			CivGlobal.addCiv(civ);
-			ItemStack newStack = new ItemStack(Material.AIR);
-			player.setItemInHand(newStack);
+			p.getInventory().getItemInMainHand().setAmount(stack.getAmount()-1);
 			CivMessage.global("The Civilization of "+civ.getName()+" has been founded! "+civ.getCapitolName()+" is it's capitol!");
 			
 		} catch (InvalidNameException e) {

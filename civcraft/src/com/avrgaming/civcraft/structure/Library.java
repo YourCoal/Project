@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -51,16 +52,21 @@ public class Library extends Structure {
 	private NonMemberFeeComponent nonMemberFeeComponent;
 	
 	public static Enchantment getEnchantFromString(String name) {
-		
 		// Armor Enchantments
+		if (name.equalsIgnoreCase("thorns")) {
+			return Enchantment.THORNS;
+		}
+		if (name.equalsIgnoreCase("respiration")) {
+			return Enchantment.OXYGEN;
+		}
+		if (name.equalsIgnoreCase("aqua_affinity")) {
+			return Enchantment.WATER_WORKER;
+		}
 		if (name.equalsIgnoreCase("protection")) {
 			return Enchantment.PROTECTION_ENVIRONMENTAL;
 		}
 		if (name.equalsIgnoreCase("fire_protection")) {
 			return Enchantment.PROTECTION_FIRE;
-		}
-		if (name.equalsIgnoreCase("feather_falling")) {
-			return Enchantment.PROTECTION_FALL;
 		}
 		if (name.equalsIgnoreCase("blast_protection")) {
 			return Enchantment.PROTECTION_EXPLOSIONS;
@@ -68,11 +74,14 @@ public class Library extends Structure {
 		if (name.equalsIgnoreCase("projectile_protection")) {
 			return Enchantment.PROTECTION_PROJECTILE;
 		}
-		if (name.equalsIgnoreCase("respiration")) {
-			return Enchantment.OXYGEN;
+		if (name.equalsIgnoreCase("feather_falling")) {
+			return Enchantment.PROTECTION_FALL;
 		}
-		if (name.equalsIgnoreCase("aqua_affinity")) {
-			return Enchantment.WATER_WORKER;
+		if (name.equalsIgnoreCase("depth_strider")) {
+			return Enchantment.DEPTH_STRIDER;
+		}
+		if (name.equalsIgnoreCase("frost_walker")) {
+			return Enchantment.FROST_WALKER;
 		}
 		
 		// Sword Enchantments
@@ -95,20 +104,6 @@ public class Library extends Structure {
 			return Enchantment.LOOT_BONUS_MOBS;
 		}
 		
-		// Tool Enchantments
-		if (name.equalsIgnoreCase("efficiency")) {
-			return Enchantment.DIG_SPEED;
-		}
-		if (name.equalsIgnoreCase("silk_touch")) {
-			return Enchantment.SILK_TOUCH;
-		}
-		if (name.equalsIgnoreCase("unbreaking")) {
-			return Enchantment.DURABILITY;
-		}
-		if (name.equalsIgnoreCase("fortune")) {
-			return Enchantment.LOOT_BONUS_BLOCKS;
-		}
-		
 		// Bow Enchantments
 		if (name.equalsIgnoreCase("power")) {
 			return Enchantment.ARROW_DAMAGE;
@@ -123,10 +118,36 @@ public class Library extends Structure {
 			return Enchantment.ARROW_INFINITE;
 		}
 		
-		return null;
+		// Tool Enchantments
+		if (name.equalsIgnoreCase("efficiency")) {
+			return Enchantment.DIG_SPEED;
+		}
+		if (name.equalsIgnoreCase("unbreaking")) {
+			return Enchantment.DURABILITY;
+		}
+		if (name.equalsIgnoreCase("silk_touch")) {
+			return Enchantment.SILK_TOUCH;
+		}
+		if (name.equalsIgnoreCase("fortune")) {
+			return Enchantment.LOOT_BONUS_BLOCKS;
+		}
 		
+		// Fishing Rod Enchantments
+		if (name.equalsIgnoreCase("luck")) {
+			return Enchantment.LUCK;
+		}
+		if (name.equalsIgnoreCase("lure")) {
+			return Enchantment.LURE;
+		}
+		
+		// Any Item Enchantments
+		if (name.equalsIgnoreCase("mending")) {
+			return Enchantment.MENDING;
+		}
+		
+		return null;
 	}
-
+	
 	public double getNonResidentFee() {
 		return this.nonMemberFeeComponent.getFeeRate();
 	}
@@ -236,17 +257,23 @@ public class Library extends Structure {
 	
 	public void add_enchantment_to_tool(Player player, StructureSign sign, PlayerInteractEvent event) throws CivException {
 		int special_id = Integer.valueOf(sign.getAction());
-
+		
 		if (!event.hasItem()) {
 			CivMessage.send(player, CivColor.Rose+"You must have the item you wish to enchant in hand.");
 			return;
 		}
-		ItemStack item = event.getItem();
+		
+		ItemStack item = null;
+		if (player.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(player, "You cannot have items in your offhand!");
+			return;
+		} else {
+			item = event.getItem();
+		}
 		
 		if (special_id >= this.enchantments.size()) {
 			throw new CivException("Library enchantment not ready.");
 		}
-		
 		
 		LibraryEnchantment ench = this.enchantments.get(special_id);
 		this.validateEnchantment(item, ench);
@@ -279,7 +306,7 @@ public class Library extends Structure {
 				
 		// Successful payment, process enchantment.
 		ItemStack newStack = this.addEnchantment(item, ench);
-		player.setItemInHand(newStack);
+		player.getInventory().setItemInMainHand(newStack);
 		CivMessage.send(player, CivColor.LightGreen+"Enchanted with "+ench.displayName+"!");
 	}
 

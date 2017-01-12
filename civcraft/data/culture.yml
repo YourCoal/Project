@@ -13,477 +13,515 @@ beakers_per_culture: 0.1
 # chunks - number of chunks(radius from each edge town block) of culture granted for this level
 
 culture_levels:
-    - level: 0
-      amount: 0
-      chunks: 6
- 
-    - level: 1
-      amount: 500
-      chunks: 8
-           
-    - level: 2
-      amount: 10000
-      chunks: 10
-    
-    - level: 3
-      amount: 20000
-      chunks: 13
-    
-    - level: 4
-      amount: 100000
-      chunks: 15
-
-    - level: 5
-      amount: 250000
-      chunks: 17
-
-    - level: 6
-      amount: 500000
-      chunks: 19
-
-    - level: 7
-      amount: 1000000
-      chunks: 22
-
-    - level: 8
-      amount: 2000000
-      chunks: 26
- 
-    - level: 9
-      amount: 4000000
-      chunks: 32
-    
-    - level: 10
-      amount: 5000000
-      chunks: 40
-
+ - level: 0
+   amount: 0
+   chunks: 6
+#
+ - level: 1
+   amount: 125
+   chunks: 8
+#  
+ - level: 2
+   amount: 400
+   chunks: 10
+#
+ - level: 3
+   amount: 750
+   chunks: 12
+#
+ - level: 4
+   amount: 1600
+   chunks: 15
+#
+ - level: 5
+   amount: 4000
+   chunks: 17
+#
+ - level: 6
+   amount: 9500
+   chunks: 19
+#
+ - level: 7
+   amount: 20000
+   chunks: 21
+#
+ - level: 8
+   amount: 45000
+   chunks: 24
+#
+ - level: 9
+   amount: 100000
+   chunks: 27
+#
+ - level: 10
+   amount: 185000
+   chunks: 30
+#
+ - level: 11
+   amount: 400000
+   chunks: 32
+#
 culture_biomes:
-    - name: OCEAN
-      coins: 0.0
-      hammers: 0.5
-      growth: 0.25
-      happiness: 0.02
-      beakers: 1.0
+#All biomes are listed here: http://minecraft.gamepedia.com/Biome
+#There code names are in Biome.java
+#Note: Any mountains/sub-biomes of a biome are MUTATED_(biome name)
+#=======================#
+#======== Water ========#
+#=======================#
+ - name: RIVER
+   coins: 0.0
+   growth: 3.0
+   hammers: 1.0
+   beakers: 1.0
+   happiness: 0.03
+#
+ - name: FROZEN_RIVER
+   coins: 0.0
+   growth: 2.0
+   hammers: 2.0
+   beakers: 1.0
+   happiness: 0.015
+#
+ - name: BEACHES
+   coins: 0.0
+   growth: 0.25
+   hammers: 0.25
+   beakers: 1.5
+   happiness: 0.05
+#
+ - name: STONE_BEACH
+   coins: 0.0
+   growth: 0.0
+   hammers: 3.0
+   beakers: 0.25
+   happiness: 0.015
+#
+ - name: COLD_BEACH
+   coins: 0.0
+   growth: 0.0
+   hammers: 1.75
+   beakers: 1.0
+   happiness: 0.01
+#
+ - name: OCEAN
+   coins: 0.0
+   growth: 0.5
+   hammers: 0.5
+   beakers: 1.0
+   happiness: 0.02
+#
+ - name: FROZEN_OCEAN
+   coins: 0.0
+   growth: 0.25
+   hammers: 1.0
+   beakers: 2.0
+   happiness: 0.01
+#
+ - name: DEEP_OCEAN
+   coins: 0.0
+   growth: 0.25
+   hammers: 0.5
+   beakers: 1.5
+   happiness: 0.0
+#======================#
+#======== Snow ========#
+#======================#
+ - name: ICE_FLATS
+   coins: 0.0
+   growth: 0.5
+   hammers: 1.0
+   beakers: 0.75
+   happiness: 0.02
+#
+ - name: ICE_MOUNTAINS
+   coins: 0.0
+   growth: 0.25
+   hammers: 2.0
+   beakers: 1.0
+   happiness: 0.01
+#
+ - name: MUTATED_ICE_FLATS
+   coins: 0.0
+   hammers: 1.0
+   growth: 0.0
+   happiness: 0.025
+   beakers: 2.5
+#
+ - name: TAIGA_COLD
+   coins: 0.0
+   growth: 0.25
+   hammers: 1.0
+   beakers: 1.5
+   happiness: 0.02
+#
+ - name: MUTATED_TAIGA_COLD
+   coins: 0.0
+   growth: 0.0
+   hammers: 1.75
+   beakers: 0.5
+   happiness: 0.01
+#
+ - name: TAIGA_COLD_HILLS
+   coins: 0.0
+   growth: 0.0
+   hammers: 2.0
+   beakers: 0.25
+   happiness: 0.015
+#======================#
+#======== Cold ========#
+#======================#
+ - name: EXTREME_HILLS_WITH_TREES
+   coins: 0.0
+   hammers: 4.5
+   growth: 0.0
+   happiness: 0.0
+   beakers: 0.0
+#
+ - name: TAIGA
+   coins: 0.0
+   growth: 0.5
+   hammers: 2.0
+   beakers: 0.5
+   happiness: 0.02
+#
+ - name: MUTATED_TAIGA
+   coins: 0.0
+   growth: 0.5
+   hammers: 1.5
+   beakers: 1.0
+   happiness: 0.02
+#
+ - name: TAIGA_HILLS
+   coins: 0.0
+   hammers: 2.5
+   growth: 0.25
+   happiness: 0.02
+   beakers: 0.15
+#
+ - name: REDWOOD_TAIGA
+   coins: 0.0
+   growth: 0.25
+   hammers: 2.5
+   beakers: 0.25
+   happiness: 0.015
+#
+ - name: REDWOOD_TAIGA_HILLS
+   coins: 0.0
+   growth: 0.0
+   hammers: 3.0
+   beakers: 0.25
+   happiness: 0.03
+#
+#======================#
+#======== Lush ========#
+#======================#
+ - name: MUSHROOM_ISLAND
+   coins: 0.0
+   growth: 0.5
+   hammers: 1.0
+   beakers: 1.0
+   happiness: 0.03
+#
+ - name: MUSHROOM_ISLAND_SHORE
+   coins: 0.0
+   growth: 0.75
+   hammers: 0.5
+   beakers: 0.5
+   happiness: 0.04
+#
+ - name: PLAINS
+   coins: 0.0
+   growth: 2.0
+   hammers: 0.5
+   beakers: 0.5
+   happiness: 0.02
+#
+ - name: FOREST
+   coins: 0.0
+   hammers: 1.0
+   growth: 1.25
+   happiness: 0.025
+   beakers: 0.5
+#
+ - name: MUTATED_FOREST
+   coins: 0.0
+   hammers: 1.0
+   growth: 1.0
+   happiness: 0.05
+   beakers: 0.75
+#
+ - name: MUTATED_PLAINS
+   coins: 0.0
+   growth: 1.5
+   hammers: 1.0
+   beakers: 1.0
+   happiness: 0.03
+#
+ - name: SWAMPLAND
+   coins: 0.0
+   growth: 1.0
+   hammers: 0.5
+   beakers: 1.25
+   happiness: 0.02
+#
+ - name: MUTATED_SWAMPLAND
+   coins: 0.0
+   growth: 0.25
+   hammers: 2.0
+   beakers: 0.5
+   happiness: 0.02
+#
+ - name: ROOFED_FOREST
+   coins: 0.0
+   growth: 1.0
+   hammers: 1.0
+   beakers: 0.75
+   happiness: 0.025
 
-    - name: DEEP_OCEAN
-      coins: 0.0
-      hammers: 0.5
-      growth: 0.25
-      happiness: 0.0
-      beakers: 1.5
+ - name: MUTATED_ROOFED_FOREST
+   coins: 0.0
+   growth: 0.5
+   hammers: 2.0
+   beakers: 0.5
+   happiness: 0.01
+#
+#======================#
+#======== Warm ========#
+#======================#
+ - name: DESERT
+   coins: 0.0
+   growth: 0.75
+   hammers: 0.5
+   beakers: 1.0
+   happiness: 0.03
+#
+ - name: MUTATED_DESERT
+   coins: 0.0
+   growth: 0.25
+   hammers: 2.5
+   beakers: 1.0
+   happiness: 0.01
+#
+ - name: DESERT_HILLS
+   coins: 0.0
+   growth: 0.25
+   hammers: 1.75
+   beakers: 1.25
+   happiness: 0.02
+#
+#======================#
+#======== Othr ========#
+#======================#
+ - name: HELL
+   coins: 0.0
+   growth: 0.0
+   hammers: 0.25
+   beakers: 0.75
+   happiness: 0.001
+#
+ - name: SKY
+   coins: 0.0
+   growth: 0.0
+   hammers: 0.75
+   beakers: 0.25
+   happiness: 0.001
+#
+#======================#
+ - name: SMALL_MOUNTAINS
+   coins: 0.0
+   growth: 0.5
+   hammers: 2.5
+   beakers: 0.5
+   happiness: 0.015
 
-    - name: SMALL_MOUNTAINS
-      coins: 0.0
-      hammers: 2.5
-      growth: 0.5
-      happiness: 0.015
-      beakers: 0.5
+ - name: SAVANNA
+   coins: 0.0
+   growth: 1.5
+   hammers: 1.0
+   beakers: 1.0
+   happiness: 0.03
 
-    - name: PLAINS
-      coins: 0.0
-      hammers: 0.25
-      growth: 2.0
-      happiness: 0.025
-      beakers: 0.5
+ - name: SAVANNA_PLATEAU
+   coins: 0.0
+   growth: 1.25
+   hammers: 1.25
+   beakers: 1.0
+   happiness: 0.025
 
-    - name: SUNFLOWER_PLAINS
-      coins: 0.0
-      hammers: 1.0
-      growth: 1.5
-      happiness: 0.04
-      beakers: 1.0
+ - name: MESA
+   coins: 0.0
+   hammers: 2.0
+   growth: 0.0
+   happiness: 0.03
+   beakers: 1.5
 
-    - name: SAVANNA
-      coins: 0.0
-      hammers: 1.0
-      growth: 1.5
-      happiness: 0.03
-      beakers: 1.0
+ - name: MESA_BRYCE
+   coins: 0.0
+   hammers: 2.0
+   growth: 0.5
+   happiness: 0.01
+   beakers: 0.25
 
-    - name: SAVANNA_PLATEAU
-      coins: 0.0
-      hammers: 1.25
-      growth: 1.25
-      happiness: 0.025
-      beakers: 1.0
+ - name: MESA_PLATEAU
+   coins: 0.0
+   hammers: 2.5
+   growth: 0.0
+   happiness: 0.01
+   beakers: 0.25
 
-    - name: MESA
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.0
-      happiness: 0.03
-      beakers: 1.5
+ - name: MESA_PLATEAU_MOUNTAINS
+   coins: 0.0
+   hammers: 3.0
+   growth: 0.0
+   happiness: 0.0
+   beakers: 0.25
 
-    - name: MESA_BRYCE
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.5
-      happiness: 0.01
-      beakers: 0.25
+ - name: MESA_PLATEAU_FOREST_MOUNTAINS
+   coins: 0.0
+   hammers: 3.0
+   growth: 0.0
+   happiness: 0.0
+   beakers: 0.25
 
-    - name: MESA_PLATEAU
-      coins: 0.0
-      hammers: 2.5
-      growth: 0.0
-      happiness: 0.01
-      beakers: 0.25
+ - name: MESA_PLATEAU_FOREST
+   coins: 0.0
+   hammers: 1.5
+   growth: 1.0
+   happiness: 0.02
+   beakers: 0.5
 
-    - name: MESA_PLATEAU_MOUNTAINS
-      coins: 0.0
-      hammers: 3.0
-      growth: 0.0
-      happiness: 0.0
-      beakers: 0.25
+ - name: BIRCH_FOREST
+   coins: 0.0
+   hammers: 1.5
+   growth: 0.75
+   happiness: 0.025
+   beakers: 0.5
 
-    - name: MESA_PLATEAU_FOREST_MOUNTAINS
-      coins: 0.0
-      hammers: 3.0
-      growth: 0.0
-      happiness: 0.0
-      beakers: 0.25
+ - name: BIRCH_FOREST_MOUNTAINS
+   coins: 0.0
+   hammers: 2.5
+   growth: 0.5
+   happiness: 0.01
+   beakers: 1.0
 
-    - name: MESA_PLATEAU_FOREST
-      coins: 0.0
-      hammers: 1.5
-      growth: 1.0
-      happiness: 0.02
-      beakers: 0.5
+ - name: BIRCH_FOREST_HILLS_MOUNTAINS
+   coins: 0.0
+   hammers: 1.5
+   growth: 1.0
+   happiness: 0.02
+   beakers: 1.0
 
-    - name: DESERT
-      coins: 0.0
-      hammers: 0.25
-      growth: 1.0
-      happiness: 0.03
-      beakers: 1.0
+ - name: JUNGLE_MOUNTAINS
+   coins: 0.0
+   hammers: 3.0
+   growth: 0.5
+   happiness: 0.0
+   beakers: 0.25
+
+ - name: JUNGLE_EDGE_MOUNTAINS
+   coins: 0.0
+   hammers: 2.0
+   growth: 0.25
+   happiness: 0.01
+   beakers: 0.5
+
+ - name: SAVANNA_MOUNTAINS
+   coins: 0.0
+   hammers: 4.0
+   growth: 0.25
+   happiness: 0.0
+   beakers: 0.25
+
+ - name: SAVANNA_PLATEAU_MOUNTAINS
+   coins: 0.0
+   hammers: 3.25
+   growth: 0.5
+   happiness: 0.0
+   beakers: 0.0
+
+ - name: COLD_TAIGA_MOUNTAINS
+   coins: 0.0
+   hammers: 3.0
+   growth: 0.0
+   happiness: 0.0
+   beakers: 1.0
+
+ - name: SMALL_MOUNTAINS
+   coins: 0.0
+   hammers: 2.5
+   growth: 0.5
+   happiness: 0.015
+   beakers: 0.5
+
+ - name: FOREST_HILLS
+   coins: 0.0
+   hammers: 2.0
+   growth: 0.25
+   happiness: 0.03
+   beakers: 1.0
+
+ - name: BIRCH_FOREST_HILLS
+   coins: 0.0
+   hammers: 2.0
+   growth: 0.15
+   happiness: 0.02
+   beakers: 0.5
+
+ - name: MEGA_TAIGA_HILLS
+   coins: 0.0
+   hammers: 3.0
+   growth: 0.1
+   happiness: 0.0
+   beakers: 0.1
     
-    - name: FOREST
-      coins: 0.0
-      hammers: 1.0
-      growth: 1.25
-      happiness: 0.025
-      beakers: 0.5
+ - name: EXTREME_HILLS
+   coins: 0.0
+   hammers: 4.0
+   growth: 0.0
+   happiness: 0.0
+   beakers: 0.15
 
-    - name: FLOWER_FOREST
-      coins: 0.0
-      hammers: 1.0
-      growth: 1.0
-      happiness: 0.05
-      beakers: 0.75
+ - name: EXTREME_HILLS_MOUNTAINS
+   coins: 0.0
+   hammers: 4.0
+   growth: 0.0
+   happiness: 0.0
+   beakers: 0.5
 
-    - name: BIRCH_FOREST
-      coins: 0.0
-      hammers: 1.5
-      growth: 0.75
-      happiness: 0.025
-      beakers: 0.5
+ - name: EXTREME_HILLS_PLUS_MOUNTAINS
+   coins: 0.0
+   hammers: 4.5
+   growth: 0.0
+   happiness: 0.0
+   beakers: 0.5
 
-    - name: BIRCH_FOREST_MOUNTAINS
-      coins: 0.0
-      hammers: 2.5
-      growth: 0.5
-      happiness: 0.01
-      beakers: 1.0
+ - name: JUNGLE
+   coins: 0.0
+   hammers: 0.5
+   growth: 1.0
+   happiness: 0.02
+   beakers: 1.0
 
-    - name: BIRCH_FOREST_HILLS_MOUNTAINS
-      coins: 0.0
-      hammers: 1.5
-      growth: 1.0
-      happiness: 0.02
-      beakers: 1.0
+ - name: JUNGLE_HILLS
+   coins: 0.0
+   hammers: 2.0
+   growth: 0.25
+   happiness: 0.03
+   beakers: 1.0
 
-    - name: ROOFED_FOREST
-      coins: 0.0
-      hammers: 1.0
-      growth: 0.50
-      happiness: 0.025
-      beakers: 0.75
+ - name: JUNGLE_EDGE
+   coins: 0.0
+   hammers: 1.0
+   growth: 0.5
+   happiness: 0.03
+   beakers: 1.0
 
-    - name: ROOFED_FOREST_MOUNTAINS
-      coins: 0.0
-      hammers: 2.0
-      growth: 2.0
-      happiness: 0.0
-      beakers: 0.5
-    
-    - name: TAIGA
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.5
-      happiness: 0.02
-      beakers: 0.5
-
-    - name: MEGA_TAIGA
-      coins: 0.0
-      hammers: 1.5
-      growth: 0.25
-      happiness: 0.02
-      beakers: 1.5
-
-    - name: MEGA_SPRUCE_TAIGA
-      coins: 0.0
-      hammers: 2.5
-      growth: 0.25
-      happiness: 0.01
-      beakers: 0.25
-
-    - name: MEGA_SPRUCE_TAIGA_HILLS
-      coins: 0.0
-      hammers: 3.0
-      growth: 0.0
-      happiness: 0.03
-      beakers: 0.5
-
-    - name: COLD_TAIGA
-      coins: 0.0
-      hammers: 1.0
-      growth: 0.25
-      happiness: 0.02
-      beakers: 1.5
-
-    - name: SWAMPLAND
-      coins: 0.0
-      hammers: 0.25
-      growth: 1.0
-      happiness: 0.02
-      beakers: 1.5
-
-    - name: RIVER
-      coins: 0.0
-      hammers: 1.5
-      growth: 3.0
-      happiness: 0.025
-      beakers: 0.5
-
-    - name: FROZEN_OCEAN
-      coins: 0.0
-      hammers: 0.25
-      growth: 0.0
-      happiness: 0.0
-      beakers: 3.0
-
-    - name: FROZEN_RIVER
-      coins: 0.0
-      hammers: 2.0
-      growth: 2.5
-      happiness: 0.015
-      beakers: 1.0
-
-    - name: ICE_PLAINS
-      coins: 0.0
-      hammers: 1.0
-      growth: 0.5
-      happiness: 0.02
-      beakers: 0.5
-
-    - name: ICE_PLAINS_SPIKES
-      coins: 0.0
-      hammers: 0.5
-      growth: 0.0
-      happiness: 0.03
-      beakers: 3.0
-
-    - name: JUNGLE_MOUNTAINS
-      coins: 0.0
-      hammers: 3.0
-      growth: 0.5
-      happiness: 0.0
-      beakers: 0.25
-
-    - name: JUNGLE_EDGE_MOUNTAINS
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.25
-      happiness: 0.01
-      beakers: 0.5
-
-    - name: ICE_MOUNTAINS
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.25
-      happiness: 0.02
-      beakers: 1.0
-
-    - name: SAVANNA_MOUNTAINS
-      coins: 0.0
-      hammers: 4.0
-      growth: 0.25
-      happiness: 0.0
-      beakers: 0.25
-
-    - name: SAVANNA_PLATEAU_MOUNTAINS
-      coins: 0.0
-      hammers: 3.25
-      growth: 0.5
-      happiness: 0.0
-      beakers: 0.0
-
-    - name: TAIGA_MOUNTAINS
-      coins: 0.0
-      hammers: 1.5
-      growth: 0.5
-      happiness: 0.03
-      beakers: 1.0
-
-    - name: COLD_TAIGA_MOUNTAINS
-      coins: 0.0
-      hammers: 3.0
-      growth: 0.0
-      happiness: 0.0
-      beakers: 1.0
-
-    - name: SWAMPLAND_MOUNTAINS
-      coins: 0.0
-      hammers: 2.5
-      growth: 0.10
-      happiness: 0.02
-      beakers: 0.5
-    
-    - name: DESERT_MOUNTAINS
-      coins: 0.0
-      hammers: 3.0
-      growth: 0.0
-      happiness: 0.01
-      beakers: 1.0
-
-    - name: SMALL_MOUNTAINS
-      coins: 0.0
-      hammers: 2.5
-      growth: 0.5
-      happiness: 0.015
-      beakers: 0.5
-    
-    - name: MUSHROOM_ISLAND
-      coins: 0.0
-      hammers: 1.0
-      growth: 0.5
-      happiness: 0.03
-      beakers: 0.5
-    
-    - name: MUSHROOM_SHORE
-      coins: 0.0
-      hammers: 0.5
-      growth: 0.25
-      happiness: 0.05
-      beakers: 0.5
-
-    - name: BEACH
-      coins: 0.0
-      hammers: 0.25
-      growth: 0.5
-      happiness: 0.06
-      beakers: 1.5
-
-    - name: STONE_BEACH
-      coins: 0.0
-      hammers: 3.0
-      growth: 0.0
-      happiness: 0.015
-      beakers: 0.15
-
-    - name: COLD_BEACH
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.0
-      happiness: 0.01
-      beakers: 1.0
-
-    - name: DESERT_HILLS
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.25
-      happiness: 0.03
-      beakers: 1.0
-
-    - name: FOREST_HILLS
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.25
-      happiness: 0.03
-      beakers: 1.0
-
-    - name: BIRCH_FOREST_HILLS
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.15
-      happiness: 0.02
-      beakers: 0.5
-
-    - name: TAIGA_HILLS
-      coins: 0.0
-      hammers: 2.5
-      growth: 0.25
-      happiness: 0.02
-      beakers: 0.15
-
-    - name: MEGA_TAIGA_HILLS
-      coins: 0.0
-      hammers: 3.0
-      growth: 0.1
-      happiness: 0.0
-      beakers: 0.1
-
-    - name: COLD_TAIGA_HILLS
-      coins: 0.0
-      hammers: 2.5
-      growth: 0.15
-      happiness: 0.02
-      beakers: 0.25
-    
-    - name: EXTREME_HILLS
-      coins: 0.0
-      hammers: 4.0
-      growth: 0.0
-      happiness: 0.0
-      beakers: 0.15
-
-    - name: EXTREME_HILLS_MOUNTAINS
-      coins: 0.0
-      hammers: 4.0
-      growth: 0.0
-      happiness: 0.0
-      beakers: 0.5
-
-    - name: EXTREME_HILLS_PLUS
-      coins: 0.0
-      hammers: 4.5
-      growth: 0.0
-      happiness: 0.0
-      beakers: 0.0
-
-    - name: EXTREME_HILLS_PLUS_MOUNTAINS
-      coins: 0.0
-      hammers: 4.5
-      growth: 0.0
-      happiness: 0.0
-      beakers: 0.5
-
-    - name: JUNGLE
-      coins: 0.0
-      hammers: 0.5
-      growth: 1.0
-      happiness: 0.02
-      beakers: 1.0
-
-    - name: JUNGLE_HILLS
-      coins: 0.0
-      hammers: 2.0
-      growth: 0.25
-      happiness: 0.03
-      beakers: 1.0
-
-    - name: JUNGLE_EDGE
-      coins: 0.0
-      hammers: 1.0
-      growth: 0.5
-      happiness: 0.03
-      beakers: 1.0
-
-    - name: UNKNOWN
-      coins: 0.0
-      hammers: 0.0
-      growth: 0.0
-      happiness: 0.0
-      beakers: 0.0
+ - name: UNKNOWN
+   coins: 0.0
+   hammers: 0.0
+   growth: 0.0
+   happiness: 0.0
+   beakers: 0.0
 
 
 

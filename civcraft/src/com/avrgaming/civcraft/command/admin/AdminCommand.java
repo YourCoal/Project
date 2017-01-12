@@ -39,6 +39,7 @@ import com.avrgaming.civcraft.config.ConfigMaterialCategory;
 import com.avrgaming.civcraft.config.ConfigUnit;
 import com.avrgaming.civcraft.endgame.EndGameCondition;
 import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.listener.HolographicDisplaysListener;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
@@ -90,6 +91,18 @@ public class AdminCommand extends CommandBase {
 		commands.put("arena", "Arena management commands.");
 		commands.put("perk", "Admin perk management.");
 		commands.put("mob", "Mob management commands");
+		commands.put("gui", "Opens book options. Type 'open' after book to get the GUI.");
+		commands.put("tradeholo", "Enables all trade good holograms.");
+	}
+	
+	public void tradeholo_cmd() {
+		HolographicDisplaysListener.generateTradeGoodHolograms();
+		CivMessage.sendSuccess(sender, "Updated holograms.");
+	}
+	
+	public void gui_cmd() {
+		AdminGUICommand cmd = new AdminGUICommand();	
+		cmd.onCommand(sender, null, "gui", this.stripArgs(args, 1));
 	}
 	
 	public void mob_cmd() {

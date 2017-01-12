@@ -39,6 +39,7 @@ import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -171,7 +172,7 @@ public class DebugCommand extends CommandBase {
 		commands.put("trommel", "[name] - turn on this town's trommel debugging.");
 		commands.put("fakeresidents", "[town] [count] - Adds this many fake residents to a town.");
 		commands.put("clearresidents", "[town] - clears this town of it's random residents.");
-		commands.put("biomehere", "- shows you biome info where you're standing.");
+		commands.put("biome", "- shows you biome info where you're standing.");
 		commands.put("scout", "[civ] - enables debugging for scout towers in this civ.");
 		commands.put("getit", "gives you an item.");
 		commands.put("showinv", "shows you an inventory");
@@ -423,7 +424,6 @@ public class DebugCommand extends CommandBase {
 						
 						Player player = (Player)sender;
 						ConfigBuildableInfo info = new ConfigBuildableInfo();
-						info.tile_improvement = false;
 						info.templateYShift = 0;
 						Location center = Buildable.repositionCenterStatic(player.getLocation(), info, 
 								Template.getDirection(player.getLocation()), (double)tpl.size_x, (double)tpl.size_z);
@@ -612,19 +612,26 @@ public class DebugCommand extends CommandBase {
 	}
 	
 	public void colorme_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
 		String hex = getNamedString(1, "color code");
 		long value = Long.decode(hex);
 		
-		ItemStack inHand = player.getItemInHand();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
+		
 		if (inHand == null || ItemManager.getId(inHand) == CivData.AIR) {
 			throw new CivException("please have an item in your hand.");
 		}
 		
 		AttributeUtil attrs = new AttributeUtil(inHand);
 		attrs.setColor(value);		
-		player.setItemInHand(attrs.getStack());
-		CivMessage.sendSuccess(player, "Set color.");
+		p.getInventory().setItemInMainHand(attrs.getStack());
+		CivMessage.sendSuccess(p, "Set color.");
 	}
 	
 	public void circle_cmd() throws CivException {
@@ -661,91 +668,126 @@ public class DebugCommand extends CommandBase {
 	}
 	
 	public void setcivnbt_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
 		String key = getNamedString(1, "key");
 		String value = getNamedString(2, "value");
 		
-		ItemStack inHand = player.getItemInHand();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
+		
 		if (inHand == null) {
 			throw new CivException("You must have an item in hand.");
 		}
 		
 		AttributeUtil attrs = new AttributeUtil(inHand);
 		attrs.setCivCraftProperty(key, value);
-		player.setItemInHand(attrs.getStack());
-		CivMessage.sendSuccess(player, "Set property.");
+		p.getInventory().setItemInMainHand(attrs.getStack());
+		CivMessage.sendSuccess(p, "Set property.");
 		
 	}
 	
 	public void getcivnbt_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
 		String key = getNamedString(1, "key");
 		
-		ItemStack inHand = player.getItemInHand();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
+		
 		if (inHand == null) {
 			throw new CivException("You must have an item in hand.");
 		}
 		
 		AttributeUtil attrs = new AttributeUtil(inHand);
 		String value =  attrs.getCivCraftProperty(key);
-		CivMessage.sendSuccess(player, "got property:"+value);
+		CivMessage.sendSuccess(p, "got property:"+value);
 		
 	}
 	public void getdura_cmd() throws CivException {
-		Player player = getPlayer();
-		ItemStack inHand = player.getItemInHand();
-		CivMessage.send(player, "Durability:"+inHand.getDurability());
-		CivMessage.send(player, "MaxDura:"+inHand.getType().getMaxDurability());
-		
+		Player p = getPlayer();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
+		CivMessage.send(p, "Durability:"+inHand.getDurability());
+		CivMessage.send(p, "MaxDura:"+inHand.getType().getMaxDurability());
 	}
 	
 	public void setdura_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
 		Integer dura = getNamedInteger(1);
-		
-		ItemStack inHand = player.getItemInHand();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
 		inHand.setDurability((short)dura.shortValue());
-		
-		CivMessage.send(player, "Set Durability:"+inHand.getDurability());
-		CivMessage.send(player, "MaxDura:"+inHand.getType().getMaxDurability());
-		
+		CivMessage.send(p, "Set Durability:"+inHand.getDurability());
+		CivMessage.send(p, "MaxDura:"+inHand.getType().getMaxDurability());
 	}
 	
 	public void getmid_cmd() throws CivException {
-		Player player = getPlayer();
-		ItemStack inHand = player.getItemInHand();
+		Player p = getPlayer();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
 		if (inHand == null) {
 			throw new CivException("You need an item in your hand.");
 		}
-		
-		CivMessage.send(player, "MID:"+LoreMaterial.getMID(inHand));
+		CivMessage.send(p, "MID:"+LoreMaterial.getMID(inHand));
 	}
 	
 	public void setspecial_cmd() throws CivException {
-		Player player = getPlayer();
-		ItemStack inHand = player.getItemInHand();
+		Player p = getPlayer();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
+		
 		if (inHand == null) {
 			throw new CivException("You need an item in your hand.");
 		}
-		
-	//	AttributeUtil attrs = new AttributeUtil(inHand);
-	//	attrs.setCivCraftProperty("customId", "testMyCustomId");
 		ItemStack stack = LoreMaterial.addEnhancement(inHand, new LoreEnhancementSoulBound());
-		player.setItemInHand(stack);
-		CivMessage.send(player, "Set it.");
+		p.getInventory().setItemInMainHand(stack);
+		CivMessage.send(p, "Set it.");
 	}
 	
 	public void getspecial_cmd() throws CivException {
-		Player player = getPlayer();
-		ItemStack inHand = player.getItemInHand();
+		Player p = getPlayer();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
 		if (inHand == null) {
 			throw new CivException("You need an item in your hand.");
 		}
-		
 		AttributeUtil attrs = new AttributeUtil(inHand);
 		String value = attrs.getCivCraftProperty("soulbound");
-		
-		CivMessage.send(player, "Got:"+value);
+		CivMessage.send(p, "Got:"+value);
 	}
 	
 	public void showinv_cmd() throws CivException {
@@ -771,11 +813,10 @@ public class DebugCommand extends CommandBase {
 		}
 	}
 	
-	public void biomehere_cmd() throws CivException {
+	public void biome_cmd() throws CivException {
 		Player player = getPlayer();
-		
 		Biome biome = player.getWorld().getBiome(player.getLocation().getBlockX(), player.getLocation().getBlockZ());
-		CivMessage.send(player, "Got biome:"+biome.name());
+		CivMessage.send(player, "Biome :"+biome.name());
 	}
 	
 	public void clearresidents_cmd() throws CivException {
@@ -870,12 +911,13 @@ public class DebugCommand extends CommandBase {
 		CivMessage.send(sender, out);
 	}
 	
-	public void refreshchunk_cmd() throws CivException {
+	public void refreshchunk_cmd() throws CivException, InterruptedException {
 		Player you = getPlayer();
 		ChunkCoord coord = new ChunkCoord(you.getLocation());
-		
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.getWorld().refreshChunk(coord.getX(), coord.getZ());
+			player.getWorld().unloadChunk(coord.getX(), coord.getZ());
+			Thread.sleep(500);
+			player.getWorld().loadChunk(coord.getX(), coord.getZ());
 		}
 	}
 	
@@ -900,66 +942,62 @@ public class DebugCommand extends CommandBase {
 	}
 	
 	public void giveold_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
 		
 		if (args.length < 3) {
 			throw new CivException("Enter name and first lore line.");
 		}
 		
-		ItemStack inHand = player.getItemInHand();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
+		
 		if (inHand != null) {
-			
-			
 			ItemMeta meta = inHand.getItemMeta();
 			meta.setDisplayName(args[1]);
-			
 			ArrayList<String> lore = new ArrayList<String>();
 			lore.add(this.combineArgs(this.stripArgs(args, 2)));
 			meta.setLore(lore);
-			
 			inHand.setItemMeta(meta);
-			
-			
-//			HashMap<String, String> loremap = new HashMap<String, String>();
-//			
-//			loremap.put("outpost", "world,-513,65,2444");
-//			loremap.put("town", "Arendal");
-//			loremap.put("expires", "6/14/2013 2:00PM PDT");
-//		
-//			LoreStoreage.saveLoreMap("Trade Goodie", loremap, inHand);
-//			LoreStoreage.setItemName("Pelts", inHand);
-		//	LoreStoreage.setMatID(1337, inHand);
 		}
 	}
 	
 	public void loretest_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
 		
-		org.bukkit.inventory.ItemStack inHand = player.getItemInHand();
 		if (inHand != null) {
 			ItemMeta meta = inHand.getItemMeta();
 			List<String> newLore = meta.getLore();
 			if (newLore != null && newLore.size() > 0 && newLore.get(0).equalsIgnoreCase("RJMAGIC")) {
-				CivMessage.sendSuccess(player, "found magic lore");
+				CivMessage.sendSuccess(p, "found magic lore");
 			} else {
-				CivMessage.sendSuccess(player, "No magic lore.");
+				CivMessage.sendSuccess(p, "No magic lore.");
 			}
 		}
 	}
 	
 	public void loreset_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand() != null) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
 		
-		org.bukkit.inventory.ItemStack inHand = player.getItemInHand();
 		if (inHand != null) {
-//			HashMap<String, String> loremap = new HashMap<String, String>();
-//			
-//			loremap.put("outpost", "world,-513,65,2444");
-//			loremap.put("town", "Arendal");
-//			loremap.put("expires", "6/14/2013 2:00PM PDT");
-//		
-//			LoreStoreage.saveLoreMap("Trade Goodie", loremap, inHand);
-//			LoreStoreage.setItemName("Pelts", inHand);
 			LoreStoreage.setMatID(1337, inHand);
 		}
 	}
@@ -973,24 +1011,11 @@ public class DebugCommand extends CommandBase {
 //		}
 //	}
 	
-//	public void addnbt_cmd() throws CivException {
-//		Player player = getPlayer();
-//		
-//		org.bukkit.inventory.ItemStack inHand = player.getItemInHand();
-//		if (inHand != null) {
-//			NBT.addCustomTag("RJTEST", 1337, inHand);
-//		}
-//	}
-	
 	public void timers_cmd() {
-		
 		CivMessage.sendHeading(sender, "Timers");
 		SimpleDateFormat sdf = new SimpleDateFormat("M/dd h:mm:ss a z");
-
 		CivMessage.send(sender, "Now:"+sdf.format(new Date()));
 		for (EventTimer timer : EventTimer.timers.values()) {
-			
-			
 			CivMessage.send(sender, timer.getName());
 			CivMessage.send(sender, "    next:"+sdf.format(timer.getNext()));
 			if (timer.getLast().getTime().getTime() == 0) {
@@ -998,9 +1023,7 @@ public class DebugCommand extends CommandBase {
 			} else {
 				CivMessage.send(sender, "    last:"+sdf.format(timer.getLast()));
 			}
-			
 		}
-		
 	}
 	
 	public void setallculture_cmd() throws CivException {
@@ -1306,14 +1329,18 @@ public class DebugCommand extends CommandBase {
 	
 	
 	public void dupe_cmd() throws CivException {
-		Player player = getPlayer();
-		
-		if (player.getItemInHand() == null || ItemManager.getId(player.getItemInHand()) == 0) {
-			throw new CivException("No item in hand.");
+		Player p = getPlayer();
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
 		}
 		
-		player.getInventory().addItem(player.getItemInHand());
-		CivMessage.sendSuccess(player, player.getItemInHand().getType().name()+ "duplicated.");
+		if (p.getInventory().getItemInMainHand() == null || ItemManager.getId(p.getInventory().getItemInMainHand()) == 0) {
+			throw new CivException("No item in hand.");
+		}
+		ItemStack item = new ItemStack(p.getInventory().getItemInMainHand().getType(), p.getInventory().getItemInMainHand().getAmount());
+		p.getInventory().addItem(item);
+		CivMessage.sendSuccess(p, p.getInventory().getItemInMainHand().getType().name()+ "duplicated.");
 	}
 	
 	public void makeframe_cmd() throws CivException {

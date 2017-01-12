@@ -70,7 +70,7 @@ public class MultiInventory {
 	
 	
 	/* Returns number of items removed. */
-	private int removeItemFromInventory(Inventory inv, String mid, int type, short data, int amount) {
+	public int removeItemFromInventory(Inventory inv, String mid, int type, short data, int amount) {
 		int removed = 0;
 		int notRemoved = amount;
 		

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,14 +47,18 @@ public class MarkerPlacementManager implements Listener {
 	private static HashMap<String, ArrayList<Location>> markers = new HashMap<String, ArrayList<Location>>();
 	
 	
-	public static void addToPlacementMode(Player player, Structure structure, String markerName) throws CivException {
-
-		if (player.getItemInHand() != null && ItemManager.getId(player.getItemInHand()) != CivData.AIR) {
+	public static void addToPlacementMode(Player p, Structure structure, String markerName) throws CivException {
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		}
+		
+		if (p.getInventory().getItemInMainHand() != null && ItemManager.getId(p.getInventory().getItemInMainHand()) != CivData.AIR) {
 			throw new CivException("You must not be holding anything to enter placement mode.");
 		}
 		
-		playersInPlacementMode.put(player.getName(), structure);
-		markers.put(player.getName(), new ArrayList<Location>());
+		playersInPlacementMode.put(p.getName(), structure);
+		markers.put(p.getName(), new ArrayList<Location>());
 		
 		ItemStack stack = ItemManager.createItemStack(CivData.REDSTONE_TORCH_OFF, 2);
 		ItemMeta meta = stack.getItemMeta();
@@ -63,9 +68,9 @@ public class MarkerPlacementManager implements Listener {
 			meta.setDisplayName("Marker");
 		}
 		stack.setItemMeta(meta);
-		player.setItemInHand(stack);
+		p.getInventory().setItemInMainHand(stack);
 		
-		CivMessage.send(player, "You're now in placement mode for a "+structure.getDisplayName());
+		CivMessage.send(p, "You're now in placement mode for a "+structure.getDisplayName());
 	}
 	
 	public static void removeFromPlacementMode(Player player, boolean canceled) {
@@ -76,7 +81,7 @@ public class MarkerPlacementManager implements Listener {
 		}
 		playersInPlacementMode.remove(player.getName());
 		markers.remove(player.getName());
-		player.setItemInHand(ItemManager.createItemStack(CivData.AIR, 1));
+		player.getInventory().setItemInMainHand(ItemManager.createItemStack(CivData.AIR, 1));
 		CivMessage.send(player, "You're no longer in placement mode.");
 	}
 	
@@ -88,19 +93,22 @@ public class MarkerPlacementManager implements Listener {
 		return playersInPlacementMode.containsKey(name);
 	}
 	
-	public static void setMarker(Player player, Location location) throws CivException {
-		ArrayList<Location> locs = markers.get(player.getName());
-
-		Structure struct = playersInPlacementMode.get(player.getName());
-		int amount = player.getItemInHand().getAmount();
-		if (amount == 1) {
-			player.setItemInHand(null);
-		} else {
-			player.getItemInHand().setAmount((amount -1));
+	public static void setMarker(Player p, Location location) throws CivException {
+		ArrayList<Location> locs = markers.get(p.getName());
+		Structure struct = playersInPlacementMode.get(p.getName());
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
 		}
 		
+		int amount = p.getInventory().getItemInMainHand().getAmount();
+		if (amount == 1) {
+			p.getInventory().setItemInMainHand(null);
+		} else {
+			p.getInventory().getItemInMainHand().setAmount((amount -1));
+		}
 		locs.add(location);
-		struct.onMarkerPlacement(player, location, locs);
+		struct.onMarkerPlacement(p, location, locs);
 					
 	}
 	

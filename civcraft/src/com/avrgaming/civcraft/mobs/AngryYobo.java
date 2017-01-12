@@ -1,23 +1,23 @@
 package com.avrgaming.civcraft.mobs;
 
 
-import net.minecraft.server.v1_7_R4.DamageSource;
-import net.minecraft.server.v1_7_R4.Entity;
-import net.minecraft.server.v1_7_R4.EntityCreature;
-import net.minecraft.server.v1_7_R4.EntityHuman;
-import net.minecraft.server.v1_7_R4.EntityInsentient;
-import net.minecraft.server.v1_7_R4.PathfinderGoalFloat;
-import net.minecraft.server.v1_7_R4.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_7_R4.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_7_R4.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
-
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
 
 import com.avrgaming.civcraft.mobs.components.MobComponentDefense;
-import com.avrgaming.mob.ICustomMob;
-import com.avrgaming.mob.MobBaseZombie;
+
+import moblib.mob.ICustomMob;
+import moblib.mob.MobBaseZombie;
+import net.minecraft.server.v1_10_R1.DamageSource;
+import net.minecraft.server.v1_10_R1.Entity;
+import net.minecraft.server.v1_10_R1.EntityCreature;
+import net.minecraft.server.v1_10_R1.EntityHuman;
+import net.minecraft.server.v1_10_R1.EntityInsentient;
+import net.minecraft.server.v1_10_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_10_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_10_R1.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_10_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;
 
 public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 
@@ -25,10 +25,9 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 	    initLevelAndType();
 
 	    getGoalSelector().a(0, new PathfinderGoalFloat((EntityInsentient) entity));
-	    getGoalSelector().a(2, new PathfinderGoalMeleeAttack((EntityCreature) entity, EntityHuman.class, 1.0D, false));
+	    getGoalSelector().a(2, new PathfinderGoalMeleeAttack((EntityCreature) entity, 1.0D, false));
 	    getGoalSelector().a(8, new PathfinderGoalLookAtPlayer((EntityInsentient) entity, EntityHuman.class, 8.0F));
-
-	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget((EntityCreature) entity, EntityHuman.class, 0, true));
+	    getTargetSelector().a(2, new PathfinderGoalNearestAttackableTarget<EntityHuman>((EntityCreature) entity, EntityHuman.class, true));
 	    this.setName(this.getLevel().getName()+" "+this.getType().getName());
 	    MobBaseZombie zombie = ((MobBaseZombie)this.entity);
 	    zombie.setBaby(true);

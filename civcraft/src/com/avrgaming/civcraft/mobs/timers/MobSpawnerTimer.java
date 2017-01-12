@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-import net.minecraft.server.v1_7_R4.EntityCreature;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
@@ -20,6 +18,8 @@ import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.EntityProximity;
 import com.avrgaming.civcraft.util.ItemManager;
+
+import net.minecraft.server.v1_10_R1.EntityCreature;
 
 public class MobSpawnerTimer implements Runnable {
 	
@@ -79,9 +79,9 @@ public class MobSpawnerTimer implements Runnable {
 						continue;
 					}
 					
-					if ((ItemManager.getId(loc.getBlock().getRelative(BlockFace.DOWN)) == CivData.WATER) ||
+					if ((ItemManager.getId(loc.getBlock().getRelative(BlockFace.DOWN)) == CivData.WATER_STILL) ||
 					    (ItemManager.getId(loc.getBlock().getRelative(BlockFace.DOWN)) == CivData.WATER_RUNNING) ||
-						(ItemManager.getId(loc.getBlock().getRelative(BlockFace.DOWN)) == CivData.LAVA) ||
+						(ItemManager.getId(loc.getBlock().getRelative(BlockFace.DOWN)) == CivData.LAVA_STILL) ||
 						(ItemManager.getId(loc.getBlock().getRelative(BlockFace.DOWN)) == CivData.LAVA_RUNNING)) {
 						/* Dont spawn mobs in water. */
 						continue;

@@ -2,6 +2,7 @@ package com.avrgaming.civcraft.command.admin;
 
 import java.util.HashMap;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,6 +12,7 @@ import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementArenaItem;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementPunchout;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementSoulBound;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreMaterial;
@@ -55,15 +57,23 @@ public class AdminItemCommand extends CommandBase {
 	}
 	
 	public void enhance_cmd() throws CivException {
-		Player player = getPlayer();
+		Player p = getPlayer();
 		HashMap<String, LoreEnhancement> enhancements = new HashMap<String, LoreEnhancement>();
-		ItemStack inHand = getPlayer().getItemInHand();
+		
+		ItemStack inHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = p.getInventory().getItemInMainHand();
+		}
 		
 		enhancements.put("soulbound", new LoreEnhancementSoulBound());
-		enhancements.put("attack", new LoreEnhancementAttack());
+		enhancements.put("punchout", new LoreEnhancementPunchout());
 		enhancements.put("defence", new LoreEnhancementDefense());
+		enhancements.put("attack", new LoreEnhancementAttack());
 		enhancements.put("arena", new LoreEnhancementArenaItem());
-
+		
 		if (inHand == null || ItemManager.getId(inHand) == CivData.AIR) {
 			throw new CivException("You must have an item in your hand to enhance it.");
 		}
@@ -84,7 +94,7 @@ public class AdminItemCommand extends CommandBase {
 			if (name.equals(str)) {
 				LoreEnhancement enh = enhancements.get(str);
 				ItemStack stack = LoreMaterial.addEnhancement(inHand, enh);
-				player.setItemInHand(stack);
+				p.getInventory().setItemInMainHand(stack);
 				CivMessage.sendSuccess(sender, "Enhanced with "+name);
 				return;
 			}

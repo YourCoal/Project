@@ -82,6 +82,17 @@ public class Blacksmith extends Structure {
 		nonMemberFeeComponent.onLoad();
 	}
 	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Blacksmith</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "factory";
+	}
+	
 	public double getNonResidentFee() {
 		return nonMemberFeeComponent.getFeeRate();
 	}
@@ -95,17 +106,7 @@ public class Blacksmith extends Structure {
 	}
 	
 	@Override
-	public String getDynmapDescription() {
-		return null;
-	}
-	
-	@Override
-	public String getMarkerIconName() {
-		return "factory";
-	}
-	
-	@Override
-	public void processSignAction(Player player, StructureSign sign, PlayerInteractEvent event) throws CivException {
+	public void processSignAction(Player p, StructureSign sign, PlayerInteractEvent event) throws CivException {
 		int special_id = Integer.valueOf(sign.getAction());
 		
 		Date now = new Date();
@@ -121,17 +122,22 @@ public class Blacksmith extends Structure {
 		
 		switch (special_id) {
 		case 0:
-			this.deposit_forge(player);
+			this.deposit_forge(p);
 			break;
 		case 1:
 			double cost = CivSettings.getDoubleStructure("blacksmith.forge_cost");
-			this.perform_forge(player, cost);
+			this.perform_forge(p, cost);
 			break;
 		case 2:
-			this.depositSmelt(player, player.getItemInHand());
-			break;
+			if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+				CivMessage.sendError(p, "You cannot have items in your offhand!");
+				return;
+			} else {
+				this.depositSmelt(p, p.getInventory().getItemInMainHand());
+				break;
+			}
 		case 3:
-			this.withdrawSmelt(player);
+			this.withdrawSmelt(p);
 			break;
 		}
 		
@@ -213,12 +219,16 @@ public class Blacksmith extends Structure {
 	 * and deposit its information into the sessionDB. It will store the 
 	 * item's id, data, and damage.
 	 */
-	public void deposit_forge(Player player) throws CivException {
-		
-		ItemStack item = player.getItemInHand();
+	public void deposit_forge(Player p) throws CivException {
+		ItemStack item = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			throw new CivException("You cannot have items in your offhand!");
+		} else {
+			item = p.getInventory().getItemInMainHand();
+		}
 		
 		ArrayList<SessionEntry> sessions = null;
-		String key = this.getkey(player, this, "forge");
+		String key = this.getkey(p, this, "forge");
 		sessions = CivGlobal.getSessionDB().lookup(key);
 		
 		if (sessions == null || sessions.size() == 0) {
@@ -233,11 +243,10 @@ public class Blacksmith extends Structure {
 			if (item.getAmount() > 1) {
 				item.setAmount(item.getAmount()-1);
 			} else {
-				player.setItemInHand(new ItemStack(Material.AIR));
-			//	player.getInventory().remove(item);
+				p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 			}
 			
-			CivMessage.sendSuccess(player, "Deposited Catalyst.");
+			CivMessage.sendSuccess(p, "Deposited Catalyst.");
 		} else {
 			/* Catalyst already in blacksmith, withdraw it. */
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(sessions.get(0).value);
@@ -246,14 +255,14 @@ public class Blacksmith extends Structure {
 			}
 			
 			ItemStack stack = LoreMaterial.spawn(craftMat);
-			HashMap<Integer, ItemStack> leftovers = player.getInventory().addItem(stack);
+			HashMap<Integer, ItemStack> leftovers = p.getInventory().addItem(stack);
 			if (leftovers.size() > 0) {
 				for (ItemStack is : leftovers.values()) {
-					player.getWorld().dropItem(player.getLocation(), is);
+					p.getWorld().dropItem(p.getLocation(), is);
 				}
 			}
 			CivGlobal.getSessionDB().delete_all(key);
-			CivMessage.sendSuccess(player, "Withdrawn Catalyst");
+			CivMessage.sendSuccess(p, "Withdrawn Catalyst");
 		}
 	}
 	
@@ -262,14 +271,20 @@ public class Blacksmith extends Structure {
 	 * if this player is worthy of a higher level pick. If successful it will
 	 * give the player the newly created pick.
 	 */
-	public void perform_forge(Player player, double cost) throws CivException {
+	public void perform_forge(Player p, double cost) throws CivException {
 
 		/* Try and retrieve any catalyst in the forge. */
-		String key = getkey(player, this, "forge");
+		String key = getkey(p, this, "forge");
 		ArrayList<SessionEntry> sessions = CivGlobal.getSessionDB().lookup(key);
 		
 		/* Search for free catalyst. */
-		ItemStack stack = player.getItemInHand();
+		ItemStack stack = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			throw new CivException("You cannot have items in your offhand!");
+		} else {
+			stack = p.getInventory().getItemInMainHand();
+		}
+		
 		AttributeUtil attrs = new AttributeUtil(stack);
 		Catalyst catalyst;
 		
@@ -328,11 +343,11 @@ public class Blacksmith extends Structure {
 				attrs.removeCivCraftProperty("freeCatalyst");
 			}
 			
-			player.setItemInHand(attrs.getStack());
+			p.getInventory().setItemInMainHand(attrs.getStack());
 			
 		}
 		
-		stack = player.getItemInHand();
+		stack = p.getInventory().getItemInMainHand();
 		ItemStack enhancedItem = catalyst.getEnchantedItem(stack);
 		
 		if (enhancedItem == null) {
@@ -347,12 +362,12 @@ public class Blacksmith extends Structure {
 			 * There is a one in third chance that our item will break.
 			 * Sucks, but this is what happened here.
 			 */
-			player.setItemInHand(ItemManager.createItemStack(CivData.AIR, 1));
-			CivMessage.sendError(player, "Enhancement failed. Item has broken.");
+			p.getInventory().setItemInMainHand(ItemManager.createItemStack(CivData.AIR, 1));
+			CivMessage.sendError(p, "Enhancement failed. Item has broken.");
 			return;
 		} else {
-			player.setItemInHand(enhancedItem);
-			CivMessage.sendSuccess(player, "Enhancement succeeded!");
+			p.getInventory().setItemInMainHand(enhancedItem);
+			CivMessage.sendSuccess(p, "Enhancement succeeded!");
 			return;
 		}
 	}
@@ -362,6 +377,12 @@ public class Blacksmith extends Structure {
 	 */
 	@SuppressWarnings("deprecation")
 	public void depositSmelt(Player player, ItemStack itemsInHand) throws CivException {
+		if (player.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(player, "You cannot have items in your offhand!");
+			return;
+		} else {
+			itemsInHand = player.getInventory().getItemInMainHand();
+		}
 		
 		// Make sure that the item is a valid smelt type.
 		if (!Blacksmith.canSmelt(itemsInHand.getTypeId())) {
@@ -436,7 +457,7 @@ public class Blacksmith extends Structure {
 			
 			// First determine the time between two events.
 			if (secondsBetween < Blacksmith.SMELT_TIME_SECONDS) {
-				 DecimalFormat df1 = new DecimalFormat("0.##"); 
+				 DecimalFormat df1 = new DecimalFormat("0.#"); 
 				 
 				double timeLeft = ((double)Blacksmith.SMELT_TIME_SECONDS - (double)secondsBetween) / (double)60;
 				//Date finish = new Date(now+(secondsBetween*1000));

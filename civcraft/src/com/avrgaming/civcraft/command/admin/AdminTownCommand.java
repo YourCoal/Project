@@ -44,6 +44,7 @@ import com.avrgaming.civcraft.randomevents.ConfigRandomEvent;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.TownAddOutlawTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 
@@ -63,7 +64,6 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("rmmayor", "[town] [player] - remove this player as a mayor from this town.");
 		commands.put("rmassistant", "[town] [player] - remove this player as an assistant from this town.");
 		commands.put("tp", "[town] - teleports to this town's town hall");
-		commands.put("culture", "[town] [amount] - gives this town this amount of culture.");
 		commands.put("info", "[town] - shows information for this town as-if you were a resident.");
 		commands.put("setciv", "[town] [civ] - changes this town's civilization to the named civ.");
 		commands.put("select", "[town] - selects this town as if you were the owner.");
@@ -76,6 +76,22 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("setunhappy", "[town] [amount] - sets a magical base unhappiness for this town.");
 		commands.put("event", "[town] [event_id] - Runs the named random event in this town.");
 		commands.put("rename", "[town] [new_name] - Renames this town.");
+		
+		commands.put("culture", "[town] [amount] - gives this [town] this [amount] of culture.");
+		commands.put("outlaw", "[town] [resident] - outlaws the [resident] in this [town].");
+	}
+	
+	public void outlaw_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		TaskMaster.asyncTask(new TownAddOutlawTask(args[2], town), 10);	
+	}
+	
+	public void culture_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer culture = getNamedInteger(2);
+		town.addAccumulatedCulture(culture);
+		town.save();
+		CivMessage.sendSuccess(sender, town.getName()+" was given "+culture+" culture. Total culture: "+town.getAccumulatedCulture());
 	}
 	
 	public void rename_cmd() throws CivException, InvalidNameException {
@@ -290,16 +306,6 @@ public class AdminTownCommand extends CommandBase {
 		cmd.senderTownOverride = town;
 		cmd.senderCivOverride = town.getCiv();
 		cmd.onCommand(sender, null, "info", this.stripArgs(args, 2));		
-	}
-	
-	public void culture_cmd() throws CivException {
-		Town town = getNamedTown(1);
-		Integer culture = getNamedInteger(2);
-		
-		town.addAccumulatedCulture(culture);
-		town.save();
-		
-		CivMessage.sendSuccess(sender, "Gave "+town.getName()+" "+culture+" culture points.");
 	}
 	
 	public void tp_cmd() throws CivException {

@@ -13,5 +13,4 @@ public class AllowBlockPlace extends ItemComponent {
 	public boolean onBlockPlaced(BlockPlaceEvent event) { 
 		return true; 
 	}
-
 }

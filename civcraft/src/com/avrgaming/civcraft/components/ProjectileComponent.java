@@ -20,10 +20,9 @@ package com.avrgaming.civcraft.components;
 
 import java.util.HashSet;
 
-import net.minecraft.server.v1_7_R4.Vec3D;
-
+import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -36,6 +35,8 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.BlockCoord;
+
+import net.minecraft.server.v1_10_R1.Vec3D;
 
 public abstract class ProjectileComponent extends Component {
 
@@ -144,8 +145,10 @@ public abstract class ProjectileComponent extends Component {
 	}
 	
 	private boolean canSee(Player player, Location loc2) {
-		Location loc1 = player.getLocation();		
-		return ((CraftWorld)loc1.getWorld()).getHandle().a(Vec3D.a(loc1.getX(), loc1.getY() + player.getEyeHeight(), loc1.getZ()), Vec3D.a(loc2.getX(), loc2.getY(), loc2.getZ())) == null;
+		Location loc1 = player.getLocation();
+		Vec3D vec1 = new Vec3D(loc1.getX(), loc1.getY() + player.getEyeHeight(), loc1.getZ());
+		Vec3D vec2 = new Vec3D(loc2.getX(), loc2.getY(), loc2.getZ());
+		return ((CraftWorld)loc1.getWorld()).getHandle().rayTrace(vec1, vec2) == null;
 	}
 	
 	protected Location adjustTurretLocation(Location turretLoc, Location playerLoc) {
@@ -207,6 +210,10 @@ public abstract class ProjectileComponent extends Component {
 			try {
 				player = CivGlobal.getPlayer(pc.getName());
 			} catch (CivException e) {
+				return;
+			}
+			
+			if (player.getGameMode() != GameMode.SURVIVAL) {
 				return;
 			}
 			

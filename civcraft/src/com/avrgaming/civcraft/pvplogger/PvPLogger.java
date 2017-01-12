@@ -1,7 +1,5 @@
 package com.avrgaming.civcraft.pvplogger;
 
-import gpl.ImprovedOfflinePlayer;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,20 +30,18 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
-import com.avrgaming.moblib.MobLib;
-import com.avrgaming.moblib.MobLibEntity;
+
+import gpl.ImprovedOfflinePlayer;
+import moblib.moblib.MobLib;
+import moblib.moblib.MobLibEntity;
 
 public class PvPLogger implements Listener, Runnable {
 
-	/*
-	 * This class listens on entity damage events, tags players with a time 
-	 * that they were last hit.
-	 * 
+	/* This class listens on entity damage events, tags players with a time  that they were last hit.
 	 * Then it listens for disconnect events, if it finds a disconnect event it will
 	 * spawn an NPC which can be killed. That NPC will drop the player's non-soulbound
 	 * inventory and mark that resident as dead. Next login we clear his non-soulbound 
-	 * inventory and kill them.
-	 */
+	 * inventory and kill them. */
 	
 	class ZombiePlayer {
 		Date spawnTime;

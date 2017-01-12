@@ -79,11 +79,11 @@ public class Cottage extends Structure {
 	
 	@Override
 	public String getDynmapDescription() {
+		String out = "<u><b>Cottage</u></b><br/>";
 		if (getConsumeComponent() == null) {
-			return "";
+			return out += "Null Level...";
 		}
 		
-		String out = "";
 		out += "Level: "+getConsumeComponent().getLevel()+" "+getConsumeComponent().getCountString();
 		return out;
 	}

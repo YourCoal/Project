@@ -78,7 +78,18 @@ public class Barracks extends Structure {
 	public Barracks(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
-
+	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Bank</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "shield";
+	}
+	
 	private String getUnitSignText(int index) throws IndexOutOfBoundsException {
 		ArrayList<ConfigUnit> unitList = getTown().getAvailableUnits();
 		
@@ -186,9 +197,16 @@ public class Barracks extends Structure {
 		}
 	}
 	
-	private void repairItem(Player player, Resident resident, PlayerInteractEvent event) {
+	private void repairItem(Player p, Resident resident, PlayerInteractEvent event) {
 		try {
-			ItemStack inHand = player.getItemInHand();
+			ItemStack inHand = null;
+			if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+				CivMessage.sendError(p, "You cannot have items in your offhand!");
+				return;
+			} else {
+				inHand = p.getInventory().getItemInMainHand();
+			}
+			
 			if (inHand == null || inHand.getType().equals(Material.AIR)) {
 				throw new CivException("Must have an item in your hand in order to repair it.");
 			}
@@ -219,7 +237,7 @@ public class Barracks extends Structure {
 					totalCost = Math.round(fromTier+0);
 				}
 				
-				InteractiveRepairItem repairItem = new InteractiveRepairItem(totalCost, player.getName(), craftMat);
+				InteractiveRepairItem repairItem = new InteractiveRepairItem(totalCost, p.getName(), craftMat);
 				repairItem.displayMessage();
 				resident.setInteractiveMode(repairItem);
 				return;
@@ -228,43 +246,35 @@ public class Barracks extends Structure {
 				e.printStackTrace();
 				throw new CivException("Internal configuration error");
 			}
-			
-			
-			
 		} catch (CivException e) {
-			CivMessage.sendError(player, e.getMessage());
+			CivMessage.sendError(p, e.getMessage());
 			event.setCancelled(true);
 		}
 	}
 
-	public static void repairItemInHand(double cost, String playerName, LoreCraftableMaterial craftMat) {
-		Player player;
-		
-		try {
-			player = CivGlobal.getPlayer(playerName);
-		} catch (CivException e) {
-			return;
-		}
-		
-		Resident resident = CivGlobal.getResident(player);
-		
+	public static void repairItemInHand(double cost, String playerName, LoreCraftableMaterial craftMat) throws CivException {
+		Player p = CivGlobal.getPlayer(playerName);
+		Resident resident = CivGlobal.getResident(p);
 		if (!resident.getTreasury().hasEnough(cost)) {
-			CivMessage.sendError(player, "Sorry, but you don't have the required "+cost+" coins.");
+			CivMessage.sendError(p, "Sorry, but you don't have the required "+cost+" coins.");
 			return;
 		}
 		
-		LoreCraftableMaterial craftMatInHand = LoreCraftableMaterial.getCraftMaterial(player.getItemInHand());
+		LoreCraftableMaterial craftMatInHand = null;
+		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(p, "You cannot have items in your offhand!");
+			return;
+		} else {
+			craftMatInHand = LoreCraftableMaterial.getCraftMaterial(p.getInventory().getItemInMainHand());
+		}
 		
 		if (!craftMatInHand.getConfigId().equals(craftMat.getConfigId())) {
-			CivMessage.sendError(player, "You're not holding the item that you started the repair with.");
+			CivMessage.sendError(p, "You're not holding the item that you started the repair with.");
 			return;
 		}
-		
 		resident.getTreasury().withdraw(cost);
-		player.getItemInHand().setDurability((short)0);
-		
-		CivMessage.sendSuccess(player, "Repaired "+craftMat.getName()+" for "+cost+" coins.");
-		
+		p.getInventory().getItemInMainHand().setDurability((short)0);
+		CivMessage.sendSuccess(p, "Repaired "+craftMat.getName()+" for "+cost+" coins.");
 	}
 	
 	@Override

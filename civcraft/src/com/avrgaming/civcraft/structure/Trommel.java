@@ -98,8 +98,6 @@ public class Trommel extends Structure {
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 		}
-		
 		return chance;
 	}
-
 }

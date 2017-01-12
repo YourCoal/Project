@@ -1,6 +1,7 @@
 package com.avrgaming.civcraft.mobs;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,21 +9,13 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.server.v1_7_R4.DamageSource;
-import net.minecraft.server.v1_7_R4.Entity;
-import net.minecraft.server.v1_7_R4.EntityCreature;
-import net.minecraft.server.v1_7_R4.EntityInsentient;
-import net.minecraft.server.v1_7_R4.EntityLiving;
-import net.minecraft.server.v1_7_R4.GenericAttributes;
-import net.minecraft.server.v1_7_R4.PathfinderGoalSelector;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_7_R4.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_10_R1.util.UnsafeList;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -41,8 +34,16 @@ import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
-import com.avrgaming.mob.ICustomMob;
-import com.avrgaming.mob.ISpawnable;
+
+import moblib.mob.ICustomMob;
+import moblib.mob.ISpawnable;
+import net.minecraft.server.v1_10_R1.DamageSource;
+import net.minecraft.server.v1_10_R1.Entity;
+import net.minecraft.server.v1_10_R1.EntityCreature;
+import net.minecraft.server.v1_10_R1.EntityInsentient;
+import net.minecraft.server.v1_10_R1.EntityLiving;
+import net.minecraft.server.v1_10_R1.GenericAttributes;
+import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;
 
 public abstract class CommonCustomMob implements ICustomMob {
 
@@ -78,7 +79,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 		
 		Field gsa;
 		try {
-			gsa = net.minecraft.server.v1_7_R4.EntityInsentient.class.getDeclaredField("goalSelector");
+			gsa = net.minecraft.server.v1_10_R1.EntityInsentient.class.getDeclaredField("goalSelector");
 			gsa.setAccessible(true);
 			return (PathfinderGoalSelector)gsa.get((EntityInsentient)entity);
 		} catch (NoSuchFieldException e) {
@@ -96,7 +97,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 	public PathfinderGoalSelector getTargetSelector() {
 		Field gsa;
 		try {
-			gsa = net.minecraft.server.v1_7_R4.EntityInsentient.class.getDeclaredField("targetSelector");
+			gsa = net.minecraft.server.v1_10_R1.EntityInsentient.class.getDeclaredField("targetSelector");
 			gsa.setAccessible(true);
 			return (PathfinderGoalSelector)gsa.get((EntityInsentient)entity);
 		} catch (NoSuchFieldException e) {
@@ -137,7 +138,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 		System.out.println("Printing goals:");
 	    Field gsa;
 		try {
-			gsa = net.minecraft.server.v1_7_R4.PathfinderGoalSelector.class.getDeclaredField("b");
+			gsa = net.minecraft.server.v1_10_R1.PathfinderGoalSelector.class.getDeclaredField("b");
 			gsa.setAccessible(true);
 			//PathfinderGoalSelectorItem item;
 			UnsafeList<?> list = (UnsafeList<?>) gsa.get(goals);
@@ -275,21 +276,21 @@ public abstract class CommonCustomMob implements ICustomMob {
 	
 	
 	public void setAttack(double attack) {
-		entity.getAttributeInstance(GenericAttributes.e).setValue(attack);
+		entity.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).setValue(attack);
 	}
 	
 	public void setMovementSpeed(double speed) {
-		entity.getAttributeInstance(GenericAttributes.d).setValue(speed);
+		entity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(speed);
 	}
 	
 	public void setFollowRange(double range) {
-		entity.getAttributeInstance(GenericAttributes.b).setValue(range);
+		entity.getAttributeInstance(GenericAttributes.FOLLOW_RANGE).setValue(range);
 	}
 	
 	public double getFollowRange() {
 		double value;
 		try {
-			value = entity.getAttributeInstance(GenericAttributes.b).getValue();
+			value = entity.getAttributeInstance(GenericAttributes.FOLLOW_RANGE).getValue();
 		} catch (NullPointerException e) {
 			value = 32.0D;
 		}
@@ -298,7 +299,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 	}
 	
 	public void modifySpeed(double percent) {
-		double speed = entity.getAttributeInstance(GenericAttributes.d).getValue();
+		double speed = entity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue();
 		speed *= percent;
 		setMovementSpeed(speed);
 	}
@@ -319,7 +320,7 @@ public abstract class CommonCustomMob implements ICustomMob {
 			if (entity == null) {
 				CivLog.info("Entity was null!");
 			}
-			CivLog.info("Speed:"+entity.getAttributeInstance(GenericAttributes.d).getValue());
+			CivLog.info("Speed:"+entity.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue());
 			CivLog.info("MaxHealth:"+entity.getAttributeInstance(GenericAttributes.maxHealth).getValue()+" Health:"+entity.getHealth());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -402,9 +403,6 @@ public abstract class CommonCustomMob implements ICustomMob {
 		drop.isVanillaDrop = false;
 		drop.craftMatId = craftMatId;
 		drop.chance = chance;
-		//drop.maxAmount = max;
-	//	drop.minAmount = min;
-		
 		this.drops.add(drop);
 	}
 	
@@ -419,10 +417,10 @@ public abstract class CommonCustomMob implements ICustomMob {
 				dropped.add(d);
 			}
 		}
-		
 		return dropped;
 	}
 	
+	//TODO Fix this, It does not work at all.
 	public void dropItems() {
 		try {
 			if (entity == null) {
@@ -434,6 +432,19 @@ public abstract class CommonCustomMob implements ICustomMob {
 			Location loc = getLocation(entity);
 			
 			for (MobDrop d : dropped) {
+				ArrayList<ItemStack> newItems = new ArrayList<ItemStack>();
+				if (d.isVanillaDrop) {
+					newItems.add(ItemManager.createItemStack(d.vanillaType, 1, d.vanillaData));
+				} else {
+					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(d.craftMatId);
+					newItems.add(LoreCraftableMaterial.spawn(craftMat));
+				}
+				for (ItemStack item : newItems) {
+				world.dropItem(loc, item);
+				}
+			}
+			
+/*			for (MobDrop d : dropped) {
 				ItemStack stack;
 				if (d.isVanillaDrop) {
 					stack = ItemManager.createItemStack(d.vanillaType, 1, d.vanillaData);
@@ -441,14 +452,13 @@ public abstract class CommonCustomMob implements ICustomMob {
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterialFromId(d.craftMatId);
 					stack = LoreCraftableMaterial.spawn(craftMat);
 				}
-				
 				world.dropItem(loc, stack);
-			}
+			}*/
 			
 			if (this.coinMax != 0 && this.coinMin != 0) {
-				ExperienceOrb orb = (ExperienceOrb)world.spawn(loc, ExperienceOrb.class);
 				Random random = new Random();
 				int coins = random.nextInt(this.coinMax - this.coinMin) + this.coinMin;
+				ExperienceOrb orb = world.spawn(loc, ExperienceOrb.class);
 				orb.setExperience(coins);
 
 			}

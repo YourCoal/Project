@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.listener;
 
-import gpl.AttributeUtil;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Random;
@@ -78,7 +76,9 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
-import com.avrgaming.moblib.MobLib;
+
+import gpl.AttributeUtil;
+import moblib.moblib.MobLib;
 
 public class CustomItemManager implements Listener {
 	
@@ -99,20 +99,22 @@ public class CustomItemManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreakSpawnItems(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
-			if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+			if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+				CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+				return;
+			}
+			if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
 				return;
 			}
 			
 			event.setCancelled(true);
-			
 			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
 			
 			try {
 				Random rand = new Random();
-
 				int min = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_min_drop");
 				int max;
-				if (event.getPlayer().getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
 					max = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_max_drop_with_fortune");
 				} else {
 					max = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_max_drop");
@@ -128,7 +130,6 @@ public class CustomItemManager implements Listener {
 					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_tungsten_ore"));
 					event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 				}
-				
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				return;
@@ -136,9 +137,56 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
+/*	@EventHandler(priority = EventPriority.NORMAL)
+	public void onLeavesDecayEvent(LeavesDecayEvent event) {
+		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
+			if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+				CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+				return;
+			}
+			if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
+				return;
+			}
+			
+			event.setCancelled(true);
+			ItemManager.setTypeIdAndData(event.getBlock(), CivData.AIR, (byte)0, true);
+			
+			try {
+				Random rand = new Random();
+				int min = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_min_drop");
+				int max;
+				if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.LOOT_BONUS_BLOCKS)) {
+					max = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_max_drop_with_fortune");
+				} else {
+					max = CivSettings.getInteger(CivSettings.materialsConfig, "tungsten_max_drop");
+				}
+				
+				int randAmount = rand.nextInt(min + max);
+				randAmount -= min;
+				if (randAmount <= 0) {
+					randAmount = 1;
+				}
+				
+				for (int i = 0; i < randAmount; i++) {
+					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_tungsten_ore"));
+					event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
+				}
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+				return;
+			}
+		}
+	}*/
+	
 	@EventHandler(priority = EventPriority.LOWEST) 
 	public void onBlockPlace(BlockPlaceEvent event) {
-		ItemStack stack = event.getPlayer().getItemInHand();
+		ItemStack stack = null;
+		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+			return;
+		} else {
+			stack = event.getPlayer().getInventory().getItemInMainHand();
+		}
 		if (stack == null || stack.getType().equals(Material.AIR)) {
 			return;
 		}
@@ -152,9 +200,15 @@ public class CustomItemManager implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerInteract(PlayerInteractEvent event) {
-	
-		ItemStack stack = event.getPlayer().getItemInHand();
+	public void onPlayerInteract(PlayerInteractEvent event) throws CivException {
+		ItemStack stack = null;
+		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+			return;
+		} else {
+			stack = event.getPlayer().getInventory().getItemInMainHand();
+		}
+		
 		if (stack == null) {
 			return;
 		}
@@ -171,7 +225,14 @@ public class CustomItemManager implements Listener {
 			return;
 		}
 		
-		ItemStack stack = event.getPlayer().getItemInHand();
+		ItemStack stack = null;
+		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+			return;
+		} else {
+			stack = event.getPlayer().getInventory().getItemInMainHand();
+		}
+		
 		if (stack == null) {
 			return;
 		}
@@ -189,7 +250,14 @@ public class CustomItemManager implements Listener {
 			return;
 		}
 		
-		ItemStack stack = event.getPlayer().getItemInHand();
+		ItemStack stack = null;
+		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+			return;
+		} else {
+			stack = event.getPlayer().getInventory().getItemInMainHand();
+		}
+		
 		if (stack == null) {
 			return;
 		}
@@ -268,7 +336,14 @@ public class CustomItemManager implements Listener {
 			LivingEntity shooter = (LivingEntity) ((Arrow)event.getDamager()).getShooter();
 			
 			if (shooter instanceof Player) {
-				ItemStack inHand = ((Player)shooter).getItemInHand();
+				ItemStack inHand = null;
+				if (((Player)shooter).getInventory().getItemInOffHand().getType() != Material.AIR) {
+					CivMessage.sendError(((Player)shooter), "You cannot have items in your offhand!");
+					return;
+				} else {
+					inHand = ((Player)shooter).getInventory().getItemInMainHand();
+				}
+				
 				if (LoreMaterial.isCustom(inHand)) {
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(inHand);
 					craftMat.onRangedAttack(event, inHand);
@@ -294,7 +369,14 @@ public class CustomItemManager implements Listener {
 				}
 			}
 		} else if (event.getDamager() instanceof Player) {
-			ItemStack inHand = ((Player)event.getDamager()).getItemInHand();
+			ItemStack inHand = null;
+			if (((Player)event.getDamager()).getInventory().getItemInOffHand().getType() != Material.AIR) {
+				CivMessage.sendError(((Player)event.getDamager()), "You cannot have items in your offhand!");
+				return;
+			} else {
+				inHand = ((Player)event.getDamager()).getInventory().getItemInMainHand();
+			}
+			
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(inHand);
 			if (craftMat != null) {
 				craftMat.onAttack(event, inHand);
@@ -713,25 +795,35 @@ public class CustomItemManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerInteractEntityEvent (PlayerInteractEntityEvent event) {
-			
-		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getItemInHand());
+		LoreCraftableMaterial craftMat = null;
+		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+			return;
+		} else {
+			craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getInventory().getItemInMainHand());
+		}
+		
 		if (craftMat == null) {
 			return;
 		}
-		
 		craftMat.onPlayerInteractEntityEvent(event);
 	}
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerLeashEvent(PlayerLeashEntityEvent event) {
-		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getItemInHand());
+		LoreCraftableMaterial craftMat = null;
+		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+			return;
+		} else {
+			craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getInventory().getItemInMainHand());
+		}
+		
 		if (craftMat == null) {
 			return;
 		}
-		
 		craftMat.onPlayerLeashEvent(event);
 	}
-	
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onItemDurabilityChange(PlayerItemDamageEvent event) {

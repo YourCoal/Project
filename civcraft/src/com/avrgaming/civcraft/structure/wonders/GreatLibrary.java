@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -125,7 +126,13 @@ public class GreatLibrary extends Wonder {
 			return;
 		}
 		
-		ItemStack hand = player.getItemInHand();
+		ItemStack hand = null;
+		if (player.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(player, "You cannot have items in your offhand!");
+			return;
+		} else {
+			hand = player.getInventory().getItemInMainHand();
+		}
 		ConfigEnchant configEnchant;
 		
 		switch (sign.getAction()) {
@@ -200,7 +207,7 @@ public class GreatLibrary extends Wonder {
 				
 				resident.getTreasury().withdraw(configEnchant.cost);
 				ItemStack newItem = LoreMaterial.addEnhancement(hand, LoreEnhancement.enhancements.get(configEnchant.enchant_id));				
-				player.setItemInHand(newItem);
+				player.getInventory().setItemInMainHand(newItem);
 				break;
 			default:
 				CivMessage.sendError(player, "You can only add this enchantment to pickaxes.");
@@ -210,8 +217,6 @@ public class GreatLibrary extends Wonder {
 		default:
 			return;
 		}
-		
 		CivMessage.sendSuccess(player, "Enchant Success!");
 	}
-
 }

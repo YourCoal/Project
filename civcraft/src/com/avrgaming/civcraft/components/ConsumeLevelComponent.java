@@ -26,14 +26,15 @@ import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigCottageLevel;
+import com.avrgaming.civcraft.config.ConfigLabLevel;
 import com.avrgaming.civcraft.config.ConfigMineLevel;
 import com.avrgaming.civcraft.exception.CivException;
-import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.Cottage;
+import com.avrgaming.civcraft.structure.Lab;
 import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.ItemManager;
@@ -85,20 +86,22 @@ public class ConsumeLevelComponent extends Component {
 	public void createComponent(Buildable buildable, boolean async) {
 		super.createComponent(buildable, async);
 		
-		//XXX make both mine/cottage/longhouse levels similar in the yml so they can be loaded
-		// without this check.
 		if (buildable instanceof Cottage) {
 			for (ConfigCottageLevel lvl : CivSettings.cottageLevels.values()) {
 				this.addLevel(lvl.level, lvl.count);
 				this.setConsumes(lvl.level, lvl.consumes);
 			}
-		} else if (buildable instanceof Mine) {
+		}
+		if (buildable instanceof Mine) {
 			for (ConfigMineLevel lvl : CivSettings.mineLevels.values()) {
 				this.addLevel(lvl.level, lvl.count);
-				
-				HashMap<Integer, Integer> redstoneAmounts = new HashMap<Integer, Integer>();
-				redstoneAmounts.put(CivData.REDSTONE_DUST, lvl.amount);
-				this.setConsumes(lvl.level, redstoneAmounts);
+				this.setConsumes(lvl.level, lvl.consumes);
+			}
+		}
+		if (buildable instanceof Lab) {
+			for (ConfigLabLevel lvl : CivSettings.labLevels.values()) {
+				this.addLevel(lvl.level, lvl.count);
+				this.setConsumes(lvl.level, lvl.consumes);
 			}
 		}
 		

@@ -18,12 +18,8 @@
  */
 package com.avrgaming.civcraft.listener;
 
-import gpl.HorseModifier;
-
 import java.util.HashSet;
 import java.util.Random;
-
-import net.minecraft.server.v1_7_R4.NBTTagCompound;
 
 import org.bukkit.Chunk;
 import org.bukkit.Color;
@@ -33,7 +29,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_7_R4.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -120,20 +116,20 @@ import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
-import com.avrgaming.moblib.MobLib;
 
-
+import gpl.HorseModifier;
+import moblib.moblib.MobLib;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
 
 public class BlockListener implements Listener {
-
+	
 	/* Experimental, reuse the same object because it is single threaded. */
 	public static ChunkCoord coord = new ChunkCoord("", 0, 0);
 	public static BlockCoord bcoord = new BlockCoord("", 0,0,0);
-
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockIgniteEvent(BlockIgniteEvent event) {
 	//	CivLog.debug("block ignite event");
-
 		for (int x = -1; x <= 1; x++) {
 			for (int y = -1; y <= 1; y++) {
 				for (int z = -1; z <= 1; z++) {
@@ -172,7 +168,7 @@ public class BlockListener implements Listener {
 					}
 				}
 			}
-	    }
+		}
 
 
 		coord.setFromLocation(event.getBlock().getLocation());
@@ -486,102 +482,101 @@ public class BlockListener implements Listener {
 
 	}
 
-     private final BlockFace[] faces = new BlockFace[] {
-			        BlockFace.DOWN,
-		            BlockFace.NORTH,
-		            BlockFace.EAST,
-		            BlockFace.SOUTH,
-		            BlockFace.WEST,		            
-		            BlockFace.SELF,
-		            BlockFace.UP
+	 private final BlockFace[] faces = new BlockFace[] {
+					BlockFace.DOWN,
+					BlockFace.NORTH,
+					BlockFace.EAST,
+					BlockFace.SOUTH,
+					BlockFace.WEST,					
+					BlockFace.SELF,
+					BlockFace.UP
 	  };
 
-    public BlockCoord generatesCobble(int id, Block b)
-    {
-        int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
-        int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER ? CivData.LAVA : CivData.WATER);
-        for(BlockFace face : faces)
-        {
-            Block r = b.getRelative(face, 1);
-            if(ItemManager.getId(r) == mirrorID1 || ItemManager.getId(r) == mirrorID2)
-            {
-            	
-            	return new BlockCoord(r);
-            }
-        }
-        
-        return null;
-    }
+	public BlockCoord generatesCobble(int id, Block b)
+	{
+		int mirrorID1 = (id == CivData.WATER_RUNNING || id == CivData.WATER_STILL ? CivData.LAVA_RUNNING : CivData.WATER_RUNNING);
+		int mirrorID2 = (id == CivData.WATER_RUNNING || id == CivData.WATER_STILL ? CivData.LAVA_STILL : CivData.WATER_STILL);
+		for(BlockFace face : faces)
+		{
+			Block r = b.getRelative(face, 1);
+			if(ItemManager.getId(r) == mirrorID1 || ItemManager.getId(r) == mirrorID2)
+			{
+				
+				return new BlockCoord(r);
+			}
+		}
+		
+		return null;
+	}
 
-//    private static void destroyLiquidRecursive(Block source) {
-//    	//source.setTypeIdAndData(CivData.AIR, (byte)0, false);
-//    	NMSHandler nms = new NMSHandler();
-//    	nms.setBlockFast(source.getWorld(), source.getX(), source.getY(), source.getZ(), 0, (byte)0);
-//    	
-//    	for (BlockFace face : BlockFace.values()) {
-//    		Block relative = source.getRelative(face);
-//    		if (relative == null) {
-//    			continue;
-//    		}
-//    		
-//    		if (!isLiquid(relative.getTypeId())) {
-//    			continue;
-//    		}
-//    		
-//    		destroyLiquidRecursive(relative);
-//    	}
-//    }
-    
-//    private static boolean isLiquid(int id) {
-//    	return (id >= CivData.WATER && id <= CivData.LAVA);
-//    }
-    
-    private static HashSet<BlockCoord> stopCobbleTasks = new HashSet<BlockCoord>();
+//	private static void destroyLiquidRecursive(Block source) {
+//		//source.setTypeIdAndData(CivData.AIR, (byte)0, false);
+//		NMSHandler nms = new NMSHandler();
+//		nms.setBlockFast(source.getWorld(), source.getX(), source.getY(), source.getZ(), 0, (byte)0);
+//		
+//		for (BlockFace face : BlockFace.values()) {
+//			Block relative = source.getRelative(face);
+//			if (relative == null) {
+//				continue;
+//			}
+//			
+//			if (!isLiquid(relative.getTypeId())) {
+//				continue;
+//			}
+//			
+//			destroyLiquidRecursive(relative);
+//		}
+//	}
+	
+//	private static boolean isLiquid(int id) {
+//		return (id >= CivData.WATER && id <= CivData.LAVA);
+//	}
+	
+	private static HashSet<BlockCoord> stopCobbleTasks = new HashSet<BlockCoord>();
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnBlockFromToEvent(BlockFromToEvent event) {
 		/* Disable cobblestone generators. */
 		int id = ItemManager.getId(event.getBlock());
-	    if(id >= CivData.WATER && id <= CivData.LAVA)
-	    {
-	        Block b = event.getToBlock();
-	        bcoord.setFromLocation(b.getLocation());
+		if(id >= CivData.WATER_STILL && id <= CivData.LAVA_STILL) {
+			Block b = event.getToBlock();
+			bcoord.setFromLocation(b.getLocation());
 
-	        int toid = ItemManager.getId(b);
-	        if(toid == 0)
-	        {
-	            BlockCoord other = generatesCobble(id, b);
-	        	if(other != null)
-	            {
-	            	//BlockCoord d = new BlockCoord(event.getToBlock());
-//	            	BlockCoord fromCoord = new BlockCoord(event.getBlock());
-	            	event.setCancelled(true);
+			int toid = ItemManager.getId(b);
+			if(toid == 0)
+			{
+				BlockCoord other = generatesCobble(id, b);
+				if(other != null)
+				{
+					//BlockCoord d = new BlockCoord(event.getToBlock());
+//					BlockCoord fromCoord = new BlockCoord(event.getBlock());
+					event.setCancelled(true);
 
-	            	class SyncTask implements Runnable {
-	            		BlockCoord block;
+					class SyncTask implements Runnable {
+						BlockCoord block;
 
-	            		public SyncTask(BlockCoord block) {
-	            			this.block = block;
-	            		}
+						public SyncTask(BlockCoord block) {
+							this.block = block;
+						}
 
 						@Override
 						public void run() {
 							ItemManager.setTypeIdAndData(block.getBlock(), CivData.NETHERRACK, (byte)0, true);
 							stopCobbleTasks.remove(block);
 						}
-	            	}
+					}
 
-	            	if (!stopCobbleTasks.contains(other)) {
-	            		stopCobbleTasks.add(other);
-	            		TaskMaster.syncTask(new SyncTask(other), 2);
-	            	}
+					if (!stopCobbleTasks.contains(other)) {
+						stopCobbleTasks.add(other);
+						TaskMaster.syncTask(new SyncTask(other), 2);
+					}
 
-//	            	if (!stopCobbleTasks.contains(fromCoord)) {
-//	            		stopCobbleTasks.add(fromCoord);
-//	            		TaskMaster.syncTask(new SyncTask(fromCoord));
-//	            	}
-	            }
-	        }
-	    }
+//					if (!stopCobbleTasks.contains(fromCoord)) {
+//						stopCobbleTasks.add(fromCoord);
+//						TaskMaster.syncTask(new SyncTask(fromCoord));
+//					}
+				}
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -945,7 +940,13 @@ public class BlockListener implements Listener {
 		if (event.isCancelled()) {
 			// Fix for bucket bug.
 			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-				Integer item = ItemManager.getId(event.getPlayer().getItemInHand());
+				Integer item = null;
+				if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+					CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+					return;
+				} else {
+					item = ItemManager.getId(event.getPlayer().getInventory().getItemInMainHand());
+				}
 				// block cheats for placing water/lava/fire/lighter use.
 				if (item == 326 || item == 327 || item == 259 || (item >= 8 && item <= 11) || item == 51) { 
 					event.setCancelled(true);
@@ -1179,7 +1180,6 @@ public class BlockListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
-
 		if (event.getRightClicked().getType().equals(EntityType.HORSE)) {
 			if (!HorseModifier.isCivCraftHorse((LivingEntity)event.getRightClicked())) {
 				CivMessage.sendError(event.getPlayer(), "Invalid horse! You can only get horses from stable structures.");
@@ -1189,9 +1189,14 @@ public class BlockListener implements Listener {
 			}
 		}
 
-		ItemStack inHand = event.getPlayer().getItemInHand();
+		ItemStack inHand = null;
+		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
+			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
+			return;
+		} else {
+			inHand = event.getPlayer().getInventory().getItemInMainHand();
+		}
 			if (inHand != null) {
-
 				boolean denyBreeding = false;
 				switch (event.getRightClicked().getType()) {
 				case COW:
@@ -1360,7 +1365,14 @@ public class BlockListener implements Listener {
 		}
 
 		for (org.bukkit.entity.Entity ent : event.getChunk().getEntities()) {
-			if (ent.getType().equals(EntityType.ZOMBIE)) {
+			if (ent.getType().equals(EntityType.ZOMBIE) || ent.getType().equals(EntityType.SKELETON) ||
+					ent.getType().equals(EntityType.CREEPER) || ent.getType().equals(EntityType.SPIDER) ||
+					ent.getType().equals(EntityType.CAVE_SPIDER) || ent.getType().equals(EntityType.ENDERMAN) ||
+					ent.getType().equals(EntityType.WITCH) || ent.getType().equals(EntityType.BLAZE) ||
+					ent.getType().equals(EntityType.SILVERFISH) || ent.getType().equals(EntityType.ENDERMITE) ||
+					ent.getType().equals(EntityType.GHAST) || ent.getType().equals(EntityType.MAGMA_CUBE) ||
+					ent.getType().equals(EntityType.SLIME) || ent.getType().equals(EntityType.IRON_GOLEM) ||
+					ent.getType().equals(EntityType.BAT) || ent.getType().equals(EntityType.PIG_ZOMBIE)) {
 				ent.remove();
 			}
 		}
@@ -1443,7 +1455,7 @@ public class BlockListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCreatureSpawnEvent(CreatureSpawnEvent event) {
 		if (War.isWarTime()) {
@@ -1454,7 +1466,7 @@ public class BlockListener implements Listener {
 		}
 		
 		if (event.getEntity().getType().equals(EntityType.CHICKEN)) {
-			if (event.getSpawnReason().equals(SpawnReason.EGG)) {
+			if (event.getSpawnReason().equals(SpawnReason.EGG) || event.getSpawnReason().equals(SpawnReason.DISPENSE_EGG)) {
 				event.setCancelled(true);
 				return;
 			}
@@ -1464,39 +1476,75 @@ public class BlockListener implements Listener {
 				return;			
 			}
 		}
-
-		if (event.getEntity().getType().equals(EntityType.IRON_GOLEM) &&
-			event.getSpawnReason().equals(SpawnReason.BUILD_IRONGOLEM)) {
-				event.setCancelled(true);
-				return;
-		}
-
-		if (MobLib.isMobLibEntity(event.getEntity())) {
-			return;
-		}
-
-		if (event.getEntity().getType().equals(EntityType.ZOMBIE) ||
-			event.getEntity().getType().equals(EntityType.SKELETON) ||
-			event.getEntity().getType().equals(EntityType.BAT) ||
-			event.getEntity().getType().equals(EntityType.CAVE_SPIDER) ||
-			event.getEntity().getType().equals(EntityType.SPIDER) ||
-			event.getEntity().getType().equals(EntityType.CREEPER) ||
-			event.getEntity().getType().equals(EntityType.WOLF) ||
-			event.getEntity().getType().equals(EntityType.SILVERFISH) ||
-			event.getEntity().getType().equals(EntityType.OCELOT) ||
-			event.getEntity().getType().equals(EntityType.WITCH) ||
-			event.getEntity().getType().equals(EntityType.ENDERMAN)) {
-
+		
+		if (event.getEntity().getType().equals(EntityType.IRON_GOLEM) && event.getSpawnReason().equals(SpawnReason.BUILD_IRONGOLEM)) {
 			event.setCancelled(true);
 			return;
 		}
-
+		
+		if (event.getEntity().getType().equals(EntityType.SNOWMAN) && event.getSpawnReason().equals(SpawnReason.BUILD_SNOWMAN)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		if (event.getEntity().getType().equals(EntityType.SILVERFISH) && event.getSpawnReason().equals(SpawnReason.SILVERFISH_BLOCK)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		if (event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) && event.getSpawnReason().equals(SpawnReason.NETHER_PORTAL)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		if (event.getEntity().getType().equals(EntityType.WITHER) && event.getSpawnReason().equals(SpawnReason.BUILD_WITHER)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		if (event.getEntity().getType().equals(EntityType.ENDERMITE) && event.getSpawnReason().equals(SpawnReason.ENDER_PEARL)) {
+			event.setCancelled(true);
+			return;
+		}
+		
+		//False, we want them to be cute to players
+		if (event.getEntity().getType().equals(EntityType.SLIME) && event.getSpawnReason().equals(SpawnReason.SLIME_SPLIT)) {
+			event.setCancelled(false);
+			return;
+		}
+		
+		if (MobLib.isMobLibEntity(event.getEntity())) {
+			return;
+		}
+		
+		if (event.getEntity().getType().equals(EntityType.BAT) ||
+			event.getEntity().getType().equals(EntityType.WITCH) ||
+			event.getEntity().getType().equals(EntityType.GUARDIAN) ||
+			event.getEntity().getType().equals(EntityType.ZOMBIE) ||
+			event.getEntity().getType().equals(EntityType.SKELETON) ||
+			event.getEntity().getType().equals(EntityType.CREEPER) ||
+			event.getEntity().getType().equals(EntityType.SPIDER) ||
+			event.getEntity().getType().equals(EntityType.CAVE_SPIDER) ||
+			event.getEntity().getType().equals(EntityType.SILVERFISH) ||
+			event.getEntity().getType().equals(EntityType.ENDERMITE) ||
+			event.getEntity().getType().equals(EntityType.ENDERMAN) ||
+			event.getEntity().getType().equals(EntityType.WOLF) ||
+			event.getEntity().getType().equals(EntityType.OCELOT) ||
+			
+			event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) ||
+			event.getEntity().getType().equals(EntityType.MAGMA_CUBE) ||
+			event.getEntity().getType().equals(EntityType.GHAST) ||
+			event.getEntity().getType().equals(EntityType.BLAZE)) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		if (event.getSpawnReason().equals(SpawnReason.SPAWNER)) {
 			event.setCancelled(true);
 			return;
 		}
 	}
-
+	
 	public boolean allowPistonAction(Location loc) {
 		bcoord.setFromLocation(loc);
 		StructureBlock sb = CivGlobal.getStructureBlock(bcoord);
@@ -1578,14 +1626,6 @@ public class BlockListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-
-//		if (event.getBlocks().size() == 0) {
-//			Block extendInto = event.getBlock().getRelative(event.getDirection());
-//			if (!allowPistonAction(extendInto.getLocation())) {
-//				event.setCancelled(true);
-//				return;
-//			}
-//		}
 		coord.setFromLocation(event.getBlock().getLocation());
 		FarmChunk fc = CivGlobal.getFarmChunk(coord);
 		if (fc == null) {
@@ -1605,9 +1645,11 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST) 
 	public void onBlockPistonRetractEvent(BlockPistonRetractEvent event) {
-		if (!allowPistonAction(event.getRetractLocation())) {
-			event.setCancelled(true);
-			return;
+		for (Block block: event.getBlocks()) {
+			if (!allowPistonAction(block.getLocation())) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 

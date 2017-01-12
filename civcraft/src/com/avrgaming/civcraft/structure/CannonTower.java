@@ -44,7 +44,18 @@ public class CannonTower extends Structure {
 	protected CannonTower(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
-
+	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Cannon Tower</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "bomb";
+	}
+	
 	@Override
 	public void loadSettings() {
 		super.loadSettings();

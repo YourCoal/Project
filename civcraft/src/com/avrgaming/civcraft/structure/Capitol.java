@@ -66,6 +66,17 @@ public class Capitol extends TownHall {
 		super(center, id, town);
 	}
 	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Capital</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "king";
+	}
+	
 	private RespawnLocationHolder getSelectedHolder() {
 		ArrayList<RespawnLocationHolder> respawnables =  this.getTown().getCiv().getAvailableRespawnables();	
 		return respawnables.get(index);

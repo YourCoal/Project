@@ -72,9 +72,9 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 			
 			@Override
 			public void run() {
-				Player player;
+				Player p;
 				try {
-					player = CivGlobal.getPlayer(resident);
+					p = CivGlobal.getPlayer(resident);
 				} catch (CivException e) {
 					return;
 				}
@@ -101,26 +101,31 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 						throw new CivException("You can only have "+warCampMax+" war camps.");
 					}
 					
-					ItemStack stack = player.getItemInHand();
+					ItemStack stack = null;
+					if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+						CivMessage.sendError(p, "You cannot have items in your offhand!");
+						return;
+					} else {
+						stack = p.getInventory().getItemInMainHand();
+					}
+					
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 					if (craftMat == null || !craftMat.hasComponent("FoundWarCamp")) {
 						throw new CivException("You must be holding an item that can found a war camp.");
 					}
 					
-					WarCamp camp = new WarCamp(resident, player.getLocation(), info);
-					camp.buildCamp(player, player.getLocation());
+					WarCamp camp = new WarCamp(resident, p.getLocation(), info);
+					camp.buildCamp(p, p.getLocation());
 					resident.getCiv().addWarCamp(camp);
 				
-					CivMessage.sendSuccess(player, "You have set up a war camp!");
+					CivMessage.sendSuccess(p, "You have set up a war camp!");
 					camp.setWarCampBuilt();
-					ItemStack newStack = new ItemStack(Material.AIR);
-					player.setItemInHand(newStack);
+					p.getInventory().getItemInMainHand().setAmount(stack.getAmount()-1);
 				} catch (CivException e) {
-					CivMessage.sendError(player, e.getMessage());
+					CivMessage.sendError(p, e.getMessage());
 				}
 			}
 		}
-		
 		TaskMaster.syncTask(new SyncBuildWarCampTask(resident, info));
 	}
 	
@@ -480,8 +485,8 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 		Resident attacker = CivGlobal.getResident(player);
 		
 		ItemManager.setTypeId(hit.getCoord().getLocation().getBlock(), CivData.AIR);
-		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_BREAK, 1.0f, -1.0f);
-		world.playSound(hit.getCoord().getLocation(), Sound.EXPLODE, 1.0f, 1.0f);
+		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1.0f, -1.0f);
+		world.playSound(hit.getCoord().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
 		
 		FireworkEffect effect = FireworkEffect.builder().with(org.bukkit.FireworkEffect.Type.BURST).withColor(Color.OLIVE).withColor(Color.RED).withTrail().withFlicker().build();
 		FireworkEffectPlayer fePlayer = new FireworkEffectPlayer();
@@ -525,7 +530,7 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 	}
 	
 	public void onControlBlockHit(ControlPoint cp, World world, Player player, StructureBlock hit) {
-		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
+		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
 		world.playEffect(hit.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		CivMessage.send(player, CivColor.LightGray+"Damaged Control Block ("+cp.getHitpoints()+" / "+cp.getMaxHitpoints()+")");

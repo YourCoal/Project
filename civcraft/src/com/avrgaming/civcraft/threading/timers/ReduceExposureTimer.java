@@ -35,16 +35,11 @@ public class ReduceExposureTimer implements Runnable {
 					if (resident.getSpyExposure() <= 5) {
 						resident.setSpyExposure(0.0);
 					} else {
-						resident.setSpyExposure(resident.getSpyExposure() - 5);
+						resident.setSpyExposure(resident.getSpyExposure() - 2);
 					}
 				}
-				
 			}
-			
 		}
-		
 		TaskMaster.syncTask(new SyncTask(playersToReduce));
-		
 	}
-
 }

@@ -2,24 +2,12 @@
 # Use this to configure global town costs/settings as well as town levels and culture 
 # levels for towns.
 town:
-    # Cost to start a town
-    cost: 10000.0
-
-    # Cost to claim a plot
-    plot_cost: 1000.0
-
     # Min distance from another town
     min_town_distance: 150.0
     
     # Min distance from another town that is your enemy
     min_town_distance_enemy: 300.0
 
-    # Cost to claim an outpost.
-    outpost_cost: 5000.0
-
-    # upkeep per outpost plot per day.
-    outpost_upkeep: 1000.0
-    
     # Grace distance that town will not calculate upkeep from.
     upkeep_town_block_grace_distance: 8.0
 
@@ -60,72 +48,84 @@ town_levels:
     - level: 1
       title: 'Settlement'
       upkeep: 500.0
-      plots: 32
+      plots: 64
       plot_cost: 500.0
-      tile_improvements: 4
-
+      tiles: 5
+      outposts: 1
+      strategics: 2
+#
     - level: 2
       title: 'Hamlet'
       upkeep: 750.0
-      plots: 64
+      plots: 96
       plot_cost: 1000.0
-      tile_improvements: 6
-
+      tiles: 7
+      outposts: 2
+      strategics: 4
+#
     - level: 3
       title: 'Village'
       upkeep: 1250.0
-      plots: 80
+      plots: 128
       plot_cost: 2000.0
-      tile_improvements: 8
-    
+      tiles: 9
+      outposts: 4
+      strategics: 6
+#
     - level: 4
       title: 'Large Village'
       upkeep: 2000.0
-      plots: 128
+      plots: 192
       plot_cost: 3500.0
-      tile_improvements: 12
-
+      tiles: 12
+      outposts: 5
+      strategics: 8
+#
     - level: 5
       title: 'Town'
       upkeep: 3500.0
       plots: 256
       plot_cost: 5000.0
-      tile_improvements: 15
-
-
+      tiles: 15
+      outposts: 6
+      strategics: 12
+#
     - level: 6
       title: 'Large Town'
       upkeep: 5500.0
       plots: 512
       plot_cost: 7500.0
-      tile_improvements: 17
-
-
+      tiles: 18
+      outposts: 8
+      strategics: 16
+#
     - level: 7
       title: 'City'
       upkeep: 7000.0
       plots: 1024
       plot_cost: 15000.0
-      tile_improvements: 20
-
-
+      tiles: 21
+      outposts: 10
+      strategics: 20
+#
     - level: 8
       title: 'Large City'
       upkeep: 8000.0
       plots: 2048
       plot_cost: 20000.0
-      tile_improvements: 25
-
-
+      tiles: 25
+      outposts: 12
+      strategics: 24
+#
     - level: 9
       title: 'Metropolis'
       upkeep: 25000.0
       plots: 4096
       plot_cost: 30000.0
-      tile_improvements: 30
-
-
-
+      tiles: 30
+      outposts: 15
+      strategics: 24
+#
 # Town Upgrades
 # These are upgrades available to towns.
 # id - unquie id for this upgrade

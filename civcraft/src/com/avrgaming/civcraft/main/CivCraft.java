@@ -21,13 +21,14 @@ package com.avrgaming.civcraft.main;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import pvptimer.PvPListener;
-import pvptimer.PvPTimer;
 
 import com.avrgaming.anticheat.ACManager;
 import com.avrgaming.civcraft.arena.ArenaListener;
@@ -42,9 +43,9 @@ import com.avrgaming.civcraft.command.KillCommand;
 import com.avrgaming.civcraft.command.PayCommand;
 import com.avrgaming.civcraft.command.ReportCommand;
 import com.avrgaming.civcraft.command.SelectCommand;
-import com.avrgaming.civcraft.command.TradeCommand;
 import com.avrgaming.civcraft.command.VoteCommand;
 import com.avrgaming.civcraft.command.admin.AdminCommand;
+import com.avrgaming.civcraft.command.admin.AdminGUICommand;
 import com.avrgaming.civcraft.command.camp.CampCommand;
 import com.avrgaming.civcraft.command.civ.CivChatCommand;
 import com.avrgaming.civcraft.command.civ.CivCommand;
@@ -70,6 +71,7 @@ import com.avrgaming.civcraft.listener.CustomItemManager;
 import com.avrgaming.civcraft.listener.DebugListener;
 import com.avrgaming.civcraft.listener.DisableXPListener;
 import com.avrgaming.civcraft.listener.HeroChatListener;
+import com.avrgaming.civcraft.listener.HolographicDisplaysListener;
 import com.avrgaming.civcraft.listener.MarkerPlacementManager;
 import com.avrgaming.civcraft.listener.PlayerListener;
 import com.avrgaming.civcraft.listener.TagAPIListener;
@@ -100,57 +102,47 @@ import com.avrgaming.civcraft.threading.sync.SyncUpdateInventory;
 import com.avrgaming.civcraft.threading.tasks.ArrowProjectileTask;
 import com.avrgaming.civcraft.threading.tasks.ProjectileComponentTimer;
 import com.avrgaming.civcraft.threading.tasks.ScoutTowerTask;
+import com.avrgaming.civcraft.threading.timers.ActionBarUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.AnnouncementTimer;
 import com.avrgaming.civcraft.threading.timers.BeakerTimer;
 import com.avrgaming.civcraft.threading.timers.ChangeGovernmentTimer;
 import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
 import com.avrgaming.civcraft.threading.timers.PlayerProximityComponentTimer;
+import com.avrgaming.civcraft.threading.timers.PlayerTagUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.ReduceExposureTimer;
 import com.avrgaming.civcraft.threading.timers.RegenTimer;
 import com.avrgaming.civcraft.threading.timers.UnitTrainTimer;
 import com.avrgaming.civcraft.threading.timers.UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.WindmillTimer;
-import com.avrgaming.civcraft.trade.TradeInventoryListener;
 import com.avrgaming.civcraft.util.BukkitObjects;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.TimeTools;
 import com.avrgaming.civcraft.war.WarListener;
-import com.avrgaming.global.perks.PlatinumManager;
 import com.avrgaming.global.scores.CalculateScoreTimer;
-import com.avrgaming.moblib.MobLib;
-import com.avrgaming.sls.SLSManager;
+
+import moblib.moblib.MobLib;
+import moblib.moblib.MobLibListener;
+import pvptimer.PvPListener;
+import pvptimer.PvPTimer;
 
 public final class CivCraft extends JavaPlugin {
 
 	private boolean isError = false;	
 	private static JavaPlugin plugin;	
+	public static boolean isDisable = false;
 	
 	private void startTimers() {
 		
 		TaskMaster.asyncTask("SQLUpdate", new SQLUpdate(), 0);
 		
 		// Sync Timers
-		TaskMaster.syncTimer(SyncBuildUpdateTask.class.getName(), 
-				new SyncBuildUpdateTask(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncUpdateChunks.class.getName(), 
-				new SyncUpdateChunks(), 0, TimeTools.toTicks(1));
-		
-		TaskMaster.syncTimer(SyncLoadChunk.class.getName(), 
-				new SyncLoadChunk(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncGetChestInventory.class.getName(),
-				new SyncGetChestInventory(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncUpdateInventory.class.getName(),
-				new SyncUpdateInventory(), 0, 1);
-		
-		TaskMaster.syncTimer(SyncGrowTask.class.getName(),
-				new SyncGrowTask(), 0, 1);
-		
-		TaskMaster.syncTimer(PlayerLocationCacheUpdate.class.getName(), 
-				new PlayerLocationCacheUpdate(), 0, 10);
-		
+		TaskMaster.syncTimer(SyncBuildUpdateTask.class.getName(), new SyncBuildUpdateTask(), 0, 1);
+		TaskMaster.syncTimer(SyncUpdateChunks.class.getName(), new SyncUpdateChunks(), 0, TimeTools.toTicks(1));
+		TaskMaster.syncTimer(SyncLoadChunk.class.getName(), new SyncLoadChunk(), 0, 1);
+		TaskMaster.syncTimer(SyncGetChestInventory.class.getName(),new SyncGetChestInventory(), 0, 1);
+		TaskMaster.syncTimer(SyncUpdateInventory.class.getName(),new SyncUpdateInventory(), 0, 1);
+		TaskMaster.syncTimer(SyncGrowTask.class.getName(),new SyncGrowTask(), 0, 1);
+		TaskMaster.syncTimer(PlayerLocationCacheUpdate.class.getName(), new PlayerLocationCacheUpdate(), 0, 10);
 		TaskMaster.asyncTimer("RandomEventSweeper", new RandomEventSweeper(), 0, TimeTools.toTicks(10));
 		
 		// Structure event timers
@@ -159,7 +151,7 @@ public final class CivCraft extends JavaPlugin {
 
 		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
 		TaskMaster.syncTimer("UnitTrainTimer", new UnitTrainTimer(), TimeTools.toTicks(1));
-		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(5));
+		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(2));
 
 		try {
 			double arrow_firerate = CivSettings.getDouble(CivSettings.warConfig, "arrow_tower.fire_rate");
@@ -172,11 +164,12 @@ public final class CivCraft extends JavaPlugin {
 		}
 		TaskMaster.syncTimer("arrowhomingtask", new ArrowProjectileTask(), 5);
 			
-		// Global Event timers		
+		// Global Event timers
+		TaskMaster.asyncTimer("ActionBarUpdateTimer", new ActionBarUpdateTimer(), 0, TimeTools.toTicks(2));
+		TaskMaster.asyncTimer("PlayerTagUpdateTimer", new PlayerTagUpdateTimer(), 0, TimeTools.toTicks(30));
+		
 		TaskMaster.syncTimer("FarmCropCache", new FarmPreCachePopulateTimer(), TimeTools.toTicks(30));
-	
-		TaskMaster.asyncTimer("FarmGrowthTimer",
-				new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
+		TaskMaster.asyncTimer("FarmGrowthTimer", new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
 
 		TaskMaster.asyncTimer("announcer", new AnnouncementTimer("tips.txt"), 0, TimeTools.toTicks(60*60));
 		
@@ -188,9 +181,9 @@ public final class CivCraft extends JavaPlugin {
 		
 		TaskMaster.asyncTimer(EventTimerTask.class.getName(), new EventTimerTask(), TimeTools.toTicks(5));
 
-		if (PlatinumManager.isEnabled()) {
-			TaskMaster.asyncTimer(PlatinumManager.class.getName(), new PlatinumManager(), TimeTools.toTicks(5));
-		}
+//		if (PlatinumManager.isEnabled()) {
+//			TaskMaster.asyncTimer(PlatinumManager.class.getName(), new PlatinumManager(), TimeTools.toTicks(5));
+//		}
 		
 		TaskMaster.syncTimer("PvPLogger", new PvPLogger(), TimeTools.toTicks(5));
 		TaskMaster.syncTimer("WindmillTimer", new WindmillTimer(), TimeTools.toTicks(60));
@@ -201,7 +194,7 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("SessionDBAsyncTimer", new SessionDBAsyncTimer(), 10);
 		TaskMaster.asyncTimer("pvptimer", new PvPTimer(), TimeTools.toTicks(30));
 		
-		TaskMaster.syncTimer("MobSpawner", new MobSpawnerTimer(), TimeTools.toTicks(2));
+		TaskMaster.syncTimer("MobSpawner", new MobSpawnerTimer(), TimeTools.toTicks(30));
 		TaskMaster.syncTimer("ArenaTimer", new ArenaManager(), TimeTools.toTicks(30));
 		TaskMaster.syncTimer("ArenaTimeoutTimer", new ArenaTimer(), TimeTools.toTicks(1));
 
@@ -220,7 +213,6 @@ public final class CivCraft extends JavaPlugin {
 		pluginManager.registerEvents(new LoreGuiItemListener(), this);
 		pluginManager.registerEvents(new DisableXPListener(), this);
 		pluginManager.registerEvents(new PvPLogger(), this);
-		pluginManager.registerEvents(new TradeInventoryListener(), this);
 		pluginManager.registerEvents(new MobListener(), this);
 		pluginManager.registerEvents(new ArenaListener(), this);
 		pluginManager.registerEvents(new CannonListener(), this);
@@ -228,6 +220,10 @@ public final class CivCraft extends JavaPlugin {
 		pluginManager.registerEvents(new FishingListener(), this);	
 		pluginManager.registerEvents(new PvPListener(), this);
 		pluginManager.registerEvents(new LoreEnhancementArenaItem(), this);
+		pluginManager.registerEvents(new MobLibListener(), this);
+		
+		//Registered GUIs
+		pluginManager.registerEvents(new AdminGUICommand(), this);
 		
 		if (hasPlugin("TagAPI")) {
 			pluginManager.registerEvents(new TagAPIListener(), this);
@@ -262,15 +258,6 @@ public final class CivCraft extends JavaPlugin {
 			CivGlobal.loadGlobals();
 			
 			ACManager.init();
-			try {
-				SLSManager.init();
-			} catch (CivException e1) {
-				e1.printStackTrace();
-			} catch (InvalidConfiguration e1) {
-				e1.printStackTrace();
-			}
-			
-
 		} catch (InvalidConfiguration | SQLException | IOException | InvalidConfigurationException | CivException | ClassNotFoundException e) {
 			e.printStackTrace();
 			setError(true);
@@ -288,7 +275,6 @@ public final class CivCraft extends JavaPlugin {
 		getCommand("civ").setExecutor(new CivCommand());
 		getCommand("tc").setExecutor(new TownChatCommand());
 		getCommand("cc").setExecutor(new CivChatCommand());
-		//getCommand("gc").setExecutor(new GlobalChatCommand());
 		getCommand("ad").setExecutor(new AdminCommand());
 		getCommand("econ").setExecutor(new EconCommand());
 		getCommand("pay").setExecutor(new PayCommand());
@@ -299,10 +285,9 @@ public final class CivCraft extends JavaPlugin {
 		getCommand("camp").setExecutor(new CampCommand());
 		getCommand("report").setExecutor(new ReportCommand());
 		getCommand("vote").setExecutor(new VoteCommand());
-		getCommand("trade").setExecutor(new TradeCommand());
 		getCommand("kill").setExecutor(new KillCommand());
 		getCommand("team").setExecutor(new TeamCommand());
-	
+		
 		registerEvents();
 		
 		if (hasPlugin("NoCheatPlus")) {
@@ -311,10 +296,16 @@ public final class CivCraft extends JavaPlugin {
 			CivLog.warning("NoCheatPlus not found, not registering NCP hooks. This is fine if you're not using NCP.");
 		}
 		MobLib.registerAllEntities();
-		startTimers();
 		MobSpawner.register();
-				
-		//creativeInvPacketManager.init(this);		
+		startTimers();
+		CivCraft.addFurnaceRecipes();
+		
+		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			public void run(){
+				HolographicDisplaysListener.generateTradeGoodHolograms();
+			}
+		});
+
 	}
 	
 	public boolean hasPlugin(String name) {
@@ -326,27 +317,34 @@ public final class CivCraft extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		MobSpawner.despawnAll();
+		super.onDisable();
+		isDisable = true;
+		SQLUpdate.save();
 	}
-
+	
 	public boolean isError() {
 		return isError;
 	}
-
+	
 	public void setError(boolean isError) {
 		this.isError = isError;
 	}
-
-
+	
 	public static JavaPlugin getPlugin() {
 		return plugin;
 	}
-
-
+	
 	public static void setPlugin(JavaPlugin plugin) {
 		CivCraft.plugin = plugin;
 	}
-
-
 	
-	
+	public static void addFurnaceRecipes() {
+		FurnaceRecipe recipe1 = new FurnaceRecipe(new ItemStack(Material.INK_SACK, 4, (short) 4), Material.LAPIS_ORE);
+		recipe1.setExperience(1.0F);
+		Bukkit.addRecipe(recipe1);
+		
+		FurnaceRecipe recipe2 = new FurnaceRecipe(new ItemStack(Material.REDSTONE, 4), Material.REDSTONE_ORE);
+		recipe2.setExperience(1.0F);
+		Bukkit.addRecipe(recipe2);
+	}
 }

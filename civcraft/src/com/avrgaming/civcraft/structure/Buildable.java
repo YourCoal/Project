@@ -248,8 +248,16 @@ public abstract class Buildable extends SQLObject {
 		return info.allow_demolish;
 	}
 	
-	public boolean isTileImprovement() {
-		return info.tile_improvement;
+	public boolean isTile() {
+		return info.tile;
+	}
+	
+	public boolean isOutpost() {
+		return info.outpost;
+	}
+	
+	public boolean isStrategic() {
+		return info.strategic;
 	}
 	
 	public boolean isActive() {	
@@ -551,7 +559,7 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (info.tile_improvement) {
+		if (info.tile || info.outpost) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else { 
@@ -595,7 +603,7 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (this.isTileImprovement()) {
+		if (this.isTile() || this.isOutpost()) {
 			// just put the center at 0,0 of this chunk?
 			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 		} else {  
@@ -740,13 +748,13 @@ public abstract class Buildable extends SQLObject {
 		}
 		
 		if (this.getConfigId().equals("s_shipyard")) {
-			if (!centerBlock.getBiome().equals(Biome.OCEAN) && 
-				!centerBlock.getBiome().equals(Biome.BEACH) &&
+			if (!centerBlock.getBiome().equals(Biome.BEACHES) &&
+				!centerBlock.getBiome().equals(Biome.COLD_BEACH) &&
+				!centerBlock.getBiome().equals(Biome.STONE_BEACH) &&
+				!centerBlock.getBiome().equals(Biome.OCEAN) && 
 				!centerBlock.getBiome().equals(Biome.DEEP_OCEAN) &&
-				!centerBlock.getBiome().equals(Biome.RIVER) &&
-				!centerBlock.getBiome().equals(Biome.FROZEN_OCEAN) &&
-				!centerBlock.getBiome().equals(Biome.FROZEN_RIVER)) {
-				throw new CivException("Cannot build shipyard here, you need to be in a majority of ocean, river, or beach biome. Try repositioning it if you are.");
+				!centerBlock.getBiome().equals(Biome.FROZEN_OCEAN)) {
+				throw new CivException("Cannot build shipyard here, you need to be in a majority of an ocean or beach biome. Try repositioning it if you are.");
 			}
 		}
 		
@@ -761,25 +769,61 @@ public abstract class Buildable extends SQLObject {
 			validateDistanceFromSpawn(centerBlock.getLocation());
 		}
 		
-		if (this.isTileImprovement()) {
-			ignoreBorders = true;
+		if (this.isTile()) {
+			ignoreBorders = false;
 			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
-			
-			if (getTown().getTileImprovementCount() >= level.tile_improvements) {
-				throw new CivException("Cannot build tile improvement. Already at tile improvement limit.");
+			if (getTown().getTileCount() >= level.tiles) {
+				throw new CivException("Cannot build tile improvement. Your town is already at the tile limit.");
 			}
 			
 			ChunkCoord coord = new ChunkCoord(centerBlock.getLocation());
 			for (Structure s : getTown().getStructures()) {
-				if (!s.isTileImprovement()) {
+				if (!s.isTile()) {
 					continue;
 				}
 				ChunkCoord sCoord = new ChunkCoord(s.getCorner());
 				if (sCoord.equals(coord)) {
-					throw new CivException("Cannot build a tile improvement on the same chunk as another tile improvement.");
+					throw new CivException("Cannot build a tile on the same chunk as another tile.");
 				}
 			}
+		}
+		
+		if (this.isOutpost()) {
+			ignoreBorders = true;
+			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
+			if (getTown().getOutpostCount() >= level.outposts) {
+				throw new CivException("Cannot build outpost. Your town is already at the outpost limit.");
+			}
 			
+			ChunkCoord coord = new ChunkCoord(centerBlock.getLocation());
+			for (Structure s : getTown().getStructures()) {
+				if (!s.isOutpost()) {
+					continue;
+				}
+				ChunkCoord sCoord = new ChunkCoord(s.getCorner());
+				if (sCoord.equals(coord)) {
+					throw new CivException("Cannot build an outpost on the same chunk as another outpost.");
+				}
+			}
+		}
+		
+		if (this.isStrategic()) {
+			ignoreBorders = true;
+			ConfigTownLevel level = CivSettings.townLevels.get(getTown().getLevel());
+			if (getTown().getOutpostCount() >= level.strategics) {
+				throw new CivException("Cannot build outpost. Your town is already at the outpost limit.");
+			}
+			
+			ChunkCoord coord = new ChunkCoord(centerBlock.getLocation());
+			for (Structure s : getTown().getStructures()) {
+				if (!s.isOutpost()) {
+					continue;
+				}
+				ChunkCoord sCoord = new ChunkCoord(s.getCorner());
+				if (sCoord.equals(coord)) {
+					throw new CivException("Cannot build an outpost on the same chunk as another outpost.");
+				}
+			}
 		}
 		
 		TownChunk centertc = CivGlobal.getTownChunk(origin);
@@ -1156,7 +1200,7 @@ public abstract class Buildable extends SQLObject {
 			
 		this.damage(amount);
 		
-		world.playSound(hit.getCoord().getLocation(), Sound.ANVIL_USE, 0.2f, 1);
+		world.playSound(hit.getCoord().getLocation(), Sound.BLOCK_ANVIL_USE, 0.2f, 1);
 		world.playEffect(hit.getCoord().getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		
 		if ((hit.getOwner().getDamagePercentage() % 10) == 0 && !wasTenPercent) {
@@ -1197,10 +1241,6 @@ public abstract class Buildable extends SQLObject {
 	
 	public boolean isAllowOutsideTown() {
 		return (info.allow_outside_town != null) && (info.allow_outside_town == true);
-	}
-	
-	public boolean isStrategic() {
-		return info.strategic;
 	}
 	
 	public void runCheck(Location center) throws CivException {
@@ -1481,18 +1521,51 @@ public abstract class Buildable extends SQLObject {
 	
 	public static int getReinforcementValue(int typeId) {
 		switch (typeId) {
-		case CivData.WATER:
-		case CivData.WATER_RUNNING:
-		case CivData.LAVA:
-		case CivData.LAVA_RUNNING:
 		case CivData.AIR:
+		case CivData.SAPLING:
+		case CivData.WATER_RUNNING:
+		case CivData.WATER_STILL:
+		case CivData.LAVA_RUNNING:
+		case CivData.LAVA_STILL:
+		case CivData.LEAF:
+		case CivData.SPONGE:
 		case CivData.COBWEB:
+		case CivData.TALL_GRASS:
+		case CivData.DEAD_BUSH:
+		case CivData.YELLOW_FLOWER:
+		case CivData.OTHER_FLOWERS:
+		case CivData.BROWNMUSHROOM:
+		case CivData.REDMUSHROOM:
+		case CivData.TORCH:
+		case CivData.FIRE:
+		case CivData.WHEAT:
+		case CivData.REDSTONE_WIRE:
+		case CivData.SUGARCANE:
+		case CivData.LILY_PAD:
+		case CivData.TRIPWIRE:
+		case CivData.CARROTS:
+		case CivData.POTATOES:
+		case CivData.BEETROOT_CROP:
+		case CivData.ANVIL:
+		case CivData.LEAF2:
+		case CivData.SLIME_BLOCK:
+		case CivData.CARPET:
+		case CivData.DOUBLE_FLOWER:
 			return 0;
+		case CivData.DIAMOND_BLOCK:
+		case CivData.EMERALD_BLOCK:
+			return 5;
+		case CivData.GOLD_BLOCK:
 		case CivData.IRON_BLOCK:
+		case CivData.OBSIDIAN:
 			return 4;
 		case CivData.STONE_BRICK:
+		case CivData.COAL_BLOCK:
 			return 3;
 		case CivData.STONE:
+		case CivData.COBBLESTONE:
+		case CivData.STAINED_CLAY:
+		case CivData.HARDENED_CLAY:
 			return 2;
 		default:
 			return 1;

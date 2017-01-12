@@ -22,138 +22,118 @@ import java.sql.SQLException;
 import java.util.Random;
 
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.generator.BlockPopulator;
+import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.ConfigTradeGood;
+import com.avrgaming.civcraft.main.CivCraft;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
+import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.object.ProtectedBlock;
-import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
+import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
+import com.gmail.filoghost.holographicdisplays.api.Hologram;
+import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 
 public class TradeGoodPopulator extends BlockPopulator {
 	
-	//private static final int RESOURCE_CHANCE = 400; 
-    private static final int FLAG_HEIGHT = 3;
-//    private static final double MIN_DISTANCE = 400.0;
-    
-
-    public static void buildTradeGoodie(ConfigTradeGood good, BlockCoord coord, World world, boolean sync) {
-    	TradeGood new_good = new TradeGood(good, coord);            
-    	CivGlobal.addTradeGood(new_good);
-
-    	BlockFace direction = null;
-    	Block top = null;
-    	Random random = new Random();
-    	int dir = random.nextInt(4);
-    	if (dir == 0) {
-    		direction = BlockFace.NORTH;
-    	} else if (dir == 1) {
-    		direction = BlockFace.EAST;
-    	} else if (dir == 2) {
-    		direction = BlockFace.SOUTH;
-    	} else {
-    		direction = BlockFace.WEST;
-    	}
-
-    	//clear any stack goodies
-    	for (int y = coord.getY(); y < 256; y++) {
-    		top = world.getBlockAt(coord.getX(), y, coord.getZ());
-    		if (ItemManager.getId(top) == CivData.BEDROCK) {
-    			ItemManager.setTypeId(top, CivData.AIR);
-    		}
-    	}
-    	
-    	for (int y = coord.getY(); y < coord.getY() + FLAG_HEIGHT; y++) {
-    		top = world.getBlockAt(coord.getX(), y, coord.getZ());
-    		top.setType(Material.BEDROCK);
-
-    		ProtectedBlock pb = new ProtectedBlock(new BlockCoord(top), ProtectedBlock.Type.TRADE_MARKER);
-    		CivGlobal.addProtectedBlock(pb);
-    		if (sync) {
-    		try {
+	private static int FLAG_HEIGHT = 3;
+	
+	@SuppressWarnings("deprecation")
+	public static void buildTradeGoodie(ConfigTradeGood good, BlockCoord coord, World world, boolean sync) {
+		TradeGood new_good = new TradeGood(good, coord);			
+		CivGlobal.addTradeGood(new_good);
+		
+		Block top = null;
+		//clear any stack goodies
+		for (int y = coord.getY(); y < 256; y++) {
+			top = world.getBlockAt(coord.getX(), y, coord.getZ());
+			if (ItemManager.getId(top) == CivData.EMERALD) {
+				ItemManager.setTypeId(top, CivData.AIR);
+			}
+		}
+		
+		for (int y = coord.getY(); y < coord.getY() + FLAG_HEIGHT; y++) {
+			top = world.getBlockAt(coord.getX(), y, coord.getZ());
+			top.setType(Material.EMERALD_BLOCK);
+			
+			ProtectedBlock pb = new ProtectedBlock(new BlockCoord(top), ProtectedBlock.Type.TRADE_MARKER);
+			CivGlobal.addProtectedBlock(pb);
+			if (sync) {
+			try {
 				pb.saveNow();
 			} catch (SQLException e) {
 				e.printStackTrace();
-			}    
-    		} else {
-    			pb.save();
-    		}
-    	}
-
-    	Block signBlock = top.getRelative(direction);
-    	signBlock.setType(Material.WALL_SIGN);
-    	//TODO make sign a structure sign?
-    			//          Civ.protectedBlockTable.put(Civ.locationHash(signBlock.getLocation()), 
-    	//          		new ProtectedBlock(signBlock, null, null, null, ProtectedBlock.Type.TRADE_MARKER));
-
-    	BlockState state = signBlock.getState();
-
-    	if (state instanceof Sign) {
-    		Sign sign = (Sign)state;
-    		org.bukkit.material.Sign data = (org.bukkit.material.Sign)state.getData();
-
-    		data.setFacingDirection(direction);
-    		sign.setLine(0, "Trade Resource");
-    		sign.setLine(1, "----");
-    		sign.setLine(2, good.name);
-    		sign.setLine(3, "");
-    		sign.update(true);
-
-    		StructureSign structSign = new StructureSign(new BlockCoord(signBlock), null);
-    		structSign.setAction("");
-    		structSign.setType("");
-    		structSign.setText(sign.getLines());
-    		structSign.setDirection(ItemManager.getData(sign.getData()));
-    		CivGlobal.addStructureSign(structSign);
-    	}
-    	if (sync) {
-    	try {
-			new_good.saveNow();
-		} catch (SQLException e) {
-			e.printStackTrace();
+			}	
+			} else {
+				pb.save();
+			}
 		}
-    	} else {
-    		new_good.save();
-    	}
-    }
+		
+		Location loc = new Location(coord.getBlock().getWorld(), coord.getBlock().getX()+0.5, coord.getBlock().getY()+5, coord.getBlock().getZ()+0.5);
+		Hologram hologram = HologramsAPI.createHologram(CivCraft.getPlugin(), loc);
+		if (good.water == true) {
+			hologram.appendItemLine(new ItemStack(good.material, 1, (short)good.material_data));
+			hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Trade Resource: "+CivColor.LightBlue+CivColor.BOLD+CivColor.ITALIC+good.name);
+			hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Value: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.value+" Coins");
+			hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Culture: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+"Future Addition"
+									+CivColor.Gold+CivColor.BOLD+" | Food: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+"Future Addition");
+//			hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Culture: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.culture
+//									+CivColor.Gold+CivColor.BOLD+" | Food:"+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.food);
+		} else {
+			hologram.appendItemLine(new ItemStack(good.material, 1, (short)good.material_data));
+			hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Trade Resource: "+CivColor.LightGreen+CivColor.BOLD+CivColor.ITALIC+good.name);
+			hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Value: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.value+" Coins");
+			hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Culture: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+"Future Addition"
+									+CivColor.Gold+CivColor.BOLD+" | Food: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+"Future Addition");
+//			hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Culture: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.culture
+//									+CivColor.Gold+CivColor.BOLD+" | Food:"+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good..food);
+		}
+		
+		if (sync) {
+			try {
+				new_good.saveNow();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		} else {
+			new_good.save();
+		}
+	}
 
-    public boolean checkForDuplicateTradeGood(String worldName, int centerX, int centerY, int centerZ) {
-    	/* 
-    	 * Search downward to bedrock for any trade goodies here. If we find one, don't generate. 
-    	 */
-    	
-    	BlockCoord coord = new BlockCoord(worldName, centerX, centerY, centerZ);
-    	for (int y = centerY; y > 0; y--) {
-    		coord.setY(y);    		
-    		
-    		if (CivGlobal.getTradeGood(coord) != null) {
+	public boolean checkForDuplicateTradeGood(String worldName, int centerX, int centerY, int centerZ) {
+		/* Search downward to bedrock for any trade goodies here. If we find one, don't generate. */
+		BlockCoord coord = new BlockCoord(worldName, centerX, centerY, centerZ);
+		for (int y = centerY; y > 0; y--) {
+			coord.setY(y);			
+			
+			if (CivGlobal.getTradeGood(coord) != null) {
 				/* Already a trade goodie here. DONT Generate it. */
 				return true;
-    		}		
-    	}
-    	return false;
-    }
-    
-    @Override
+			}		
+		}
+		return false;
+	}
+	
+	@Override
 	public void populate(World world, Random random, Chunk source) {
-    	
-    	ChunkCoord cCoord = new ChunkCoord(source);
-    	TradeGoodPick pick = CivGlobal.preGenerator.goodPicks.get(cCoord);
-    	if (pick != null) {
+		ChunkCoord cCoord = new ChunkCoord(source);
+		TradeGoodPick pick = CivGlobal.preGenerator.goodPicks.get(cCoord);
+		if (pick != null) {
 			int centerX = (source.getX() << 4) + 8;
 			int centerZ = (source.getZ() << 4) + 8;
 			int centerY = world.getHighestBlockYAt(centerX, centerZ);
 			BlockCoord coord = new BlockCoord(world.getName(), centerX, centerY, centerZ);
+			BlockCoord coord2 = new BlockCoord(world.getName(), centerX, centerY-1, centerZ);
 
 			if (checkForDuplicateTradeGood(world.getName(), centerX, centerY, centerZ)) {
 				return;
@@ -161,12 +141,52 @@ public class TradeGoodPopulator extends BlockPopulator {
 			
 			// Determine if we should be a water good.
 			ConfigTradeGood good;
-			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER || 
-				ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
-				good = pick.waterPick;
-			}  else {
-				good = pick.landPick;
-			}
+			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_STILL || 
+					ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
+					if (coord2.getCenteredLocation().getBlock().getBiome() == Biome.RIVER ||
+							coord2.getCenteredLocation().getBlock().getBiome() == Biome.FROZEN_RIVER ||
+							coord2.getCenteredLocation().getBlock().getBiome() == Biome.SWAMPLAND) {
+						CivLog.warning(" -------------------------------- ");
+						CivLog.warning("A trade good tried placing on water without proper biome! "+centerX+", "+(centerY-1)+", "+centerZ
+										+" Biome: "+world.getBiome(centerX, centerZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());
+						CivLog.warning(" -------------------------------- ");
+						return;
+					} else {
+						good = pick.waterPick;
+						CivLog.info(" -------------------------------- ");
+						CivLog.info("Trade Good Generate: "+centerX+", "+(centerY-1)+", "+centerZ
+								+" - Biome: "+world.getBiome(centerX, centerZ).toString()
+								+" - Block: "+coord.getCenteredLocation().getBlock().getType().toString()
+								+" - Goodie: "+pick.waterPick.name);
+						CivLog.info(" -------------------------------- ");
+					}
+				} else {
+					//TODO For this we don't want to just cancel the trade good spawn, so we should try to make a method
+					//     that will check within a 4-5 block radius for a block it can be placed on. If that check fails,
+					//     ONLY THEN will we not place a goodie.
+					if (coord2.getCenteredLocation().getBlock().getType() == Material.WATER ||
+							coord2.getCenteredLocation().getBlock().getType() == Material.STATIONARY_WATER ||
+							coord2.getCenteredLocation().getBlock().getType() == Material.LEAVES ||
+							coord2.getCenteredLocation().getBlock().getType() == Material.LEAVES_2 ||
+							coord2.getCenteredLocation().getBlock().getType() == Material.LOG ||
+							coord2.getCenteredLocation().getBlock().getType() == Material.LOG_2 ||
+							coord2.getCenteredLocation().getBlock().getType() == Material.WOOD ||
+							coord2.getCenteredLocation().getBlock().getType() == Material.STONE_SLAB2) {
+						CivLog.warning(" -------------------------------- ");
+						CivLog.warning("A trade good tried placing on improper block! "+centerX+", "+(centerY-1)+", "+centerZ
+										+" Biome: "+world.getBiome(centerX, centerZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());
+						CivLog.warning(" -------------------------------- ");
+						return;
+					} else {
+						good = pick.landPick;
+						CivLog.info(" -------------------------------- ");
+						CivLog.info("Trade Good Generate: "+centerX+", "+(centerY-1)+", "+centerZ
+									+" - Biome: "+world.getBiome(centerX, centerZ).toString()
+									+" - Block: "+coord.getCenteredLocation().getBlock().getType().toString()
+									+" - Goodie: "+pick.landPick.name);
+						CivLog.info(" -------------------------------- ");
+					}
+				}
 			
 			// Randomly choose a land or water good.
 			if (good == null) {
@@ -176,8 +196,6 @@ public class TradeGoodPopulator extends BlockPopulator {
 			
 			// Create a copy and save it in the global hash table.
 			buildTradeGoodie(good, coord, world, false);
-    	}
- 	
-    }
-
+		}
+	}
 }

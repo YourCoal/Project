@@ -34,20 +34,18 @@ public class InteractiveRepairItem implements InteractiveResponse {
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Hello there! Would you like to repair your "+craftMat.getName()+"?");
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Looks like we can get you fixed up for "+CivColor.Yellow+CivColor.BOLD+cost+" coins.");
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"If that's ok, please type 'yes'. Type anything else to cancel.");
-		
 	}
-	
 	
 	@Override
 	public void respond(String message, Resident resident) {
 		resident.clearInteractiveMode();
-
 		if (!message.equalsIgnoreCase("yes")) {
 			CivMessage.send(resident, CivColor.LightGray+"Repair cancelled.");
 			return;
+		} try {
+			Barracks.repairItemInHand(cost, resident.getName(), craftMat);
+		} catch (CivException e) {
+			e.printStackTrace();
 		}
-		
-		Barracks.repairItemInHand(cost, resident.getName(), craftMat);
 	}
-
 }

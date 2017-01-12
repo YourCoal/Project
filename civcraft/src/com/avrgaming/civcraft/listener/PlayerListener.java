@@ -109,10 +109,34 @@ public class PlayerListener implements Listener {
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		CivLog.info("Scheduling on player login task for player:"+event.getPlayer().getName());
 		TaskMaster.asyncTask("onPlayerLogin-"+event.getPlayer().getName(), new PlayerLoginAsyncTask(event.getPlayer().getUniqueId()), 0);
-		
 		CivGlobal.playerFirstLoginMap.put(event.getPlayer().getName(), new Date());
 		PlayerLocationCacheUpdate.playerQueue.add(event.getPlayer().getName());
 		MobSpawnerTimer.playerQueue.add((event.getPlayer().getName()));
+		
+/*		Player p = event.getPlayer();
+		Resident res = CivGlobal.getResident(p);
+		String pName;
+		if (res.getCiv() != null) {
+			pName = CivColor.LightPurple+CivColor.BOLD+" ["+StringUtils.left(res.getCiv().getName(), 5)+"]";
+		} else if (res.getCiv() == null && res.getCamp() != null) {
+			pName = CivColor.Gold+CivColor.BOLD+" ["+StringUtils.left(res.getCamp().getName(), 5)+"]";
+		} else {
+			pName = CivColor.LightGray+CivColor.BOLD+" [-----]";
+		}
+		NametagEdit.getApi().setSuffix(p, pName);*/
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		Resident resident = CivGlobal.getResident(event.getPlayer());
+		if (resident != null) {
+			if (resident.previewUndo != null) {
+				resident.previewUndo.clear();
+			}
+			resident.clearInteractiveMode();
+		}	
+		PlayerLocationCacheUpdate.playerQueue.remove(event.getPlayer().getName());
+		MobSpawnerTimer.playerQueue.remove((event.getPlayer().getName()));
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -234,17 +258,6 @@ public class PlayerListener implements Listener {
 			}
 		}
 		
-	}
-	
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerQuit(PlayerQuitEvent event) {
-		Resident resident = CivGlobal.getResident(event.getPlayer());
-		if (resident != null) {
-			if (resident.previewUndo != null) {
-				resident.previewUndo.clear();
-			}
-			resident.clearInteractiveMode();
-		}		
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -529,21 +542,17 @@ public class PlayerListener implements Listener {
 				} else {
 					String entityName = null;
 					
-					if (event.getDamager() instanceof LivingEntity) {
-						entityName = ((LivingEntity)event.getDamager()).getCustomName();
+					if (event.getEntity()instanceof LivingEntity) {
+						entityName = ((LivingEntity)event.getEntity()).getCustomName();
 					}
 					
 					if (entityName == null) {
-						entityName = event.getDamager().getType().toString();
+						entityName = event.getEntity().getType().toString();
 					}
 					
 					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to a "+entityName);
 				}
 			}
 		}
-		
-		
-		
-		
 	}
 }

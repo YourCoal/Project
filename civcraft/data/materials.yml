@@ -69,6 +69,30 @@
 #
 #
 materials:
+        - id: 'civ:base_hammer'
+          item_id: 7
+          item_data: 0
+          name: 'Hammers'
+          craftable: false
+          shaped: false
+          category: '<lightgreen>Resources'
+#
+        - id: 'civ:base_beaker'
+          item_id: 7
+          item_data: 0
+          name: 'Beakers'
+          craftable: false
+          shaped: false
+          category: '<lightgreen>Resources'
+#
+        - id: 'civ:lvl1_mine_quest_package'
+          item_id: 7
+          item_data: 0
+          name: 'Level 1 Mine Quest Package'
+          craftable: false
+          shaped: false
+          category: '<lightgray>Packages'
+#
         #
         # Primary Materials, Tier 1
         #

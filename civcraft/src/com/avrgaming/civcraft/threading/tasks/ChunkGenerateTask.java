@@ -52,20 +52,14 @@ public class ChunkGenerateTask implements Runnable {
 				if (!chunk.load(true)) {
 				}
 				
-				if (!chunk.unload(true, false)) {
+				if (!chunk.unload(true)) {
 				}
 				
 				if (i > maxgen) {
 					TaskMaster.syncTask(new ChunkGenerateTask(x, z, stopX, stopZ));
 					return;
 				}
-				
 			}
 		}
-		
-		
 	}
-
-	
-	
 }

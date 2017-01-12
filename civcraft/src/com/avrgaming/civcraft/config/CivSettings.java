@@ -35,8 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.minecraft.util.org.apache.commons.io.FileUtils;
-
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -110,6 +109,7 @@ public class CivSettings {
 	public static Map<Integer, ConfigCottageLevel> cottageLevels = new HashMap<Integer, ConfigCottageLevel>();
 	public static ArrayList<ConfigTempleSacrifice> templeSacrifices = new ArrayList<ConfigTempleSacrifice>();
 	public static Map<Integer, ConfigMineLevel> mineLevels = new HashMap<Integer, ConfigMineLevel>();
+	public static Map<Integer, ConfigLabLevel> labLevels = new HashMap<Integer, ConfigLabLevel>();
 	
 	public static FileConfiguration wonderConfig; /* wonders.yml */
 	public static Map<String, ConfigBuildableInfo> wonders = new HashMap<String, ConfigBuildableInfo>();
@@ -198,6 +198,8 @@ public class CivSettings {
 	public static ArrayList<String> kitItems = new ArrayList<String>();
 	public static HashMap<Integer, ConfigRemovedRecipes> removedRecipies = new HashMap<Integer, ConfigRemovedRecipes>();
 	public static HashSet<Material> restrictedUndoBlocks = new HashSet<Material>();
+	
+	public static boolean hasHolographicDisplays = false;
 	public static boolean hasVanishNoPacket = false;
 	
 	public static final String MINI_ADMIN = "civ.admin";
@@ -274,8 +276,15 @@ public class CivSettings {
 		
 		if (CivSettings.plugin.hasPlugin("VanishNoPacket")) {
 			hasVanishNoPacket = true;
+		} else {
+			CivLog.warning("VanishNoPacket not found, not registering VanishNoPacket hooks. This is fine if you're not using VanishNoPacket.");
 		}
-
+		
+		if (CivSettings.plugin.hasPlugin("HolographicDisplays")) {
+			hasHolographicDisplays = true;
+		} else {
+			CivLog.warning("HolographicDisplays not found, not registering HolographicDisplays hooks. This is fine if you're not using HolographicDisplays.");
+		}
 	}
 	
 	private static void initRestrictedUndoBlocks() {
@@ -381,6 +390,7 @@ public class CivSettings {
 		ConfigCottageLevel.loadConfig(structureConfig, cottageLevels);
 		ConfigTempleSacrifice.loadConfig(structureConfig, templeSacrifices);
 		ConfigMineLevel.loadConfig(structureConfig, mineLevels);
+		ConfigLabLevel.loadConfig(structureConfig, labLevels);
 		ConfigGovernment.loadConfig(governmentConfig, governments);
 		ConfigEnchant.loadConfig(enchantConfig, enchants);
 		ConfigUnit.loadConfig(unitConfig, units);
