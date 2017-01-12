@@ -380,7 +380,6 @@ public class TownInfoCommand extends CommandBase {
 			
 	}
 	
-	
 	public void cottage_cmd() throws CivException {
 		Town town = getSelectedTown();
 		ArrayList<String> out = new ArrayList<String>();	
@@ -394,48 +393,31 @@ public class TownInfoCommand extends CommandBase {
 			}
 			
 			Cottage cottage = (Cottage)struct;
-			
 			String color;
 			if (struct.isActive()) {
 				color = CivColor.LightGreen;
 			} else {
 				color = CivColor.Rose;
 			}
-						
-			double coins = cottage.getCoinsGenerated();
-			if (town.getCiv().hasTechnology("tech_taxation")) {
-				double taxation_bonus;
-				try {
-					taxation_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_cottage_buff");
-					coins *= taxation_bonus;
-				} catch (InvalidConfiguration e) {
-					e.printStackTrace();
-				}
-			}
+			
+			double coins = cottage.getTotalCoins();
 			
 			if (!struct.isDestroyed()) {
 				out.add(color+"Cottage ("+struct.getCorner()+")");
-				out.add(CivColor.Green+"    level: "+CivColor.Yellow+cottage.getLevel()+
-						CivColor.Green+" count: "+CivColor.Yellow+"("+cottage.getCount()+"/"+cottage.getMaxCount()+")");
-				out.add(CivColor.Green+"    base coins: "+CivColor.Yellow+coins+
-						CivColor.Green+" Last Result: "+CivColor.Yellow+cottage.getLastResult().name());
+				out.add(CivColor.Green+"    Level: "+CivColor.Yellow+town.saved_cottage_level+
+				out.add(CivColor.Green+"    Coins: "+CivColor.Yellow+coins));
 			} else {
 				out.add(color+"Cottage ("+struct.getCorner()+")");
 				out.add(CivColor.Rose+"    DESTROYED ");
 			}
-			
-			total += coins;
-			
+			total += Math.round(coins);
 		}
 		out.add(CivColor.Green+"----------------------------");
-		out.add(CivColor.Green+"Sub Total: "+CivColor.Yellow+total);
+		out.add(CivColor.Green+"Total: "+CivColor.Yellow+total+" coins.");
 		out.add(CivColor.Green+"Cottage Rate: "+CivColor.Yellow+df.format(town.getCottageRate()*100)+"%");
 		total *= town.getCottageRate();
-		out.add(CivColor.Green+"Total: "+CivColor.Yellow+df.format(total)+" coins.");
-		
 		CivMessage.send(sender, out);
 	}
-	
 	
 	public void mine_cmd() throws CivException {
 		Town town = getSelectedTown();
@@ -550,8 +532,8 @@ public class TownInfoCommand extends CommandBase {
 									+CivColor.Green+" | War Defenses: "+CivColor.LightGreen+"("+color+town.getStrategicCount()+CivColor.LightGreen+"/"+level.strategics+")");
 			
 			//TODO Food is like Treasury, Population idk.
-//			CivMessage.send(sender, CivColor.Green+"Food: "+CivColor.LightGreen+df.format(town.getFoodCount())+
-//									CivColor.Green+"  Population: "+CivColor.LightGreen+"("+df.format(town.getPopulationCount().total)+"/"+df.format(town.getPopulation().total)+")");
+			CivMessage.send(sender, CivColor.Green+"Food: "+CivColor.LightGreen+df.format(town.getFoodCount())+
+									CivColor.Green+" | Population: "+CivColor.LightGreen+"("+df.format(town.getTotalPopulation().total)+"/"+df.format(town.getAllowedPopulation().total)+")");
 			
 			CivMessage.send(sender, CivColor.Green+"Growth: "+CivColor.LightGreen+df.format(town.getGrowth().total)+
 									CivColor.Green+" | Hammers: "+CivColor.LightGreen+df.format(town.getHammers().total)+

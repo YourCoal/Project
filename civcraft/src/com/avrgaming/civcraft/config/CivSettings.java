@@ -201,6 +201,7 @@ public class CivSettings {
 	
 	public static boolean hasHolographicDisplays = false;
 	public static boolean hasVanishNoPacket = false;
+	public static boolean hasTitleAPI = false;
 	
 	public static final String MINI_ADMIN = "civ.admin";
 	public static final String MODERATOR = "civ.moderator";
@@ -284,6 +285,12 @@ public class CivSettings {
 			hasHolographicDisplays = true;
 		} else {
 			CivLog.warning("HolographicDisplays not found, not registering HolographicDisplays hooks. This is fine if you're not using HolographicDisplays.");
+		}
+		
+		if (CivSettings.plugin.hasPlugin("TitleAPI")) {
+			hasTitleAPI = true;
+		} else {
+			CivLog.warning("TitleAPI not found, not registering TitleAPI hooks. This is fine if you're not using TitleAPI.");
 		}
 	}
 	

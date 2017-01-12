@@ -216,7 +216,7 @@ public abstract class Buildable extends SQLObject {
 	}
 
 	
-	public String getRequiredTechnology() {
+	public String getRequiredTech() {
 		return info.require_tech;
 	}
 	

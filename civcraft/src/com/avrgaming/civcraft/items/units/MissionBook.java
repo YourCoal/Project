@@ -448,12 +448,14 @@ public class MissionBook extends UnitItemMaterial {
 					
 					for (Structure struct : tc.getTown().getStructures()) {
 						if (struct instanceof Cottage) {
-							((Cottage)struct).delevel();
+//							((Cottage)struct).delevel();
+							int lvl = ((Cottage)struct).getTown().saved_cottage_level-1;
+							((Cottage)struct).getTown().saved_cottage_level = lvl;
 						}
 					}
 					
 					CivMessage.global(CivColor.Yellow+"DISASTER!"+CivColor.White+" The cottages in "+tc.getTown().getName()+
-							" have suffered a famine from poison grain! Each cottage loses 1 level.");
+							" have suffered a famine from a poison granary! Cottages lost 1 level.");
 				}
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();

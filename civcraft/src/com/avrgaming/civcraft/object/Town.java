@@ -128,8 +128,9 @@ public class Town extends SQLObject {
 	public ArrayList<TownChunk> savedEdgeBlocks = new ArrayList<TownChunk>();
 	public HashSet<Town> townTouchList = new HashSet<Town>();
 	
-	private ConcurrentHashMap<String, PermissionGroup> groups = new ConcurrentHashMap<String, PermissionGroup>();
 	private EconObject treasury;
+	private FoodObject food;
+	private ConcurrentHashMap<String, PermissionGroup> groups = new ConcurrentHashMap<String, PermissionGroup>();
 	private ConcurrentHashMap<String, ConfigTownUpgrade> upgrades = new ConcurrentHashMap<String, ConfigTownUpgrade>();
 			
 	/* This gets populated periodically from a synchronous timer so it will be accessible from async tasks. */
@@ -151,7 +152,7 @@ public class Town extends SQLObject {
 	public LinkedList<Buildable> invalidStructures = new LinkedList<Buildable>();
 	
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
-	public int saved_trommel_level = 1;
+	public int saved_cottage_level = 1;
 	public int saved_bank_level = 1;
 	public double saved_bank_interest_amount = 0;
 	
@@ -1527,7 +1528,7 @@ public class Town extends SQLObject {
 			throw new CivException("We require an upgrade we do not have yet.");
 		}
 		
-		if (!this.hasTechnology(wonder.getRequiredTechnology())) {
+		if (!this.hasTechnology(wonder.getRequiredTech())) {
 			throw new CivException("We don't have the technology yet.");
 		}
 		
@@ -1600,7 +1601,7 @@ public class Town extends SQLObject {
 			throw new CivException("We require an upgrade we do not have yet.");
 		}
 		
-		if (!this.hasTechnology(struct.getRequiredTechnology())) {
+		if (!this.hasTechnology(struct.getRequiredTech())) {
 			throw new CivException("We don't have the technology yet.");
 		}
 		
@@ -3213,6 +3214,90 @@ public class Town extends SQLObject {
 
 	public Collection<Buildable> getDisabledBuildables() {
 		return this.disabledBuildables.values();
+	}
+	
+	public FoodObject getFood() {
+		return food;
+	}
+	
+	public void giveFood(double amount) {
+		this.food.giveFood(amount);
+	}
+	
+	public void takeFood(double amount)  {
+		this.food.takeFood(amount);
+	}
+	
+	public double getFoodCount() {
+		return this.food.getFoodCount();
+	}
+	
+	public boolean hasEnoughFood(double amount) {
+		return this.food.hasEnoughFood(amount);
+	}
+	
+	public void setFood(FoodObject food) {
+		this.food = food;
+	}
+	
+	public int getCottageCount() {
+		int count = 0;
+		for (Structure struct : getStructures()) {
+			if (struct.getConfigId() == "ti_cottage") {
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	public AttrSource getAllowedPopulation() {
+		double population = 0;
+		HashMap<String, Double> sources = new HashMap<String, Double>();
+		
+		/* Default every town */
+		double defaultTown = 2+this.getLevel();
+		sources.put("Default", defaultTown);
+		population += defaultTown;
+		
+		/* 2 Population per Cottage */
+		double cottages = getCottageCount();
+		sources.put("Cottages", cottages);
+		population += cottages*2;
+		
+		/* Can never go below default (should never happen) */
+		if (population < 2) {
+			population = defaultTown;
+		}
+		population = (int)population;
+		
+		AttrSource as = new AttrSource(sources, population, null);
+		return as;
+	}
+	
+	public AttrSource getTotalPopulation() {
+		double population = 0;
+		HashMap<String, Double> sources = new HashMap<String, Double>();
+		
+		/* Default every town */
+		double residents = 0;
+		residents = this.getResidentCount();
+		sources.put("Default", residents);
+		population += residents;
+		
+		//TODO This will grab the workers in the town.
+/*		// 2 Population per Cottage
+		double cottages = getCottageCount();
+		sources.put("Cottages", cottages);
+		population += cottages*2;
+		
+		// Can never go below default (should never happen)
+		if (population < 2) {
+			population = defaultTown;
+		}*/
+		population = (int)population;
+		
+		AttrSource as = new AttrSource(sources, population, null);
+		return as;
 	}
 	
 	public double getMonumentRate() {

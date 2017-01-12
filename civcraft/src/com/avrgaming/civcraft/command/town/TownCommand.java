@@ -685,13 +685,16 @@ public class TownCommand extends CommandBase {
 			throw new CivException("Cannot invite players to a civ that is at war within "+War.getTimeDeclareDays()+" days before WarTime.");
 		}
 		
+		if (town.getAllowedPopulation().total >= town.getAllowedPopulation().total) {
+			throw new CivException("You cannot add more players, you are at your maximum town population!");
+		}
+		
 		if (newResident.hasCamp()) {
 			try {
 				Player resPlayer = CivGlobal.getPlayer(newResident);
 				CivMessage.send(resPlayer, CivColor.Yellow+player.getName()+" tried to invite you to the town of "+town.getName()+
 						" but cannot since you are in a camp. Leave camp first using /camp leave");
-			} catch(CivException e) {
-				//player not online
+			} catch(CivException e) { //player not online
 			}
 			throw new CivException("You cannot invite "+newResident.getName()+" to town since he is part of a camp. Have him leave camp first with /camp leave.");
 		}
@@ -711,10 +714,7 @@ public class TownCommand extends CommandBase {
 		
 		newResident.validateJoinTown(town);
 		
-		CivGlobal.questionPlayer(player, CivGlobal.getPlayer(newResident), 
-				"Would you like to join the town of "+town.getName()+"?",
-				INVITE_TIMEOUT, join);
-		
+		CivGlobal.questionPlayer(player, CivGlobal.getPlayer(newResident), "Would you like to join the town of "+town.getName()+"?", INVITE_TIMEOUT, join);
 		CivMessage.sendSuccess(sender, CivColor.LightGray+"Invited to "+args[1]+" to town "+town.getName());
 	}
 	

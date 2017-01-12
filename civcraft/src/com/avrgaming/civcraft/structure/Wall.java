@@ -210,7 +210,7 @@ public class Wall extends Structure {
 	public void buildPlayerPreview(Player player, Location centerLoc) throws CivException, IOException {
 		// Set the player into "place mode" which allows them to place down
 		// markers.
-		if (!this.getTown().hasTechnology(this.getRequiredTechnology())) {
+		if (!this.getTown().hasTechnology(this.getRequiredTech())) {
 			throw new CivException("We don't have the technology yet.");
 		}
 		
