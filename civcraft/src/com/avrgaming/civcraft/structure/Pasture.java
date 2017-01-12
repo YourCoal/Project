@@ -49,7 +49,18 @@ public class Pasture extends Structure {
 	public Pasture(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
-
+	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Pasture</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "tree";
+	}
+	
 	public int getMobCount() {
 		return entities.size();
 	}

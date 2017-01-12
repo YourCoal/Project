@@ -65,8 +65,16 @@ public class TradeOutpost extends Structure {
 		super(rs);
 		loadSettings();
 	}
-
-	public void loadSettings() {
+	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Trade Outpost</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "greenflag";
 	}
 	
 	public void checkForTradeGood(BlockCoord coord) {
@@ -79,16 +87,6 @@ public class TradeOutpost extends Structure {
 
 	public void setTradeGoodCoord(BlockCoord tradeGoodCoord) {
 		this.tradeGoodCoord = tradeGoodCoord;
-	}
-
-	@Override
-	public String getDynmapDescription() {
-		return null;
-	}
-	
-	@Override
-	public String getMarkerIconName() {
-		return "scales";
 	}
 	
 	@Override

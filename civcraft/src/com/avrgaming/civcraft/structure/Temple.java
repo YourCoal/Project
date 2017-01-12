@@ -43,7 +43,8 @@ public class Temple extends Structure {
 	
 	@Override
 	public String getDynmapDescription() {
-		return null;
+		String out = "<u><b>Temple</u></b><br/>";
+		return out;
 	}
 	
 	@Override
@@ -51,7 +52,6 @@ public class Temple extends Structure {
 		return "church";
 	}
 	
-
 	public void onEntitySacrifice(EntityType entityType) {
 		ConfigTempleSacrifice sac = null;
 		for (ConfigTempleSacrifice s : CivSettings.templeSacrifices) {
@@ -66,11 +66,8 @@ public class Temple extends Structure {
 		if (sac == null) {
 			return;
 		}
-		
 		this.getTown().addAccumulatedCulture(sac.reward);
 		CivMessage.sendTown(this.getTown(), "Our Sacrifice has awarded our town "+CivColor.LightPurple+sac.reward+CivColor.White+" culture.");
 		this.getTown().save();
 	}
-
-
 }

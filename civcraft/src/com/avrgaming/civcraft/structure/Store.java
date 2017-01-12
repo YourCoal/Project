@@ -169,8 +169,7 @@ public class Store extends Structure {
 		String out = "<u><b>Store</u></b><br/>";
 		if (this.materials.size() == 0) {
 			out += "Nothing stocked.";
-		} 
-		else {
+		} else {
 			for (StoreMaterial mat : this.materials) {
 				out += mat.name+" for "+mat.price+"<br/>";
 			}

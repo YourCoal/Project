@@ -154,6 +154,7 @@ public class Town extends SQLObject {
 	/* XXX kind of a hacky way to save the bank's level information between build undo calls */
 	public int saved_cottage_level = 1;
 	public int saved_granary_level = 1;
+	public int saved_quarry_level = 1;
 	public int saved_bank_level = 1;
 	public double saved_bank_interest_amount = 0;
 	

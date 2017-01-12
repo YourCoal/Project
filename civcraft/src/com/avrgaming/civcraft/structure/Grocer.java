@@ -57,12 +57,10 @@ public class Grocer extends Structure {
 	@Override
 	public String getDynmapDescription() {
 		String out = "<u><b>Grocer</u></b><br/>";
-
 		for (int i = 0; i < level; i++) {
 			ConfigGrocerLevel grocerlevel = CivSettings.grocerLevels.get(i+1);
 			out += "<b>"+grocerlevel.itemName+"</b> Amount: "+grocerlevel.amount+ " Price: "+grocerlevel.price+" coins.<br/>";
 		}
-		
 		return out;
 	}
 	

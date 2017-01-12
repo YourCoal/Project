@@ -72,17 +72,18 @@ public class Lab extends Structure {
 	
 	@Override
 	public String getDynmapDescription() {
+		String out = "<u><b>Lab</u></b><br/>";
 		if (getConsumeComponent() == null) {
-			return "";
+			out += "Level: Null";
+		} else {
+			out += "Level: "+getConsumeComponent().getLevel()+" "+getConsumeComponent().getCountString();
 		}
-		String out = "";
-		out += "Level: "+getConsumeComponent().getLevel()+" "+getConsumeComponent().getCountString();
 		return out;
 	}
 	
 	@Override
 	public String getMarkerIconName() {
-		return "beaker";
+		return "flower";
 	}
 	
 	public String getkey() {

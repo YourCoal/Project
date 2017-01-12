@@ -59,7 +59,9 @@ public class Trommel extends Structure {
 
 	@Override
 	public String getDynmapDescription() {
-		return null;
+		String out = "<u><b>Trommel</u></b><br/>";
+//		out += "Level: "+this.level;
+		return out;
 	}
 	
 	@Override

@@ -325,8 +325,7 @@ public class Library extends Structure {
 		
 		if (this.enchantments.size() == 0) {
 			out += "Nothing stocked.";
-		} 
-		else {
+		} else {
 			for (LibraryEnchantment mat : this.enchantments) {
 				out += mat.displayName+" for "+mat.price+"<br/>";
 			}
@@ -334,12 +333,10 @@ public class Library extends Structure {
 		return out;
 	}
 	
-	
 	public ArrayList<LibraryEnchantment> getEnchants() {
 		return enchantments;
 	}
-
-
+	
 	public void addEnchant(LibraryEnchantment enchant) throws CivException {
 		if (enchantments.size() >= 4) {
 			throw new CivException("Library is full.");

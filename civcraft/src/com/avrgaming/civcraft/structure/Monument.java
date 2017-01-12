@@ -39,7 +39,8 @@ public class Monument extends Structure {
 
 	@Override
 	public String getDynmapDescription() {
-		return null;
+		String out = "<u><b>Monument</u></b><br/>";
+		return out;
 	}
 	
 	@Override

@@ -58,6 +58,17 @@ public class Farm extends Structure {
 	}
 	
 	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Farm</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "basket";
+	}
+	
+	@Override
 	public void delete() throws SQLException {
 		if (this.getCorner() != null) {
 			ChunkCoord coord = new ChunkCoord(this.getCorner().getLocation());
@@ -68,18 +79,8 @@ public class Farm extends Structure {
 	}
 	
 	@Override
-	public String getDynmapDescription() {
-		return null;
-	}
-	
-	@Override
 	public boolean canRestoreFromTemplate() {
 		return false;
-	}
-	
-	@Override
-	public String getMarkerIconName() {
-		return "basket";
 	}
 
 	public void build_farm(Location centerLoc) {

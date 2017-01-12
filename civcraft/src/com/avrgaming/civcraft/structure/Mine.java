@@ -74,11 +74,12 @@ public class Mine extends Structure {
 	
 	@Override
 	public String getDynmapDescription() {
+		String out = "<u><b>Mine</u></b><br/>";
 		if (getConsumeComponent() == null) {
-			return "";
+			out += "Level: Null";
+		} else {
+			out += "Level: "+getConsumeComponent().getLevel()+" "+getConsumeComponent().getCountString();
 		}
-		String out = "";
-		out += "Level: "+getConsumeComponent().getLevel()+" "+getConsumeComponent().getCountString();
 		return out;
 	}
 	

@@ -59,8 +59,14 @@ public class FishingBoat extends TradeOutpost {
 	}
 	
 	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Fishing Boat</u></b><br/>";
+		return out;
+	}
+	
+	@Override
 	public String getMarkerIconName() {
-		return "anchor";
+		return "blueflag";
 	}
 	
 	@Override

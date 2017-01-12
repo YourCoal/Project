@@ -100,23 +100,6 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 	public TownHall(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
-
-	@Override
-	public void delete() throws SQLException {
-		if (this.getTown() != null) {
-			/* Remove any protected item frames. */
-			for (ItemFrameStorage framestore : goodieFrames ) {
-				BonusGoodie goodie = CivGlobal.getBonusGoodie(framestore.getItem());
-				if (goodie != null) {
-					goodie.replenish();
-				}
-				
-				CivGlobal.removeProtectedItemFrame(framestore.getFrameID());
-			}
-		}
-		
-		super.delete();		
-	}
 	
 	@Override
 	public String getDynmapDescription() {
@@ -127,6 +110,26 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 		out += "<br/>Flat Tax: "+this.getTown().getFlatTax()*100+"%";
 		out += "<br/>Property Tax: "+this.getTown().getTaxRate()*100+"%";
 		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "star";
+	}
+	
+	@Override
+	public void delete() throws SQLException {
+		if (this.getTown() != null) {
+			/* Remove any protected item frames. */
+			for (ItemFrameStorage framestore : goodieFrames) {
+				BonusGoodie goodie = CivGlobal.getBonusGoodie(framestore.getItem());
+				if (goodie != null) {
+					goodie.replenish();
+				}
+				CivGlobal.removeProtectedItemFrame(framestore.getFrameID());
+			}
+		}
+		super.delete();		
 	}
 	
 	public void addTechBarBlock(BlockCoord coord, int index) {

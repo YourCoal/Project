@@ -39,21 +39,29 @@ public class Windmill extends Structure {
 	public Windmill(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
-
+	
 	public Windmill(Location center, String id, Town town)
 			throws CivException {
 		super(center, id, town);
 	}
-
+	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Windmill</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "caution";
+	}
+	
 	@Override
 	public void onEffectEvent() {
-
-	
 	}
 	
 	public void processWindmill() {
 		/* Fire a sync task to perform this. */
 		TaskMaster.syncTask(new WindmillStartSyncTask(this), 0);
 	}
-	
 }

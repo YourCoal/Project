@@ -74,6 +74,17 @@ public class Stable extends Structure {
 		nonMemberFeeComponent.onSave();
 	}
 	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Stable</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "sign";
+	}
+	
 	public void loadSettings() {
 		super.loadSettings();
 

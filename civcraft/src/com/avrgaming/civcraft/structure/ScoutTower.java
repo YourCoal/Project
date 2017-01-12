@@ -57,6 +57,17 @@ public class ScoutTower extends Structure {
 	}
 	
 	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Scout Tower</u></b><br/>";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "tower";
+	}
+	
+	@Override
 	public void loadSettings() {
 		super.loadSettings();
 
@@ -188,11 +199,6 @@ public class ScoutTower extends Structure {
 		if (empty) {
 			scoutDebug("Proximity cache was empty");
 		}
-	}
-	
-	@Override
-	public String getMarkerIconName() {
-		return "tower";
 	}
 
 	public int getReportSeconds() {

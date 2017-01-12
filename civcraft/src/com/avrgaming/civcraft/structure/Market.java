@@ -67,6 +67,18 @@ public class Market extends Structure {
 		CivGlobal.removeMarket(this);
 	}
 	
+	@Override
+	public String getDynmapDescription() {
+		String out = "<u><b>Global Market</u></b><br/>";
+		out += "Now 240% less local!";
+		return out;
+	}
+	
+	@Override
+	public String getMarkerIconName() {
+		return "diamond";
+	}
+	
 	public static void globalSignUpdate(int id) {
 		for (Market market : CivGlobal.getMarkets()) {
 			
