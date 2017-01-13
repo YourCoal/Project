@@ -71,14 +71,12 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.components.MobComponent;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
 import gpl.AttributeUtil;
-import moblib.moblib.MobLib;
 
 public class CustomItemManager implements Listener {
 	
@@ -273,16 +271,31 @@ public class CustomItemManager implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
+		
 		ItemStack stack = event.getItemDrop().getItemStack();
-
 		if (LoreMaterial.isCustom(stack)) {
 			LoreMaterial.getMaterial(stack).onItemDrop(event);
+			return;
 		}
-	}	
+		
+		String custom = isCustomDrop(stack);
+		if (custom != null) {
+			event.setCancelled(true);
+		}
+	}
 	
-	/*
-	 * Prevent the player from using goodies in crafting recipies.
-	 */
+	private static String isCustomDrop(ItemStack stack) {
+		if (stack == null || ItemManager.getId(stack) != 166) {
+			return null;
+		}
+		
+		if(LoreGuiItem.isGUIItem(stack)) {
+			return null;
+		}
+		return stack.getItemMeta().getDisplayName();
+	}
+	
+	// Prevent the player from using goodies in crafting recipies.
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnCraftItemEvent(CraftItemEvent event) {	
 		for (ItemStack stack : event.getInventory().getMatrix()) {
@@ -307,7 +320,15 @@ public class CustomItemManager implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnItemSpawn(ItemSpawnEvent event) {
 		ItemStack stack = event.getEntity().getItemStack();
-
+		
+		String custom = isCustomDrop(stack);
+		if (custom != null) {
+			ItemStack newStack = LoreMaterial.spawn(LoreMaterial.materialMap.get(custom), stack.getAmount());
+			event.getEntity().getWorld().dropItemNaturally(event.getLocation(), newStack);
+			event.setCancelled(true);
+			return;
+		}
+		
 		if (LoreMaterial.isCustom(stack)) {
 			LoreMaterial.getMaterial(stack).onItemSpawn(event);
 		}
@@ -386,14 +407,7 @@ public class CustomItemManager implements Listener {
 			}
 		}
 		
-		if (defendingPlayer == null) {
-			if (event.getEntity() instanceof LivingEntity) {
-				if (MobLib.isMobLibEntity((LivingEntity) event.getEntity())) {
-					MobComponent.onDefense(event.getEntity(), event);
-				}	
-			}
-			return;
-		} else {
+		if (defendingPlayer != null) {
 			/* Search equipt items for defense event. */
 			for (ItemStack stack : defendingPlayer.getEquipment().getArmorContents()) {
 				if (LoreMaterial.isCustom(stack)) {

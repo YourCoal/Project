@@ -65,7 +65,6 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.structure.Capitol;
@@ -108,7 +107,6 @@ public class PlayerListener implements Listener {
 		TaskMaster.asyncTask("onPlayerLogin-"+event.getPlayer().getName(), new PlayerLoginAsyncTask(event.getPlayer().getUniqueId()), 0);
 		CivGlobal.playerFirstLoginMap.put(event.getPlayer().getName(), new Date());
 		PlayerLocationCacheUpdate.playerQueue.add(event.getPlayer().getName());
-		MobSpawnerTimer.playerQueue.add((event.getPlayer().getName()));
 		
 /*		Player p = event.getPlayer();
 		Resident res = CivGlobal.getResident(p);
@@ -133,7 +131,6 @@ public class PlayerListener implements Listener {
 			resident.clearInteractiveMode();
 		}	
 		PlayerLocationCacheUpdate.playerQueue.remove(event.getPlayer().getName());
-		MobSpawnerTimer.playerQueue.remove((event.getPlayer().getName()));
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
