@@ -132,7 +132,7 @@ public class SQL {
 		
 		CivGlobal.perkManager = new PerkManager();
 		if (PlatinumManager.isLegacyEnabled()) {
-			CivLog.heading("Initializing Perk/Web Database");	
+			CivLog.heading("Initializing Perk/Web Database");
 			PerkManager.hostname = CivSettings.getStringBase("perk_database.hostname");
 			PerkManager.port = CivSettings.getStringBase("perk_database.port");
 			PerkManager.db_name = CivSettings.getStringBase("perk_database.database");

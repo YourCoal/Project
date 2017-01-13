@@ -18,6 +18,7 @@
  */
 package com.avrgaming.civcraft.command.camp;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
@@ -50,6 +51,27 @@ public class CampCommand extends CommandBase {
 		commands.put("info", "Shows information about your current camp.");
 		commands.put("disband", "Disbands this camp.");
 		commands.put("upgrade", "Manage camp upgrades.");
+	}
+	
+	public void refresh_cmd() throws CivException, IOException {
+		Resident resident = getResident();
+		
+		if (!resident.hasCamp()) {
+			throw new CivException("You are not in a camp!");
+		}
+		
+		Camp camp = resident.getCamp();
+		if (camp.getOwner() != resident) {
+			throw new CivException("You are not the owner of the camp!");
+		}
+		
+		if (camp.isDestroyed()) {
+			throw new CivException("Cannot refresh destroyed camps.");
+		}
+		
+		camp.repairFromTemplate();
+		camp.reprocessCommandSigns();
+		CivMessage.send(sender, "Your camp has been refreshed!");
 	}
 	
 	public void upgrade_cmd() {
