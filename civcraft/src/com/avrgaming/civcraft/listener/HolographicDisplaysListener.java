@@ -31,26 +31,52 @@ public class HolographicDisplaysListener {
 		
 		for (TradeGood good : CivGlobal.getTradeGoods()) {
 			BlockCoord coord = good.getCoord();
-			Location loc = new Location(coord.getBlock().getWorld(), coord.getBlock().getX()+0.5, coord.getBlock().getY()+5, coord.getBlock().getZ()+0.5);
+			int cX = coord.getBlock().getChunk().getX()*16;
+			int cZ = coord.getBlock().getChunk().getZ()*16;
+			
+			Location loc = new Location(coord.getBlock().getWorld(), cX+1.5, coord.getBlock().getY()+6.25, cZ+3.5);
 			Hologram hologram = HologramsAPI.createHologram(p, loc);
 			if (good.getInfo().water == true) {
 				hologram.appendItemLine(new ItemStack(good.getInfo().material, 1, (short)good.getInfo().material_data));
-				hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Trade Resource: "+CivColor.LightBlue+CivColor.BOLD+CivColor.ITALIC+good.getInfo().name);
-				hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Value: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.getInfo().value+" Coins");
-				hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Culture: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+"Future Addition"
-										+CivColor.Gold+CivColor.BOLD+" | Food: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+"Future Addition");
-//				hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Culture: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.getInfo().culture
-//										+CivColor.Gold+CivColor.BOLD+" | Food:"+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.getInfo().food);
+				hologram.appendTextLine(CivColor.GoldBold+"Trade Good: "+CivColor.LightBlueBold+CivColor.ITALIC+good.getInfo().name);
+				hologram.appendTextLine(CivColor.GoldBold+"Value: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().value+" Coins");
+				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+"n/a"
+										+CivColor.GrayBold+CivColor.BOLD+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+"n/a");
+//				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().culture
+//										+CivColor.GoldBold+" | Food:"+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().food);
 			} else {
 				hologram.appendItemLine(new ItemStack(good.getInfo().material, 1, (short)good.getInfo().material_data));
-				hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Trade Resource: "+CivColor.LightGreen+CivColor.BOLD+CivColor.ITALIC+good.getInfo().name);
-				hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Value: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.getInfo().value+" Coins");
-				hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Culture: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+"Future Addition"
-										+CivColor.Gold+CivColor.BOLD+" | Food: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+"Future Addition");
-//				hologram.appendTextLine(CivColor.Gold+CivColor.BOLD+"Culture: "+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.getInfo().culture
-//										+CivColor.Gold+CivColor.BOLD+" | Food:"+CivColor.Yellow+CivColor.BOLD+CivColor.ITALIC+good.getInfo().food);
+				hologram.appendTextLine(CivColor.GoldBold+"Trade Good: "+CivColor.LightGreenBold+CivColor.ITALIC+good.getInfo().name);
+				hologram.appendTextLine(CivColor.GoldBold+"Value: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().value+" Coins");
+				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+"n/a"
+										+CivColor.GoldBold+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+"n/a");
+//				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().culture
+//										+CivColor.GoldBold+" | Food:"+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().food);
 			}
 		}
 		CivLog.info(CivGlobal.getTradeGoods().size()+" Trade Good Holograms created.");
 	}
+	
+	
+/*	public void tradeOutpostHolo(Plugin p, TradeGood tg, World w, double x, double y, double z) {
+		Location loc = new Location(w, x, y ,z);
+		Hologram hologram = HologramsAPI.createHologram(p, loc);
+		if (tg.getInfo().water == true) {
+			hologram.appendItemLine(new ItemStack(tg.getInfo().material, 1, (short)tg.getInfo().material_data));
+			hologram.appendTextLine(CivColor.GoldBold+"Trade Good: "+CivColor.LightBlueBold+CivColor.ITALIC+tg.getInfo().name);
+			hologram.appendTextLine(CivColor.GoldBold+"Value: "+CivColor.YellowBold+CivColor.ITALIC+tg.getInfo().value+" Coins");
+			hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+"n/a"
+									+CivColor.GoldBold+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+"n/a");
+//			hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+tg.getInfo().culture
+//									+CivColor.GoldBold+" | Food:"+CivColor.YellowBold+CivColor.ITALIC+tg.getInfo().food);
+		} else {
+			hologram.appendItemLine(new ItemStack(tg.getInfo().material, 1, (short)tg.getInfo().material_data));
+			hologram.appendTextLine(CivColor.GoldBold+"Trade Good: "+CivColor.LightGreenBold+CivColor.ITALIC+tg.getInfo().name);
+			hologram.appendTextLine(CivColor.GoldBold+"Value: "+CivColor.YellowBold+CivColor.ITALIC+tg.getInfo().value+" Coins");
+			hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+"n/a"
+									+CivColor.GoldBold+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+"n/a");
+//			hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+tg.getInfo().culture
+//									+CivColor.GoldBold+" | Food:"+CivColor.YellowBold+CivColor.ITALIC+tg.getInfo().food);
+		}
+	}*/
 }

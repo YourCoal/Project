@@ -1092,7 +1092,10 @@ public class DebugCommand extends CommandBase {
 			throw new CivException("Unknown trade good id:"+args[1]);
 		}
 		
-		BlockCoord coord = new BlockCoord(getPlayer().getLocation());
+		int cX = (getPlayer().getLocation().getChunk().getX()*16)+1;
+		int cZ = (getPlayer().getLocation().getChunk().getZ()*16)+3;
+		
+		BlockCoord coord = new BlockCoord("world", cX, (int)getPlayer().getLocation().getY(), cZ);
 		TradeGoodPopulator.buildTradeGoodie(good, coord, getPlayer().getLocation().getWorld(), false);
 		CivMessage.sendSuccess(sender, "Created a "+good.name+" here.");
 	}

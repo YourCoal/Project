@@ -129,34 +129,37 @@ public class TradeGoodPopulator extends BlockPopulator {
 		ChunkCoord cCoord = new ChunkCoord(source);
 		TradeGoodPick pick = CivGlobal.preGenerator.goodPicks.get(cCoord);
 		if (pick != null) {
-			int centerX = (source.getX() << 4) + 8;
-			int centerZ = (source.getZ() << 4) + 8;
-			int centerY = world.getHighestBlockYAt(centerX, centerZ);
-			BlockCoord coord = new BlockCoord(world.getName(), centerX, centerY, centerZ);
-			BlockCoord coord2 = new BlockCoord(world.getName(), centerX, centerY-1, centerZ);
+//			int centerX = (source.getX() << 4) + 8;
+//			int centerZ = (source.getZ() << 4) + 8;
+			int cX = (source.getX()*16)+1;
+			int cZ = (source.getZ()*16)+3;
+			int centerY = world.getHighestBlockYAt(cX, cZ);
+			
+			BlockCoord coord = new BlockCoord(world.getName(), cX, centerY, cZ);
+			BlockCoord coord2 = new BlockCoord(world.getName(), cX, centerY-1, cZ);
 
-			if (checkForDuplicateTradeGood(world.getName(), centerX, centerY, centerZ)) {
+			if (checkForDuplicateTradeGood(world.getName(), cX, centerY, cZ)) {
 				return;
 			}
 			
 			// Determine if we should be a water good.
 			ConfigTradeGood good;
-			if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_STILL || 
-					ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
+			if (ItemManager.getBlockTypeIdAt(world, cX, centerY-1, cZ) == CivData.WATER_STILL || 
+					ItemManager.getBlockTypeIdAt(world, cX, centerY-1, cZ) == CivData.WATER_RUNNING) {
 					if (coord2.getCenteredLocation().getBlock().getBiome() == Biome.RIVER ||
 							coord2.getCenteredLocation().getBlock().getBiome() == Biome.FROZEN_RIVER ||
 							coord2.getCenteredLocation().getBlock().getBiome() == Biome.SWAMPLAND) {
 						CivLog.warning(" -------------------------------- ");
-						CivLog.warning("A trade good tried placing on water without proper biome! "+centerX+", "+(centerY-1)+", "+centerZ
-										+" Biome: "+world.getBiome(centerX, centerZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());
+						CivLog.warning("A trade good tried placing on water without proper biome! "+cX+", "+(centerY-1)+", "+cZ
+										+" Biome: "+world.getBiome(cX, cZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());
 						CivLog.warning(" -------------------------------- ");
 						return;
 					} else {
 						good = pick.waterPick;
 						CivLog.info(" -------------------------------- ");
-						CivLog.info("Trade Good Generate: "+centerX+", "+(centerY-1)+", "+centerZ
-								+" - Biome: "+world.getBiome(centerX, centerZ).toString()
-								+" - Block: "+coord.getCenteredLocation().getBlock().getType().toString()
+						CivLog.info("Trade Good Generate: "+cX+", "+(centerY-1)+", "+cZ
+								+" - Biome: "+world.getBiome(cX, cZ).toString()
+								+" - Block: "+coord2.getCenteredLocation().getBlock().getType().toString()
 								+" - Goodie: "+pick.waterPick.name);
 						CivLog.info(" -------------------------------- ");
 					}
@@ -173,16 +176,16 @@ public class TradeGoodPopulator extends BlockPopulator {
 							coord2.getCenteredLocation().getBlock().getType() == Material.WOOD ||
 							coord2.getCenteredLocation().getBlock().getType() == Material.STONE_SLAB2) {
 						CivLog.warning(" -------------------------------- ");
-						CivLog.warning("A trade good tried placing on improper block! "+centerX+", "+(centerY-1)+", "+centerZ
-										+" Biome: "+world.getBiome(centerX, centerZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());
+						CivLog.warning("A trade good tried placing on improper block! "+cX+", "+(centerY-1)+", "+cZ
+										+" Biome: "+world.getBiome(cX, cZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());
 						CivLog.warning(" -------------------------------- ");
 						return;
 					} else {
 						good = pick.landPick;
 						CivLog.info(" -------------------------------- ");
-						CivLog.info("Trade Good Generate: "+centerX+", "+(centerY-1)+", "+centerZ
-									+" - Biome: "+world.getBiome(centerX, centerZ).toString()
-									+" - Block: "+coord.getCenteredLocation().getBlock().getType().toString()
+						CivLog.info("Trade Good Generate: "+cX+", "+(centerY-1)+", "+cZ
+									+" - Biome: "+world.getBiome(cX, cZ).toString()
+									+" - Block: "+coord2.getCenteredLocation().getBlock().getType().toString()
 									+" - Goodie: "+pick.landPick.name);
 						CivLog.info(" -------------------------------- ");
 					}

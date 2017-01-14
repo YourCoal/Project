@@ -26,7 +26,9 @@ import java.util.Queue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -34,6 +36,7 @@ import com.avrgaming.civcraft.config.ConfigTradeGood;
 import com.avrgaming.civcraft.database.SQL;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
+import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.populators.TradeGoodPick;
@@ -154,8 +157,8 @@ public class TradeGoodPostGenTask implements Runnable {
 				ChunkCoord coord = pick.chunkCoord;
 				Chunk chunk = world.getChunkAt(coord.getX(), coord.getZ());
 				
-				int centerX = (chunk.getX() << 4) + 8;
-				int centerZ = (chunk.getZ() << 4) + 8;
+				int centerX = (chunk.getX()*16)+1;
+				int centerZ = (chunk.getZ()*16)+3;
 				int centerY = world.getHighestBlockYAt(centerX, centerZ);
 				
 				
@@ -207,16 +210,55 @@ public class TradeGoodPostGenTask implements Runnable {
 					
 				}
 				
-				centerY = world.getHighestBlockYAt(centerX, centerZ);
-				
+				BlockCoord coord2 = new BlockCoord(world.getName(), centerX, centerY-1, centerZ);
 				// Determine if we should be a water good.
 				ConfigTradeGood good;
 				if (ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_STILL || 
-					ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
-					good = pick.waterPick;
-				}  else {
-					good = pick.landPick;
-				}
+						ItemManager.getBlockTypeIdAt(world, centerX, centerY-1, centerZ) == CivData.WATER_RUNNING) {
+						if (coord2.getCenteredLocation().getBlock().getBiome() == Biome.RIVER ||
+								coord2.getCenteredLocation().getBlock().getBiome() == Biome.FROZEN_RIVER ||
+								coord2.getCenteredLocation().getBlock().getBiome() == Biome.SWAMPLAND) {
+							CivLog.warning(" -------------------------------- ");
+							CivLog.warning("A trade good tried placing on water without proper biome! "+centerX+", "+(centerY-1)+", "+centerZ
+											+" Biome: "+world.getBiome(centerX, centerZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());
+							CivLog.warning(" -------------------------------- ");
+							return;
+						} else {
+							good = pick.waterPick;
+							CivLog.info(" -------------------------------- ");
+							CivLog.info("Trade Good Generate: "+centerX+", "+(centerY-1)+", "+centerZ
+									+" - Biome: "+world.getBiome(centerX, centerZ).toString()
+									+" - Block: "+coord2.getCenteredLocation().getBlock().getType().toString()
+									+" - Goodie: "+pick.waterPick.name);
+							CivLog.info(" -------------------------------- ");
+						}
+					} else {
+						//TODO For this we don't want to just cancel the trade good spawn, so we should try to make a method
+						//     that will check within a 4-5 block radius for a block it can be placed on. If that check fails,
+						//     ONLY THEN will we not place a goodie.
+						if (coord2.getCenteredLocation().getBlock().getType() == Material.WATER ||
+								coord2.getCenteredLocation().getBlock().getType() == Material.STATIONARY_WATER ||
+								coord2.getCenteredLocation().getBlock().getType() == Material.LEAVES ||
+								coord2.getCenteredLocation().getBlock().getType() == Material.LEAVES_2 ||
+								coord2.getCenteredLocation().getBlock().getType() == Material.LOG ||
+								coord2.getCenteredLocation().getBlock().getType() == Material.LOG_2 ||
+								coord2.getCenteredLocation().getBlock().getType() == Material.WOOD ||
+								coord2.getCenteredLocation().getBlock().getType() == Material.STONE_SLAB2) {
+							CivLog.warning(" -------------------------------- ");
+							CivLog.warning("A trade good tried placing on improper block! "+centerX+", "+(centerY-1)+", "+centerZ
+											+" Biome: "+world.getBiome(centerX, centerZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());
+							CivLog.warning(" -------------------------------- ");
+							return;
+						} else {
+							good = pick.landPick;
+							CivLog.info(" -------------------------------- ");
+							CivLog.info("Trade Good Generate: "+centerX+", "+(centerY-1)+", "+centerZ
+										+" - Biome: "+world.getBiome(centerX, centerZ).toString()
+										+" - Block: "+coord2.getCenteredLocation().getBlock().getType().toString()
+										+" - Goodie: "+pick.landPick.name);
+							CivLog.info(" -------------------------------- ");
+						}
+					}
 				
 				// Randomly choose a land or water good.
 				if (good == null) {
@@ -231,5 +273,4 @@ public class TradeGoodPostGenTask implements Runnable {
 			}
 		}
 	}
-	
 }

@@ -747,12 +747,14 @@ public abstract class Buildable extends SQLObject {
 		}
 		
 		if (this.getConfigId().equals("s_shipyard")) {
-			if (!centerBlock.getBiome().equals(Biome.BEACHES) &&
-				!centerBlock.getBiome().equals(Biome.COLD_BEACH) &&
-				!centerBlock.getBiome().equals(Biome.STONE_BEACH) &&
-				!centerBlock.getBiome().equals(Biome.OCEAN) && 
-				!centerBlock.getBiome().equals(Biome.DEEP_OCEAN) &&
-				!centerBlock.getBiome().equals(Biome.FROZEN_OCEAN)) {
+			if (!centerBlock.getBiome().equals(Biome.OCEAN) && 
+					!centerBlock.getBiome().equals(Biome.BEACHES) &&
+					!centerBlock.getBiome().equals(Biome.STONE_BEACH) &&
+					!centerBlock.getBiome().equals(Biome.COLD_BEACH) &&
+					!centerBlock.getBiome().equals(Biome.DEEP_OCEAN) &&
+					!centerBlock.getBiome().equals(Biome.RIVER) &&
+					!centerBlock.getBiome().equals(Biome.FROZEN_OCEAN) &&
+					!centerBlock.getBiome().equals(Biome.FROZEN_RIVER)) {
 				throw new CivException("Cannot build shipyard here, you need to be in a majority of an ocean or beach biome. Try repositioning it if you are.");
 			}
 		}
