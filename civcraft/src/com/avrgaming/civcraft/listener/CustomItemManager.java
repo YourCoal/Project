@@ -402,8 +402,9 @@ public class CustomItemManager implements Listener {
 			if (craftMat != null) {
 				craftMat.onAttack(event, inHand);
 			} else {
-				/* Non-civcraft items only do 0.5 damage. */
-				event.setDamage(0.5);
+				// Non-civcraft items only do 0.5 damage.
+				// Canceled this b/c we want to be more fair..?
+//				event.setDamage(0.5);
 			}
 		}
 		

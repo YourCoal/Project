@@ -20,6 +20,24 @@ public class CivColor {
 	public static final String LightPurple = "\u00A7d";
 	public static final String Yellow = "\u00A7e";
 	public static final String White = "\u00A7f";
+	
+	public static final String BlackBold = "\u00A70"+ChatColor.BOLD;
+	public static final String NavyBold = "\u00A71"+ChatColor.BOLD;
+	public static final String GreenBold = "\u00A72"+ChatColor.BOLD;
+	public static final String BlueBold = "\u00A73"+ChatColor.BOLD;
+	public static final String RedBold = "\u00A74"+ChatColor.BOLD;
+	public static final String PurpleBold = "\u00A75"+ChatColor.BOLD;
+	public static final String GoldBold = "\u00A76"+ChatColor.BOLD;
+	public static final String LightGrayBold = "\u00A77"+ChatColor.BOLD;
+	public static final String GrayBold = "\u00A78"+ChatColor.BOLD;
+	public static final String DarkPurpleBold = "\u00A79"+ChatColor.BOLD;
+	public static final String LightGreenBold = "\u00A7a"+ChatColor.BOLD;
+	public static final String LightBlueBold = "\u00A7b"+ChatColor.BOLD;
+	public static final String RoseBold = "\u00A7c"+ChatColor.BOLD;
+	public static final String LightPurpleBold = "\u00A7d"+ChatColor.BOLD;
+	public static final String YellowBold = "\u00A7e"+ChatColor.BOLD;
+	public static final String WhiteBold = "\u00A7f"+ChatColor.BOLD;
+	
 	public static final String BOLD = ""+ChatColor.BOLD;
 	public static final String ITALIC = ""+ChatColor.ITALIC;
 	public static final String MAGIC = ""+ChatColor.MAGIC;
@@ -52,6 +70,24 @@ public class CivColor {
 		output = output.replaceAll("<lightgray>", LightGray);
 		output = output.replaceAll("<gray>", Gray);
 		output = output.replaceAll("<black>", Black);
+		
+		output = output.replaceAll("<redb>", RedBold);
+		output = output.replaceAll("<roseb>", RoseBold);
+		output = output.replaceAll("<goldb>", GoldBold);
+		output = output.replaceAll("<yellowb>", YellowBold);
+		output = output.replaceAll("<greenb>", GreenBold);
+		output = output.replaceAll("<lightgreenb>", LightGreenBold);
+		output = output.replaceAll("<lightblueb>", LightBlueBold);
+		output = output.replaceAll("<blueb>", BlueBold);
+		output = output.replaceAll("<navyb>", NavyBold);
+		output = output.replaceAll("<darkpurpleb>", DarkPurpleBold);
+		output = output.replaceAll("<lightpurpleb>", LightPurpleBold);
+		output = output.replaceAll("<purpleb>", PurpleBold);
+		output = output.replaceAll("<whiteb>", WhiteBold);
+		output = output.replaceAll("<lightgrayb>", LightGrayBold);
+		output = output.replaceAll("<grayb>", GrayBold);
+		output = output.replaceAll("<blackb>", BlackBold);
+		
 		output = output.replaceAll("<b>", ""+ChatColor.BOLD);
 		output = output.replaceAll("<u>", ""+ChatColor.UNDERLINE);
 		output = output.replaceAll("<i>", ""+ChatColor.ITALIC);
@@ -127,6 +163,24 @@ public class CivColor {
 		output = output.replaceAll("<lightgray>", "");
 		output = output.replaceAll("<gray>", "");
 		output = output.replaceAll("<black>", "");
+		
+		output = output.replaceAll("<redb>", "");
+		output = output.replaceAll("<roseb>", "");
+		output = output.replaceAll("<goldb>", "");
+		output = output.replaceAll("<yellowb>", "");
+		output = output.replaceAll("<greenb>", "");
+		output = output.replaceAll("<lightgreenb>", "");
+		output = output.replaceAll("<lightblueb>", "");
+		output = output.replaceAll("<blueb>", "");
+		output = output.replaceAll("<navyb>", "");
+		output = output.replaceAll("<darkpurpleb>", "");
+		output = output.replaceAll("<lightpurpleb>", "");
+		output = output.replaceAll("<purpleb>", "");
+		output = output.replaceAll("<whiteb>", "");
+		output = output.replaceAll("<lightgrayb>", "");
+		output = output.replaceAll("<grayb>", "");
+		output = output.replaceAll("<blackb>", "");
+		
 		output = output.replaceAll("<b>", "");
 		output = output.replaceAll("<u>", "");
 		output = output.replaceAll("<i>", "");
@@ -136,5 +190,4 @@ public class CivColor {
 		
 		return output;
 	}
-	
 }

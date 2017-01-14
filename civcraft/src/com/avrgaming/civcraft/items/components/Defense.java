@@ -1,24 +1,4 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
 package com.avrgaming.civcraft.items.components;
-
-import gpl.AttributeUtil;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -27,22 +7,28 @@ import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
-import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.CivColor;
 
-public class Defense extends ItemComponent {
+import gpl.AttributeUtil;
+import gpl.AttributeUtil.Attribute;
+import gpl.AttributeUtil.AttributeType;
 
+public class Defense extends ItemComponent {
+	
 	@Override
 	public void onPrepareCreate(AttributeUtil attrs) {
+		attrs.add(Attribute.newBuilder().name("Defense").
+				type(AttributeType.GENERIC_ARMOR).
+				amount(this.getDouble("value")).build());
 		attrs.addLore(CivColor.Blue+""+this.getDouble("value")+" Defense");
+		return;
 	}
 	
 	@Override
-	public void onHold(PlayerItemHeldEvent event) {	
-		
+	public void onHold(PlayerItemHeldEvent event) {
 		Resident resident = CivGlobal.getResident(event.getPlayer());
 		if (!resident.hasTechForItem(event.getPlayer().getInventory().getItem(event.getNewSlot()))) {		
 			CivMessage.send(resident, CivColor.Rose+"Warning - "+CivColor.LightGray+
@@ -53,25 +39,16 @@ public class Defense extends ItemComponent {
 	@Override
 	public void onDefense(EntityDamageByEntityEvent event, ItemStack stack) {
 		double defValue = this.getDouble("value");
-		
-		/* Try to get any extra defense enhancements from this item. */
-		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
-		if (craftMat == null) {
-			return;
-		}
-				
 		double extraDef = 0;
 		AttributeUtil attrs = new AttributeUtil(stack);
-		
+		/* Try to get any extra defense enhancements from this item. */
 		for (LoreEnhancement enh : attrs.getEnhancements()) {
 			if (enh instanceof LoreEnhancementDefense) {
-				extraDef +=  ((LoreEnhancementDefense)enh).getExtraDefense(attrs);
+				extraDef += ((LoreEnhancementDefense)enh).getExtraDefense(attrs);
 			}
 		}
 		
-		defValue += extraDef;		
-		double damage = event.getDamage();
-		
+		defValue += extraDef;
 		if (event.getEntity() instanceof Player) {
 			Resident resident = CivGlobal.getResident(((Player)event.getEntity()));
 			if (!resident.hasTechForItem(stack)) {
@@ -79,13 +56,11 @@ public class Defense extends ItemComponent {
 			}
 		}
 		
-		damage -= defValue;
-		if (damage < 0.5) {
-			/* Always do at least 0.5 damage. */
-			damage = 0.5;
+		double dmg = event.getDamage();
+		dmg -= defValue;
+		if (dmg < 0.5) { /* Always do at least 0.5 damage. */
+			dmg = 0.5;
 		}
-		
-		event.setDamage(damage);
+		event.setDamage(dmg);
 	}
-
 }
