@@ -146,9 +146,9 @@ public class TradeGoodPopulator extends BlockPopulator {
 			ConfigTradeGood good;
 			if (ItemManager.getBlockTypeIdAt(world, cX, centerY-1, cZ) == CivData.WATER_STILL || 
 					ItemManager.getBlockTypeIdAt(world, cX, centerY-1, cZ) == CivData.WATER_RUNNING) {
-					if (coord2.getCenteredLocation().getBlock().getBiome() == Biome.RIVER ||
-							coord2.getCenteredLocation().getBlock().getBiome() == Biome.FROZEN_RIVER ||
-							coord2.getCenteredLocation().getBlock().getBiome() == Biome.SWAMPLAND) {
+					if (!coord2.getLocation().getBlock().getBiome().equals(Biome.OCEAN) &&
+							!coord2.getLocation().getBlock().getBiome().equals(Biome.DEEP_OCEAN) &&
+							!coord2.getLocation().getBlock().getBiome().equals(Biome.FROZEN_OCEAN)) {
 						CivLog.warning(" -------------------------------- ");
 						CivLog.warning("A trade good tried placing on water without proper biome! "+cX+", "+(centerY-1)+", "+cZ
 										+" Biome: "+world.getBiome(cX, cZ).toString()+" Block: "+coord2.getCenteredLocation().getBlock().getType().toString());

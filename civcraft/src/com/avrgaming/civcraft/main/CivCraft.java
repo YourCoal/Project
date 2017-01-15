@@ -116,6 +116,7 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.TimeTools;
 import com.avrgaming.civcraft.war.WarListener;
 import com.avrgaming.global.scores.CalculateScoreTimer;
+import com.avrgaming.sls.SLSManager;
 
 import pvptimer.PvPListener;
 import pvptimer.PvPTimer;
@@ -250,6 +251,7 @@ public final class CivCraft extends JavaPlugin {
 			CivGlobal.loadGlobals();
 			
 			ACManager.init();
+			SLSManager.init();
 		} catch (InvalidConfiguration | SQLException | IOException | InvalidConfigurationException | CivException | ClassNotFoundException e) {
 			e.printStackTrace();
 			setError(true);
