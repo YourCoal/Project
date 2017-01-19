@@ -29,7 +29,6 @@ public class TeamCommand  extends CommandBase {
 		commands.put("remove", "[resident] removes a resident from your team.");
 		commands.put("changeleader", "[resident] - Gives team leadership to another team member.");
 		commands.put("arena", "Join the queue to fight the arena! Will take us out of the queue if we're already in it.");
-		commands.put("top5", "Shows top 5 teams in the game!");
 		commands.put("top10", "Shows top 10 teams in the game!");
 		commands.put("list", "List all teams in the game.");
 		commands.put("surrender", "Give up on the current match.");
@@ -109,16 +108,6 @@ public class TeamCommand  extends CommandBase {
 		}
 		
 		CivMessage.send(sender, out);
-	}
-	
-	
-	public void top5_cmd() {
-		CivMessage.sendHeading(sender, "Top 5 Teams");
-		
-		for (int i = 0; ((i < 5) && (i < ArenaTeam.teamRankings.size())); i++) {
-			ArenaTeam team = ArenaTeam.teamRankings.get(i);
-			CivMessage.send(sender, CivColor.Green+team.getName()+": "+CivColor.LightGreen+team.getLadderPoints());
-		}
 	}
 	
 	public void top10_cmd() {

@@ -197,6 +197,7 @@ public class Town extends SQLObject {
 					"`level` int(11) DEFAULT 1," +
 					"`debt` double DEFAULT 0," +
 					"`coins` double DEFAULT 0," +
+					"`foodCount` double DEFAULT 0," +
 					"`daysInDebt` int(11) DEFAULT 0,"+
 					"`flat_tax` double NOT NULL DEFAULT '0'," + 
 					"`tax_rate` double DEFAULT 0," + 
@@ -264,6 +265,10 @@ public class Town extends SQLObject {
 
 		this.setTreasury(new EconObject(this));
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
+		
+		this.setFood(new FoodObject(this));
+		this.getFood().setFoodCount(rs.getDouble("foodCount"), false);
+		
 		this.setDebt(rs.getDouble("debt"));
 		
 		String outlawRaw = rs.getString("outlaws");
@@ -315,6 +320,7 @@ public class Town extends SQLObject {
 		hashmap.put("culture", this.getAccumulatedCulture());
 		hashmap.put("upgrades", this.getUpgradesString());
 		hashmap.put("coins", this.getTreasury().getBalance());
+		hashmap.put("foodCount", this.getFood().getFoodCount());
 		hashmap.put("dbg_civ_name", this.getCiv().getName());
 		
 		if (this.created_date != null) {
@@ -400,6 +406,8 @@ public class Town extends SQLObject {
 		this.setAccumulatedCulture(0);
 		this.setTreasury(new EconObject(this));	
 		this.getTreasury().setBalance(0, false);
+		this.setFood(new FoodObject(this));	
+		this.getFood().setFoodCount(0, false);
 		this.created_date = new Date();
 
 		loadSettings();

@@ -1149,55 +1149,35 @@ public class Camp extends Buildable {
 	//XXX TODO make sure these all work...
 	@Override
 	public void processUndo() throws CivException {
-		// TODO Auto-generated method stub
-		
 	}
-
 	@Override
 	public void updateBuildProgess() {
-		// TODO Auto-generated method stub
-		
 	}
-
 	@Override
 	public void build(Player player, Location centerLoc, Template tpl) throws Exception {		
 	}
-
 	@Override
 	protected void runOnBuild(Location centerLoc, Template tpl) throws CivException {
 		return;
 	}
-
 	@Override
 	public String getDynmapDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
 	public String getMarkerIconName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
 	public void onComplete() {
-		// TODO Auto-generated method stub
-		
 	}
-
 	@Override
 	public void onLoad() {
-		// TODO Auto-generated method stub
-		
 	}
-
 	@Override
 	public void onUnload() {
-		// TODO Auto-generated method stub
-		
 	}
-
+	
 	public Collection<Resident> getMembers() {
 		return this.members.values();
 	}
@@ -1269,7 +1249,6 @@ public class Camp extends Buildable {
 	
 	@Override
 	public void onDamage(int amount, World world, Player player, BlockCoord hit, BuildableDamageBlock hit2) {
-	
 		ControlPoint cp = this.controlBlocks.get(hit);
 		if (cp != null) {
 			Date now = new Date();

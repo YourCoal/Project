@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10.2 jars/WorldBorder (1.8-1.10).jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10.2 jars/worldedit-bukkit-6.1.5 (1.9-1.11).jar"/>
 	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10.2 jars/NametagEdit.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Cole/Desktop/Folder/Minecraft - CivCraft/My Development/My Project/myciv/1.10.2 jars/BarAPI.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

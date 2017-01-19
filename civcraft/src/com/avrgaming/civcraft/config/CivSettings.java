@@ -202,6 +202,7 @@ public class CivSettings {
 	public static boolean hasHolographicDisplays = false;
 	public static boolean hasVanishNoPacket = false;
 	public static boolean hasTitleAPI = false;
+	public static boolean hasBarAPI = false;
 	
 	public static final String MINI_ADMIN = "civ.admin";
 	public static final String MODERATOR = "civ.moderator";
@@ -291,6 +292,12 @@ public class CivSettings {
 			hasTitleAPI = true;
 		} else {
 			CivLog.warning("TitleAPI not found, not registering TitleAPI hooks. This is fine if you're not using TitleAPI.");
+		}
+		
+		if (CivSettings.plugin.hasPlugin("BarAPI")) {
+			hasBarAPI = true;
+		} else {
+			CivLog.warning("BarAPI not found, not registering BarAPI hooks. This is fine if you're not using BarAPI.");
 		}
 	}
 	

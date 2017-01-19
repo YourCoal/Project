@@ -126,6 +126,15 @@ town_levels:
       outposts: 15
       strategics: 24
 #
+    - level: 9
+      title: 'Admin'
+      upkeep: 0.0
+      plots: 1048576
+      plot_cost: 0.0
+      tiles: 10000
+      outposts: 10000
+      strategics: 10000
+#
 # Town Upgrades
 # These are upgrades available to towns.
 # id - unquie id for this upgrade
@@ -197,6 +206,14 @@ upgrades:
       cost: 1000000.0
       action: 'set_town_level,9'
       require_upgrade: 'upgrade_town_level_8'
+      require_tech: 'tech_scientific_method'
+      category: 'Town'
+
+    - id: 'upgrade_town_level_10'
+      name: 'Admin'
+      cost: 1000000000000.0
+      action: 'set_town_level,9'
+      require_upgrade: 'upgrade_town_level_9'
       require_tech: 'tech_scientific_method'
       category: 'Town'
 
@@ -406,7 +423,6 @@ upgrades:
 # TODO in the future perhaps add catalysts for elemental arrows?!
 
 # Library Upgrades
-
     - id: 'upgrade_library_level_2'
       name: 'Upgrade Library Level 2'
       action: 'set_library_level, 2'
@@ -433,7 +449,25 @@ upgrades:
       require_tech: 'tech_advanced_efficiency'
       require_structure: 's_library'
       category: 'Library'
-  
+
+    - id: 'research_bonus_damage_i'
+      name: 'Research Bonus Damage I'
+      action: 'enable_library_enchantment, LoreEnhancementBonusDamageI, 1, 50000'
+      cost: 25000.0
+      require_upgrade:
+      require_tech:
+      require_structure: 's_library'
+      category: 'Library'
+
+    - id: 'research_bonus_damage_ii'
+      name: 'Research Bonus Damage II'
+      action: 'enable_library_enchantment, LoreEnhancementBonusDamageII, 1, 500000'
+      cost: 250000.0
+      require_upgrade:
+      require_tech:
+      require_structure: 's_library'
+      category: 'Library'
+
     - id: 'research_looting_1'
       name: 'Research Looting I'
       action: 'enable_library_enchantment, Looting, 1, 50'

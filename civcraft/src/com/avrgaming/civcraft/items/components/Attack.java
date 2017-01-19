@@ -7,6 +7,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementBonusDamageI;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementBonusDamageII;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
@@ -45,6 +47,14 @@ public class Attack extends ItemComponent {
 		for (LoreEnhancement enh : attrs.getEnhancements()) {
 			if (enh instanceof LoreEnhancementAttack) {
 				extraAtt +=  ((LoreEnhancementAttack)enh).getExtraAttack(attrs);
+			}
+			
+			if (enh instanceof LoreEnhancementBonusDamageI) {
+				extraAtt += ((LoreEnhancementBonusDamageI)enh).getExtraAttack(attrs);
+			}
+			
+			if (enh instanceof LoreEnhancementBonusDamageII) {
+				extraAtt += ((LoreEnhancementBonusDamageII)enh).getExtraAttack(attrs);
 			}
 		}
 		

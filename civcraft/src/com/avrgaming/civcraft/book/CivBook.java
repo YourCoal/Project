@@ -236,31 +236,22 @@ public class CivBook {
 		if (guiInventory == null) {
 			guiInventory = Bukkit.getServer().createInventory(player, 3*9, "CivCraft Information");
 
-			ItemStack infoRec = LoreGuiItem.build("CivCraft Info", 
-					ItemManager.getId(Material.WRITTEN_BOOK), 
-							0, CivColor.Gold+"<Click To View>");
+			ItemStack infoRec = LoreGuiItem.build("CivCraft Info", ItemManager.getId(Material.WRITTEN_BOOK), 0, CivColor.Gold+"<Click To View>");
 			infoRec = LoreGuiItem.setAction(infoRec, "OpenInventory");
 			infoRec = LoreGuiItem.setActionData(infoRec, "invType", "showTutorialInventory");
-			guiInventory.addItem(infoRec);
+			guiInventory.setItem(0, infoRec);
 			
-			ItemStack craftRec = LoreGuiItem.build("Crafting Recipes", 
-					ItemManager.getId(Material.WRITTEN_BOOK), 
-					0, CivColor.Gold+"<Click To View>");
+			ItemStack craftRec = LoreGuiItem.build("Crafting Recipes", ItemManager.getId(Material.WRITTEN_BOOK), 0, CivColor.Gold+"<Click To View>");
 			craftRec = LoreGuiItem.setAction(craftRec, "OpenInventory");
 			craftRec = LoreGuiItem.setActionData(craftRec, "invType", "showCraftingHelp");
-			guiInventory.addItem(craftRec);
+			guiInventory.setItem(2, craftRec);
 			
 			ItemStack buildMenu = LoreGuiItem.build("Build Structure", ItemManager.getId(Material.BRICK_STAIRS), 0, CivColor.Gold+"<Click to View>");
 			buildMenu = LoreGuiItem.setAction(buildMenu, "BuildStructureList");
-			guiInventory.addItem(buildMenu);
-			
+			guiInventory.setItem(9, buildMenu);
 			
 			LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);
 		}
-		
 		player.openInventory(guiInventory);
-
 	}
-	
-	
 }

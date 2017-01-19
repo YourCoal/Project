@@ -25,7 +25,7 @@ system:
 
     # Enables free perks for all users. Even if the system is disabled above, setting this
     # to true will give all users perks of each type.
-    free_perks: 'false'
+    free_perks: 'true'
 
     # For each perk, give this many copies.
     free_perk_count: 100

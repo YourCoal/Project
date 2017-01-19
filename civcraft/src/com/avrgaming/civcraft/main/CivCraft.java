@@ -101,6 +101,7 @@ import com.avrgaming.civcraft.threading.tasks.ScoutTowerTask;
 import com.avrgaming.civcraft.threading.timers.ActionBarUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.AnnouncementTimer;
 import com.avrgaming.civcraft.threading.timers.BeakerTimer;
+import com.avrgaming.civcraft.threading.timers.BossBarUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.ChangeGovernmentTimer;
 import com.avrgaming.civcraft.threading.timers.Minute5UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
@@ -124,7 +125,7 @@ import pvptimer.PvPTimer;
 public final class CivCraft extends JavaPlugin {
 
 	private boolean isError = false;	
-	private static JavaPlugin plugin;	
+	private static JavaPlugin plugin;
 	public static boolean isDisable = false;
 	
 	private void startTimers() {
@@ -163,8 +164,9 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.syncTimer("arrowhomingtask", new ArrowProjectileTask(), 5);
 			
 		// Global Event timers
+		TaskMaster.asyncTimer("BossBarUpdateTimer", new BossBarUpdateTimer(), 0, TimeTools.toTicks(6*5)); //have +6sec of empty so we don't make errors occur.
 		TaskMaster.asyncTimer("ActionBarUpdateTimer", new ActionBarUpdateTimer(), 0, TimeTools.toTicks(2));
-		TaskMaster.asyncTimer("PlayerTagUpdateTimer", new PlayerTagUpdateTimer(), 0, TimeTools.toTicks(30));
+		TaskMaster.asyncTimer("PlayerTagUpdateTimer", new PlayerTagUpdateTimer(), 0, TimeTools.toTicks(10));
 		
 		TaskMaster.syncTimer("FarmCropCache", new FarmPreCachePopulateTimer(), TimeTools.toTicks(30));
 		TaskMaster.asyncTimer("FarmGrowthTimer", new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));

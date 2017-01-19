@@ -22,6 +22,8 @@ public abstract class LoreEnhancement {
 	public static void init() {
 		enhancements.put("LoreEnhancementSoulBound", new LoreEnhancementSoulBound());
 		enhancements.put("LoreEnhancementAttack", new LoreEnhancementAttack());
+		enhancements.put("LoreEnhancementBonusDamageI", new LoreEnhancementBonusDamageI());
+		enhancements.put("LoreEnhancementBonusDamageII", new LoreEnhancementBonusDamageII());
 		enhancements.put("LoreEnhancementDefense", new LoreEnhancementDefense());
 		enhancements.put("LoreEnhancementPunchout", new LoreEnhancementPunchout());
 		enhancements.put("LoreEnhancementArenaItem", new LoreEnhancementArenaItem());

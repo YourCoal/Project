@@ -3,15 +3,18 @@ package com.avrgaming.civcraft.items.components;
 import gpl.AttributeUtil;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigBuildableInfo;
+import com.avrgaming.civcraft.config.ConfigUnit;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.interactive.InteractiveWarCampFound;
+import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
@@ -41,6 +44,13 @@ public class FoundWarCamp extends ItemComponent implements CallbackInterface {
 	
 	public void foundCamp(Player player) throws CivException {
 		Resident resident = CivGlobal.getResident(player);
+		if (!War.isWarTime()) {
+			throw new CivException("War Camps can only be built during WarTime.");
+		}
+		
+		if (player.getInventory().getItemInOffHand().getType() != Material.AIR) {
+			throw new CivException("You cannot have items in your offhand!");
+		}
 		
 		if (!resident.hasTown()) {
 			throw new CivException("You must be part of a civilization to found a war camp.");
@@ -48,19 +58,16 @@ public class FoundWarCamp extends ItemComponent implements CallbackInterface {
 		
 		if (!resident.getCiv().getLeaderGroup().hasMember(resident) &&
 			!resident.getCiv().getAdviserGroup().hasMember(resident)) {
-			throw new CivException("You must be a leader or adviser of the civilization to found a war camp.");
+			throw new CivException("You must be a leader or adviser of the civilization to found a War Camp.");
 		}
 		
-		if (!War.isWarTime()) {
-			throw new CivException("War Camps can only be built during WarTime.");
+		ConfigUnit unit = Unit.getPlayerUnit(player);
+		if (unit == null) {
+			throw new CivException("Cannons can only be deployed from people with Units!");
 		}
 		
-		/*
-		 * Build a preview for the Capitol structure.
-		 */
+		// Build a preview for the Capitol structure.
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Checking structure position...Please wait.");
-
-		
 		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);
 	}
 	

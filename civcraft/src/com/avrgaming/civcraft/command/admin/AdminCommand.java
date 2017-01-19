@@ -56,6 +56,8 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
+import me.confuser.barapi.BarAPI;
+
 public class AdminCommand extends CommandBase {
 
 	@Override
@@ -92,12 +94,153 @@ public class AdminCommand extends CommandBase {
 		
 		commands.put("gui", "Opens book options. Type 'open' after book to get the GUI.");
 		commands.put("tradeholo", "Enables all trade good holograms.");
+		commands.put("test", "Literally for testing purposes.");
 	}
 	
 	public void tradeholo_cmd() {
 		HolographicDisplaysListener.generateTradeGoodHolograms();
 		CivMessage.sendSuccess(sender, "Updated holograms.");
 	}
+	
+	@SuppressWarnings("deprecation")
+	public void test_cmd() {
+		BarAPI.setMessage((Player)sender, "Welcome to the server!", 20);
+		CivMessage.sendSuccess(sender, "Updated holograms.");
+	}
+	
+/*	public void test_cmd() {
+		try {
+			String out1a = "The Civilization of [Civ Name] has acheived a [Victory Name] victory!";
+			String out1b = "Please standby for more global messages.";
+			
+			String out2a = "Top 5 civs in score this phase:";
+			String out2b = "";
+			synchronized(CivGlobal.civilizationScores) {
+				int i = 1;
+				for (Integer score : CivGlobal.civilizationScores.descendingKeySet()) {
+					out2b = i+") "+CivColor.Gold+CivGlobal.civilizationScores.get(score).getName()+CivColor.White+" - "+score+" points";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out3a = "Top 5 towns in score this phase:";
+			String out3b = "";
+			synchronized(CivGlobal.townScores) {
+				int i = 1;
+				for (Integer score : CivGlobal.townScores.descendingKeySet()) {
+					out3b = i+") "+CivColor.Gold+CivGlobal.townScores.get(score).getName()+CivColor.White+" - "+score+" points";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out4a = "Top 5 richest civs in money this phase:";
+			String out4b = "";
+			synchronized(CivGlobal.civilizationEcon) {
+				int i = 1;
+				for (Integer money : CivGlobal.civilizationEcon.descendingKeySet()) {
+					out4b = i+") "+CivColor.Gold+CivGlobal.civilizationEcon.get(money).getName()+CivColor.White+" - "+money+" coins";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out5a = "Top 5 richest towns in money this phase:";
+			String out5b = "";
+			synchronized(CivGlobal.townEcon) {
+				int i = 1;
+				for (Integer money : CivGlobal.townEcon.descendingKeySet()) {
+					out5b = i+") "+CivColor.Gold+CivGlobal.townEcon.get(money).getName()+CivColor.White+" - "+money+" coins";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out6a = "Top 3 civs with most members this phase:";
+			String out6b = "";
+			synchronized(CivGlobal.civilizationMemberCount) {
+				int i = 1;
+				for (Integer members : CivGlobal.civilizationMemberCount.descendingKeySet()) {
+					out6b = i+") "+CivColor.Gold+CivGlobal.civilizationMemberCount.get(members).getName()+CivColor.White+" - "+members+" members";
+					i++;
+					if (i > 3) {
+						break;
+					}
+				}
+			}
+			
+			String out7a = "Top 3 towns with most members this phase:";
+			String out7b = "";
+			synchronized(CivGlobal.townMemberCount) {
+				int i = 1;
+				for (Integer members : CivGlobal.townMemberCount.descendingKeySet()) {
+					out7b = i+") "+CivColor.Gold+CivGlobal.townMemberCount.get(members).getName()+CivColor.White+" - "+members+" members";
+					i++;
+					if (i > 3) {
+						break;
+					}
+				}
+			}
+			
+			String out8a = "Top 5 civs with the most towns this phase:";
+			String out8b = "";
+			synchronized(CivGlobal.civilizationTownCount) {
+				int i = 1;
+				for (Integer townCount : CivGlobal.civilizationTownCount.descendingKeySet()) {
+					out8b = i+") "+CivColor.Gold+CivGlobal.civilizationTownCount.get(townCount).getName()+CivColor.White+" - "+townCount+" towns";
+					i++;
+					if (i > 3) {
+						break;
+					}
+				}
+			}
+			
+			String out9a = "Top 5 teams with the most points this phase:";
+			String out9b = "";
+			for (int i = 0; ((i < 10) && (i < ArenaTeam.teamRankings.size())); i++) {
+				ArenaTeam team = ArenaTeam.teamRankings.get(i);
+				out9b = i+") "+CivColor.LightGreen+team.getName()+" - "+CivColor.White+team.getLadderPoints()+" points";
+			}
+			
+			CivMessage.global(out1a);
+			CivMessage.global(out1b);
+			Thread.sleep(9000);
+			CivMessage.global(out2a);
+			CivMessage.global(out2b);
+			Thread.sleep(9000);
+			CivMessage.global(out3a);
+			CivMessage.global(out3b);
+			Thread.sleep(9000);
+			CivMessage.global(out4a);
+			CivMessage.global(out4b);
+			Thread.sleep(9000);
+			CivMessage.global(out5a);
+			CivMessage.global(out5b);
+			Thread.sleep(9000);
+			CivMessage.global(out6a);
+			CivMessage.global(out6b);
+			Thread.sleep(9000);
+			CivMessage.global(out7a);
+			CivMessage.global(out7b);
+			Thread.sleep(9000);
+			CivMessage.global(out8a);
+			CivMessage.global(out8b);
+			Thread.sleep(9000);
+			CivMessage.global(out9a);
+			CivMessage.global(out9b);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}*/
 	
 	public void gui_cmd() {
 		AdminGUICommand cmd = new AdminGUICommand();	

@@ -37,6 +37,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.WarCamp;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigGovernment;
@@ -1624,9 +1625,106 @@ public class Civilization extends SQLObject {
 	 }
 
 	public void declareAsWinner(EndGameCondition end) {
-		String out = "The Civilization of "+this.getName()+" has acheived a "+end.getVictoryName()+" victory!";
-		CivGlobal.getSessionDB().add("endgame:winningCiv", out, 0, 0, 0);
-		CivMessage.global(out);
+		try {
+			String out1a = "The Civilization of "+this.getName()+" has acheived a "+end.getVictoryName()+" Victory!";
+			String out1b = CivColor.Gray+"(Please standby for more global messages)";
+			CivGlobal.getSessionDB().add("endgame:winningCiv", out1a, 0, 0, 0);
+			
+			String out2a = "Top 5 civs in score this phase:";
+			String out2b = "";
+			synchronized(CivGlobal.civilizationScores) {
+				int i = 1;
+				for (Integer score : CivGlobal.civilizationScores.descendingKeySet()) {
+					out2b = i+") "+CivColor.Gold+CivGlobal.civilizationScores.get(score).getName()+CivColor.White+" - "+score+" points";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out3a = "Top 5 towns in score this phase:";
+			String out3b = "";
+			synchronized(CivGlobal.townScores) {
+				int i = 1;
+				for (Integer score : CivGlobal.townScores.descendingKeySet()) {
+					out3b = i+") "+CivColor.Gold+CivGlobal.townScores.get(score).getName()+CivColor.White+" - "+score+" points";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out4a = "Top 5 richest civs in money this phase:";
+			String out4b = "";
+			synchronized(CivGlobal.civilizationEcon) {
+				int i = 1;
+				for (Integer money : CivGlobal.civilizationEcon.descendingKeySet()) {
+					out4b = i+") "+CivColor.Gold+CivGlobal.civilizationEcon.get(money).getName()+CivColor.White+" - "+money+" coins";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out5a = "Top 5 richest towns in money this phase:";
+			String out5b = "";
+			synchronized(CivGlobal.townEcon) {
+				int i = 1;
+				for (Integer money : CivGlobal.townEcon.descendingKeySet()) {
+					out5b = i+") "+CivColor.Gold+CivGlobal.townEcon.get(money).getName()+CivColor.White+" - "+money+" coins";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out6a = "Top 5 civs with the most towns this phase:";
+			String out6b = "";
+			synchronized(CivGlobal.civilizationTownCount) {
+				int i = 1;
+				for (Integer townCount : CivGlobal.civilizationTownCount.descendingKeySet()) {
+					out6b = i+") "+CivColor.Gold+CivGlobal.civilizationTownCount.get(townCount).getName()+CivColor.White+" - "+townCount+" towns";
+					i++;
+					if (i > 3) {
+						break;
+					}
+				}
+			}
+			
+			String out7a = "Top 5 teams with the most points this phase:";
+			String out7b = "";
+			for (int i = 0; ((i < 10) && (i < ArenaTeam.teamRankings.size())); i++) {
+				ArenaTeam team = ArenaTeam.teamRankings.get(i);
+				out7b = i+") "+CivColor.LightGreen+team.getName()+" - "+CivColor.White+team.getLadderPoints()+" points";
+			}
+			
+			CivMessage.global(out1a);
+			CivMessage.global(out1b);
+			Thread.sleep(10000);
+			CivMessage.global(out2a);
+			CivMessage.global(out2b);
+			Thread.sleep(10000);
+			CivMessage.global(out3a);
+			CivMessage.global(out3b);
+			Thread.sleep(10000);
+			CivMessage.global(out4a);
+			CivMessage.global(out4b);
+			Thread.sleep(10000);
+			CivMessage.global(out5a);
+			CivMessage.global(out5b);
+			Thread.sleep(10000);
+			CivMessage.global(out6a);
+			CivMessage.global(out6b);
+			Thread.sleep(10000);
+			CivMessage.global(out7a);
+			CivMessage.global(out7b);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void winConditionWarning(EndGameCondition end, int daysLeft) {

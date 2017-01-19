@@ -11,6 +11,7 @@ import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementArenaItem;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementBonusDamageI;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementPunchout;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementSoulBound;
@@ -72,6 +73,7 @@ public class AdminItemCommand extends CommandBase {
 		enhancements.put("punchout", new LoreEnhancementPunchout());
 		enhancements.put("defence", new LoreEnhancementDefense());
 		enhancements.put("attack", new LoreEnhancementAttack());
+		enhancements.put("bonusdamagei", new LoreEnhancementBonusDamageI());
 		enhancements.put("arena", new LoreEnhancementArenaItem());
 		
 		if (inHand == null || ItemManager.getId(inHand) == CivData.AIR) {

@@ -61,6 +61,10 @@ culture_levels:
    amount: 400000
    chunks: 32
 #
+ - level: 12
+   amount: 1000000000
+   chunks: 64
+#
 culture_biomes:
 #All biomes are listed here: http://minecraft.gamepedia.com/Biome
 #There code names are in Biome.java

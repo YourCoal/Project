@@ -8,14 +8,14 @@
 
 ################# Trommel Settings #############
 trommel:
-    iron_chance: 0.04
-    gold_chance: 0.02
-    diamond_chance: 0.0050
-    emerald_chance: 0.0020
+    iron_chance: 0.05
+    gold_chance: 0.025
+    diamond_chance: 0.005
+    emerald_chance: 0.0025
     chromium_chance: 0.0008
     gravel_rate: 1
-    despotism_rate: 2.0
-    penalty_rate: 0.8
+    despotism_rate: 1.5
+    penalty_rate: 0.9
 
 ################ Grocer Settings ###############
 grocer_levels:
@@ -93,6 +93,24 @@ temple:
         - entities:
               - 'sheep'
           reward: 2
+#====================[ Granary Settings ]====================#
+granary_bread:
+    max: 10000
+    easy_chance: 0.4
+    medium_chance: 0.1
+    hard_chance: 0.005
+#
+granary_carrot:
+    max: 10000
+    easy_chance: 0.4
+    medium_chance: 0.1
+    hard_chance: 0.005
+#
+granary_potato:
+    max: 10000
+    easy_chance: 0.4
+    medium_chance: 0.1
+    hard_chance: 0.005
 #====================[ Mine Settings ]====================#
 mine_levels:
 ##### Coal
@@ -652,25 +670,19 @@ structures:
     displayName: Monument
     require_upgrade:
     require_tech: 'tech_religion'
-#    effect_event: generate_culture:400
-    check_event: 
-    update_event: 
-    onBuild_event:
-    limit: 1
-    cost: 15000.0
-    upkeep: 1500.0
-    hammer_cost: 2000.0
-    points: 1500
-    max_hitpoints: 250
+    effect_event: process_mine
+    tile: true
+    limit: 4
+    points: 100
+    cost: 20000.0
+    upkeep: 1000.0
+    hammer_cost: 1000.0
+    max_hitpoints: 300
     components:
         - name: 'AttributeStatic'
           type: 'direct'
           attribute: 'HAPPINESS'
           value: '3.0'
-#        - name: 'AttributeStatic'
-#          type: 'direct'
-#          attribute: 'CULTURE'
-#          value: '200.0'
   
   - id: s_temple
     template: temple

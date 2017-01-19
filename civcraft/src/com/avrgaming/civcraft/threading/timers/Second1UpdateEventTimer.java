@@ -40,7 +40,7 @@ public class Second1UpdateEventTimer extends CivAsyncTask {
 							if (!CivGlobal.questStructuresEnabled) {
 								continue;
 							}
-							TaskMaster.asyncTask("trommel-"+struct.getCorner().toString(), new TrommelAsyncTask(struct), 0);
+							TaskMaster.asyncTask("Trommel-"+struct.getCorner().toString(), new TrommelAsyncTask(struct), 0);
 						}
 					}
 					struct.onUpdate();

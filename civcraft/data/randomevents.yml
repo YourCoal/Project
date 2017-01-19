@@ -42,10 +42,10 @@
 #
 
 # World Information
-max_x: 6000
-min_x: -6000
-max_z: 6000
-min_z: -6000
+max_x: 5000
+min_x: -5000
+max_z: 5000
+min_z: -5000
 
 random_events:
 

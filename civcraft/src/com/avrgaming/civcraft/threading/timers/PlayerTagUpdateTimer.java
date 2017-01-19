@@ -24,6 +24,10 @@ public class PlayerTagUpdateTimer implements Runnable {
 				pName = CivColor.LightGray+CivColor.BOLD+" [-----]";
 			}
 			NametagEdit.getApi().setSuffix(p, pName);
+			
+			if (p.isOp()) {
+				NametagEdit.getApi().setPrefix(p, CivColor.RedBold+"[A] "+CivColor.LightGray);
+			}
 		}
 	}
 }

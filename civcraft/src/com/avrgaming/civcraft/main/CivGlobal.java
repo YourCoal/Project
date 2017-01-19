@@ -164,6 +164,11 @@ public class CivGlobal {
 	//TODO fix the duplicate score issue...
 	public static TreeMap<Integer, Civilization> civilizationScores = new TreeMap<Integer, Civilization>();
 	public static TreeMap<Integer, Town> townScores = new TreeMap<Integer, Town>();
+	public static TreeMap<Integer, Civilization> civilizationEcon = new TreeMap<Integer, Civilization>();
+	public static TreeMap<Integer, Town> townEcon = new TreeMap<Integer, Town>();
+	public static TreeMap<Integer, Civilization> civilizationMemberCount = new TreeMap<Integer, Civilization>();
+	public static TreeMap<Integer, Town> townMemberCount = new TreeMap<Integer, Town>();
+	public static TreeMap<Integer, Civilization> civilizationTownCount = new TreeMap<Integer, Civilization>();
 
 	public static HashMap<String, Date> playerFirstLoginMap = new HashMap<String, Date>();
 	public static HashSet<String> banWords = new HashSet<String>();

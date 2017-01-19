@@ -477,20 +477,21 @@ public class AttributeUtil {
 	}
 	
 //	not used yet...
-//	public void removeEnhancement(String enhName) {
-//		NBTTagCompound compound = nmsStack.tag.getCompound("item_enhancements");
-//		if (compound == null) {
-//			return;
-//		}
-//		
-//		NBTTagCompound enhCompound = compound.getCompound(enhName);
-//		if (enhCompound == null) {
-//			return;
-//		}
-//		
-//		compound.remove(enhName);
-//		nmsStack.tag.set("item_enhancements", compound);
-//	}
+	//TODO See if this actually works
+	public void removeEnhancement(String enhName) {
+		NBTTagCompound compound = nmsStack.getTag().getCompound("item_enhancements");
+		if (compound == null) {
+			return;
+		}
+		
+		NBTTagCompound enhCompound = compound.getCompound(enhName);
+		if (enhCompound == null) {
+			return;
+		}
+		
+		compound.remove(enhName);
+		nmsStack.getTag().set("item_enhancements", compound);
+	}
 //	
 	
 	

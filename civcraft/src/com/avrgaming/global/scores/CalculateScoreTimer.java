@@ -75,12 +75,75 @@ public class CalculateScoreTimer extends CivAsyncTask {
 			}
 		}
 		
+		TreeMap<Integer, Civilization> civEcon = new TreeMap<Integer, Civilization>();
+		for (Civilization civ : CivGlobal.getCivs()) {
+			if (civ.isAdminCiv()) {
+				continue;
+			}
+			civEcon.put((int) civ.getTreasury().getBalance(), civ);
+		}
+		
+		TreeMap<Integer, Town> townEcon = new TreeMap<Integer, Town>();	
+		for (Town town : CivGlobal.getTowns()) {
+			if (town.getCiv().isAdminCiv()) {
+				continue;
+			}
+			townEcon.put((int) town.getTreasury().getBalance(), town);
+		}
+		
+		TreeMap<Integer, Civilization> civMemberCount = new TreeMap<Integer, Civilization>();
+		for (Civilization civ : CivGlobal.getCivs()) {
+			if (civ.isAdminCiv()) {
+				continue;
+			}
+			
+			for (Town town : civ.getTowns()) {
+				civMemberCount.put((int) town.getResidentCount(), civ);
+			}
+		}
+		
+		TreeMap<Integer, Town> townMemberCount = new TreeMap<Integer, Town>();	
+		for (Town town : CivGlobal.getTowns()) {
+			if (town.getCiv().isAdminCiv()) {
+				continue;
+			}
+			townMemberCount.put((int) town.getResidentCount(), town);
+		}
+		
+		TreeMap<Integer, Civilization> civTownCount = new TreeMap<Integer, Civilization>();
+		for (Civilization civ : CivGlobal.getCivs()) {
+			if (civ.isAdminCiv()) {
+				continue;
+			}
+			civTownCount.put((int) civ.getTownCount(), civ);
+		}
+		
 		synchronized(CivGlobal.civilizationScores) {
 			CivGlobal.civilizationScores = civScores;
 		}
 		
 		synchronized(CivGlobal.townScores) {
 			CivGlobal.townScores = townScores;
+		}
+		
+		synchronized(CivGlobal.civilizationEcon) {
+			CivGlobal.civilizationEcon = civEcon;
+		}
+		
+		synchronized(CivGlobal.townEcon) {
+			CivGlobal.townEcon = townEcon;
+		}
+		
+		synchronized(CivGlobal.civilizationMemberCount) {
+			CivGlobal.civilizationMemberCount = civMemberCount;
+		}
+		
+		synchronized(CivGlobal.townMemberCount) {
+			CivGlobal.townMemberCount = townMemberCount;
+		}
+		
+		synchronized(CivGlobal.civilizationTownCount) {
+			CivGlobal.civilizationTownCount = civTownCount;
 		}
 		
 		

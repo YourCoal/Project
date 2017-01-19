@@ -6,18 +6,18 @@
 global:
    # Hour at which daily upkeep occurs.
    daily_upkeep_hour: 20
-
    hourly_tick: 3600
 
    start_kit:
-        - '270:1'
-        - '271:1'
-        - '269:1'
-        - '17:10'
+        - '424:24'
         - '346:2'
-        - '366:10'
-        - '345:1'
-        - 'mat_tutorial_book:1'
+        - '166:64'
+        - '17:24'
+        - '266:40'
+        - '4:24'
+        - '166:64'
+        - '166:64'
+        - 'civ_tutorial_book:1'
 
    # Amount of mins PvP timer remains active after first login.
    pvp_timer: 120
@@ -26,19 +26,20 @@ global:
    regen_spawn_hour: 0
 
    # Exchange rate you get using /resident exchange instead of using a bank.
-   exchange_rate: 0.3
+   exchange_rate: 0.4
 
-   starting_coins: 250.0
+   # Amount of starting coins when you first log in.
+   starting_coins: 500.0
 
    # Number of hours that must pass before a resident can join a different civ
-   join_civ_cooldown: 24
+   join_civ_cooldown: 2
 
    # Distance things must be built away from spawn.
-   distance_from_spawn: 1000.0
+   distance_from_spawn: 750.0
 
    # max distance players can be apart for trading
    max_trade_distance: 10.0
-    
+
    # catalyst free amount
    free_catalyst_amount: 3
 
@@ -100,49 +101,36 @@ platinum:
       amount: 200
       occurs: 'once'
 civ:
-    # Amount of coins required to start a civilization
-    cost: 100000.0
-    
-    # Amount of static upkeep civ's pay for each new town(minus the capital)
+    # Amount of static upkeep civ's pay for each new town (minus the capital)
     town_upkeep: 500.0
-
     # Formula for distance upkeep is:
     # upkeep = town_distance_base_upkeep * ( distance ^ town_distance_multiplier )
-    #
-
     # Base amount of upkeep paid for town distance to capital
     town_distance_base_upkeep: 100.0
 
     # Multiplier used to make distance upkeep expoential, greater = higher upkeep
-    town_distance_multiplier: 0.3
-
+    town_distance_multiplier: 0.2
     # Multiplier used when a town's culture doesnt connect to the capitals culture.
-    town_distance_multiplier_outside_culture: 0.9
-
+    town_distance_multiplier_outside_culture: 0.6
     # Maximum amount of distance upkeep anybody can pay per town
-    town_distance_upkeep_max: 500000.0
+    town_distance_upkeep_max: 250000.0
 
     # Base beaker rate, usually set to 1, increase to make research faster.
     base_beaker_rate: 1.0
-    
     # Number of coins each beaker costs. Beakers can only be 'bought' off of taxed coins from towns.
     coins_per_beaker: 10
-
     # must be this many chunks away from the nearest culture block to start a new civilization.
-    min_distance: 15
+    min_distance: 20
 
     # Number of days after a civilization is conquered that it must wait before declaring revolution
     revolution_cooldown: 7
-
     # Number of days a leader must be inactive before being able to be reclaimed
     leader_inactive_days: 7
 
     # Number of days a civ must be around before it can merge or gift towns.
     min_gift_age: 14
-
     # Amount of coins to charge per town gifted.
-    gift_cost_per_town: 150000
-
+    gift_cost_per_town: 75000
     # Amount of hours civs have to wait until a town is gifted or merged.
     gift_cooldown_hours: 48
 
@@ -158,26 +146,41 @@ end_conditions:
       class: 'EndConditionCulture'
       name: 'Cultural'
       culture_level: '10'
-      towns: '3'
+      towns: '2'
       wonders: '1'
+      victory_points_required: 25
+      days_after_start: '35'
       days_held: '21'
-
+#
     - id: 'end_conquest'
       class: 'EndConditionConquest'
       name: 'Conquest'
       percent_captured: '0.75'
-      percent_captured_with_wonder: '0.50'
-      days_after_start: '28'
+      percent_captured_with_wonder: '0.6'
+      victory_points_required: 25
+      days_after_start: '35'
       days_held: '21'
-    
+#
     - id: 'end_science'
       class: 'EndConditionScience'
       name: 'Scientific'
       tech: 'tech_enlightenment'
+      victory_points_required: 25
+      days_after_start: '35'
       days_held: '21'
-    
+#
     - id: 'end_diplomacy'
       class: 'EndConditionDiplomacy'
       name: 'Diplomatic'
       vote_cooldown_hours: '24'
+      victory_points_required: 25
+      days_after_start: '35'
       days_held: '21'
+#
+#    - id: 'end_economic'
+#      class: 'EndConditionEconomic'
+#      name: 'Economic'
+#      civ_treasury_amount: '1000000000'
+#      victory_points_required: 25
+#      days_after_start: '35'
+#      days_held: '21'

@@ -150,7 +150,7 @@ public class TrommelAsyncTask extends CivAsyncTask {
 					ItemStack newItem;
 									
 					if (rand1 < ((int)((trommel.getMineralChance(Mineral.CHROMIUM))*10000))) {
-						newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_chromium_ore"));
+						newItem = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ_chromium_ore"));
 					} else if (rand1 < ((int)((trommel.getMineralChance(Mineral.EMERALD))*10000))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
 					}

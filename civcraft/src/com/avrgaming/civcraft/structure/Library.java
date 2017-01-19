@@ -233,20 +233,18 @@ public class Library extends Structure {
 			if (item.containsEnchantment(ench.enchant) && item.getEnchantmentLevel(ench.enchant) > ench.level) {
 				throw new CivException("You already have this enchantment at this level, or better.");
 			}
-			
-			
 		} else {
 			if (!ench.enhancement.canEnchantItem(item)) {
 				throw new CivException("You cannot enchant this item with this enchantment.");
 			}
 			
 			if (ench.enhancement.hasEnchantment(item)) {
-				throw new CivException("You already have this enchantment.");
+				throw new CivException("You already have this enhancement on this item.");
 			}
 		}
 	}
 	
-	public ItemStack addEnchantment(ItemStack item, LibraryEnchantment ench) {
+	public ItemStack addEnchantment(ItemStack item, LibraryEnchantment ench, Player p) {
 		if (ench.enchant != null) {
 			item.addUnsafeEnchantment(ench.enchant, ench.level);
 		} else {
@@ -300,14 +298,20 @@ public class Library extends Structure {
 		// Send money to town for non-resident fee
 		if (payToTown != 0) {
 			getTown().depositDirect(payToTown);
-			
 			CivMessage.send(player, CivColor.Yellow + "Paid "+ payToTown+" coins in non-resident taxes.");
 		}
 				
 		// Successful payment, process enchantment.
-		ItemStack newStack = this.addEnchantment(item, ench);
-		player.getInventory().setItemInMainHand(newStack);
-		CivMessage.send(player, CivColor.LightGreen+"Enchanted with "+ench.displayName+"!");
+/*		AttributeUtil attrs = new AttributeUtil(item);
+		if (ench.enhancement.equals("LoreEnhancementBonusDamageII")) {
+			attrs.removeEnhancement("LoreEnhancementBonusDamageI");
+			ItemStack newStack = this.addEnchantment(item, ench, player);
+			player.getInventory().setItemInMainHand(newStack);
+			CivMessage.send(player, CivColor.LightGreen+"Enchanted with "+ench.displayName+"!");
+		} else {*/
+			ItemStack newStack = this.addEnchantment(item, ench, player);
+			player.getInventory().setItemInMainHand(newStack);
+			CivMessage.send(player, CivColor.LightGreen+"Enchanted with "+ench.displayName+"!");
 	}
 
 	@Override
