@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.components.AttributeBiomeRadiusPerLevel;
 import com.avrgaming.civcraft.components.ConsumeLevelComponent;
@@ -34,7 +33,6 @@ import com.avrgaming.civcraft.config.ConfigMineLevel;
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.CivTaskAbortException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
-import com.avrgaming.civcraft.lorestorage.LoreMaterial;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
@@ -276,7 +274,7 @@ public class Mine extends Structure {
 		int mine_lvl = getLevel();
 		ConfigMineLevel lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel());
 		int total_hammers = (int)Math.round(lvl.item_hammers*mine_lvl);
-		multiInv.addItem(new ItemStack(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ:base_hammer"), total_hammers)));
+//		multiInv.addItem(new ItemStack(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ_base_hammer"), total_hammers)));
 		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A mine generated "+total_hammers+" hammers!");
 		
 		/* Bail early for results that do not generate hammers. */

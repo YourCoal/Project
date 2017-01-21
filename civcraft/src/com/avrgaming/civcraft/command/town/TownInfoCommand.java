@@ -540,9 +540,9 @@ public class TownInfoCommand extends CommandBase {
 									CivColor.Green+" | Beakers: "+CivColor.LightGreen+df.format(town.getBeakers().total));
 			
 			CivMessage.send(sender, CivColor.Green+"Members: "+CivColor.LightGreen+town.getResidentCount()
-									+CivColor.Green+" | Online: "+CivColor.LightGreen+town.getOnlineResidents().size()
-									+CivColor.Green+" |Tax Rate: "+CivColor.LightGreen+town.getTaxRateString()
-									+CivColor.Green+" | Flat Tax: "+CivColor.LightGreen+town.getFlatTax()+" Coins");
+									+CivColor.Green+" Online: "+CivColor.LightGreen+town.getOnlineResidents().size()
+									+CivColor.Green+" | Tax Rate: "+CivColor.LightGreen+town.getTaxRateString()
+									+CivColor.Green+" Flat Tax: "+CivColor.LightGreen+town.getFlatTax()+" Coins");
 			
 //			CivMessage.send(sender, CivColor.Green+"Tax Rate: "+CivColor.LightGreen+town.getTaxRateString()
 //									+CivColor.Green+" | Flat Tax: "+CivColor.LightGreen+town.getFlatTax()+" Coins");
@@ -550,7 +550,7 @@ public class TownInfoCommand extends CommandBase {
 			ConfigHappinessState state = town.getHappinessState();
 			ConfigCultureLevel clc = CivSettings.cultureLevels.get(town.getCultureLevel());	
 			CivMessage.send(sender, CivColor.Green+"Happiness: "+CivColor.LightGreen+df.format(Math.floor(town.getHappinessPercentage()*100))+"%"
-									+CivColor.Green+" | State: "+CivColor.valueOf(state.color)+state.name
+									+CivColor.Green+" State: "+CivColor.valueOf(state.color)+state.name
 									+CivColor.Green+" | Culture: "+CivColor.LightGreen+clc.level+" ("+town.getAccumulatedCulture()+"/"+clc.amount+")");
 			
 //			CivMessage.send(sender, CivColor.Green+"Culture: "+CivColor.LightGreen+clc.level+" ("+town.getAccumulatedCulture()+"/"+clc.amount+")");

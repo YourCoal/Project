@@ -56,8 +56,6 @@ import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
-import me.confuser.barapi.BarAPI;
-
 public class AdminCommand extends CommandBase {
 
 	@Override
@@ -102,10 +100,8 @@ public class AdminCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, "Updated holograms.");
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void test_cmd() {
-		BarAPI.setMessage((Player)sender, "Welcome to the server!", 20);
-		CivMessage.sendSuccess(sender, "Updated holograms.");
+		CivMessage.sendSuccess(sender, "Nothing to test right now.");
 	}
 	
 /*	public void test_cmd() {

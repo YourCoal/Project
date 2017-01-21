@@ -6,10 +6,10 @@ import com.avrgaming.civcraft.util.CivColor;
 
 import gpl.AttributeUtil;
 
-public class LoreEnhancementBonusDamageI extends LoreEnhancement {
+public class LoreEnhancementThor extends LoreEnhancement {
 	
 	public AttributeUtil add(AttributeUtil attrs) {
-		attrs.addEnhancement("LoreEnhancementBonusDamageI", null, null);
+		attrs.addEnhancement("LoreEnhancementThor", null, null);
 		attrs.addLore(CivColor.LightGray+getDisplayName());
 		return attrs;
 	}
@@ -20,11 +20,11 @@ public class LoreEnhancementBonusDamageI extends LoreEnhancement {
 	
 	public boolean hasEnchantment(ItemStack item) {
 		AttributeUtil attrs = new AttributeUtil(item);
-		return attrs.hasEnhancement("LoreEnhancementBonusDamageI");
+		return attrs.hasEnhancement("LoreEnhancementThor");
 	}
 	
 	public String getDisplayName() {
-		return "Bonus Damage";
+		return "Thor";
 	}
 	
 	@Override
@@ -35,9 +35,5 @@ public class LoreEnhancementBonusDamageI extends LoreEnhancement {
 	@Override
 	public ItemStack deserialize(ItemStack stack, String data) {
 		return stack;
-	}
-	
-	public double getExtraAttack(AttributeUtil attrs) {
-		return 1.5;
 	}
 }

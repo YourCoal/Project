@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.avrgaming.anticheat.ACManager;
+import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.endgame.EndConditionDiplomacy;
 import com.avrgaming.civcraft.exception.CivException;
@@ -99,6 +100,9 @@ public class PlayerLoginAsyncTask implements Runnable {
 							CivGlobal.addResident(resident);
 							CivMessage.send(resident, "Generating player... "+CivColor.LightGray+"Giving tutorial kit...");
 							TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
+							CivMessage.send(resident, CivColor.LightGray+"PvP Timer enabling in 30 seconds.");
+							CivBook.showTutorialInventory(getPlayer());
+							Thread.sleep(30000);
 							int mins;
 							try {
 								mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");

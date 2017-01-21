@@ -52,6 +52,7 @@ public class AdminCivCommand extends CommandBase {
 		commands.put("rmleader", "[civ] [player] - removes this player from the leaders group.");
 		commands.put("rmadviser", "[civ] [player] - removes this player from the advisers group.");
 		commands.put("givetech", "[civ] [tech_id] - gives this civilization this technology.");
+		commands.put("removetech", "[civ] [tech_id] - remove this from the civilization.");
 		commands.put("beakerrate", "[civ] [amount] set this towns's beaker rate to this amount.");
 		commands.put("toggleadminciv", "[civ] - sets/unsets this civilization to an admin civ. Prevents war.");
 		commands.put("alltech", "[civ] - gives this civilization every technology.");
@@ -271,7 +272,6 @@ public class AdminCivCommand extends CommandBase {
 	
 	public void givetech_cmd() throws CivException {
 		Civilization civ = getNamedCiv(1);
-		
 		if (args.length < 3) {
 			throw new CivException("Enter a tech ID");
 		}
@@ -287,9 +287,27 @@ public class AdminCivCommand extends CommandBase {
 		
 		civ.addTech(tech);
 		civ.save();
-		
 		CivMessage.sendSuccess(sender, "Added "+tech.name+" to "+civ.getName());
+	}
+	
+	public void removetech_cmd() throws CivException {
+		Civilization civ = getNamedCiv(1);
+		if (args.length < 3) {
+			throw new CivException("Enter a tech ID");
+		}
 		
+		ConfigTech tech = CivSettings.techs.get(args[2]);
+		if (tech == null) {
+			throw new CivException("No tech with ID:"+args[2]);
+		}
+		
+		if (!civ.hasTechnology(tech.id)) {
+			throw new CivException("Civ "+civ.getName()+" already doesn't have tech id:"+tech.id);
+		}
+		
+		civ.removeTech(tech);
+		civ.save();
+		CivMessage.sendSuccess(sender, "Removed "+tech.name+" from "+civ.getName());
 	}
 	
 	public void rmadviser_cmd() throws CivException {

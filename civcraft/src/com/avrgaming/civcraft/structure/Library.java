@@ -187,7 +187,7 @@ public class Library extends Structure {
 		this.level = level;
 	}
 	
-	private StructureSign getSignFromSpecialId(int special_id) {
+	public StructureSign getSignFromSpecialId(int special_id) {
 		for (StructureSign sign : getSigns()) {
 			int id = Integer.valueOf(sign.getAction());
 			if (id == special_id) {
@@ -199,9 +199,7 @@ public class Library extends Structure {
 	
 	@Override
 	public void updateSignText() {
-
 		int count = 0;
-		
 		for (LibraryEnchantment enchant : this.enchantments) {
 			StructureSign sign = getSignFromSpecialId(count);
 			if (sign == null) {

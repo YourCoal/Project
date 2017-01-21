@@ -2,8 +2,10 @@
 # Use this to configure global town costs/settings as well as town levels and culture 
 # levels for towns.
 town:
-    # Min distance from another town
-    min_town_distance: 150.0
+    # Min distance from another town ... 192 = 12 chunks
+    min_town_distance: 192.0
+    # Max distance from your capital ... 1536 = 96 chunks
+    max_town_distance: 1536.0
     
     # Min distance from another town that is your enemy
     min_town_distance_enemy: 300.0

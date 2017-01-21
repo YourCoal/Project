@@ -15,27 +15,12 @@ public class ActionBarUpdateTimer implements Runnable {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			Resident res = CivGlobal.getResident(p);
 			
-			String civ;
-			if (res.getCiv() == null) {
-				civ = "-----";
-			} else {
-				civ = res.getCiv().getName();
-			}
-			
-			String town;
-			if (res.getTown() == null) {
-				town = "-----";
-			} else {
-				town = res.getTown().getName();
-			}
-			
-			int money = (int) res.getTreasury().getBalance();
+			String citLevel = "Coming Soon";
+			String citXP = " (0/64)";
 			int exposure = (int) res.getSpyExposure();
 			
 			ActionBar abl = new ActionBar(
-					CivColor.LightGreen+money+CivColor.Gold+CivColor.BOLD+" Coins"
-					+CivColor.Gray+CivColor.BOLD+" |"
-					+CivColor.Gold+CivColor.BOLD+" Citizen of: "+CivColor.LightGreen+town+" [T], "+CivColor.Green+CivColor.BOLD+civ+" [C]"
+					CivColor.Gold+CivColor.BOLD+" Citizen Level: "+CivColor.LightGreen+CivColor.ITALIC+citLevel+citXP
 					+CivColor.Gray+CivColor.BOLD+" |"
 					+CivColor.Gold+CivColor.BOLD+" Spy Exposure: "+CivColor.LightGreen+CivColor.ITALIC+exposure);
 			abl.sendToAll();

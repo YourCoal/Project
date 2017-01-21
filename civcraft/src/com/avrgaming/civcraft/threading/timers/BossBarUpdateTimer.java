@@ -21,10 +21,6 @@ public class BossBarUpdateTimer implements Runnable {
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				Resident res = CivGlobal.getResident(p);
 				
-				int exposure = (int) res.getSpyExposure();
-				BarAPI.setMessage(p, CivColor.GoldBold+"Spy Exposure: "+CivColor.LightGreen+exposure, 6);
-				Thread.sleep(6000);
-				
 				String weather;
 				if (p.getWorld().hasStorm() && p.getWorld().isThundering()) {
 					weather = CivColor.LightGreen+"Storming";
@@ -37,26 +33,35 @@ public class BossBarUpdateTimer implements Runnable {
 				Thread.sleep(6000);
 				
 				String sp;
-				Buildable b = res.getTown().getCurrentStructureInProgress();
-				if (b != null && b instanceof Structure) {
-					int percent = (int) (((double)b.getBuiltBlockCount() / (double)b.getTotalBlockCount())*100);	
-					sp = CivColor.Yellow+b.getDisplayName()+": "+CivColor.ITALIC+"("+(percent)+"%)";
+				if (!res.hasTown()) {
+					sp = CivColor.Rose+"No Town";
 				} else {
-					sp = CivColor.LightGray+"None";
+					Buildable b = res.getTown().getCurrentStructureInProgress();
+					if (b != null && b instanceof Structure) {
+						int percent = (int) (((double)b.getBuiltBlockCount() / (double)b.getTotalBlockCount())*100);	
+						sp = CivColor.Yellow+b.getDisplayName()+": "+CivColor.ITALIC+"("+(percent)+"%)";
+					} else {
+						sp = CivColor.LightGray+"None";
+					}
 				}
 				BarAPI.setMessage(p, CivColor.GoldBold+"Structure: "+sp, 6);
 				Thread.sleep(6000);
 				
 				String wp;
-				Buildable w = res.getTown().getCurrentWonderInProgress();
-				if (w != null && b instanceof Wonder) {
-					int percent = (int) (((double)b.getBuiltBlockCount() / (double)b.getTotalBlockCount())*100);	
-					wp = CivColor.LightPurple+b.getDisplayName()+": "+CivColor.ITALIC+"("+(percent)+"%)";
+				if (!res.hasTown()) {
+					wp = CivColor.Rose+"No Town";
 				} else {
-					wp = CivColor.LightGray+"None";
+					Buildable w = res.getTown().getCurrentWonderInProgress();
+					if (w != null && w instanceof Wonder) {
+						int percent = (int) (((double)w.getBuiltBlockCount() / (double)w.getTotalBlockCount())*100);	
+						wp = CivColor.LightPurple+w.getDisplayName()+": "+CivColor.ITALIC+"("+(percent)+"%)";
+					} else {
+						wp = CivColor.LightGray+"None";
+					}
 				}
 				BarAPI.setMessage(p, CivColor.GoldBold+"Wonder: "+wp, 6);
 				Thread.sleep(6000);
+				
 				BarAPI.removeBar(p);
 			}
 		} catch (InterruptedException e) {

@@ -515,8 +515,7 @@ public class Civilization extends SQLObject {
 			throw new CivException("You must first leave your camp before founding a civilization.");
 		}
 		
-		//Test that we are not too close to another civ
-		try {
+		try { //Test that we are not too close to another civ
 			int min_distance = CivSettings.getInteger(CivSettings.civConfig, "civ.min_distance");
 			ChunkCoord foundLocation = new ChunkCoord(loc);
 			
@@ -527,7 +526,7 @@ public class Civilization extends SQLObject {
 			}	
 		} catch (InvalidConfiguration e1) {
 			e1.printStackTrace();
-			throw new CivException("Internal configuration exception.");
+			throw new CivException("Internal Configuration Exception: in CivCraft/data/civ.yml");
 		}
 		
 		try {
@@ -1055,7 +1054,8 @@ public class Civilization extends SQLObject {
 		
 		this.setResearchTech(tech);
 		this.setResearchProgress(0.0);
-	
+		CivMessage.sendCiv(this, "Your civilization started researching "+tech.name+"!");
+		
 		this.getTreasury().withdraw(tech.cost);
 		TaskMaster.asyncTask(new UpdateTechBar(this),0);
 	}

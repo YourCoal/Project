@@ -145,7 +145,7 @@ public final class CivCraft extends JavaPlugin {
 		// Structure event timers
 		TaskMaster.asyncTimer("Second1UpdateEventTimer", new Second1UpdateEventTimer(), TimeTools.toTicks(1));
 //		TaskMaster.asyncTimer("Second4UpdateEventTimer", new Second4UpdateEventTimer(), TimeTools.toTicks(4));
-		TaskMaster.asyncTimer("Minute5UpdateEventTimer", new Minute5UpdateEventTimer(), TimeTools.toTicks(60*10));
+		TaskMaster.asyncTimer("Minute5UpdateEventTimer", new Minute5UpdateEventTimer(), TimeTools.toTicks(60*5));
 		
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
 		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
@@ -164,7 +164,7 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.syncTimer("arrowhomingtask", new ArrowProjectileTask(), 5);
 			
 		// Global Event timers
-		TaskMaster.asyncTimer("BossBarUpdateTimer", new BossBarUpdateTimer(), 0, TimeTools.toTicks(6*5)); //have +6sec of empty so we don't make errors occur.
+		TaskMaster.asyncTimer("BossBarUpdateTimer", new BossBarUpdateTimer(), 0, TimeTools.toTicks((6*3)+6)); //have +6sec of empty so we don't make errors occur.
 		TaskMaster.asyncTimer("ActionBarUpdateTimer", new ActionBarUpdateTimer(), 0, TimeTools.toTicks(2));
 		TaskMaster.asyncTimer("PlayerTagUpdateTimer", new PlayerTagUpdateTimer(), 0, TimeTools.toTicks(10));
 		

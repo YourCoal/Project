@@ -55,7 +55,7 @@ public class AdminGUICommand extends CommandBase implements Listener {
 		openAdminGUI(p);
 	}
 	
-	private void openAdminGUI(Player p) {
+	public static void openAdminGUI(Player p) {
 		Inventory inv = Bukkit.createInventory(null, 36, "Admin Control Panel");
 		
 		ItemStack civMoney = new ItemStack(Material.EMERALD, 1);
@@ -115,7 +115,7 @@ public class AdminGUICommand extends CommandBase implements Listener {
 		event.setCancelled(true);
 		
 		if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR) {
-			p.closeInventory();
+//			p.closeInventory();
 			return;
 		}
 		
@@ -156,7 +156,7 @@ public class AdminGUICommand extends CommandBase implements Listener {
 				res.getCiv().addTech(tech);
 			}
 			res.getCiv().save();
-			CivMessage.sendSuccess(p, "Set beakerrate to 10 million in your civilization.");
+			CivMessage.sendSuccess(p, "Gave all techs to your civilization.");
 			break;
 		case BREWING_STAND_ITEM:
 			p.closeInventory();
@@ -188,7 +188,7 @@ public class AdminGUICommand extends CommandBase implements Listener {
 		case AIR:
 			break;
 		default:
-			p.closeInventory();
+//			p.closeInventory();
 			break;
 		}
 	}

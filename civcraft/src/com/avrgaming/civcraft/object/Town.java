@@ -836,13 +836,15 @@ public class Town extends SQLObject {
 			}
 			
 			double minDistanceFriend;
+			double maxDistanceFriend;
 			double minDistanceEnemy;
 			try {
 				minDistanceFriend = CivSettings.getDouble(CivSettings.townConfig, "town.min_town_distance");
+				maxDistanceFriend = CivSettings.getDouble(CivSettings.townConfig, "town.max_town_distance");
 				minDistanceEnemy = CivSettings.getDouble(CivSettings.townConfig, "town.min_town_distance_enemy");
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
-				throw new CivException("Internal configuration error.");
+				throw new CivException("Internal Configuration Exception: in CivCraft/data/town.yml");
 			}
 			
 			for (Town town : CivGlobal.getTowns()) {
@@ -852,7 +854,9 @@ public class Town extends SQLObject {
 				}
 				
 				double dist = townhall.getCenterLocation().distance(new BlockCoord(player.getLocation()));
+				double distCap = townhall.getCiv().getCapitolTownHallLocation().distance(player.getLocation());
 				double minDistance = minDistanceFriend;
+				double maxDistance = maxDistanceFriend;
 				if (townhall.getCiv().getDiplomacyManager().atWarWith(civ)) {
 					minDistance = minDistanceEnemy;
 				}
@@ -860,6 +864,10 @@ public class Town extends SQLObject {
 				if (dist < minDistance) {
 					DecimalFormat df = new DecimalFormat();
 					throw new CivException("Cannot build town here. Too close to the town of "+town.getName()+". Distance is "+df.format(dist)+" and needs to be "+minDistance);
+				}
+				if (distCap > maxDistance) {
+					DecimalFormat df = new DecimalFormat();
+					throw new CivException("Cannot build town here. Too far away from your civilization's capital. Distance is "+df.format(dist)+" and needs to be "+minDistance);
 				}
 			}
 			
@@ -879,8 +887,8 @@ public class Town extends SQLObject {
 				}	
 			} catch (InvalidConfiguration e1) {
 				e1.printStackTrace();
-				throw new CivException("Internal configuration exception.");
-			}		
+				throw new CivException("Internal Configuration Exception: in CivCraft/data/civ.yml");
+			}
 			
 			if (player.getInventory().getItemInOffHand().getType() != Material.AIR) {
 				throw new CivException("You cannot have items in your offhand!");

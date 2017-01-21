@@ -1,5 +1,7 @@
 package com.avrgaming.civcraft.items.components;
 
+import java.util.Random;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -9,6 +11,7 @@ import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementBonusDamageI;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementBonusDamageII;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementThor;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
@@ -55,6 +58,15 @@ public class Attack extends ItemComponent {
 			
 			if (enh instanceof LoreEnhancementBonusDamageII) {
 				extraAtt += ((LoreEnhancementBonusDamageII)enh).getExtraAttack(attrs);
+			}
+			
+			if (enh instanceof LoreEnhancementThor) {
+				Random r = new Random();
+				int lightning_chance = r.nextInt(10);
+				if (lightning_chance == 1) {
+					CivMessage.send(event.getDamager(), CivColor.LightBlue+CivColor.ITALIC+"You bring down lightning on your enemy.");
+					event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
+				}
 			}
 		}
 		

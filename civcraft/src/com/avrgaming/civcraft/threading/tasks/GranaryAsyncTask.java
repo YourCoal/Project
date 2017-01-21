@@ -65,7 +65,7 @@ public class GranaryAsyncTask extends CivAsyncTask {
 				try {
 					tmp = this.getChestInventory(src.getCoord().getWorldname(), src.getCoord().getX(), src.getCoord().getY(), src.getCoord().getZ(), false);
 				} catch (CivTaskAbortException e) {
-					CivLog.warning("Trommel:"+e.getMessage());
+					CivLog.warning("Granary:"+e.getMessage());
 					return;
 				}
 				if (tmp == null) {

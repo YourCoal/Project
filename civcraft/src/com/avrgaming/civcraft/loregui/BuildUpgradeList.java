@@ -7,9 +7,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.config.CivSettings;
-import com.avrgaming.civcraft.config.ConfigBuildableInfo;
-import com.avrgaming.civcraft.config.ConfigTech;
+import com.avrgaming.civcraft.config.ConfigTownUpgrade;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
 import com.avrgaming.civcraft.main.CivGlobal;
@@ -20,41 +20,34 @@ import com.avrgaming.civcraft.util.ItemManager;
 
 import gpl.AttributeUtil;
 
-public class BuildStructureList implements GuiAction {
+public class BuildUpgradeList implements GuiAction {
 
 	@Override
 	public void performAction(InventoryClickEvent event, ItemStack stack) {
 		Player player = (Player)event.getWhoClicked();
 		Resident res = CivGlobal.getResident(player);
-		Inventory guiInventory = Bukkit.getServer().createInventory(player,9*5, "Pick Structure To Build");
+		Inventory guiInventory = Bukkit.getServer().createInventory(player, 9*5, "Pick Upgrade to Buy");
 		
-		for (ConfigBuildableInfo info : CivSettings.structures.values()) {
-			int type = ItemManager.getId(Material.ANVIL);
+		for (ConfigTownUpgrade info : CivSettings.townUpgrades.values()) {
+			int type = ItemManager.getId(Material.PRISMARINE_SHARD);
 //			if (info.itemTypeId != 0) {
 //				type = info.itemTypeId;
 //			}
 			
 			ItemStack is;
 			if (!res.hasTown()) {
-				is = LoreGuiItem.build("Cannot Display", ItemManager.getId(Material.BEDROCK), 0, CivColor.Rose+"Must belong to a town to view structure info.");
-				guiInventory.addItem(is);
+				is = LoreGuiItem.build(info.name, ItemManager.getId(Material.BEDROCK), 0, CivColor.Rose+"Must belong to a town to purchase town upgrades.");
 			} else if (!res.getTown().isMayor(res) && !res.getTown().isAssistant(res)) {
-				is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.BEDROCK), 0, CivColor.Rose+"Must be a town mayor or assistant build structures.");
-				guiInventory.addItem(is);
+				is = LoreGuiItem.build(info.name, ItemManager.getId(Material.BEDROCK), 0, CivColor.Rose+"Must be a town mayor or assistant to purchase town upgrades.");
 			} else {
-				if (!res.getCiv().hasTechnology(info.require_tech)) {
-					ConfigTech tech = CivSettings.techs.get(info.require_tech);
-					is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.PAPER), 0, CivColor.Rose+"Requires: "+tech.name);
-					guiInventory.addItem(is);
-				} else if (res.getTown().getStructureTypeCount(info.id) >= info.limit && info.limit != 0) {
-					is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.LAVA_BUCKET), 0, CivColor.Rose+"Max Limit ("+info.limit+"/"+info.limit+")");
-					guiInventory.addItem(is);
+				if (res.getTown().hasUpgrade(info.id)) {
+				} else if (!res.getCiv().hasTechnology(info.require_tech)) {
 				} else if (!info.isAvailable(res.getTown())) {
-					is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.BARRIER), 0, CivColor.Rose+"Not available");
+					is = LoreGuiItem.build(info.name, ItemManager.getId(Material.BARRIER), 0, CivColor.Rose+"Not available");
 					guiInventory.addItem(is);
 				} else {
-					is = LoreGuiItem.build(info.displayName, type, 0, CivColor.Gold+"<Click To Build>");
-					is = LoreGuiItem.setAction(is, "BuildChooseTemplate");
+					is = LoreGuiItem.build(info.name, type, 0, CivColor.Gold+"<Click To Upgrade>");
+					is = LoreGuiItem.setAction(is, "ResearchChooseTech");
 					is = LoreGuiItem.setActionData(is, "info", info.id);
 						AttributeUtil attrs = new AttributeUtil(is);
 						attrs.setShiny();
@@ -68,10 +61,10 @@ public class BuildStructureList implements GuiAction {
 		ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Topics");
 		backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
 		backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
-		backButton = LoreGuiItem.setActionData(backButton, "invName", BuildStructureMenuList.guiInventory.getName());
+		backButton = LoreGuiItem.setActionData(backButton, "invName", CivBook.guiInventory.getName());
 		guiInventory.setItem((9*5)-1, backButton);
 		
-		LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);
+		LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);		
 		TaskMaster.syncTask(new OpenInventoryTask(player, guiInventory));
 	}
 }
