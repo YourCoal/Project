@@ -564,7 +564,11 @@ public class Civilization extends SQLObject {
 			}
 			
 			CivGlobal.addCiv(civ);
-			p.getInventory().getItemInMainHand().setAmount(stack.getAmount()-1);
+			if (p.getInventory().getItemInMainHand().getAmount() > 1) {
+				p.getInventory().getItemInMainHand().setAmount(p.getInventory().getItemInMainHand().getAmount()-1);
+			} else {
+				p.getInventory().removeItem(p.getInventory().getItemInMainHand());
+			}
 			CivMessage.global("The Civilization of "+civ.getName()+" has been founded! "+civ.getCapitolName()+" is it's capitol!");
 			
 		} catch (InvalidNameException e) {

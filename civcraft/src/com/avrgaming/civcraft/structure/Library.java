@@ -228,7 +228,7 @@ public class Library extends Structure {
 				throw new CivException("You cannot enchant this item with this enchantment.");
 			}
 			
-			if (item.containsEnchantment(ench.enchant) && item.getEnchantmentLevel(ench.enchant) > ench.level) {
+			if (item.containsEnchantment(ench.enchant) && item.getEnchantmentLevel(ench.enchant) >= ench.level) {
 				throw new CivException("You already have this enchantment at this level, or better.");
 			}
 		} else {

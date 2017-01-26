@@ -175,10 +175,10 @@ public class Camp extends Buildable {
 					
 					CivMessage.sendSuccess(player, "You have set up camp!");
 					CivMessage.global(player.getName()+" has completed a camp!");
-					if (player.getInventory().getItemInMainHand().getAmount() <= 1) {
-						player.getInventory().getItemInMainHand().setType(Material.AIR);
-					} else {
+					if (player.getInventory().getItemInMainHand().getAmount() > 1) {
 						player.getInventory().getItemInMainHand().setAmount(stack.getAmount()-1);
+					} else {
+						player.getInventory().removeItem(player.getInventory().getItemInMainHand());
 					}
 					resident.clearInteractiveMode();
 				} catch (CivException e) {

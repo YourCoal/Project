@@ -408,7 +408,9 @@ public class CustomItemManager implements Listener {
 			}
 		}
 		
-		if (defendingPlayer != null) {
+		if (defendingPlayer == null) {
+			return;
+		} else {
 			/* Search equipt items for defense event. */
 			for (ItemStack stack : defendingPlayer.getEquipment().getArmorContents()) {
 				if (LoreMaterial.isCustom(stack)) {
@@ -417,7 +419,7 @@ public class CustomItemManager implements Listener {
 			}
 		}
 	}
-		
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnInventoryClose(InventoryCloseEvent event) {
 		for (ItemStack stack : event.getInventory().getContents()) {

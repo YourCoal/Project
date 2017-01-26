@@ -228,34 +228,54 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onProjectileHitEvent(ProjectileHitEvent event) {
+/*		if (event.getEntity() instanceof Arrow) {
+			ArrowFiredCache afc = CivCache.arrowsFired.get(event.getEntity().getUniqueId());
+			if (afc != null && afc.getTargetEntity() instanceof Player) {
+				Player p = (Player) afc.getTargetEntity();
+				double damage = afc.getDamage();
+				double afterHealth = p.getHealth() - afc.getDamage();
+				if (p.isDead()) {
+					return;
+				} else if (afterHealth <= 0) {
+					p.setHealth(0);
+					p.setFlying(false);
+					p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT, 1.0f, 1.0f);
+					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_DEATH, 1.0f, 1.0f);
+					afc.setHit(true);
+				} else {
+					p.setHealth(p.getHealth() - damage);
+					p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT, 1.0f, 1.0f);
+					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_HURT, 1.0f, 1.0f);
+					afc.setHit(true);
+				}
+			} else {
+				CivLog.debug("An unknown mob as been hit by an arrow from arrow tower.");
+			}
+		}*/
+		
 		if (event.getEntity() instanceof Arrow) {
 			ArrowFiredCache afc = CivCache.arrowsFired.get(event.getEntity().getUniqueId());
 			if (afc != null) {
 				afc.setHit(true);
 			}
 		}
-
+		
 		if (event.getEntity() instanceof Fireball) {
 			CannonFiredCache cfc = CivCache.cannonBallsFired.get(event.getEntity().getUniqueId());
 			if (cfc != null) {
-
 				cfc.setHit(true);
-
 				FireworkEffect fe = FireworkEffect.builder().withColor(Color.RED).withColor(Color.BLACK).flicker(true).with(Type.BURST).build();
-
 				Random rand = new Random();
 				int spread = 30;
 				for (int i = 0; i < 15; i++) {
 					int x = rand.nextInt(spread) - spread/2;
 					int y = rand.nextInt(spread) - spread/2;
 					int z = rand.nextInt(spread) - spread/2;
-
-
+					
 					Location loc = event.getEntity().getLocation();
 					Location location = new Location(loc.getWorld(), loc.getX(),loc.getY(), loc.getZ());
 					location.add(x, y, z);
-
-					TaskMaster.syncTask(new FireWorkTask(fe, loc.getWorld(), loc, 5), rand.nextInt(30));
+					TaskMaster.syncTask(new FireWorkTask(fe, loc.getWorld(), loc, 3), rand.nextInt(30));
 				}
 
 			}
@@ -282,21 +302,25 @@ public class BlockListener implements Listener {
 		if (!CivSettings.playerEntityWeapons.contains(event.getDamager().getType())) {
 			return;
 		}
-
+		
 		if (event.getDamager() instanceof Arrow) {
-
+			ArrowFiredCache afc = CivCache.arrowsFired.get(event.getDamager().getUniqueId());
+			if (afc != null) {
+				afc.setHit(true);
+				afc.destroy(event.getDamager());
+				event.setDamage((double)afc.getFromTower().getDamage());
+			}
 		}
-
+		
 		if (event.getDamager() instanceof Fireball) {
 			CannonFiredCache cfc = CivCache.cannonBallsFired.get(event.getDamager().getUniqueId());
 			if (cfc != null) {
-
 				cfc.setHit(true);
 				cfc.destroy(event.getDamager());
 				event.setDamage((double)cfc.getFromTower().getDamage());
 			}
 		}
-
+		
 		coord.setFromLocation(event.getEntity().getLocation());
 		TownChunk tc = CivGlobal.getTownChunk(coord);
 		boolean allowPVP = false;
@@ -839,11 +863,16 @@ public class BlockListener implements Listener {
 				if (event.getEntity() instanceof Player) {
 					CivMessage.sendErrorNoRepeat((Player)event.getEntity(), "You do not have permission to interact here...");
 				}
-
 				event.setCancelled(true);
 			}
 		}
-
+		
+		//XXX Changed so farms don't get trampled by all entities 1.1pre6
+		if (event.getBlock().getType() == Material.SOIL) {
+			event.setCancelled(true); 
+			CivLog.debug("Entity ("+event.getEntity().getName()+") tried to trample crop - "+event.getEntity().getLocation().getBlockX()+","+
+						event.getEntity().getLocation().getBlockY()+","+event.getEntity().getLocation().getBlockZ());
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -940,14 +969,13 @@ public class BlockListener implements Listener {
 			}
 		}
 
-		Block soilBlock = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
-
+		Block soilBlock = event.getPlayer().getLocation().getBlock();
 		// prevent players trampling crops
 		if ((event.getAction() == Action.PHYSICAL)) {
-			if ((soilBlock.getType() == Material.SOIL) || (soilBlock.getType() == Material.CROPS)) {
-				//CivLog.debug("no crop cancel.");
+			if (soilBlock.getType() == Material.SOIL) {
 				event.setCancelled(true);
-				return;	
+				CivLog.debug("Entity ("+event.getPlayer().getName()+") tried to trample crop - "+event.getPlayer().getLocation().getBlockX()+","+
+							event.getPlayer().getLocation().getBlockY()+","+event.getPlayer().getLocation().getBlockZ());
 			}
 		}
 
@@ -1017,7 +1045,6 @@ public class BlockListener implements Listener {
 				}
 			}
 		}
-
 	}
 	
 	public void OnPlayerBedEnterEvent(PlayerBedEnterEvent event) {

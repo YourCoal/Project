@@ -36,6 +36,9 @@ import com.avrgaming.civcraft.util.ItemManager;
 
 public abstract class Unit {
 	
+	public static Archer ARCHER_UNIT;
+	public static Warrior WARRIOR_UNIT;
+	
 	public static Spy SPY_UNIT;
 	public static Settler SETTLER_UNIT;
 	public static ArrayList<MissionBook> SPY_MISSIONS = new ArrayList<MissionBook>();
@@ -48,8 +51,8 @@ public abstract class Unit {
 	
 	public static void init() {
 		
+		SETTLER_UNIT = new Settler("u_settler", CivSettings.units.get("u_settler"));
 		SPY_UNIT = new Spy("u_spy", CivSettings.units.get("u_spy"));
-		
 		for (ConfigMission mission : CivSettings.missions.values()) {
 			if (mission.slot > 0) {
 				MissionBook book = new MissionBook(mission.id, Spy.BOOK_ID, (short)0);
@@ -62,34 +65,29 @@ public abstract class Unit {
 			}
 		}
 		
-		SETTLER_UNIT = new Settler("u_settler", CivSettings.units.get("u_settler"));
+		ARCHER_UNIT = new Archer("u_archer", CivSettings.units.get("u_archer"));
+		WARRIOR_UNIT = new Warrior("u_warrior", CivSettings.units.get("u_warrior"));
 	}
 	
 	public Unit() {
 	}
 	
-	
-	public Unit(Inventory inv) throws CivException {
-				
+	public Unit(Inventory inv) throws CivException {		
 	}
 	
-	
-	protected static boolean addItemNoStack(Inventory inv, ItemStack stack) {
-						
-			ItemStack[] contents = inv.getContents();
-			for (int i = 0; i < contents.length; i++) {
-				if (contents[i] == null) {
-					contents[i] = stack;
-					inv.setContents(contents);
-					return true;
-				}
+	protected static boolean addItemNoStack(Inventory inv, ItemStack stack) {		
+		ItemStack[] contents = inv.getContents();
+		for (int i = 0; i < contents.length; i++) {
+			if (contents[i] == null) {
+				contents[i] = stack;
+				inv.setContents(contents);
+				return true;
 			}
-			
-			return false;
+		}
+		return false;
 	}
-
+	
 	public static ConfigUnit getPlayerUnit(Player player) {
-		
 		for (ItemStack stack : player.getInventory().getContents()) {
 			if (stack == null) {
 				continue;
@@ -101,8 +99,6 @@ public abstract class Unit {
 				if(!UnitMaterial.validateUnitUse(player, stack)) {
 					return null;
 				}
-				
-				
 				return ((UnitMaterial)material).getUnit();
 			}
 		}

@@ -10,6 +10,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import com.avrgaming.civcraft.config.ConfigUnit;
 import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
@@ -84,19 +85,24 @@ public class RangedAttack extends ItemComponent {
 		if (event.getDamager() instanceof Arrow) {
 			Arrow arrow = (Arrow)event.getDamager();
 			if (arrow.getShooter() instanceof Player) {
-				Resident resident = CivGlobal.getResident(((Player)arrow.getShooter()));
-				if (!resident.hasTechForItem(inHand)) {
+				Player p = (Player)arrow.getShooter();
+				Resident res = CivGlobal.getResident((Player)arrow.getShooter());
+				
+				ConfigUnit unit = Unit.getPlayerUnit(p);
+				if (unit != null && unit.id.equals("u_archer")) {
+					dmg *= 1.5;
+					CivMessage.send(p, CivColor.LightGrayItalic+"+50% damage with Archer Unit.");
+				}
+				
+				if (!res.hasTechForItem(inHand)) {
 					totalDmg = totalDmg / 2;
 				}
 			}
 		}
 		
-		if (totalDmg < 0.5) {
-			totalDmg = 0.5;
-		}
-		
+//		if (totalDmg < 0.5) { /* Always do at least 0.5 damage. */
+//			totalDmg = 0.5;
+//		}
 		event.setDamage(totalDmg);
 	}
-
-
 }

@@ -10,6 +10,8 @@
 #  Any option for structures is also available for wonders.
 wonders:
   - id: w_pyramid
+    itemId: 128
+    itemData: 0
     template: the_great_pyramid
     template_y_shift: 0
     displayName: The Great Pyramid
@@ -29,6 +31,8 @@ wonders:
     regen_rate: 6
   
   - id: w_greatlibrary
+    itemId: 340
+    itemData: 0
     template: the_great_library
     template_y_shift: 0
     displayName: The Great Library
@@ -48,6 +52,8 @@ wonders:
     regen_rate: 6
   
   - id: w_hanginggardens
+    itemId: 168
+    itemData: 0
     template: the_hanging_gardens
     template_y_shift: 0
     displayName: The Hanging Gardens
@@ -67,6 +73,8 @@ wonders:
     regen_rate: 6
 
   - id: w_colossus
+    itemId: 315
+    itemData: 0
     template: the_colossus
     template_y_shift: 0
     displayName: The Colossus
@@ -85,6 +93,8 @@ wonders:
     regen_rate: 6
 
   - id: w_notre_dame
+    itemId: 155
+    itemData: 0
     template: notre_dame
     template_y_shift: 0
     displayName: Notre Dame
@@ -103,6 +113,8 @@ wonders:
     regen_rate: 6
 
   - id: w_chichen_itza
+    itemId: 98
+    itemData: 0
     template: chichen_itza
     template_y_shift: 0
     displayName: Chichen Itza
@@ -121,6 +133,8 @@ wonders:
     regen_rate: 6
   
   - id: w_council_of_eight
+    itemId: 386
+    itemData: 0
     template: council_of_eight
     template_y_shift: 0
     displayName: Council Of Eight

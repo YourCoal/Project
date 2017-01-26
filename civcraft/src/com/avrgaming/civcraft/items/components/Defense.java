@@ -5,6 +5,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.config.ConfigUnit;
+import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
 import com.avrgaming.civcraft.main.CivGlobal;
@@ -50,17 +52,25 @@ public class Defense extends ItemComponent {
 		
 		defValue += extraDef;
 		if (event.getEntity() instanceof Player) {
-			Resident resident = CivGlobal.getResident(((Player)event.getEntity()));
-			if (!resident.hasTechForItem(stack)) {
+			Player p = (Player)event.getEntity();
+			Resident res = CivGlobal.getResident(p);
+			
+			ConfigUnit unit = Unit.getPlayerUnit(p);
+			if (unit != null && unit.id.equals("u_warrior")) {
+				defValue = defValue - (defValue*0.1);
+				CivMessage.send(p, CivColor.LightGrayItalic+"-10% defense with Warrior Unit.");
+			}
+			
+			if (!res.hasTechForItem(stack)) {
 				defValue = defValue / 2;
 			}
 		}
 		
 		double dmg = event.getDamage();
 		dmg -= defValue;
-		if (dmg < 0.5) { /* Always do at least 0.5 damage. */
-			dmg = 0.5;
-		}
+//		if (dmg < 0.5) { /* Always do at least 0.5 damage. */
+//			dmg = 0.5;
+//		}
 		event.setDamage(dmg);
 	}
 }

@@ -30,9 +30,10 @@ public class BuildStructureList implements GuiAction {
 		
 		for (ConfigBuildableInfo info : CivSettings.structures.values()) {
 			int type = ItemManager.getId(Material.ANVIL);
-//			if (info.itemTypeId != 0) {
-//				type = info.itemTypeId;
-//			}
+			int data = info.itemData;
+			if (info.itemId != 0) {
+				type = info.itemId;
+			}
 			
 			ItemStack is;
 			if (!res.hasTown()) {
@@ -53,8 +54,8 @@ public class BuildStructureList implements GuiAction {
 					is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.BARRIER), 0, CivColor.Rose+"Not available");
 					guiInventory.addItem(is);
 				} else {
-					is = LoreGuiItem.build(info.displayName, type, 0, CivColor.Gold+"<Click To Build>");
-					is = LoreGuiItem.setAction(is, "BuildChooseTemplate");
+					is = LoreGuiItem.build(info.displayName, type, data, CivColor.Gold+"<Click To Build>");
+					is = LoreGuiItem.setAction(is, "BuildChooseStructureTemplate");
 					is = LoreGuiItem.setActionData(is, "info", info.id);
 						AttributeUtil attrs = new AttributeUtil(is);
 						attrs.setShiny();
@@ -68,7 +69,7 @@ public class BuildStructureList implements GuiAction {
 		ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Topics");
 		backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
 		backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
-		backButton = LoreGuiItem.setActionData(backButton, "invName", BuildStructureMenuList.guiInventory.getName());
+		backButton = LoreGuiItem.setActionData(backButton, "invName", BuildMenuList.guiInventory.getName());
 		guiInventory.setItem((9*5)-1, backButton);
 		
 		LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);

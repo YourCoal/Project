@@ -7,6 +7,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.config.ConfigUnit;
+import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementBonusDamageI;
@@ -62,9 +64,9 @@ public class Attack extends ItemComponent {
 			
 			if (enh instanceof LoreEnhancementThor) {
 				Random r = new Random();
-				int lightning_chance = r.nextInt(10);
+				int lightning_chance = r.nextInt(20);
 				if (lightning_chance == 1) {
-					CivMessage.send(event.getDamager(), CivColor.LightBlue+CivColor.ITALIC+"You bring down lightning on your enemy.");
+					CivMessage.send(event.getDamager(), CivColor.LightBlueItalic+"You bring down lightning on your enemy.");
 					event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
 				}
 			}
@@ -72,15 +74,23 @@ public class Attack extends ItemComponent {
 		
 		dmg += extraAtt;
 		if (event.getDamager() instanceof Player) {
-			Resident resident = CivGlobal.getResident(((Player)event.getDamager()));
-			if (!resident.hasTechForItem(inHand)) {
+			Player p = (Player)event.getDamager();
+			Resident res = CivGlobal.getResident(p);
+			
+			ConfigUnit unit = Unit.getPlayerUnit(p);
+			if (unit != null && unit.id.equals("u_warrior")) {
+				dmg *= 1.5;
+				CivMessage.send(p, CivColor.LightGrayItalic+"+50% damage with Warrior Unit.");
+			}
+			
+			if (!res.hasTechForItem(inHand)) {
 				dmg = dmg / 2;
 			}
 		}
 		
-		if (dmg < 0.5) { /* Always do at least 0.5 damage. */
-			dmg = 0.5;
-		}
+//		if (dmg < 0.5) { /* Always do at least 0.5 damage. */
+//			dmg = 0.5;
+//		}
 		event.setDamage(dmg);
 	}
 }

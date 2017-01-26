@@ -12,9 +12,12 @@ import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementArenaItem;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementBonusDamageI;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementBonusDamageII;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDurability;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementPunchout;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementSoulBound;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementThor;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreMaterial;
 import com.avrgaming.civcraft.main.CivData;
@@ -69,12 +72,15 @@ public class AdminItemCommand extends CommandBase {
 			inHand = p.getInventory().getItemInMainHand();
 		}
 		
+		enhancements.put("durability", new LoreEnhancementDurability());
 		enhancements.put("soulbound", new LoreEnhancementSoulBound());
 		enhancements.put("punchout", new LoreEnhancementPunchout());
 		enhancements.put("defence", new LoreEnhancementDefense());
 		enhancements.put("attack", new LoreEnhancementAttack());
 		enhancements.put("bonusdamagei", new LoreEnhancementBonusDamageI());
+		enhancements.put("bonusdamageii", new LoreEnhancementBonusDamageII());
 		enhancements.put("arena", new LoreEnhancementArenaItem());
+		enhancements.put("thor", new LoreEnhancementThor());
 		
 		if (inHand == null || ItemManager.getId(inHand) == CivData.AIR) {
 			throw new CivException("You must have an item in your hand to enhance it.");

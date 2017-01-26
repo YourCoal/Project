@@ -22,6 +22,7 @@ public abstract class LoreEnhancement {
 	public static void init() {
 		enhancements.put("LoreEnhancementSoulBound", new LoreEnhancementSoulBound());
 		enhancements.put("LoreEnhancementAttack", new LoreEnhancementAttack());
+		enhancements.put("LoreEnhancementDurability", new LoreEnhancementDurability());
 		enhancements.put("LoreEnhancementBonusDamageI", new LoreEnhancementBonusDamageI());
 		enhancements.put("LoreEnhancementBonusDamageII", new LoreEnhancementBonusDamageII());
 		enhancements.put("LoreEnhancementDefense", new LoreEnhancementDefense());
@@ -35,13 +36,44 @@ public abstract class LoreEnhancement {
 		return true;
 	}
 	
-	public static boolean isWeapon(ItemStack item) {
+	public static boolean isTool(ItemStack item) {
+		switch (ItemManager.getId(item)) {
+		case CivData.WOOD_PICKAXE:
+		case CivData.GOLD_PICKAXE:
+		case CivData.IRON_PICKAXE:
+		case CivData.STONE_PICKAXE:
+		case CivData.DIAMOND_PICKAXE:
+		case CivData.WOOD_SHOVEL:
+		case CivData.GOLD_SHOVEL:
+		case CivData.IRON_SHOVEL:
+		case CivData.STONE_SHOVEL:
+		case CivData.DIAMOND_SHOVEL:
+		case CivData.WOOD_AXE:
+		case CivData.GOLD_AXE:
+		case CivData.IRON_AXE:
+		case CivData.STONE_AXE:
+		case CivData.DIAMOND_AXE:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	public static boolean isSword(ItemStack item) {
 		switch (ItemManager.getId(item)) {
 		case CivData.WOOD_SWORD:
 		case CivData.STONE_SWORD:
 		case CivData.IRON_SWORD:
 		case CivData.GOLD_SWORD:
 		case CivData.DIAMOND_SWORD:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	public static boolean isBow(ItemStack item) {
+		switch (ItemManager.getId(item)) {
 		case CivData.BOW:
 			return true;
 		default:
@@ -78,7 +110,15 @@ public abstract class LoreEnhancement {
 	}
 	
 	public static boolean isWeaponOrArmor(ItemStack item) {
-		return isWeapon(item) || isArmor(item);
+		return isSword(item) || isBow(item) || isArmor(item);
+	}
+	
+	public static boolean isSwordOrTool(ItemStack item) {
+		return isSword(item) || isTool(item);
+	}
+	
+	public static boolean isWeapon(ItemStack item) {
+		return isSword(item) || isBow(item);
 	}
 
 	public boolean hasEnchantment(ItemStack item) {

@@ -152,7 +152,6 @@ public class FarmChunk {
 	}
 	
 	public void growBlock(BlockSnapshot bs, BlockCoord growMe, CivAsyncTask task) throws InterruptedException {
-				
 		//XXX we are skipping hydration as I guess we dont seem to care.
 		//XXX we also skip light level checks, as we dont really care about that either.
 		switch(bs.getTypeId()) {
@@ -164,6 +163,7 @@ public class FarmChunk {
 			}
 			break;
 		case CivData.NETHERWART:
+		case CivData.BEETROOT_CROP:
 			if (bs.getData() < 0x3) {
 				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}

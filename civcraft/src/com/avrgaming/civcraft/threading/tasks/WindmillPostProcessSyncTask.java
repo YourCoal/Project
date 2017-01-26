@@ -35,30 +35,29 @@ public class WindmillPostProcessSyncTask implements Runnable {
 	int breadCount;
 	int carrotCount;
 	int potatoCount;
+	int beetrootCount;
 	MultiInventory source_inv;
 	
 	public WindmillPostProcessSyncTask(Windmill windmill, ArrayList<BlockCoord> plantBlocks,
-			int breadCount, int carrotCount, int potatoCount, MultiInventory source_inv) {
+			int breadCount, int carrotCount, int potatoCount, int beetrootCount, MultiInventory source_inv) {
 		this.plantBlocks = plantBlocks;
 		this.windmill = windmill;
 		this.breadCount = breadCount;
 		this.carrotCount = carrotCount;
 		this.potatoCount = potatoCount;
+		this.beetrootCount = beetrootCount;
 		this.source_inv = source_inv;
 	}
 	
 	@Override
 	public void run() {
 		Random rand = new Random();
-		
 		for (BlockCoord coord : plantBlocks) {
-			
-			int randomCropType = rand.nextInt(3);
+			int randomCropType = rand.nextInt(4);
 			
 			switch (randomCropType) {
 			case 0:
-				if (breadCount > 0) {
-					/* bread seed */
+				if (breadCount > 0) { //Seed
 					try {
 						source_inv.removeItem(CivData.BREAD_SEED, 1);
 					} catch (CivException e) {
@@ -70,8 +69,7 @@ public class WindmillPostProcessSyncTask implements Runnable {
 					continue;
 				}
 			case 1:
-				if (carrotCount > 0) {
-					/* carrots */
+				if (carrotCount > 0) { //Carrot
 					try {
 						source_inv.removeItem(CivData.CARROT_ITEM, 1);
 					} catch (CivException e) {
@@ -80,13 +78,11 @@ public class WindmillPostProcessSyncTask implements Runnable {
 					carrotCount--;
 					ItemManager.setTypeId(coord.getBlock(), CivData.CARROTS);
 					ItemManager.setData(coord.getBlock(), 0, true);
-
 					continue;
 				}
-				break;
+//				break;
 			case 2: 
-				if (potatoCount > 0) {
-					/* potatoes */
+				if (potatoCount > 0) { //Potato
 					try {
 						source_inv.removeItem(CivData.POTATO_ITEM, 1);
 					} catch (CivException e) {
@@ -95,14 +91,23 @@ public class WindmillPostProcessSyncTask implements Runnable {
 					potatoCount--;
 					ItemManager.setTypeId(coord.getBlock(), CivData.POTATOES);
 					ItemManager.setData(coord.getBlock(), 0, true);
-
+					continue;
+				}
+				if (beetrootCount > 0) { //Potato
+					try {
+						source_inv.removeItem(CivData.BEETROOT_SEED, 1);
+					} catch (CivException e) {
+						e.printStackTrace();
+					}
+					beetrootCount--;
+					ItemManager.setTypeId(coord.getBlock(), CivData.BEETROOT_CROP);
+					ItemManager.setData(coord.getBlock(), 0, true);
 					continue;
 				}
 			}	
 			
 			/* our randomly selected crop couldn't be placed, try them all now. */
-			if (breadCount > 0) {
-				/* bread seed */
+			if (breadCount > 0) { //Seed
 				try {
 					source_inv.removeItem(CivData.BREAD_SEED, 1);
 				} catch (CivException e) {
@@ -111,11 +116,9 @@ public class WindmillPostProcessSyncTask implements Runnable {
 				breadCount--;
 				ItemManager.setTypeId(coord.getBlock(), CivData.WHEAT);
 				ItemManager.setData(coord.getBlock(), 0, true);
-
 				continue;
 			}
-			if (carrotCount > 0) {
-				/* carrots */
+			if (carrotCount > 0) { //Carrot
 				try {
 					source_inv.removeItem(CivData.CARROT_ITEM, 1);
 				} catch (CivException e) {
@@ -124,11 +127,9 @@ public class WindmillPostProcessSyncTask implements Runnable {
 				carrotCount--;
 				ItemManager.setTypeId(coord.getBlock(), CivData.CARROTS);
 				ItemManager.setData(coord.getBlock(), 0, true);
-
 				continue;
 			}
-			if (potatoCount > 0) {
-				/* potatoes */
+			if (potatoCount > 0) { //Potato
 				try {
 					source_inv.removeItem(CivData.POTATO_ITEM, 1);
 				} catch (CivException e) {
@@ -139,9 +140,17 @@ public class WindmillPostProcessSyncTask implements Runnable {
 				ItemManager.setData(coord.getBlock(), 0, true);
 				continue;
 			}
-			
+			if (beetrootCount > 0) { //Beetroot
+				try {
+					source_inv.removeItem(CivData.BEETROOT_SEED, 1);
+				} catch (CivException e) {
+					e.printStackTrace();
+				}
+				beetrootCount--;
+				ItemManager.setTypeId(coord.getBlock(), CivData.BEETROOT_CROP);
+				ItemManager.setData(coord.getBlock(), 0, true);
+				continue;
+			}
 		}
-		
 	}
-
 }

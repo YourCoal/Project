@@ -52,9 +52,7 @@ public class Settler extends UnitMaterial implements CallbackInterface {
 	}
 	
 	public static void spawn(Inventory inv, Town town) throws CivException {
-
 		ItemStack is = LoreMaterial.spawn(Unit.SETTLER_UNIT);
-		
 		UnitMaterial.setOwningTown(town, is);
 		
 		AttributeUtil attrs = new AttributeUtil(is);
@@ -62,15 +60,12 @@ public class Settler extends UnitMaterial implements CallbackInterface {
 		attrs.addLore(CivColor.Gold+"Right Click To Found Town");
 		attrs.addEnhancement("LoreEnhancementSoulBound", null, null);
 		attrs.addLore(CivColor.Gold+"Soulbound");
-		
 		attrs.setCivCraftProperty("owner_civ_id", ""+town.getCiv().getId());
 		is = attrs.getStack();
-		
 		
 		if (!Unit.addItemNoStack(inv, is)) {
 			throw new CivException("Cannot make "+Unit.SETTLER_UNIT.getUnit().name+". Barracks chest is full! Make Room!");
 		}
-
 	}
 	
 	@SuppressWarnings("deprecation")

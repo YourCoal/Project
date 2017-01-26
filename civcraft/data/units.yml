@@ -38,36 +38,36 @@ units:
     require_tech:
     require_struct:
     require_upgrade:
-    cost: 20000.0
-    hammer_cost: 2000.0
+    cost: 25000.0
+    hammer_cost: 2500.0
     limit: 0
     item_id: 330
     item_data: 0
 #
-#  - id: 'u_warrior'
-#    name: "Warrior"
-#    class_name: 'com.avrgaming.civcraft.items.units.Warrior'
-#    require_tech: ''
-#    require_struct:
-#    require_upgrade:
-#    cost: 10000.0
-#    hammer_cost: 1000.0
-#    limit: 1
-#    item_id: 7
-#    item_data: 0
+  - id: 'u_warrior'
+    name: "Warrior"
+    class_name: 'com.avrgaming.civcraft.items.units.Warrior'
+    require_tech: ''
+    require_struct:
+    require_upgrade:
+    cost: 10000.0
+    hammer_cost: 1000.0
+    limit: 1
+    item_id: 399
+    item_data: 0
 #
-#  - id: 'u_archer'
-#    name: "Archer"
-#    class_name: 'com.avrgaming.civcraft.items.units.Archer'
-#    require_tech: ''
-#    require_struct:
-#    require_upgrade:
-#    cost: 10000.0
-#    hammer_cost: 1000.0
-#    limit: 1
-#    item_id: 7
-#    item_data: 0
-#
+  - id: 'u_archer'
+    name: "Archer"
+    class_name: 'com.avrgaming.civcraft.items.units.Archer'
+    require_tech: ''
+    require_struct:
+    require_upgrade:
+    cost: 10000.0
+    hammer_cost: 1000.0
+    limit: 1
+    item_id: 399
+    item_data: 0
+
   - id: 'u_spy'
     name: "Spy"
     class_name: 'com.avrgaming.civcraft.items.units.Spy'

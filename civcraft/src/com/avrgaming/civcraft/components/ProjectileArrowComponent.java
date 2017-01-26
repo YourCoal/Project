@@ -75,7 +75,7 @@ public class ProjectileArrowComponent extends ProjectileComponent {
 			arrow.setFireTicks(1000);
 		}
 		
-		CivCache.arrowsFired.put(arrow.getUniqueId(), new ArrowFiredCache(this, targetEntity, arrow));
+		CivCache.arrowsFired.put(arrow.getUniqueId(), new ArrowFiredCache(this, targetEntity, arrow, this.getDamage()));
 	}
 
 	public double getPower() {

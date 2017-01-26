@@ -44,6 +44,12 @@ public class FoundWarCamp extends ItemComponent implements CallbackInterface {
 	
 	public void foundCamp(Player player) throws CivException {
 		Resident resident = CivGlobal.getResident(player);
+		
+		ConfigUnit unit = Unit.getPlayerUnit(player);
+		if (unit == null) {
+			throw new CivException("Cannons can only be deployed from people with Units!");
+		}
+		
 		if (!War.isWarTime()) {
 			throw new CivException("War Camps can only be built during WarTime.");
 		}
@@ -59,11 +65,6 @@ public class FoundWarCamp extends ItemComponent implements CallbackInterface {
 		if (!resident.getCiv().getLeaderGroup().hasMember(resident) &&
 			!resident.getCiv().getAdviserGroup().hasMember(resident)) {
 			throw new CivException("You must be a leader or adviser of the civilization to found a War Camp.");
-		}
-		
-		ConfigUnit unit = Unit.getPlayerUnit(player);
-		if (unit == null) {
-			throw new CivException("Cannons can only be deployed from people with Units!");
 		}
 		
 		// Build a preview for the Capitol structure.

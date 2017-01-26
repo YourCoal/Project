@@ -134,7 +134,7 @@ public class ConfigTownUpgrade {
 				StoreMaterial mat = new StoreMaterial(args[1].trim(), args[2].trim(), args[3].trim(), args[4].trim());
 				store.addStoreMaterial(mat);
 				store.updateSignText();
-				CivMessage.sendTown(town, "The Store now offers "+mat);
+				CivMessage.sendTown(town, "The Store now offers "+mat.name);
 			}
 			break;
 		case "set_library_level":
@@ -155,7 +155,7 @@ public class ConfigTownUpgrade {
 				LibraryEnchantment enchant = new LibraryEnchantment(args[1].trim(), Integer.valueOf(args[2].trim()), Double.valueOf(args[3].trim()));
 				library.addEnchant(enchant);
 				library.updateSignText();
-				CivMessage.sendTown(town, "The Library now offers the "+args[1].trim()+" enchantment at level "+args[2]+"!");
+				CivMessage.sendTown(town, "The Library now offers the "+args[1].trim()+" enchantment at level"+args[2]+"!");
 			}
 			break;
 		case "set_grocer_level":

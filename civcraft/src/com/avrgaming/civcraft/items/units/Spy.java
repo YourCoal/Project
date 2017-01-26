@@ -115,35 +115,27 @@ public class Spy extends UnitMaterial {
 	
 	@Override
 	public void onPlayerDeath(EntityDeathEvent event, ItemStack stack) {
-		
 		Player player = (Player)event.getEntity();
 		Resident resident = CivGlobal.getResident(player);
 		if (resident == null || !resident.hasTown()) {
 			return;
 		}
 		
-		
 		ArrayList<String> bookout = MissionLogger.getMissionLogs(resident.getTown());
-		
 		ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
 		BookMeta meta = (BookMeta) book.getItemMeta();
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add("Mission Report");
 		meta.setAuthor("Mission Reports");
 		meta.setTitle("Missions From "+resident.getTown().getName());
-		
 		String out = "";
 		for (String str : bookout) {
 			out += str+"\n";
 		}
-		BookUtil.paginate(meta, out);			
-
 		
+		BookUtil.paginate(meta, out);
 		meta.setLore(lore);
 		book.setItemMeta(meta);
 		player.getWorld().dropItem(player.getLocation(), book);
-		
 	}
-	
-	
 }

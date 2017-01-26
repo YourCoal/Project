@@ -15,7 +15,7 @@ public class LoreEnhancementBonusDamageII extends LoreEnhancement {
 	}
 	
 	public boolean canEnchantItem(ItemStack item) {
-		return isWeapon(item);
+		return isSword(item);
 	}
 	
 	public boolean hasEnchantment(ItemStack item) {

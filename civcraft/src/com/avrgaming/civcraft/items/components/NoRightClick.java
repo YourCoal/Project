@@ -27,6 +27,10 @@ public class NoRightClick extends ItemComponent {
 				event.getPlayer().updateInventory();
 				event.setCancelled(true);
 				return;
+			} else {
+				event.getPlayer().updateInventory();
+				event.setCancelled(true);
+				return;
 			}
 		}
 	}

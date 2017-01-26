@@ -103,7 +103,7 @@ public class BuildStructureInfoList implements GuiAction {
 		ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Topics");
 		backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
 		backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
-		backButton = LoreGuiItem.setActionData(backButton, "invName", BuildStructureMenuList.guiInventory.getName());
+		backButton = LoreGuiItem.setActionData(backButton, "invName", BuildMenuList.guiInventory.getName());
 		guiInventory.setItem((9*5)-1, backButton);
 		
 		LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);

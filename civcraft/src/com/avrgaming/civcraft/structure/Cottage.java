@@ -107,8 +107,7 @@ public class Cottage extends Structure {
 		Town town = this.getTown();
 		double townFood = town.getFoodCount();
 		
-		int lvls = getLevelFoodCount() + town.getLevel() + town.getCultureLevel();
-		int foodCost = 5 + lvls; //Always at least 5 food.
+		int foodCost = getLevelFoodCount() + town.getLevel();
 		
 		if (this.getTown().getBuffManager().hasBuff(Buff.REDUCE_CONSUME)) {
 			foodCost *= this.getTown().getBuffManager().getEffectiveInt(Buff.REDUCE_CONSUME);

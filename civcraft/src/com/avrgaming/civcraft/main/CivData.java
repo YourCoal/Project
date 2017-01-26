@@ -19,8 +19,6 @@
 package com.avrgaming.civcraft.main;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 
 import com.avrgaming.civcraft.exception.InvalidBlockLocation;
 import com.avrgaming.civcraft.util.BlockSnapshot;
@@ -129,7 +127,32 @@ public class CivData {
 	public static final int RED_NETHER_BRICK = 214;
 	public static final int NETHER_WART_BLOCK = 215;
 	
+	public static final int IRON_SHOVEL = 256;
+	public static final int IRON_PICKAXE = 257;
+	public static final int IRON_AXE = 258;
+	
 	public static final int APPLE = 260;
+	
+	public static final int IRON_SWORD = 267;
+	public static final int WOOD_SWORD = 268;
+	public static final int WOOD_SHOVEL = 269;
+	public static final int WOOD_PICKAXE = 270;
+	public static final int WOOD_AXE = 271;
+	public static final int STONE_SWORD = 272;
+	public static final int STONE_SHOVEL = 273;
+	public static final int STONE_PICKAXE = 274;
+	public static final int STONE_AXE = 275;
+	public static final int DIAMOND_SWORD = 276;
+	public static final int DIAMOND_SHOVEL = 277;
+	public static final int DIAMOND_PICKAXE = 278;
+	public static final int DIAMOND_AXE = 279;
+	
+	public static final int GOLD_SWORD = 283;
+	public static final int GOLD_SHOVEL = 284;
+	public static final int GOLD_PICAXE = 285;
+	public static final int GOLD_AXE = 286;
+	
+	public static final int GOLD_PICKAXE = 285;
 	
 	public static final int BEETROOT_ITEM = 434;
 	public static final int BEETROOT_SEED = 435;
@@ -253,23 +276,7 @@ public class CivData {
 	public static final int CHAIN_CHESTPLATE = 303;
 	public static final int CHAIN_LEGGINGS = 304;
 	public static final int CHAIN_BOOTS = 305;
-	public static final int WOOD_SWORD = 268;
-	public static final int STONE_SWORD = 272;
-	public static final int IRON_SWORD = 267;
-	public static final int DIAMOND_SWORD = 276;
-	public static final int GOLD_SWORD = 283;
 	
-	public static final int WOOD_AXE = 271;
-	public static final int STONE_AXE = 275;
-	public static final int IRON_AXE = 258;
-	public static final int DIAMOND_AXE = 279;
-	public static final int GOLD_AXE = 286;
-	
-	public static final int WOOD_PICKAXE = 270;
-	public static final int STONE_PICKAXE = 274;
-	public static final int IRON_PICKAXE = 257;
-	public static final int DIAMOND_PICKAXE = 278;
-	public static final int GOLD_PICKAXE = 285;
 	public static final byte DATA_WOOL_GREEN = 0x5;
 	public static final Integer LADDER = 65;
 	public static final int COAL = ItemManager.getId(Material.COAL);
@@ -296,7 +303,6 @@ public class CivData {
 	public static final int TNT = 46;
 	
 	public static String getDisplayName(int id) {
-		
 		if (id == GOLD_ORE)
 			return "Gold Ore";
 		if (id == IRON_ORE)
@@ -341,51 +347,6 @@ public class CivData {
 		}
 		return hasAir;
 	}
-
-	public static boolean canGrowMushroom(BlockState blockState) {
-		int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
-		boolean hasAir = false;
-		for (int i = 0; i < 4; i++) {
-			Block nextBlock = blockState.getBlock().getRelative(offset[i][0], 0, offset[i][1]);
-			if (ItemManager.getId(nextBlock) == CivData.AIR) {
-				hasAir = true;
-			}
-		}
-		return hasAir;
-	}
-	
-//	public static boolean canGrowSugarcane(Block blockState) {
-//		int total = 1; //include our block
-//		Block nextBlock = blockState.getBlock();
-//		// Get # of sugarcanes above us
-//		//Using a for loop to prevent possible infinite loop
-//		for (int i = 0; i <= Farm.MAX_SUGARCANE_HEIGHT; i++) {
-//			nextBlock = nextBlock.getRelative(0, 1, 0);
-//			if (nextBlock.getTypeId() == CivData.SUGARCANE) {
-//				total++;
-//			} else {
-//				break;
-//			}
-//		}
-//		
-//		nextBlock = blockState.getBlock();
-//		// Get # of sugarcanes below us
-//		for (int i = 0; i <= Farm.MAX_SUGARCANE_HEIGHT; i++) {
-//			nextBlock = nextBlock.getRelative(0, -1, 0);
-//			if (nextBlock.getTypeId() == CivData.SUGARCANE) {
-//				total++;
-//			} else {
-//				break;
-//			}
-//		}
-//		
-//		// Compare total+1 with max height.
-//		if (total < Farm.MAX_SUGARCANE_HEIGHT) {
-//			return true;
-//		}
-//
-//		return false;
-//	}
 	
 	public static boolean canCocoaGrow(BlockSnapshot bs) {
 		byte bits = (byte) (bs.getData() & 0xC);
@@ -427,13 +388,6 @@ public class CivData {
 		case MELON_STEM:
 		case PUMPKIN_STEM:
 			return canGrowFromStem(bs);
-		
-		//case REDMUSHROOM:
-		//case BROWNMUSHROOM:
-		//	return canGrowMushroom(blockState);
-			
-		//case SUGARCANE:	
-	//		return canGrowSugarcane(bs);
 		}
 		
 		return false;

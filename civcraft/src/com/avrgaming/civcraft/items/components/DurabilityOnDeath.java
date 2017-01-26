@@ -18,20 +18,24 @@
  */
 package com.avrgaming.civcraft.items.components;
 
-import gpl.AttributeUtil;
-
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDurability;
 import com.avrgaming.civcraft.lorestorage.ItemChangeResult;
+import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.util.CivColor;
+
+import gpl.AttributeUtil;
 
 public class DurabilityOnDeath extends ItemComponent {
-
+	
 	@Override
 	public void onPrepareCreate(AttributeUtil attrs) {
-//		attrs.addLore(CivColor.Blue+""+this.getDouble("value")+" Durability");
 	}
-
+	
 	@Override
 	public ItemChangeResult onDurabilityDeath(PlayerDeathEvent event, ItemChangeResult result, ItemStack sourceStack) {
 		if (result == null) {
@@ -46,6 +50,16 @@ public class DurabilityOnDeath extends ItemComponent {
 		
 		double percent = this.getDouble("value");
 		
+		AttributeUtil attrs = new AttributeUtil(result.stack);
+		/* Try to get any extra enhancements from this item. */
+		for (LoreEnhancement enh : attrs.getEnhancements()) {
+			if (enh instanceof LoreEnhancementDurability) {
+				percent = percent/2;
+				CivMessage.send((Player)event.getEntity(), CivColor.LightGrayItalic+"Due to the enhancement 'Durability' on your "+sourceStack.getItemMeta().getDisplayName()
+															+CivColor.LightGrayItalic+", your armor saved 50% more durability.");
+			}
+		}
+		
 		int reduction = (int)(result.stack.getType().getMaxDurability()*percent);
 		int durabilityLeft = result.stack.getType().getMaxDurability() - result.stack.getDurability();
 		
@@ -54,8 +68,6 @@ public class DurabilityOnDeath extends ItemComponent {
 		} else {
 			result.destroyItem = true;
 		}		
-		
 		return result;
 	}
-
 }

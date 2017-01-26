@@ -110,6 +110,7 @@ import com.avrgaming.civcraft.threading.timers.PlayerTagUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.ReduceExposureTimer;
 import com.avrgaming.civcraft.threading.timers.RegenTimer;
 import com.avrgaming.civcraft.threading.timers.Second1UpdateEventTimer;
+import com.avrgaming.civcraft.threading.timers.Second7UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.UnitTrainTimer;
 import com.avrgaming.civcraft.threading.timers.WindmillTimer;
 import com.avrgaming.civcraft.util.BukkitObjects;
@@ -144,7 +145,7 @@ public final class CivCraft extends JavaPlugin {
 		
 		// Structure event timers
 		TaskMaster.asyncTimer("Second1UpdateEventTimer", new Second1UpdateEventTimer(), TimeTools.toTicks(1));
-//		TaskMaster.asyncTimer("Second4UpdateEventTimer", new Second4UpdateEventTimer(), TimeTools.toTicks(4));
+		TaskMaster.asyncTimer("Second7UpdateEventTimer", new Second7UpdateEventTimer(), TimeTools.toTicks(7));
 		TaskMaster.asyncTimer("Minute5UpdateEventTimer", new Minute5UpdateEventTimer(), TimeTools.toTicks(60*5));
 		
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
@@ -153,8 +154,8 @@ public final class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(2));
 
 		try {
-			double arrow_firerate = CivSettings.getDouble(CivSettings.warConfig, "arrow_tower.fire_rate");
-			TaskMaster.syncTimer("arrowTower", new ProjectileComponentTimer(), (int)(arrow_firerate*20));	
+			int arrow_firerate = CivSettings.getInteger(CivSettings.warConfig, "arrow_tower.fire_rate");
+			TaskMaster.syncTimer("arrowTower", new ProjectileComponentTimer(), arrow_firerate*20);	
 			TaskMaster.asyncTimer("ScoutTowerTask", new ScoutTowerTask(), TimeTools.toTicks(1));
 			
 		} catch (InvalidConfiguration e) {
@@ -195,7 +196,6 @@ public final class CivCraft extends JavaPlugin {
 		
 		TaskMaster.syncTimer("ArenaTimer", new ArenaManager(), TimeTools.toTicks(30));
 		TaskMaster.syncTimer("ArenaTimeoutTimer", new ArenaTimer(), TimeTools.toTicks(1));
-
 	}
 	
 	private void registerEvents() {

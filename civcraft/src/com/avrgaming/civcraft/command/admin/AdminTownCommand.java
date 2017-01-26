@@ -77,6 +77,7 @@ public class AdminTownCommand extends CommandBase {
 		commands.put("event", "[town] [event_id] - Runs the named random event in this town.");
 		commands.put("rename", "[town] [new_name] - Renames this town.");
 		
+		commands.put("food", "[town] [amount] - gives this [town] this [amount] of food.");
 		commands.put("culture", "[town] [amount] - gives this [town] this [amount] of culture.");
 		commands.put("outlaw", "[town] [resident] - outlaws the [resident] in this [town].");
 	}
@@ -92,6 +93,20 @@ public class AdminTownCommand extends CommandBase {
 		town.addAccumulatedCulture(culture);
 		town.save();
 		CivMessage.sendSuccess(sender, town.getName()+" was given "+culture+" culture. Total culture: "+town.getAccumulatedCulture());
+	}
+	
+	public void food_cmd() throws CivException {
+		Town town = getNamedTown(1);
+		Integer food = getNamedInteger(2);
+		if (food.toString().contains("-")) {
+			town.getFood().takeFood(food);
+			town.save();
+			CivMessage.sendSuccess(sender, town.getName()+" was removed "+food+" food. Total food: "+town.getFood().getFoodCount());
+		} else {
+			town.getFood().giveFood(food);
+			town.save();
+			CivMessage.sendSuccess(sender, town.getName()+" was given "+food+" food. Total food: "+town.getFood().getFoodCount());
+		}
 	}
 	
 	public void rename_cmd() throws CivException, InvalidNameException {

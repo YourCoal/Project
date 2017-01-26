@@ -11,7 +11,7 @@ import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
 import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
+import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTaskRegular;
 import com.avrgaming.civcraft.util.BlockCoord;
 
 public class Second1UpdateEventTimer extends CivAsyncTask {
@@ -40,7 +40,7 @@ public class Second1UpdateEventTimer extends CivAsyncTask {
 							if (!CivGlobal.questStructuresEnabled) {
 								continue;
 							}
-							TaskMaster.asyncTask("Trommel-"+struct.getCorner().toString(), new TrommelAsyncTask(struct), 0);
+							TaskMaster.asyncTask("Trommel(Regular)-"+struct.getCorner().toString(), new TrommelAsyncTaskRegular(struct), 0);
 						}
 					}
 					struct.onUpdate();

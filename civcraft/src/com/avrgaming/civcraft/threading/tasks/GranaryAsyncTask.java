@@ -7,7 +7,6 @@ import java.util.Random;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivTaskAbortException;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivLog;
@@ -43,7 +42,8 @@ public class GranaryAsyncTask extends CivAsyncTask {
 		this.granary = (Granary)granary;
 	}
 	
-	public void processGranaryUpdate() {
+	//XXX Bread
+	public void consumeGranaryBread() {
 		if (!granary.isActive()) {
 			debug(granary, "Granary inactive...");
 			return;
@@ -56,9 +56,7 @@ public class GranaryAsyncTask extends CivAsyncTask {
 			return;
 		}
 		
-		// Make sure the chunk is loaded before continuing. Also, add get chest and add it to inventory.
 		MultiInventory source_inv = new MultiInventory();
-		
 		try {
 			for (StructureChest src : sources) {			
 				Inventory tmp;
@@ -87,13 +85,13 @@ public class GranaryAsyncTask extends CivAsyncTask {
 				}
 				
 				int mod = (int) Math.round((granary.getTown().saved_granary_level*1.5)-2);
-				
-				if (this.granary.getLevel() >= 1 && ItemManager.getId(stack) == CivData.BREAD) {
+				int requiredItem = 4 + granary.getTown().saved_granary_level;
+				if (ItemManager.getId(stack) == CivData.BREAD) {
 					try {
-						if (stack.getAmount() < 2) {
+						if (stack.getAmount() < requiredItem) {
 							return; //Not enough of item.
 						}
-						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.BREAD, 2));
+						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.BREAD, requiredItem));
 					} catch (InterruptedException e) {
 						return;
 					}
@@ -124,13 +122,60 @@ public class GranaryAsyncTask extends CivAsyncTask {
 					}
 					break;
 				}
+			}	
+		}
+		granary.skippedCounter = 0;
+	}
+	//XXX Carrots
+	public void consumeGranaryCarrots() {
+		if (!granary.isActive()) {
+			debug(granary, "Granary inactive...");
+			return;
+		}
+		
+		debug(granary, "Processing Granary...");
+		ArrayList<StructureChest> sources = granary.getAllChestsById(1);
+		if (sources.size() != 2) {
+			CivLog.error("Bad chests for Granary in town:"+granary.getTown().getName()+" sources:"+sources.size());
+			return;
+		}
+		
+		MultiInventory source_inv = new MultiInventory();
+		try {
+			for (StructureChest src : sources) {			
+				Inventory tmp;
+				try {
+					tmp = this.getChestInventory(src.getCoord().getWorldname(), src.getCoord().getX(), src.getCoord().getY(), src.getCoord().getZ(), false);
+				} catch (CivTaskAbortException e) {
+					CivLog.warning("Granary:"+e.getMessage());
+					return;
+				}
+				if (tmp == null) {
+					granary.skippedCounter++;
+					return;
+				}
+				source_inv.addInventory(tmp);
+			}
+		} catch (InterruptedException e) {
+			return;
+		}
+		
+		debug(granary, "Processing granary:"+granary.skippedCounter+1);
+		ItemStack[] contents = source_inv.getContents();
+		for (int i = 0; i < granary.skippedCounter+1; i++) {
+			for(ItemStack stack : contents) {
+				if (stack == null) {
+					continue;
+				}
 				
-				if (this.granary.getLevel() >= 1 && ItemManager.getId(stack) == CivData.CARROT_ITEM) {
+				int mod = (int) Math.round((granary.getTown().saved_granary_level*1.5)-2);
+				int requiredItem = 4 + granary.getTown().saved_granary_level;
+				if (ItemManager.getId(stack) == CivData.CARROT_ITEM) {
 					try {
-						if (stack.getAmount() < 2) {
+						if (stack.getAmount() < requiredItem) {
 							return; //Not enough of item.
 						}
-						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.CARROT_ITEM, 2));
+						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.CARROT_ITEM, requiredItem));
 					} catch (InterruptedException e) {
 						return;
 					}
@@ -161,13 +206,60 @@ public class GranaryAsyncTask extends CivAsyncTask {
 					}
 					break;
 				}
+			}	
+		}
+		granary.skippedCounter = 0;
+	}
+	//XXX Potatoes
+	public void consumeGranaryPotatoes() {
+		if (!granary.isActive()) {
+			debug(granary, "Granary inactive...");
+			return;
+		}
+		
+		debug(granary, "Processing Granary...");
+		ArrayList<StructureChest> sources = granary.getAllChestsById(1);
+		if (sources.size() != 2) {
+			CivLog.error("Bad chests for Granary in town:"+granary.getTown().getName()+" sources:"+sources.size());
+			return;
+		}
+		
+		MultiInventory source_inv = new MultiInventory();
+		try {
+			for (StructureChest src : sources) {			
+				Inventory tmp;
+				try {
+					tmp = this.getChestInventory(src.getCoord().getWorldname(), src.getCoord().getX(), src.getCoord().getY(), src.getCoord().getZ(), false);
+				} catch (CivTaskAbortException e) {
+					CivLog.warning("Granary:"+e.getMessage());
+					return;
+				}
+				if (tmp == null) {
+					granary.skippedCounter++;
+					return;
+				}
+				source_inv.addInventory(tmp);
+			}
+		} catch (InterruptedException e) {
+			return;
+		}
+		
+		debug(granary, "Processing granary:"+granary.skippedCounter+1);
+		ItemStack[] contents = source_inv.getContents();
+		for (int i = 0; i < granary.skippedCounter+1; i++) {
+			for(ItemStack stack : contents) {
+				if (stack == null) {
+					continue;
+				}
 				
-				if (this.granary.getLevel() >= 1 && ItemManager.getId(stack) == CivData.POTATO_ITEM) {
+				int mod = (int) Math.round((granary.getTown().saved_granary_level*1.5)-2);
+				int requiredItem = 4 + granary.getTown().saved_granary_level;
+				if (ItemManager.getId(stack) == CivData.POTATO_ITEM) {
 					try {
-						if (stack.getAmount() < 2) {
+						if (stack.getAmount() < requiredItem) {
 							return; //Not enough of item.
 						}
-						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.POTATO_ITEM, 2));
+						this.updateInventory(Action.REMOVE, source_inv, ItemManager.createItemStack(CivData.POTATO_ITEM, requiredItem));
 					} catch (InterruptedException e) {
 						return;
 					}
@@ -209,26 +301,15 @@ public class GranaryAsyncTask extends CivAsyncTask {
 		if (this.granary.lock.tryLock()) {
 			try {
 				try {
-					if (this.granary.getTown().getGovernment().id.equals("gov_theocracy")) {
-						Random rand = new Random();
-						int randMax = 100;
-						int rand1 = rand.nextInt(randMax);
-						Double chance = CivSettings.getDouble(CivSettings.structureConfig, "granary.penalty_rate") * 100;
-						if (rand1 < chance) {
-							processGranaryUpdate();
-							processGranaryUpdate();
-							debug(this.granary, "Not penalized");
-						} else {
-							debug(this.granary, "Skip Due to Penalty");
-						}
-					} else {
-						processGranaryUpdate();
-						processGranaryUpdate();
-						if (this.granary.getTown().getGovernment().id.equals("gov_despotism")) {
-							debug(this.granary, "Doing Bonus");
-							processGranaryUpdate();
-							processGranaryUpdate();
-						}
+					consumeGranaryBread();
+					consumeGranaryCarrots();
+					consumeGranaryPotatoes();
+					if (this.granary.getTown().getGovernment().id.equals("gov_despotism")) {
+						debug(this.granary, "Doing Bonus");
+						CivMessage.sendTown(this.granary.getTown(), "Your government got you extra food this granary consume tick!");
+						consumeGranaryBread();
+						consumeGranaryCarrots();
+						consumeGranaryPotatoes();
 					}					
 				} catch (Exception e) {
 					e.printStackTrace();

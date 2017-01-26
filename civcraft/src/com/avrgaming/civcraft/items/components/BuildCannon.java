@@ -34,7 +34,7 @@ public class BuildCannon extends ItemComponent {
 			}
 			
 			ConfigUnit unit = Unit.getPlayerUnit(event.getPlayer());
-			if (!unit.equals("u_engineer")) {
+			if (unit == null || !unit.id.equals("u_engineer")) {
 				throw new CivException("Cannons can only be deployed from Engineer Units!");
 			}
 			

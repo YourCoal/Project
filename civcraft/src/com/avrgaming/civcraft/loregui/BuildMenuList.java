@@ -18,7 +18,7 @@ import com.avrgaming.civcraft.util.ItemManager;
 
 import gpl.AttributeUtil;
 
-public class BuildStructureMenuList implements GuiAction {
+public class BuildMenuList implements GuiAction {
 	
 	static Inventory guiInventory;
 	
@@ -38,15 +38,19 @@ public class BuildStructureMenuList implements GuiAction {
 			guiInventory.addItem(is);
 			
 			if (res.getTown().isMayor(res) || res.getTown().isAssistant(res)) {
-				is = LoreGuiItem.build("Structure Info", ItemManager.getId(Material.BRICK_STAIRS), 3, CivColor.LightGray+CivColor.ITALIC+"Show town structure information.");
+				is = LoreGuiItem.build("Structure Info", ItemManager.getId(Material.BRICK_STAIRS), 3, CivColor.LightGray+CivColor.ITALIC+"Build a structure in the town.");
 				is = LoreGuiItem.setAction(is, "BuildStructureList");
-					AttributeUtil attrs = new AttributeUtil(is);
+				guiInventory.setItem(2, is);
+				
+				is = LoreGuiItem.build("Wonder Info", ItemManager.getId(Material.BRICK_STAIRS), 4, CivColor.LightGray+CivColor.ITALIC+"Build a wonder in the town.");
+				is = LoreGuiItem.setAction(is, "BuildWonderList");
+				AttributeUtil attrs = new AttributeUtil(is);
 					attrs.setShiny();
 					is = attrs.getStack();
 				guiInventory.setItem(3, is);
 			} else if (!res.getTown().isMayor(res) && !res.getTown().isAssistant(res)) {
-				is = LoreGuiItem.build("Cannot Display", ItemManager.getId(Material.BEDROCK), 0, CivColor.Rose+"Must be a town mayor or assistant build structures.");
-				guiInventory.setItem(3, is);
+				is = LoreGuiItem.build("Cannot Display", ItemManager.getId(Material.BEDROCK), 0, CivColor.Rose+"Must be a town mayor or assistant build structures and wonders.");
+				guiInventory.setItem(2, is);
 			}
 		}
 		

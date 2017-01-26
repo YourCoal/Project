@@ -7,14 +7,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
+import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTaskRefined;
 import com.avrgaming.civcraft.util.BlockCoord;
 
-public class Second4UpdateEventTimer extends CivAsyncTask {
+public class Second7UpdateEventTimer extends CivAsyncTask {
 	
 	//Controls Quarry,
 	public static ReentrantLock lock = new ReentrantLock();
 	
-	public Second4UpdateEventTimer() {
+	public Second7UpdateEventTimer() {
 	}
 	
 	@Override
@@ -36,6 +38,8 @@ public class Second4UpdateEventTimer extends CivAsyncTask {
 								continue;
 							}
 //							TaskMaster.asyncTask("Quarry-"+struct.getCorner().toString(), new QuarryAsyncTask(struct), 0);
+//							TaskMaster.asyncTask("Quarry-"+struct.getCorner().toString(), new QuarryAsyncTask(struct), 0);
+							TaskMaster.asyncTask("Trommel(Refined)-"+struct.getCorner().toString(), new TrommelAsyncTaskRefined(struct), 0);
 						}
 					}
 					struct.onUpdate();

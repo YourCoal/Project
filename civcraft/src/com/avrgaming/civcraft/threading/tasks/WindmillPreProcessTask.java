@@ -85,6 +85,7 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 		int breadCount = 0;
 		int carrotCount = 0;
 		int potatoCount = 0;
+		int beetrootCount = 0;
 		for (ItemStack stack : source_inv.getContents()) {
 			if (stack == null) {
 				continue;
@@ -100,18 +101,21 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 			case CivData.POTATO_ITEM:
 				potatoCount += stack.getAmount();
 				break;
+			case CivData.BEETROOT_SEED:
+				beetrootCount += stack.getAmount();
+				break;
 			default:
 				continue;
 			}
 		}
 				
 		/* If we've got nothing in the seed basket, nothing to plant! */
-		if (breadCount == 0 && carrotCount == 0 && potatoCount == 0) {
+		if (breadCount == 0 && carrotCount == 0 && potatoCount == 0 && beetrootCount == 0) {
 			return;
 		}
 		
 		/* Only try to plant as many crops as we have (or the max) */
-		plant_max = Math.min((breadCount + carrotCount + potatoCount), plant_max);
+		plant_max = Math.min((breadCount + carrotCount + potatoCount + beetrootCount), plant_max);
 		
 		/* Read snapshots and find blocks that can be planted. */
 		ArrayList<BlockCoord> blocks = new ArrayList<BlockCoord>();
@@ -119,16 +123,12 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
 					for (int y = 0; y < 255; y++) {
-						
-						
 						if (ItemManager.getBlockTypeId(snapshot, x, y, z) == CivData.FARMLAND) {
 							if (ItemManager.getBlockTypeId(snapshot, x, y+1, z) == CivData.AIR) {
 								int blockx = (snapshot.getX()*16) + x;
 								int blocky = y+1;
 								int blockz = (snapshot.getZ()*16) + z;
-								
-								blocks.add(new BlockCoord(this.windmill.getCorner().getWorldname(),
-										blockx, blocky, blockz));
+								blocks.add(new BlockCoord(this.windmill.getCorner().getWorldname(),	blockx, blocky, blockz));
 							}
 						}
 					}
@@ -151,8 +151,6 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 				
 		// Fire off a sync task to complete the operation.
 		TaskMaster.syncTask(new WindmillPostProcessSyncTask(windmill, plantBlocks,
-				breadCount, carrotCount, potatoCount, source_inv));
-
+				breadCount, carrotCount, potatoCount, beetrootCount, source_inv));
 	}
-
 }

@@ -98,7 +98,8 @@ import com.avrgaming.civcraft.threading.tasks.ChunkGenerateTask;
 import com.avrgaming.civcraft.threading.tasks.CultureProcessAsyncTask;
 import com.avrgaming.civcraft.threading.tasks.PostBuildSyncTask;
 import com.avrgaming.civcraft.threading.tasks.TradeGoodPostGenTask;
-import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTask;
+import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTaskRefined;
+import com.avrgaming.civcraft.threading.tasks.TrommelAsyncTaskRegular;
 import com.avrgaming.civcraft.threading.timers.DailyTimer;
 import com.avrgaming.civcraft.util.AsciiMap;
 import com.avrgaming.civcraft.util.BlockCoord;
@@ -815,10 +816,12 @@ public class DebugCommand extends CommandBase {
 	public void trommel_cmd() throws CivException {
 		Town town = getNamedTown(1);
 		
-		if (TrommelAsyncTask.debugTowns.contains(town.getName())) {
-			TrommelAsyncTask.debugTowns.remove(town.getName());
+		if (TrommelAsyncTaskRegular.debugTowns.contains(town.getName()) || TrommelAsyncTaskRefined.debugTowns.contains(town.getName())) {
+			TrommelAsyncTaskRegular.debugTowns.remove(town.getName());
+			TrommelAsyncTaskRefined.debugTowns.remove(town.getName());
 		} else {
-			TrommelAsyncTask.debugTowns.add(town.getName());
+			TrommelAsyncTaskRegular.debugTowns.add(town.getName());
+			TrommelAsyncTaskRefined.debugTowns.add(town.getName());
 		}
 		
 		CivMessage.send(sender, "Trommel toggled.");
@@ -1297,8 +1300,8 @@ public class DebugCommand extends CommandBase {
 		if (p.getInventory().getItemInMainHand() == null || ItemManager.getId(p.getInventory().getItemInMainHand()) == 0) {
 			throw new CivException("No item in hand.");
 		}
-		ItemStack item = new ItemStack(p.getInventory().getItemInMainHand().getType(), p.getInventory().getItemInMainHand().getAmount());
-		p.getInventory().addItem(item);
+		
+		p.getInventory().addItem(p.getInventory().getItemInMainHand());
 		CivMessage.sendSuccess(p, p.getInventory().getItemInMainHand().getType().name()+ "duplicated.");
 	}
 	

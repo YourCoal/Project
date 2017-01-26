@@ -81,15 +81,15 @@ arrow_tower:
     # Damage done per hit from arrow tower
     damage: 6
     # Range of the arrow tower
-    range: 96.0
+    range: 128.0
     # Min-range watch tower will target players at
     min_range: 4.0
     # power of watch tower (basically arrow speed)
-    power: 2.8
+    power: 2.5
     # how fast each arrow is fired in seconds.
-    fire_rate: 1.0
+    fire_rate: 1
     # Distance before homing stops.
-    homing_stop_distance: 10.0
+    homing_stop_distance: 8.0
 
 cannon_tower:
     # Damage done by cannon blast
@@ -106,15 +106,15 @@ cannon_tower:
     splash: 24
     # Cannon tower fire rate
     # Defined in number of half-seconds to delay. Higher numbers is lower fire rate.
-    fire_rate: 4
+    fire_rate: 3
 
 wall:
    # Maximum height walls can be built at.
-   maximum_height: 200
+   maximum_height: 175
    # Height of a basic wall piece
    height: 6
    # Cost of a vertical segment
-   cost_per_segment: 50.0
+   cost_per_segment: 10.0
 
 warcamp:
     # template for war camps.

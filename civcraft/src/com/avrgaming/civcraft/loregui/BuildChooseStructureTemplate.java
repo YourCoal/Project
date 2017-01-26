@@ -23,7 +23,7 @@ import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.global.perks.Perk;
 
-public class BuildChooseTemplate implements GuiAction {
+public class BuildChooseStructureTemplate implements GuiAction {
 
 	@Override
 	public void performAction(InventoryClickEvent event, ItemStack stack) {

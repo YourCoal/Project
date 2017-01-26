@@ -35,18 +35,34 @@ public class ArrowFiredCache {
 	private UUID uuid;
 	private Calendar expired;
 	private boolean hit = false;
+	private double damage;
 	
-	public ArrowFiredCache(ProjectileArrowComponent tower, Entity targetEntity, Arrow arrow) {
+	public ArrowFiredCache(ProjectileArrowComponent tower, Entity targetEntity, Arrow arrow, double damage) {
 		this.setFromTower(tower);
 		this.target = targetEntity.getLocation();
 		this.targetEntity = targetEntity;
 		this.setArrow(arrow);
 		this.uuid = arrow.getUniqueId();
+		this.damage = tower.getDamage();
 		expired = Calendar.getInstance();
 		expired.add(Calendar.SECOND, 5);
 	}
 
 
+	/**
+	 * @return the target
+	 */
+	public double getDamage() {
+		return damage;
+	}
+
+	/**
+	 * @param target the target to set
+	 */
+	public void setDamage(double damage) {
+		this.damage = damage;
+	}
+	
 	/**
 	 * @return the target
 	 */
