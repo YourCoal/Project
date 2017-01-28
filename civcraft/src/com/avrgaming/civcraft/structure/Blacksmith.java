@@ -166,13 +166,12 @@ public class Blacksmith extends Structure {
 				sign.setText("Withdraw\nOre\nResidents Only");
 				break;
 			}
-				
 			sign.update();
 		}
 	}
 	
 	public String getkey(Player player, Structure struct, String tag) {
-		return player.getName()+"_"+struct.getConfigId()+"_"+struct.getCorner().toString()+"_"+tag; 
+		return player.getUniqueId().toString()+"_"+struct.getConfigId()+"_"+struct.getCorner().toString()+"_"+tag;
 	}
 
 	public void saveItem(ItemStack item, String key) {

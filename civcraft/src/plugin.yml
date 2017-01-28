@@ -2,7 +2,7 @@ name: CivCraft
 author: YourCoal
 main: com.avrgaming.civcraft.main.CivCraft
 softdepend: [TitleAPI, HolographicDisplays, NametagEdit, BarAPI]
-version: 1.0.107
+version: 1.0.108
 #version: phase, update #, sub-update #
 
 commands:

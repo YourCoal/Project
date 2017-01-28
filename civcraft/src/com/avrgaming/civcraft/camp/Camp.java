@@ -190,7 +190,7 @@ public class Camp extends Buildable {
 	}
 	
 	public Camp(Resident owner, String name, Location corner) throws CivException {
-		this.ownerName = owner.getName();
+		this.ownerName = owner.getUUID().toString();
 		this.corner = new BlockCoord(corner);
 		try {
 			this.setName(name);
@@ -272,15 +272,10 @@ public class Camp extends Buildable {
 	
 	
 	@Override
-	public void load(ResultSet rs) throws SQLException, InvalidNameException,
-			InvalidObjectException, CivException {
+	public void load(ResultSet rs) throws SQLException, InvalidNameException, InvalidObjectException, CivException {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));
-		if (CivGlobal.useUUID) {
-			this.ownerName = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("owner_name"))).getName();		
-		} else {
-			this.ownerName = rs.getString("owner_name");
-		}
+		this.ownerName = rs.getString("owner_name");
 		this.corner = new BlockCoord(rs.getString("corner"));
 		this.nextRaidDate = new Date(rs.getLong("next_raid_date"));
 		this.setTemplateName(rs.getString("template_name"));
@@ -292,7 +287,6 @@ public class Camp extends Buildable {
 		}
 		
 		this.firepoints = rs.getInt("firepoints");
-		
 		if (this.ownerName == null) {
 			CivLog.error("COULD NOT FIND OWNER FOR CAMP ID:"+this.getId());
 			return;
@@ -312,23 +306,17 @@ public class Camp extends Buildable {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-		if (CivGlobal.useUUID) {
-			hashmap.put("owner_name", this.getOwner().getUUIDString());		
-		} else {
-			hashmap.put("owner_name", this.getOwner().getName());
-		}
+		hashmap.put("owner_name", this.getOwner().getUUIDString());
 		hashmap.put("firepoints", this.firepoints);
 		hashmap.put("corner", this.corner.toString());
 		hashmap.put("next_raid_date", this.nextRaidDate.getTime());
 		hashmap.put("upgrades", this.getUpgradeSaveString());
 		hashmap.put("template_name", this.getSavedTemplatePath());
-
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);			
 	}	
 	
 	@Override
 	public void delete() throws SQLException {
-		
 		for (Resident resident : this.members.values()) {
 			resident.setCamp(null);
 			resident.save();
@@ -751,10 +739,11 @@ public class Camp extends Buildable {
 			ItemStack token = LoreCraftableMaterial.spawn(craftMat);
 			
 			Tagged tag = (Tagged) craftMat.getComponent("Tagged");
-			token = tag.addTag(token, this.getOwnerName());
+			Resident res = CivGlobal.getResidentViaUUID(UUID.fromString(this.getOwnerName()));
+			token = tag.addTag(token, res.getName());
 	
 			AttributeUtil attrs = new AttributeUtil(token);
-			attrs.addLore(CivColor.LightGray+this.getOwnerName());
+			attrs.addLore(CivColor.LightGray+res.getName());
 			token = attrs.getStack();
 			
 			mInv.addItem(token);
@@ -1003,12 +992,12 @@ public class Camp extends Buildable {
 	}
 
 	public Resident getOwner() {
-		return CivGlobal.getResident(ownerName);
+		return CivGlobal.getResidentViaUUID(UUID.fromString(ownerName));
 	}
 
 
 	public void setOwner(Resident owner) {
-		this.ownerName = owner.getName();
+		this.ownerName = owner.getUUID().toString();
 	}
 
 
@@ -1183,7 +1172,8 @@ public class Camp extends Buildable {
 	}
 
 	public String getOwnerName() {
-		return ownerName;
+		Resident res = CivGlobal.getResidentViaUUID(UUID.fromString(ownerName));
+		return res.getName();
 	}
 
 	public void setOwnerName(String ownerName) {

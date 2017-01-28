@@ -346,7 +346,6 @@ public class CivSettings {
 	}
 
 	public static FileConfiguration loadCivConfig(String filepath) throws FileNotFoundException, IOException, InvalidConfigurationException {
-
 		File file = new File(plugin.getDataFolder().getPath()+"/data/"+filepath);
 		if (!file.exists()) {
 			CivLog.warning("Configuration file:"+filepath+" was missing. Streaming to disk from Jar.");
@@ -360,7 +359,25 @@ public class CivSettings {
 		return cfg;
 	}
 	
-		
+	public static void reloadGovConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		CivSettings.governments.clear();
+		governmentConfig = loadCivConfig("governments.yml");
+		ConfigGovernment.loadConfig(governmentConfig, governments);
+	}
+	
+	public static void reloadStructureConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		CivSettings.structures.clear();
+		structureConfig = loadCivConfig("structures.yml");
+		ConfigBuildableInfo.loadConfig(structureConfig, "structures", structures, false);
+		ConfigGrocerLevel.loadConfig(structureConfig, grocerLevels);
+		ConfigCottageLevel.loadConfig(structureConfig, cottageLevels);
+		ConfigTempleSacrifice.loadConfig(structureConfig, templeSacrifices);
+		ConfigMineLevel.loadConfig(structureConfig, mineLevels);
+		ConfigLabLevel.loadConfig(structureConfig, labLevels);
+		ConfigStableItem.loadConfig(structureConfig, stableItems);
+		ConfigStableHorse.loadConfig(structureConfig, horses);
+	}
+	
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");

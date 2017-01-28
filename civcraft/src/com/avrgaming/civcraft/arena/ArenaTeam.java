@@ -64,53 +64,28 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	}
 	
 	private void loadMembers(String memberList) {
-		
-		if (CivGlobal.useUUID) {
-			String[] members = memberList.split(",");
-			for (String uuid : members) {
-				Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(uuid));
-				if (resident != null) {
-					teamMembers.add(resident);
-				}
-			}
-		} else {
-			String[] members = memberList.split(",");
-			for (String name : members) {
-				Resident resident = CivGlobal.getResident(name);
-				if (resident != null) {
-					teamMembers.add(resident);
-				}
+		String[] members = memberList.split(",");
+		for (String uuid : members) {
+			Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(uuid));
+			if (resident != null) {
+				teamMembers.add(resident);
 			}
 		}
 	}
 	
 	public String getMemberListSaveString() {
 		String out = "";
-
-		if (CivGlobal.useUUID) {
-			for (Resident resident : teamMembers) {
-				out += resident.getUUIDString()+",";
-			}			
-		} else {
-			for (Resident resident : teamMembers) {
-				out += resident.getName()+",";
-			}
+		for (Resident resident : teamMembers) {
+			out += resident.getUUIDString()+",";
 		}
-		
 		return out;
 	}
 	
 	@Override
-	public void load(ResultSet rs) throws SQLException, InvalidNameException,
-			InvalidObjectException, CivException {
+	public void load(ResultSet rs) throws SQLException, InvalidNameException, InvalidObjectException, CivException {
 		this.setId(rs.getInt("id"));
 		this.setName(rs.getString("name"));
-		
-		if (CivGlobal.useUUID) {
-			this.leader = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("leader")));
-		} else {
-			this.leader = CivGlobal.getResident(rs.getString("leader"));
-		}
+		this.leader = CivGlobal.getResidentViaUUID(UUID.fromString(rs.getString("leader")));
 		if (leader == null) {
 			CivLog.error("Couldn't load leader for team:"+this.getName()+"("+this.getId()+")");
 			return;
@@ -132,14 +107,9 @@ public class ArenaTeam extends SQLObject implements Comparable<ArenaTeam> {
 	public void saveNow() throws SQLException {
 		HashMap<String, Object> hashmap = new HashMap<String, Object>();
 		hashmap.put("name", this.getName());
-		if (CivGlobal.useUUID) {
-			hashmap.put("leader", this.leader.getUUIDString());
-		} else {
-			hashmap.put("leader", this.leader.getName());		
-		}
+		hashmap.put("leader", this.leader.getUUIDString());
 		hashmap.put("ladderPoints", this.getLadderPoints());
 		hashmap.put("members", this.getMemberListSaveString());
-
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);		
 	}
 	

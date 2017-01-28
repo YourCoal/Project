@@ -91,6 +91,7 @@ public class AdminCommand extends CommandBase {
 		commands.put("perk", "Admin perk management.");
 		
 		commands.put("gui", "Opens book options. Type 'open' after book to get the GUI.");
+		commands.put("reload", "Allows for some aspects of CivCraft to be reloaded in the server.");
 		commands.put("tradeholo", "Enables all trade good holograms.");
 		commands.put("test", "Literally for testing purposes.");
 	}
@@ -241,6 +242,11 @@ public class AdminCommand extends CommandBase {
 	public void gui_cmd() {
 		AdminGUICommand cmd = new AdminGUICommand();	
 		cmd.onCommand(sender, null, "gui", this.stripArgs(args, 1));
+	}
+	
+	public void reload_cmd() {
+		AdminReloadCommand cmd = new AdminReloadCommand();	
+		cmd.onCommand(sender, null, "reload", this.stripArgs(args, 1));
 	}
 	
 	public void perk_cmd() {
