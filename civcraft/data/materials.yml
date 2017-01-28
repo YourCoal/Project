@@ -312,15 +312,15 @@ materials:
 #=============[ Primary Materials Tier 1 ]=============#
 #======================================================#
 # Checked 01/21/2017
-  - id: 'civ_carved_leather'
-    item_id: 334
+  - id: 'civ_crafted_reeds'
+    item_id: 338
     item_data: 0
-    name: 'T1 Carved Leather'
+    name: 'T1 Crafted Reeds'
     craftable: true
     shaped: false
     category: '<lightgreen>Tier 1 Materials'
     ingredients:
-        - type_id: 334
+        - type_id: 338
           data: 0
           count: 9
 # Checked 01/21/2017
@@ -336,6 +336,18 @@ materials:
           data: 0
           count: 9
 # Checked 01/21/2017
+  - id: 'civ_refined_sticks'
+    item_id: 280
+    item_data: 0
+    name: 'T1 Crafted Sticks'
+    craftable: true
+    shaped: false
+    category: '<lightgreen>Tier 1 Materials'
+    ingredients:
+        - type_id: 280
+          data: 0
+          count: 9
+# Checked 01/21/2017
   - id: 'civ_refined_slime'
     item_id: 341
     item_data: 0
@@ -347,7 +359,7 @@ materials:
         - type_id: 341 
           custom_id: 'civ_vanilla_slimeball'
           data: 0
-          count: 3
+          count: 4
 # Checked 01/21/2017
   - id: 'civ_refined_sugar'
     item_id: 353
@@ -360,31 +372,6 @@ materials:
         - type_id: 353
           data: 0
           count: 9
-# Checked 01/21/2017
-  - id: 'civ_crafted_string'
-    item_id: 287
-    item_data: 0
-    name: 'T1 Crafted String'
-    craftable: true
-    shaped: false
-    category: '<lightgreen>Tier 1 Materials'
-    ingredients:
-        - type_id: 287
-          data: 0
-          count: 9
-# Checked 01/21/2017
-  - id: 'civ_crafted_reeds'
-    item_id: 338
-    item_data: 0
-    name: 'T1 Crafted Reeds'
-    craftable: true
-    shaped: false
-    category: '<lightgreen>Tier 1 Materials'
-    ingredients:
-        - type_id: 338
-          data: 0
-          count: 9
-#
 # Checked 01/21/2017
   - id: 'civ_refined_sulphur'
     item_id: 289
@@ -413,42 +400,28 @@ materials:
           data: 0
           count: 1
 # Checked 01/21/2017
-  - id: 'civ_crafted_sticks'
-    item_id: 280
+  - id: 'civ_refined_string'
+    item_id: 287
     item_data: 0
-    name: 'T1 Crafted Sticks'
+    name: 'T1 Refined String'
     craftable: true
     shaped: false
     category: '<lightgreen>Tier 1 Materials'
     ingredients:
-        - type_id: 280
+        - type_id: 287
           data: 0
           count: 9
 # Checked 01/21/2017
-  - id: 'civ_forged_chromium'
-    item_id: 265
+  - id: 'civ_refined_leather'
+    item_id: 334
     item_data: 0
-    name: 'T1 Forged Chromium'
+    name: 'T1 Refined Leather'
     craftable: true
     shaped: false
     category: '<lightgreen>Tier 1 Materials'
     ingredients:
-        - type_id: 0
+        - type_id: 334
           data: 0
-          custom_id: 'civ_chromium_ore'
-          count: 9
-# Checked 01/21/2017
-  - id: 'civ_forged_tungsten'
-    item_id: 133
-    item_data: 0
-    name: 'T1 Forged Tungsten'
-    craftable: true
-    shaped: false
-    category: '<lightgreen>Tier 1 Materials'
-    ingredients:
-        - type_id: 0
-          data: 0
-          custom_id: 'civ_tungsten_ore'
           count: 9
 # XXX Statically coded to drop from lapis.        
 # Checked 01/21/2017
@@ -474,133 +447,8 @@ materials:
 #============[ Secondary Materials Tier 2 ]============#
 #======================================================#
 # Checked 01/21/2017
-  - id: 'civ_crafted_leather'
-    item_id: 31
-    item_data: 0
-    name: 'T2 Crafted Leather'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_carved_leather'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_crafted_string'
-          data: 0
-          count: 1
-# Checked 01/21/2017
-  - id: 'civ_decorative_jewels'
-    item_id: 372
-    item_data: 0
-    name: 'T2 Decorative Jewels'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 57
-          data: 0
-          count: 1
-        - type_id: 41
-          data: 0
-          count: 1
-# Checked 01/21/2017
-  - id: 'civ_crushed_stone'
-    item_id: 44
-    item_data: 0
-    name: 'T2 Crushed Stone'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_refined_stone'
-          data: 0
-          count: 9
-# Checked 01/21/2017
-  - id: 'civ_jewelry_grade_gold'
-    item_id: 322
-    item_data: 0
-    name: 'T2 Jewelry Grade Gold'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 41
-          data: 0
-          count: 6
-        - type_id: 42
-          data: 0
-          count: 3
-# Checked 01/21/2017
-  - id: 'civ_compacted_hay_bale'
-    item_id: 170
-    item_data: 0
-    name: 'T2 Compacted Hay Bale'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 170
-          data: 0
-          count: 9
-# Checked 01/21/2017
-  - id: 'civ_milled_lumber'
-    item_id: 53
-    item_data: 0
-    name: 'T2 Milled Lumber'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_refined_wood'
-          data: 0
-          count: 9
-# Checked 01/21/2017
-  - id: 'civ_woven_mesh_patch'
-    item_id: 358
-    item_data: 0
-    name: 'T2 Woven Mesh Patch'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_crafted_string'
-          data: 0
-          count: 3
-        - type_id: 0
-          custom_id: 'civ_crafted_reeds'
-          data: 0
-          count: 3
-        - type_id: 0
-          custom_id: 'civ_refined_slime'
-          data: 0
-          count: 1
-# Checked 01/21/2017
-  - id: 'civ_bronze_ingot'
-    item_id: 265
-    item_data: 0
-    name: 'T2 Bronze Ingot'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 42
-          data: 0
-          count: 3
-        - type_id: 173
-          data: 0
-          count: 3
-        - type_id: 0
-          custom_id: 'civ_refined_sulphur'
-          data: 0
-          count: 1
-# Checked 01/21/2017
   - id: 'civ_varnish'
-    item_id: 384
+    item_id: 437
     item_data: 0
     name: 'T2 Varnish'
     craftable: true
@@ -620,10 +468,10 @@ materials:
         - type_id: 0
           custom_id: 'civ_refined_wart'
           data: 0
-          count: 2
+          count: 1
 # Checked 01/21/2017
   - id: 'civ_sticky_resin'
-    item_id: 282
+    item_id: 410
     item_data: 0
     name: 'T2 Sticky Resin'
     craftable: true
@@ -640,9 +488,6 @@ materials:
           custom_id: 'civ_refined_sugar'
           data: 0
           count: 2
-        - type_id: 281
-          data: 0
-          count: 1
 # Checked 01/21/2017
   - id: 'civ_clay_molding'
     item_id: 45
@@ -661,89 +506,98 @@ materials:
           data: 0
           count: 3
         - type_id: 0
-          custom_id: 'civ_crafted_sticks'
+          custom_id: 'civ_refined_sticks'
           data: 0
           count: 3
 # Checked 01/21/2017
-  - id: 'civ_chromium_ingot'
-    item_id: 399
+  - id: 'civ_woven_leather'
+    item_id: 31
     item_data: 0
-    name: 'T2 Chromium Ingot'
+    name: 'T2 Woven Leather'
     craftable: true
     shaped: false
     category: '<yellow>Tier 2 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_forged_chromium'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_refined_sulphur'
-          data: 0
-          count: 2
-        - type_id: 173
+          custom_id: 'civ_refined_leather'
           data: 0
           count: 3
-        - type_id: 264
+        - type_id: 0
+          custom_id: 'civ_refined_sugar'
           data: 0
-          count: 1
+          count: 3
 # Checked 01/21/2017
-  - id: 'civ_aged_wood_stave'
+  - id: 'civ_woven_string'
+    item_id: 30
+    item_data: 0
+    name: 'T2 Woven String'
+    craftable: true
+    shaped: false
+    category: '<yellow>Tier 2 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_string'
+          data: 0
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_refined_sugar'
+          data: 0
+          count: 3
+# Checked 01/21/2017
+  - id: 'civ_woven_sticks'
     item_id: 280
     item_data: 0
-    name: 'T2 Aged Wood Stave'
+    name: 'T2 Woven Sticks'
     craftable: true
     shaped: false
     category: '<yellow>Tier 2 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_crafted_sticks'
+          custom_id: 'civ_refined_sticks'
           data: 0
           count: 3
         - type_id: 0
           custom_id: 'civ_crafted_reeds'
           data: 0
-          count: 2
+          count: 3
         - type_id: 0
-          custom_id: 'civ_crafted_string'
+          custom_id: 'civ_woven_string'
           data: 0
-          count: 2
+          count: 3
 # Checked 01/21/2017
-  - id: 'civ_woven_threading'
-    item_id: 420
+  - id: 'civ_bronze_ingot'
+    item_id: 266
     item_data: 0
-    name: 'T2 Woven Threading'
+    name: 'T2 Bronze Ingot'
     craftable: true
     shaped: false
+    shiny: true
     category: '<yellow>Tier 2 Materials'
-    components:
-        - name: 'NoRightClick'
     ingredients:
-        - type_id: 0
-          custom_id: 'civ_crafted_string'
+        - type_id: 42
           data: 0
-          count: 4
+          count: 3
+        - type_id: 173
+          data: 0
+          count: 2
         - type_id: 0
-          custom_id: 'civ_refined_slime'
+          custom_id: 'civ_refined_sulphur'
           data: 0
           count: 1
 # Checked 01/21/2017
-  - id: 'civ_bronze_sword_blade'
-    item_id: 265
+  - id: 'civ_bronze_block'
+    item_id: 41
     item_data: 0
-    name: 'T2 Bronze Sword Blade'
+    name: 'T2 Bronze Block'
     craftable: true
     shaped: false
+    shiny: true
     category: '<yellow>Tier 2 Materials'
     ingredients:
         - type_id: 0
           custom_id: 'civ_bronze_ingot'
           data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_clay_bronze_cast'
-          data: 0
-          count: 1
+          count: 9
 # Checked 01/21/2017
   - id: 'civ_bronze_sword_hilt'
     item_id: 280
@@ -756,22 +610,35 @@ materials:
         - type_id: 0
           custom_id: 'civ_bronze_ingot'
           data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_varnish'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_leather_straps'
-          data: 0
-          count: 2
+          count: 1
         - type_id: 0
           custom_id: 'civ_sticky_resin'
           data: 0
           count: 1
+        - type_id: 0
+          custom_id: 'civ_woven_sticks'
+          data: 0
+          count: 2
+# Checked 01/21/2017
+  - id: 'civ_bronze_sword_blade'
+    item_id: 266
+    item_data: 0
+    name: 'T2 Bronze Sword Blade'
+    craftable: true
+    shaped: false
+    category: '<yellow>Tier 2 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_bronze_ingot'
+          data: 0
+          count: 2
+        - type_id: 0
+          custom_id: 'civ_varnish'
+          data: 0
+          count: 1
 # Checked 01/21/2017
   - id: 'civ_bronze_plate'
-    item_id: 148
+    item_id: 147
     item_data: 0
     name: 'T2 Bronze Plate'
     craftable: true
@@ -781,7 +648,7 @@ materials:
         - type_id: 0
           custom_id: 'civ_bronze_ingot'
           data: 0
-          count: 1
+          count: 2
         - type_id: 0
           custom_id: 'civ_varnish'
           data: 0
@@ -790,135 +657,55 @@ materials:
           custom_id: 'civ_clay_molding'
           data: 0
           count: 1
+# Checked 01/21/2017
+  - id: 'civ_crushed_stone'
+    item_id: 44
+    item_data: 0
+    name: 'T2 Crushed Stone'
+    craftable: true
+    shaped: false
+    category: '<yellow>Tier 2 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_stone'
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_milled_lumber'
+    item_id: 53
+    item_data: 0
+    name: 'T2 Milled Lumber'
+    craftable: true
+    shaped: false
+    category: '<lightblue>Tier 2 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_wood'
+          data: 0
+          count: 9
 #======================================================#
 #=============[ ------- Materials Tier 3 ]=============#
 #======================================================#
 # Checked 01/21/2017
-  - id: 'civ_leather_straps'
-    item_id: 32
+  - id: 'civ_slimey_varnish'
+    item_id: 437
     item_data: 0
-    name: 'T3 Leather Straps'
+    name: 'T3 Slimey Varnish'
     craftable: true
     shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_crafted_leather'
-          data: 0
-          count: 3
-        - type_id: 0
-          custom_id: 'civ_varnish'
-          data: 0
-          count: 2
-# Checked 01/21/2017
-  - id: 'civ_clay_bronze_cast'
-    item_id: 343
-    item_data: 0
-    name: 'T3 Clay Bronze Casting'
-    craftable: true
-    shaped: false
+    shiny: true
     category: '<lightpurple>Tier 3 Materials'
     components:
         - name: 'NoRightClick'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_clay_molding'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_sticky_resin'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_crafted_sticks'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_crafted_reeds'
-          data: 0
-          count: 2
-# Checked 01/21/2017
-  - id: 'civ_reinforced_braid'
-    item_id: 287
-    item_data: 0
-    name: 'T3 Reinforced Braid'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_woven_threading'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_sticky_resin'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_varnish'
-          data: 0
-          count: 1
-# Checked 01/21/2017
-  - id: 'civ_steel_ingot'
-    item_id: 318
-    item_data: 0
-    name: 'T3 Steel Ingot'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_bronze_ingot'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_chromium_ingot'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_varnish'
-          data: 0
-          count: 1
-# Checked 01/21/2017
-  - id: 'civ_longbow_stave'
-    item_id: 280
-    item_data: 0
-    name: 'T3 Longbow Stave'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_aged_wood_stave'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_sticky_resin'
-          data: 0
-          count: 1
-# Checked 01/21/2017
-  - id: 'civ_carbide_molding'
-    item_id: 380
-    item_data: 0
-    name: 'T3 Carbide Molding'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    components:
-        - name: 'NoRightClick'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_clay_molding'
+          custom_id: 'civ_refined_slime'
           data: 0
           count: 2
         - type_id: 0
           custom_id: 'civ_varnish'
           data: 0
           count: 2
-        - type_id: 0
-          custom_id: 'civ_sticky_resin'
-          data: 0
-          count: 1
 # Checked 01/21/2017
   - id: 'civ_smithy_resin'
     item_id: 378
@@ -927,63 +714,183 @@ materials:
     craftable: true
     shaped: false
     category: '<lightpurple>Tier 3 Materials'
+    components:
+        - name: 'NoRightClick'
     ingredients:
         - type_id: 0
+          custom_id: 'civ_refined_slime'
+          data: 0
+          count: 2
+        - type_id: 0
           custom_id: 'civ_sticky_resin'
+          data: 0
+          count: 4
+# Checked 01/21/2017
+  - id: 'civ_improved_molding'
+    item_id: 44
+    item_data: 4
+    name: 'T3 Improved Molding'
+    craftable: true
+    shaped: false
+    category: '<lightpurple>Tier 3 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_clay_molding'
+          data: 0
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_woven_sticks'
+          data: 0
+          count: 3
+# Checked 01/21/2017
+  - id: 'civ_hardened_leather'
+    item_id: 31
+    item_data: 0
+    name: 'T3 Hardened Leather'
+    craftable: true
+    shaped: false
+    category: '<lightpurple>Tier 3 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_woven_leather'
+          data: 0
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_slimey_varnish'
+          data: 0
+          count: 3
+# Checked 01/21/2017
+  - id: 'civ_hardened_string'
+    item_id: 30
+    item_data: 0
+    name: 'T3 Hardened String'
+    craftable: true
+    shaped: false
+    category: '<lightpurple>Tier 3 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_woven_string'
+          data: 0
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_slimey_varnish'
+          data: 0
+          count: 3
+# Checked 01/21/2017
+  - id: 'civ_hardened_sticks'
+    item_id: 280
+    item_data: 0
+    name: 'T3 Hardened Sticks'
+    craftable: true
+    shaped: false
+    category: '<lightpurple>Tier 3 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_woven_sticks'
+          data: 0
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_sticky_resin'
+          data: 0
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_hardened_string'
+          data: 0
+          count: 3
+# Checked 01/21/2017
+  - id: 'civ_steel_ingot'
+    item_id: 265
+    item_data: 0
+    name: 'T3 Steel Ingot'
+    craftable: true
+    shaped: false
+    shiny: true
+    category: '<lightpurple>Tier 3 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_bronze_block'
+          data: 0
+          count: 3
+        - type_id: 173
           data: 0
           count: 2
         - type_id: 0
           custom_id: 'civ_refined_sulphur'
           data: 0
           count: 2
-        - type_id: 173
-          data: 0
-          count: 1
 # Checked 01/21/2017
-  - id: 'civ_tungsten_ingot'
-    item_id: 368
+  - id: 'civ_steel_block'
+    item_id: 216
     item_data: 0
-    name: 'T3 Tungsten Ingot'
+    name: 'T3 Steel Block'
+    craftable: true
+    shaped: false
+    shiny: true
+    category: '<lightpurple>Tier 3 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_steel_ingot'
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_steel_sword_hilt'
+    item_id: 280
+    item_data: 0
+    name: 'T3 Steel Sword Hilt'
     craftable: true
     shaped: false
     category: '<lightpurple>Tier 3 Materials'
-    components:
-        - name: 'NoRightClick'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_forged_tungsten'
-          data: 0
-          count: 5
-        - type_id: 0
-          custom_id: 'civ_chromium_ingot'
-          data: 0
-          count: 2
-        - type_id: 173
-          data: 0
-          count: 2
-# Checked 01/21/2017
-  - id: 'civ_clay_tungsten_casting'
-    item_id: 368
-    item_data: 0
-    name: 'T3 Clay Tungsten Casting'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    components:
-        - name: 'NoRightClick'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_clay_molding'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_sticky_resin'
+          custom_id: 'civ_steel_ingot'
           data: 0
           count: 1
         - type_id: 0
-          custom_id: 'civ_crafted_reeds'
+          custom_id: 'civ_smithy_resin'
+          data: 0
+          count: 1
+        - type_id: 0
+          custom_id: 'civ_hardened_sticks'
           data: 0
           count: 2
+# Checked 01/21/2017
+  - id: 'civ_steel_sword_blade'
+    item_id: 265
+    item_data: 0
+    name: 'T3 Steel Sword Blade'
+    craftable: true
+    shaped: false
+    category: '<lightpurple>Tier 3 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_steel_ingot'
+          data: 0
+          count: 2
+        - type_id: 0
+          custom_id: 'civ_slimey_varnish'
+          data: 0
+          count: 1
+# Checked 01/21/2017
+  - id: 'civ_steel_plate'
+    item_id: 148
+    item_data: 0
+    name: 'T3 Steel Plate'
+    craftable: true
+    shaped: false
+    category: '<lightpurple>Tier 3 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_steel_ingot'
+          data: 0
+          count: 2
+        - type_id: 0
+          custom_id: 'civ_slimey_varnish'
+          data: 0
+          count: 1
+        - type_id: 0
+          custom_id: 'civ_improved_molding'
+          data: 0
+          count: 1
 # Checked 01/21/2017
   - id: 'civ_masonry_mortar'
     item_id: 45
@@ -994,11 +901,11 @@ materials:
     category: '<lightpurple>Tier 3 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_sticky_resin'
+          custom_id: 'civ_smithy_resin'
           data: 0
           count: 2
         - type_id: 0
-          custom_id: 'civ_clay_molding'
+          custom_id: 'civ_improved_molding'
           data: 0
           count: 2
 # Checked 01/21/2017
@@ -1014,125 +921,105 @@ materials:
           custom_id: 'civ_crushed_stone'
           data: 0
           count: 9
- # Checked 01/21/2017
-  - id: 'civ_steel_sword_hilt'
-    item_id: 280
-    item_data: 0
-    name: 'T3 Steel Sword Hilt'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_clay_bronze_cast'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_smithy_resin'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_steel_ingot'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_reinforced_braid'
-          data: 0
-          count: 1
-# Checked 01/21/2017
-  - id: 'civ_steel_sword_blade'
-    item_id: 265
-    item_data: 0
-    name: 'T3 Steel Sword Blade'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_clay_bronze_cast'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_steel_ingot'
-          data: 0
-          count: 4
-        - type_id: 0
-          custom_id: 'civ_smithy_resin'
-          data: 0
-          count: 2
-# Checked 01/21/2017
-  - id: 'civ_steel_plate'
-    item_id: 265
-    item_data: 0
-    name: 'T3 Steel Plate'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_sticky_resin'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_clay_molding'
-          data: 0
-          count: 1
-        - type_id: 0
-          custom_id: 'civ_steel_ingot'
-          data: 0
-          count: 1
 #======================================================#
 #============[ Advanced Materials Tier 4 ]============##
 #======================================================#
 # Checked 01/21/2017
-  - id: 'civ_artisan_leather'
+  - id: 'civ_mega_varnish'
+    item_id: 384
+    item_data: 0
+    name: 'T4 Mega Varnish'
+    craftable: true
+    shaped: false
+    category: '<rose>Tier 4 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_slime'
+          data: 0
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_slimey_varnish'
+          data: 0
+          count: 3
+# Checked 01/21/2017
+  - id: 'civ_mega_resin'
+    item_id: 433
+    item_data: 0
+    name: 'T4 Mega Resin'
+    craftable: true
+    shaped: false
+    category: '<rose>Tier 4 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_slime'
+          data: 0
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_smithy_resin'
+          data: 0
+          count: 6
+# Checked 01/21/2017
+  - id: 'civ_mega_molding'
+    item_id: 380
+    item_data: 0
+    name: 'T4 Mega Molding'
+    craftable: true
+    shaped: false
+    category: '<rose>Tier 4 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_improved_molding'
+          data: 0
+          count: 4
+        - type_id: 0
+          custom_id: 'civ_hardened_sticks'
+          data: 0
+          count: 4
+# Checked 01/21/2017
+  - id: 'civ_composite_leather'
     item_id: 31
     item_data: 0
-    name: 'T4 Artisan Leather'
+    name: 'T4 Composite Leather'
     craftable: true
     shaped: false
     category: '<rose>Tier 4 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_leather_straps'
+          custom_id: 'civ_hardened_leather'
           data: 0
-          count: 2
-        - type_id: 5
-          custom_id: 'civ_reinforced_braid'
+          count: 3
+        - type_id: 0
+          custom_id: 'civ_mega_varnish'
           data: 0
-          count: 2
+          count: 3
 # Checked 01/21/2017
-  - id: 'civ_tungsten_plate'
-    item_id: 405
+  - id: 'civ_composite_string'
+    item_id: 30
     item_data: 0
-    name: 'T4 Tungsten Plate'
+    name: 'T4 Composite String'
     craftable: true
     shaped: false
     category: '<rose>Tier 4 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_clay_tungsten_casting'
+          custom_id: 'civ_hardened_string'
           data: 0
-          count: 1
+          count: 3
         - type_id: 0
-          custom_id: 'civ_smithy_resin'
+          custom_id: 'civ_mega_varnish'
           data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_tungsten_ingot'
-          data: 0
-          count: 1
+          count: 3
 # Checked 01/21/2017
-  - id: 'civ_tungsten_sword_blade'
-    item_id: 57
+  - id: 'civ_composite_stick'
+    item_id: 280
     item_data: 0
-    name: 'T4 Tungsten Sword Blade'
+    name: 'T4 Composite Sticks'
     craftable: true
     shaped: false
     category: '<rose>Tier 4 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_clay_tungsten_casting'
+          custom_id: 'civ_hardened_sticks'
           data: 0
           count: 3
         - type_id: 0
@@ -1140,9 +1027,44 @@ materials:
           data: 0
           count: 3
         - type_id: 0
-          custom_id: 'civ_tungsten_ingot'
+          custom_id: 'civ_composite_string'
           data: 0
           count: 3
+# Checked 01/21/2017
+  - id: 'civ_tungsten_ingot'
+    item_id: 336
+    item_data: 0
+    name: 'T4 Tungsten Ingot'
+    craftable: true
+    shaped: false
+    shiny: true
+    category: '<rose>Tier 4 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_steel_block'
+          data: 0
+          count: 3
+        - type_id: 173
+          data: 0
+          count: 2
+        - type_id: 0
+          custom_id: 'civ_refined_sulphur'
+          data: 0
+          count: 3
+# Checked 01/21/2017
+  - id: 'civ_tungsten_block'
+    item_id: 172
+    item_data: 0
+    name: 'T4 Tungsten Block'
+    craftable: true
+    shaped: false
+    shiny: true
+    category: '<rose>Tier 4 Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_tungsten_ingot'
+          data: 0
+          count: 9
 # Checked 01/21/2017
   - id: 'civ_tungsten_sword_hilt'
     item_id: 280
@@ -1153,92 +1075,58 @@ materials:
     category: '<rose>Tier 4 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_clay_tungsten_casting'
+          custom_id: 'civ_tungsten_ingot'
           data: 0
-          count: 2
+          count: 1
         - type_id: 0
-          custom_id: 'civ_smithy_resin'
+          custom_id: 'civ_mega_resin'
+          data: 0
+          count: 1
+        - type_id: 0
+          custom_id: 'civ_composite_stick'
           data: 0
           count: 2
+# Checked 01/21/2017
+  - id: 'civ_tungsten_sword_blade'
+    item_id: 336
+    item_data: 0
+    name: 'T4 Tungsten Sword Blade'
+    craftable: true
+    shaped: false
+    category: '<rose>Tier 4 Materials'
+    ingredients:
         - type_id: 0
           custom_id: 'civ_tungsten_ingot'
           data: 0
           count: 2
         - type_id: 0
-          custom_id: 'civ_artisan_leather'
+          custom_id: 'civ_mega_varnish'
           data: 0
-          count: 2
+          count: 1
 # Checked 01/21/2017
-  - id: 'civ_composite_bow_stave'
-    item_id: 280
+  - id: 'civ_tungsten_plate'
+    item_id: 405
     item_data: 0
-    name: 'T4 Composite Bow Stave'
+    name: 'T3 Tungsten Plate'
     craftable: true
     shaped: false
     category: '<rose>Tier 4 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_longbow_stave'
+          custom_id: 'civ_tungsten_ingot'
           data: 0
           count: 2
         - type_id: 0
-          custom_id: 'civ_leather_straps'
+          custom_id: 'civ_mega_varnish'
           data: 0
-          count: 2
+          count: 1
         - type_id: 0
-          custom_id: 'civ_reinforced_braid'
+          custom_id: 'civ_mega_molding'
           data: 0
-          count: 2
-# Checked 01/21/2017
-  - id: 'civ_composite_bow_string'
-    item_id: 287
-    item_data: 0
-    name: 'T4 Composite Bow String'
-    craftable: true
-    shaped: false
-    category: '<rose>Tier 4 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_smithy_resin'
-          data: 0
-          count: 3
-        - type_id: 0
-          custom_id: 'civ_reinforced_braid'
-          data: 0
-          count: 3
-# Checked 01/21/2017 RJ
-  - id: 'civ_cannon_wheel'
-    item_id: 163
-    item_data: 0
-    name: 'T4 Cannon Wheel'
-    craftable: true
-    shaped: false
-    category: '<rose>Tier 4 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_milled_lumber'
-          data: 0
-          count: 9
-  - id: 'civ_cannon_barrel_part'
-    item_id: 171
-    item_data: 15
-    name: 'T4 Cannon Barrel Part'
-    craftable: true
-    shaped: true
-    category: '<rose>Tier 4 Materials'
-    ingredients:
-        - type_id: 0
-          data: 0
-          custom_id: 'civ_steel_plate'
-          letter: 'p'
-    shape:
-        - "ppp"
-        - "ppp"
-        - " p "
+          count: 1
 #======================================================#
 #==========[ Mega Advanced Materials Tier 5 ]==========#
 #======================================================#
-
 
 
 #======================================================#
@@ -1294,6 +1182,30 @@ materials:
 #          custom_id: 'civ_proof_of_leadership'
 #          data: 0
 #          count: 1
+# Checked 01/21/2017
+  - id: 'civ_jewelry_grade_gold'
+    item_id: 322
+    item_data: 0
+    name: 'T2 Jewelry Grade Gold'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 41
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_decorative_jewels'
+    item_id: 372
+    item_data: 0
+    name: 'T2 Decorative Jewels'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 57
+          data: 0
+          count: 2
 # XXX mat ID hard coded for camp refund. with /camp undo 
 # Checked 01/21/2017
   - id: 'civ_found_camp'
@@ -1328,20 +1240,20 @@ materials:
     components:
         - name: 'Tagged'
 # Checked 01/21/2017
-  - id: 'civ_badge_of_leadership'
-    item_id: 421
-    item_data: 0
-    name: 'Badge Of Leadership'
-    craftable: true
-    shaped: false
-    category: '<whiteb>Mechanics'
-    components:
-        - name: 'Tagged'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_token_of_leadership'
-          data: 0
-          count: 5
+#  - id: 'civ_badge_of_leadership'
+#    item_id: 421
+#    item_data: 0
+#    name: 'Badge Of Leadership'
+#    craftable: true
+#    shaped: false
+#    category: '<whiteb>Mechanics'
+#    components:
+#        - name: 'Tagged'
+#    ingredients:
+#        - type_id: 0
+#          custom_id: 'civ_token_of_leadership'
+#          data: 0
+#          count: 5
 # Checked 01/21/2017
 #  - id: 'civ_proof_of_leadership'
 #    item_id: 347
@@ -1408,39 +1320,43 @@ materials:
         - "ppp"
         - "ppp"
         - "wpw"
+# Checked 01/21/2017 RJ
+  - id: 'civ_cannon_wheel'
+    item_id: 163
+    item_data: 0
+    name: 'T4 Cannon Wheel'
+    craftable: true
+    shaped: false
+    category: '<roseb>War Materials'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_milled_lumber'
+          data: 0
+          count: 9
+  - id: 'civ_cannon_barrel_part'
+    item_id: 171
+    item_data: 15
+    name: 'T4 Cannon Barrel Part'
+    craftable: true
+    shaped: true
+    category: '<roseb>War Materials'
+    ingredients:
+        - type_id: 0
+          data: 0
+          custom_id: 'civ_steel_plate'
+          letter: 'p'
+    shape:
+        - "ppp"
+        - "ppp"
+        - " p "
 #======================================================#
 #===============[ Tier 0 Leather Armor ]===============#
 #======================================================#
 # Checked 12/01/2016
-  - id: 'civ_wood_sword'
+  - id: 'civ_stone_sword'
     item_id: 268
     item_data: 0
-    name: 'Wooden Sword'
-    craftable: true
-    shaped: true
-    category: '<gray>Gear Tier 0'
-    components:
-        - name: 'Attack'
-          value: '5.5'
-        - name: 'NoVanillaDurability'
-        - name: 'DurabilityOnDeath'
-          value: '0.1'
-    ingredients:
-        - type_id: 5
-          data: -1
-          letter: 'p'
-        - type_id: 280
-          data: 0
-          letter: 's'
-    shape:
-        - " p "
-        - " p "
-        - " s "
-# Checked 12/01/2016
-  - id: 'civ_stone_sword'
-    item_id: 272
-    item_data: 0
-    name: 'Stone Shank'
+    name: 'Training Shank'
     craftable: true
     shaped: true
     category: '<gray>Gear Tier 0'
@@ -1449,17 +1365,17 @@ materials:
           value: '7'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 4
           data: 0
-          letter: 'c'
+          letter: 'p'
         - type_id: 280
           data: 0
           letter: 's'
     shape:
-        - " c "
-        - " c "
+        - " p "
+        - " p "
         - " s "
 # Checked 12/01/2016
   - id: 'civ_leather_helmet'
@@ -1474,7 +1390,7 @@ materials:
           value: '1.0'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 334
           data: 0
@@ -1496,7 +1412,7 @@ materials:
           value: '2.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 334
           data: 0
@@ -1518,7 +1434,7 @@ materials:
           value: '1.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 334
           data: 0
@@ -1540,7 +1456,7 @@ materials:
           value: '1.0'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 334
           data: 0
@@ -1550,91 +1466,107 @@ materials:
         - "l l"
         - "l l"
 #======================================================#
-#===============[ Tier 0 Leather Armor ]===============#
+#===============[ Tier 1 Leather Armor ]===============#
 #======================================================#
 # Checked 12/01/2016
-  - id: 'civ_woven_leather_helmet'
+  - id: 'civ_refined_leather_helmet'
     item_id: 298
     item_data: 0
-    name: 'Woven Leather Helmet'
+    name: 'Refined Leather Helmet'
     craftable: true
     shaped: true
     category: '<green>Gear Tier 1'
     components:
+        - name: 'LeatherColor'
+          color: 'A1A1A1'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '1.0'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
-        - type_id: 334
+        - type_id: 0
           data: 0
+          custom_id: 'civ_refined_leather'
           letter: 'l'
     shape:
         - "lll"
         - "l l"
         - "   "
 # Checked 12/01/2016
-  - id: 'civ_woven_leather_chestplate'
+  - id: 'civ_refined_leather_chestplate'
     item_id: 299
     item_data: 0
-    name: 'Woven Leather Jacket'
+    name: 'Refined Leather Jacket'
     craftable: true
     shaped: true
     category: '<green>Gear Tier 1'
     components:
+        - name: 'LeatherColor'
+          color: 'A1A1A1'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '2.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
-        - type_id: 334
+        - type_id: 0
           data: 0
+          custom_id: 'civ_refined_leather'
           letter: 'l'
     shape:
         - "l l"
         - "lll"
         - "lll"
 # Checked 12/01/2016
-  - id: 'civ_woven_leather_leggings'
+  - id: 'civ_refined_leather_leggings'
     item_id: 300
     item_data: 0
-    name: 'Woven Leather Pants'
+    name: 'Refined Leather Pants'
     craftable: true
     shaped: true
     category: '<green>Gear Tier 1'
     components:
+        - name: 'LeatherColor'
+          color: 'A1A1A1'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '1.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
-        - type_id: 334
+        - type_id: 0
           data: 0
+          custom_id: 'civ_refined_leather'
           letter: 'l'
     shape:
         - "lll"
         - "l l"
         - "l l"
 # Checked 12/01/2016
-  - id: 'civ_woven_leather_Boots'
+  - id: 'civ_refined_leather_Boots'
     item_id: 301
     item_data: 0
-    name: 'Woven Leather Moccasins'
+    name: 'Refined Leather Moccasins'
     craftable: true
     shaped: true
     category: '<green>Gear Tier 1'
     components:
+        - name: 'LeatherColor'
+          color: 'A1A1A1'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '1.0'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
-        - type_id: 334
+        - type_id: 0
           data: 0
+          custom_id: 'civ_refined_leather'
           letter: 'l'
     shape:
         - "   "
@@ -1644,113 +1576,113 @@ materials:
 #===============[ Tier 2 Leather Armor ]===============#
 #======================================================#
 # Checked 01/21/2017
-  - id: 'civ_refined_leather_helmet'
+  - id: 'civ_woven_leather_helmet'
     item_id: 298
     item_data: 0
-    name: 'Refined Leather Cap'
+    name: 'Woven Leather Cap'
     craftable: true
     required_techs: 'tech_leather_refinement'
     shaped: true
     category: '<gold>Gear Tier 2'
     components:
+        - name: 'LeatherColor'
+          color: 'E0C333'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '2.0'
-        - name: 'LeatherColor'
-          color: 'AB8618'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
-        - name: 'NoCauldronWash'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_carved_leather'
-          letter: 'c'
+          custom_id: 'civ_woven_leather'
+          letter: 'l'
     shape:
-        - "ccc"
-        - "c c"
+        - "lll"
+        - "l l"
         - "   "
 # Checked 01/21/2017
-  - id: 'civ_refined_leather_chestplate'
+  - id: 'civ_woven_leather_chestplate'
     item_id: 299
     item_data: 0
-    name: 'Refined Leather Chestplate'
+    name: 'Woven Leather Chestplate'
     craftable: true
     required_techs: 'tech_leather_refinement'
     shaped: true
     category: '<gold>Gear Tier 2'
     components:
+        - name: 'LeatherColor'
+          color: 'E0C333'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '3.5'
-        - name: 'LeatherColor'
-          color: 'AB8618'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
-        - name: 'NoCauldronWash'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_carved_leather'
-          letter: 'c'
+          custom_id: 'civ_woven_leather'
+          letter: 'l'
     shape:
-        - "c c"
-        - "ccc"
-        - "ccc"
+        - "l l"
+        - "lll"
+        - "lll"
 # Checked 01/21/2017
-  - id: 'civ_refined_leather_leggings'
+  - id: 'civ_woven_leather_leggings'
     item_id: 300
     item_data: 0
-    name: 'Refined Leather Leggings'
+    name: 'Woven Leather Leggings'
     craftable: true
     required_techs: 'tech_leather_refinement'
     shaped: true
     category: '<gold>Gear Tier 2'
     components:
+        - name: 'LeatherColor'
+          color: 'E0C333'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '2.5'
-        - name: 'LeatherColor'
-          color: 'AB8618'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
-        - name: 'NoCauldronWash'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_carved_leather'
-          letter: 'c'
+          custom_id: 'civ_woven_leather'
+          letter: 'l'
     shape:
-        - "ccc"
-        - "c c"
-        - "c c"
+        - "lll"
+        - "l l"
+        - "l l"
 # Checked 01/21/2017
-  - id: 'civ_refined_leather_boots'
+  - id: 'civ_woven_leather_boots'
     item_id: 301
     item_data: 0
-    name: 'Refined Leather Moccasins'
+    name: 'Woven Leather Moccasins'
     craftable: true
     required_techs: 'tech_leather_refinement'
     shaped: true
     category: '<gold>Gear Tier 2'
     components:
+        - name: 'LeatherColor'
+          color: 'E0C333'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '2.0'
-        - name: 'LeatherColor'
-          color: 'AB8618'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
-        - name: 'NoCauldronWash'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_carved_leather'
-          letter: 'c'
+          custom_id: 'civ_woven_leather'
+          letter: 'l'
     shape:
         - "   "
-        - "c c"
-        - "c c"
+        - "l l"
+        - "l l"
 #======================================================#
 #===============[ Tier 3 Leather Armor ]===============#
 #======================================================#
@@ -1764,18 +1696,18 @@ materials:
     shaped: true
     category: '<purple>Gear Tier 3'
     components:
+        - name: 'LeatherColor'
+          color: '76B221'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '3.0'
-        - name: 'LeatherColor'
-          color: '339933'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
-        - name: 'NoCauldronWash'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_leather_straps'
+          custom_id: 'civ_hardened_leather'
           letter: 'l'
     shape:
         - "lll"
@@ -1791,18 +1723,18 @@ materials:
     shaped: true
     category: '<purple>Gear Tier 3'
     components:
+        - name: 'LeatherColor'
+          color: '76B221'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '4.5'
-        - name: 'LeatherColor'
-          color: '339933'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
-        - name: 'NoCauldronWash'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_leather_straps'
+          custom_id: 'civ_hardened_leather'
           letter: 'l'
     shape:
         - "l l"
@@ -1818,18 +1750,18 @@ materials:
     shaped: true
     category: '<purple>Gear Tier 3'
     components:
+        - name: 'LeatherColor'
+          color: '76B221'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '3.5'
-        - name: 'LeatherColor'
-          color: '339933'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
-        - name: 'NoCauldronWash'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_leather_straps'
+          custom_id: 'civ_hardened_leather'
           letter: 'l'
     shape:
         - "lll"
@@ -1845,18 +1777,18 @@ materials:
     shaped: true
     category: '<purple>Gear Tier 3'
     components:
+        - name: 'LeatherColor'
+          color: '76B221'
+        - name: 'NoCauldronWash'
         - name: 'Defense'
           value: '3.0'
-        - name: 'LeatherColor'
-          color: '339933'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
-        - name: 'NoCauldronWash'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_leather_straps'
+          custom_id: 'civ_hardened_leather'
           letter: 'l'
     shape:
         - "   "
@@ -1881,12 +1813,12 @@ materials:
           color: 'FF0000'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
         - name: 'NoCauldronWash'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_artisan_leather'
+          custom_id: 'civ_composite_leather'
           letter: 'a'
     shape:
         - "aaa"
@@ -1908,12 +1840,12 @@ materials:
           color: 'FF0000'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
         - name: 'NoCauldronWash'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_artisan_leather'
+          custom_id: 'civ_composite_leather'
           letter: 'a'
     shape:
         - "a a"
@@ -1935,12 +1867,12 @@ materials:
           color: 'FF0000'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
         - name: 'NoCauldronWash'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_artisan_leather'
+          custom_id: 'civ_composite_leather'
           letter: 'a'
     shape:
         - "aaa"
@@ -1962,12 +1894,12 @@ materials:
           color: 'FF0000'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
         - name: 'NoCauldronWash'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_artisan_leather'
+          custom_id: 'civ_composite_leather'
           letter: 'a'
     shape:
         - "   "
@@ -1990,7 +1922,7 @@ materials:
           value: '16'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 287
           data: 0
@@ -2016,15 +1948,15 @@ materials:
           value: '20'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_aged_wood_stave'
+          custom_id: 'civ_woven_sticks'
           letter: 'a'
         - type_id: 0
           data: 0
-          custom_id: 'civ_crafted_string'
+          custom_id: 'civ_refined_string'
           letter: 's'
     shape:
         - "sa "
@@ -2041,18 +1973,18 @@ materials:
     category: '<purple>Gear Tier 3'
     components:
         - name: 'RangedAttack'
-          value: '28'
+          value: '24'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_longbow_stave'
+          custom_id: 'civ_hardened_sticks'
           letter: 'l'
         - type_id: 0
           data: 0
-          custom_id: 'civ_reinforced_braid'
+          custom_id: 'civ_hardened_string'
           letter: 'b'
     shape:
         - "bl "
@@ -2069,18 +2001,18 @@ materials:
     category: '<red>Gear Tier 4'
     components:
         - name: 'RangedAttack'
-          value: '32'
+          value: '28'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
-          custom_id: 'civ_composite_bow_stave'
+          custom_id: 'civ_composite_stick'
           letter: 'c'
         - type_id: 0
           data: 0
-          custom_id: 'civ_composite_bow_string'
+          custom_id: 'civ_composite_string'
           letter: 's'
     shape:
         - "sc "
@@ -2103,7 +2035,7 @@ materials:
           value: '12'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 265
           data: 0
@@ -2129,7 +2061,7 @@ materials:
           value: '2'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 265
           data: 0
@@ -2152,7 +2084,7 @@ materials:
           value: '3.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 265
           data: 0
@@ -2175,7 +2107,7 @@ materials:
           value: '2.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 265
           data: 0
@@ -2200,7 +2132,7 @@ materials:
           value: '2'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 265
           data: 0
@@ -2214,7 +2146,7 @@ materials:
 #======================================================#
 # Checked 01/21/2017
   - id: 'civ_bronze_sword'
-    item_id: 267
+    item_id: 283
     item_data: 0
     name: 'Bronze Longsword'
     craftable: true
@@ -2226,7 +2158,7 @@ materials:
           value: '16'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2242,7 +2174,7 @@ materials:
         - " h "
 # Checked 01/21/2017
   - id: 'civ_bronze_helmet'
-    item_id: 302
+    item_id: 314
     item_data: 0
     name: 'Bronze Helmet'
     craftable: true
@@ -2254,7 +2186,7 @@ materials:
           value: '3'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2266,7 +2198,7 @@ materials:
         - "   "
 # Checked 01/21/2017
   - id: 'civ_bronze_chestplate'
-    item_id: 303
+    item_id: 315
     item_data: 0
     name: 'Bronze Chestplate'
     craftable: true
@@ -2278,7 +2210,7 @@ materials:
           value: '4.5' 
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2291,7 +2223,7 @@ materials:
         
 # Checked 01/21/2017
   - id: 'civ_bronze_leggings'
-    item_id: 304
+    item_id: 316
     item_data: 0
     name: 'Bronze Leggings'
     craftable: true
@@ -2303,7 +2235,7 @@ materials:
           value: '3.5' 
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2315,9 +2247,9 @@ materials:
         - "s s"
 # Checked 01/21/2017
   - id: 'civ_bronze_boots'
-    item_id: 305
+    item_id: 317
     item_data: 0
-    name: 'Bronze Assault Boots'
+    name: 'Bronze Boots'
     craftable: true
     required_techs: 'tech_alloys'
     shaped: true
@@ -2327,7 +2259,7 @@ materials:
           value: '3'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2342,7 +2274,7 @@ materials:
 #======================================================#
 # Checked 01/21/2017
   - id: 'civ_steel_sword'
-    item_id: 283
+    item_id: 272
     item_data: 0
     name: 'Steel Sharpsword'
     craftable: true
@@ -2354,7 +2286,7 @@ materials:
           value: '20'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2370,7 +2302,7 @@ materials:
         - " h "
 # Checked 01/21/2017
   - id: 'civ_steel_helmet'
-    item_id: 314
+    item_id: 302
     item_data: 0
     name: 'Steel Helmet'
     craftable: true
@@ -2382,7 +2314,7 @@ materials:
           value: '4'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2394,7 +2326,7 @@ materials:
         - "   "
 # Checked 01/21/2017
   - id: 'civ_steel_chestplate'
-    item_id: 315
+    item_id: 303
     item_data: 0
     name: 'Steel Chestplate'
     craftable: true
@@ -2406,7 +2338,7 @@ materials:
           value: '5.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2418,7 +2350,7 @@ materials:
         - "ccc"
 # Checked 01/21/2017
   - id: 'civ_steel_leggings'
-    item_id: 316
+    item_id: 304
     item_data: 0
     name: 'Steel leggings'
     craftable: true
@@ -2430,7 +2362,7 @@ materials:
           value: '4.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2442,7 +2374,7 @@ materials:
         - "c c"
 # Checked 01/21/2017
   - id: 'civ_steel_boots'
-    item_id: 317
+    item_id: 305
     item_data: 0
     name: 'Steel Boots'
     craftable: true
@@ -2454,7 +2386,7 @@ materials:
           value: '4'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2481,7 +2413,7 @@ materials:
           value: '24'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2509,7 +2441,7 @@ materials:
           value: '5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2533,7 +2465,7 @@ materials:
           value: '6.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2557,7 +2489,7 @@ materials:
           value: '5.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -2581,7 +2513,7 @@ materials:
           value: '5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
-          value: '0.1'
+          value: '0.05'
     ingredients:
         - type_id: 0
           data: 0
@@ -3111,8 +3043,33 @@ materials:
         - "ccc"
         - "ddd"
         - "mmm"
-
-#  Special Item Recipes -------------------------------------------------
+#======================================================#
+#==================[ Vanilla  Tools ]==================#
+#======================================================#
+  - id: 'civ_vanilla_wooden_pickaxe'
+    item_id: 270
+    item_data: 0
+    name: 'Wooden Pickaxe'
+    craftable: true
+    shaped: true
+    category: '<blueb>Tools'
+    components:
+        - name: 'Attack'
+          value: '1.0'
+        - name: 'RepairCost'
+          value: '10.0'
+    ingredients:
+        - type_id: 280
+          data: 0
+          letter: 's'
+        - type_id: 5
+          data: -1
+          letter: 'm' 
+    shape:
+        - "mmm"
+        - " s "
+        - " s "
+#
   - id: 'civ_vanilla_stone_pickaxe'
     item_id: 274
     item_data: 0
@@ -3122,9 +3079,9 @@ materials:
     category: '<blueb>Tools'
     components:
         - name: 'Attack'
-          value: '0.5'
+          value: '1.5'
         - name: 'RepairCost'
-          value: '100.0'
+          value: '50.0'
     ingredients:
         - type_id: 280
           data: 0
@@ -3136,7 +3093,7 @@ materials:
         - "mmm"
         - " s "
         - " s "
-        
+#
   - id: 'civ_vanilla_iron_pickaxe'
     item_id: 257
     item_data: 0
@@ -3146,9 +3103,9 @@ materials:
     category: '<blueb>Tools'
     components:
         - name: 'Attack'
-          value: '0.5'
+          value: '2.0'
         - name: 'RepairCost'
-          value: '1000.0'
+          value: '375.0'
     ingredients:
         - type_id: 280
           data: 0
@@ -3160,31 +3117,7 @@ materials:
         - "mmm"
         - " s "
         - " s "
-        
-  - id: 'civ_vanilla_gold_pickaxe'
-    item_id: 285
-    item_data: 0
-    name: 'Gold Pickaxe'
-    craftable: true
-    shaped: true
-    category: '<blueb>Tools'
-    components:
-        - name: 'Attack'
-          value: '0.5'
-        - name: 'RepairCost'
-          value: '500.0'
-    ingredients:
-        - type_id: 280
-          data: 0
-          letter: 's'
-        - type_id: 266
-          data: 0
-          letter: 'm' 
-    shape:
-        - "mmm"
-        - " s "
-        - " s "
-
+#
   - id: 'civ_vanilla_diamond_pickaxe'
     item_id: 278
     item_data: 0
@@ -3194,9 +3127,9 @@ materials:
     category: '<blueb>Tools'
     components:
         - name: 'Attack'
-          value: '0.5'
+          value: '2.5'
         - name: 'RepairCost'
-          value: '2000.0'
+          value: '1500.0'
     ingredients:
         - type_id: 280
           data: 0
@@ -3208,7 +3141,55 @@ materials:
         - "mmm"
         - " s "
         - " s "
-        
+#
+  - id: 'civ_vanilla_wooden_shovel'
+    item_id: 269
+    item_data: 0
+    name: 'Wooden Shovel'
+    craftable: true
+    shaped: true
+    category: '<blueb>Tools'
+    components:
+        - name: 'Attack'
+          value: '0.5'
+        - name: 'RepairCost'
+          value: '10.0'
+    ingredients:
+        - type_id: 280
+          data: 0
+          letter: 's'
+        - type_id: 5
+          data: -1
+          letter: 'm' 
+    shape:
+        - " m "
+        - " s "
+        - " s "
+#
+  - id: 'civ_vanilla_stone_shovel'
+    item_id: 273
+    item_data: 0
+    name: 'Stone Shovel'
+    craftable: true
+    shaped: true
+    category: '<blueb>Tools'
+    components:
+        - name: 'Attack'
+          value: '0.5'
+        - name: 'RepairCost'
+          value: '50.0'
+    ingredients:
+        - type_id: 280
+          data: 0
+          letter: 's'
+        - type_id: 4
+          data: 0
+          letter: 'm' 
+    shape:
+        - " m "
+        - " s "
+        - " s "
+#
   - id: 'civ_vanilla_iron_shovel'
     item_id: 256
     item_data: 0
@@ -3218,9 +3199,9 @@ materials:
     category: '<blueb>Tools'
     components:
         - name: 'Attack'
-          value: '0.5'
+          value: '1.0'
         - name: 'RepairCost'
-          value: '200.0'
+          value: '375.0'
     ingredients:
         - type_id: 280
           data: 0
@@ -3232,31 +3213,7 @@ materials:
         - " m "
         - " s "
         - " s "
-        
-  - id: 'civ_vanilla_gold_shovel'
-    item_id: 284
-    item_data: 0
-    name: 'Gold Shovel'
-    craftable: true
-    shaped: true
-    category: '<blueb>Tools'
-    components:
-        - name: 'Attack'
-          value: '0.5'
-        - name: 'RepairCost'
-          value: '100.0'
-    ingredients:
-        - type_id: 280
-          data: 0
-          letter: 's'
-        - type_id: 266
-          data: 0
-          letter: 'm' 
-    shape:
-        - " m "
-        - " s "
-        - " s "
-
+#
   - id: 'civ_vanilla_diamond_shovel'
     item_id: 277
     item_data: 0
@@ -3266,9 +3223,9 @@ materials:
     category: '<blueb>Tools'
     components:
         - name: 'Attack'
-          value: '0.5'
+          value: '1.0'
         - name: 'RepairCost'
-          value: '500.0'
+          value: '1500.0'
     ingredients:
         - type_id: 280
           data: 0
@@ -3280,6 +3237,55 @@ materials:
         - " m "
         - " s "
         - " s "
+#
+  - id: 'civ_vanilla_wooden_axe'
+    item_id: 271
+    item_data: 0
+    name: Wooden Axe'
+    craftable: true
+    shaped: true
+    category: '<blueb>Tools'
+    components:
+        - name: 'Attack'
+          value: '1.5'
+        - name: 'RepairCost'
+          value: '50.0'
+    ingredients:
+        - type_id: 280
+          data: 0
+          letter: 's'
+        - type_id: 5
+          data: -1
+          letter: 'm' 
+    shape:
+        - "mm "
+        - "ms "
+        - " s "
+#
+  - id: 'civ_vanilla_stone_axe'
+    item_id: 275
+    item_data: 0
+    name: 'Stone Axe'
+    craftable: true
+    shaped: true
+    category: '<blueb>Tools'
+    components:
+        - name: 'Attack'
+          value: '2.0'
+        - name: 'RepairCost'
+          value: '50.0'
+    ingredients:
+        - type_id: 280
+          data: 0
+          letter: 's'
+        - type_id: 265
+          data: 0
+          letter: 'm' 
+    shape:
+        - "mm "
+        - "ms "
+        - " s "
+#
   - id: 'civ_vanilla_iron_axe'
     item_id: 258
     item_data: 0
@@ -3289,9 +3295,9 @@ materials:
     category: '<blueb>Tools'
     components:
         - name: 'Attack'
-          value: '0.5'
+          value: '2.5'
         - name: 'RepairCost'
-          value: '400.0'
+          value: '375.0'
     ingredients:
         - type_id: 280
           data: 0
@@ -3303,31 +3309,7 @@ materials:
         - "mm "
         - "ms "
         - " s "
-        
-  - id: 'civ_vanilla_gold_axe'
-    item_id: 286
-    item_data: 0
-    name: 'Gold Axe'
-    craftable: true
-    shaped: true
-    category: '<blueb>Tools'
-    components:
-        - name: 'Attack'
-          value: '0.5'
-        - name: 'RepairCost'
-          value: '200.0'
-    ingredients:
-        - type_id: 280
-          data: 0
-          letter: 's'
-        - type_id: 266
-          data: 0
-          letter: 'm' 
-    shape:
-        - "mm "
-        - "ms "
-        - " s "
-
+#
   - id: 'civ_vanilla_diamond_axe'
     item_id: 279
     item_data: 0
@@ -3337,9 +3319,9 @@ materials:
     category: '<blueb>Tools'
     components:
         - name: 'Attack'
-          value: '0.5'
+          value: '3.0'
         - name: 'RepairCost'
-          value: '1000.0'
+          value: '1500.0'
     ingredients:
         - type_id: 280
           data: 0
@@ -3351,82 +3333,7 @@ materials:
         - "mm "
         - "ms "
         - " s "
-
-  - id: 'civ_vanilla_iron_hoe'
-    item_id: 292
-    item_data: 0
-    name: 'Iron Hoe'
-    craftable: true
-    shaped: true
-    vanilla: true
-    category: '<blueb>Tools'
-    components:
-        - name: 'Attack'
-          value: '0.5'
-        - name: 'RepairCost'
-          value: '400.0'
-    ingredients:
-        - type_id: 280
-          data: 0
-          letter: 's'
-        - type_id: 265
-          data: 0
-          letter: 'm' 
-    shape:
-        - "mm "
-        - " s "
-        - " s "
-        
-  - id: 'civ_vanilla_gold_hoe'
-    item_id: 294
-    item_data: 0
-    name: 'Gold Hoe'
-    craftable: true
-    shaped: true
-    vanilla: true
-    category: '<blueb>Tools'
-    components:
-        - name: 'Attack'
-          value: '0.5'
-        - name: 'RepairCost'
-          value: '200.0'
-    ingredients:
-        - type_id: 280
-          data: 0
-          letter: 's'
-        - type_id: 266
-          data: 0
-          letter: 'm' 
-    shape:
-        - "mm "
-        - " s "
-        - " s "
-
-  - id: 'civ_vanilla_diamond_hoe'
-    item_id: 293
-    item_data: 0
-    name: 'Diamond Hoe'
-    craftable: true
-    shaped: true
-    vanilla: true
-    category: '<blueb>Tools'
-    components:
-        - name: 'Attack'
-          value: '0.5'
-        - name: 'RepairCost'
-          value: '500.0'
-    ingredients:
-        - type_id: 280
-          data: 0
-          letter: 's'
-        - type_id: 264
-          data: 0
-          letter: 'm' 
-    shape:
-        - "mm "
-        - " s "
-        - " s "
-
+#
   - id: 'civ_tutorial_book'
     item_id: 340
     item_data: 0
@@ -3446,7 +3353,7 @@ materials:
     category: '<blueb>Vanilla - Modified'
     craftable: true
     shaped: true
-    vanilla: false
+    vanilla: true
     required_techs: 'tech_machinery'
     components:
         - name: 'AllowBlockPlace'
@@ -3464,7 +3371,7 @@ materials:
         - "brb"
         - "bcb"
         - " b "
-        
+#
   - id: 'civ_vanilla_slimeball'
     item_id: 341
     item_data: 0
@@ -3479,15 +3386,17 @@ materials:
         - type_id: 352
           data: 0
           count: 1
-        
+#
   - id: 'civ_vanilla_sticky_piston'
     item_id: 29
     item_data: 0
     name: 'Sticky Piston'
     category: '<blueb>Vanilla - Modified'
     craftable: true
-    vanilla: true
     shaped: true
+    vanilla: true
+    components:
+        - name: 'AllowBlockPlace'
     ingredients:
         - type_id: 0
           custom_id: 'civ_vanilla_slimeball'
@@ -3500,15 +3409,15 @@ materials:
         - "   "
         - " s "
         - " p "
-        
+#
   - id: 'civ_vanilla_magma_cream'
     item_id: 378
     item_data: 0
     name: 'Magma Cream'
     category: '<blueb>Vanilla - Modified'
     craftable: true
-    vanilla: true
     shaped: false
+    vanilla: true
     ingredients:
         - type_id: 0
           custom_id: 'civ_vanilla_slimeball'
@@ -3517,15 +3426,15 @@ materials:
         - type_id: 377
           data: 0
           count: 1
-        
+#
   - id: 'civ_vanilla_lead'
     item_id: 420
     item_data: 0
     name: 'Lead'
     category: '<blueb>Vanilla - Modified'
     craftable: true
-    vanilla: true
     shaped: true
+    vanilla: true
     amount: 2
     ingredients:
         - type_id: 0
@@ -3539,7 +3448,7 @@ materials:
         - "ss "
         - "sl "
         - "  s"
-        
+#
   - id: 'civ_vanilla_dispenser'
     item_id: 23
     item_data: 0
@@ -3548,6 +3457,8 @@ materials:
     craftable: true
     vanilla: true
     shaped: true
+    components:
+        - name: 'AllowBlockPlace'
     ingredients:
         - type_id: 331
           data: 0
@@ -3563,15 +3474,16 @@ materials:
         - "ccc"
         - "cbc"
         - "crc"
-        
+#
   - id: 'civ_vanilla_TNT'
     item_id: 46
     item_data: 0
     name: 'TNT'
     category: '<blueb>Vanilla - Modified'
     craftable: true
-    vanilla: true
     shaped: false
+    vanilla: true
+    required_techs: 'tech_gun_powder'
     components:
         - name: 'AllowBlockPlace'
     ingredients:
@@ -3584,15 +3496,15 @@ materials:
           data: 0
           count: 1
           letter: 'g' 
-
+#
   - id: 'civ_vanilla_slime_block'
     item_id: 165
     item_data: 0
     name: 'Slime Block'
     category: '<blueb>Vanilla - Modified'
     craftable: true
-    vanilla: true
     shaped: false
+    vanilla: true
     components:
         - name: 'AllowBlockPlace'
     ingredients:
@@ -3600,7 +3512,7 @@ materials:
           custom_id: 'civ_vanilla_slimeball'
           data: 0
           count: 9
-
+#
   - id: 'civ_vanilla_ender_chest'
     item_id: 130
     item_data: 0
@@ -3608,7 +3520,8 @@ materials:
     category: '<blueb>Vanilla - Modified'
     craftable: true
     shaped: true
-    vanilla: false         
+    vanilla: true
+    required_techs: 'tech_global_trade'
     components:
         - name: 'AllowBlockPlace'
     ingredients:
@@ -3617,16 +3530,94 @@ materials:
           data: 0
           letter: 'p'
         - type_id: 0
-          custom_id: 'civ_artisan_leather'
+          custom_id: 'civ_composite_leather'
           data: 0
           letter: 'l'
-        - type_id: 54 #chest
+        - type_id: 54
           data: 0
           letter: 'c'
     shape:
         - "lpl"
         - "pcp"
         - "lpl"
+#
+  - id: 'civ_vanilla_elytra'
+    item_id: 443
+    item_data: 0
+    name: 'Elytra'
+    category: '<blueb>Vanilla - Modified'
+    craftable: true
+    shaped: true
+    vanilla: true
+    required_techs: 'tech_flight'
+    components:
+        - name: 'Defense'
+          value: '5'
+        - name: 'NoVanillaDurability'
+        - name: 'DurabilityOnDeath'
+          value: '0.01'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_marksmen_bow'
+          data: 0
+          letter: 'b'
+        - type_id: 0
+          custom_id: 'civ_composite_leather'
+          data: 0
+          letter: 'l'
+        - type_id: 0
+          custom_id: 'civ_composite_string'
+          data: 0
+          letter: 's'
+        - type_id: 0
+          custom_id: 'civ_mega_resin'
+          data: 0
+          letter: 'r'
+        - type_id: 0
+          custom_id: 'civ_mega_varnish'
+          data: 0
+          letter: 'v'
+    shape:
+        - "lbl"
+        - "rvr"
+        - "lsl"
+#
+  - id: 'civ_vanilla_paper1'
+    item_id: 339
+    item_data: 0
+    name: 'Paper'
+    category: '<blueb>Vanilla - Modified'
+    craftable: true
+    shaped: true
+    vanilla: true
+    amount: 27
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_crafted_reeds'
+          data: 0
+          letter: 'r'
+    shape:
+        - "   "
+        - "rrr"
+        - "   "
+#
+  - id: 'civ_vanilla_paper2'
+    item_id: 339
+    item_data: 0
+    name: 'Paper'
+    category: '<blueb>Vanilla - Modified'
+    craftable: true
+    shaped: true
+    vanilla: true
+    amount: 3
+    ingredients:
+        - type_id: 338
+          data: 0
+          letter: 'r'
+    shape:
+        - "   "
+        - "rrr"
+        - "   "
 #
 # This is a list of removed recpies based on the typeID and 
 # data value of the vanilla item.
@@ -3650,6 +3641,9 @@ removed_recipes:
     data: 0
   # Ender Chest
   - type_id: 130
+    data: 0
+  # Elytra
+  - type_id: 443
     data: 0
   # Magma Cream
   - type_id: 378
@@ -3679,11 +3673,8 @@ removed_recipes:
 # Enchanting Table
   - type_id: 116
     data: 0
-  # End Crystal
+# End Crystal
   - type_id: 426
-    data: 0
-  # Elytra
-  - type_id: 443
     data: 0
 
 # Leather Armor
@@ -3695,18 +3686,7 @@ removed_recipes:
     data: 0
   - type_id: 301
     data: 0
-
-  # iron armor default
-  - type_id: 306
-    data: 0
-  - type_id: 307
-    data: 0
-  - type_id: 308
-    data: 0
-  - type_id: 309
-    data: 0
-
-  # chain armor default
+# Chainmail Armor
   - type_id: 302
     data: 0
   - type_id: 303
@@ -3716,17 +3696,17 @@ removed_recipes:
   - type_id: 305
     data: 0
 
-  # gold armor default
-  - type_id: 314
+# Iron Armor
+  - type_id: 306
     data: 0
-  - type_id: 315
+  - type_id: 307
     data: 0
-  - type_id: 316
+  - type_id: 308
     data: 0
-  - type_id: 317
+  - type_id: 309
     data: 0
 
-  # diamond default
+# Diamond Armor
   - type_id: 310
     data: 0
   - type_id: 311
@@ -3736,47 +3716,71 @@ removed_recipes:
   - type_id: 313
     data: 0
 
-  # ender pearl
+# Gold Armor
+  - type_id: 314
+    data: 0
+  - type_id: 315
+    data: 0
+  - type_id: 316
+    data: 0
+  - type_id: 317
+    data: 0
+
+# Ender Pearls
   - type_id: 368
     data: 0
 
-  # Golden apples
+# Golden apples
   - type_id: 322
     data: 0
 
-  # Pickaxes
-  - type_id: 257
+# Wooden Tools
+  - type_id: 269
     data: 0
-  - type_id: 274
+  - type_id: 270
     data: 0
-  - type_id: 278
+  - type_id: 271
+    data: 0
+
+# Gold Tools
+  - type_id: 286
     data: 0
   - type_id: 285
     data: 0
-
-  # Shovels
-  - type_id: 256
-    data: 0
   - type_id: 284
     data: 0
-  - type_id: 277
+
+# Stone Tools
+  - type_id: 273
+    data: 0
+  - type_id: 274
+    data: 0
+  - type_id: 275
     data: 0
 
-  # Axes
+# Iron Tools
+  - type_id: 256
+    data: 0
+  - type_id: 257
+    data: 0
   - type_id: 258
     data: 0
-  - type_id: 286
+
+# Diamond Tools
+  - type_id: 277
+    data: 0
+  - type_id: 278
     data: 0
   - type_id: 279
     data: 0
 
-  # Hoe
-#  - type_id: 292
-#    data: 0
-#  - type_id: 294
-#    data: 0
-#  - type_id: 293
-#    data: 0
+# Iron, Diamond, and Gold Hoes
+  - type_id: 292
+    data: 0
+  - type_id: 293
+    data: 0
+  - type_id: 294
+    data: 0
 
 
 # Amount of tungston to drop

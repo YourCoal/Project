@@ -134,7 +134,7 @@ public class TrommelAsyncTaskRegular extends CivAsyncTask {
 					} else if (rand1 < ((int)((trommel.getGravelChance(Mineral.IRON)+mod)*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
 					} else {
-						int factor = rand.nextInt(4);
+						int factor = rand.nextInt(5);
 						if (factor == 1) {
 							newItem = ItemManager.createItemStack(CivData.DIRT, 1);
 						} else if (factor == 2) {
@@ -177,7 +177,7 @@ public class TrommelAsyncTaskRegular extends CivAsyncTask {
 						} else if (rand1 < ((int)((trommel.getStoneChance(Mineral.IRON)+mod)*randMax))) {
 							newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
 						} else {
-							int factor = rand.nextInt(4);
+							int factor = rand.nextInt(5);
 							if (factor == 1) {
 								newItem = ItemManager.createItemStack(CivData.DIRT, 1);
 							} else if (factor == 2) {
@@ -219,7 +219,7 @@ public class TrommelAsyncTaskRegular extends CivAsyncTask {
 						} else if (rand1 < ((int)((trommel.getGraniteChance(Mineral.IRON)+mod)*randMax))) {
 							newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
 						} else {
-							int factor = rand.nextInt(4);
+							int factor = rand.nextInt(5);
 							if (factor == 1) {
 								newItem = ItemManager.createItemStack(CivData.DIRT, 1);
 							} else if (factor == 2) {
@@ -261,7 +261,7 @@ public class TrommelAsyncTaskRegular extends CivAsyncTask {
 						} else if (rand1 < ((int)((trommel.getDioriteChance(Mineral.IRON)+mod)*randMax))) {
 							newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
 						} else {
-							int factor = rand.nextInt(4);
+							int factor = rand.nextInt(5);
 							if (factor == 1) {
 								newItem = ItemManager.createItemStack(CivData.DIRT, 1);
 							} else if (factor == 2) {
@@ -303,7 +303,7 @@ public class TrommelAsyncTaskRegular extends CivAsyncTask {
 						} else if (rand1 < ((int)((trommel.getAndesiteChance(Mineral.IRON)+mod)*randMax))) {
 							newItem = ItemManager.createItemStack(CivData.IRON_INGOT, 1);
 						} else {
-							int factor = rand.nextInt(4);
+							int factor = rand.nextInt(5);
 							if (factor == 1) {
 								newItem = ItemManager.createItemStack(CivData.DIRT, 1);
 							} else if (factor == 2) {

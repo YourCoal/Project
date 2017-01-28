@@ -264,7 +264,7 @@ public class CivBook {
 			ItemStack craftRec = LoreGuiItem.build("Crafting Recipes", ItemManager.getId(Material.WORKBENCH), 0, CivColor.Gold+"<Click To View>");
 			craftRec = LoreGuiItem.setAction(craftRec, "OpenInventory");
 			craftRec = LoreGuiItem.setActionData(craftRec, "invType", "showCraftingHelp");
-			guiInventory.setItem(3, craftRec);
+			guiInventory.setItem(2, craftRec);
 			
 			ItemStack dynmapInfo = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.MAP), 0, CivColor.Gold+"<Click to View>", "map_tag000");
 //			dynmapInfo = LoreGuiItem.setAction(dynmapInfo, "SendDynmapLink");
@@ -287,43 +287,36 @@ public class CivBook {
 			upgradeMenu = LoreGuiItem.setAction(upgradeMenu, "BuildUpgradeList");
 			guiInventory.setItem(10, upgradeMenu);
 			
-			ItemStack civDip = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.NAME_TAG), 0, CivColor.Gold+"<Click to View>", "civ_tag000");
+			ItemStack civDip = LoreGuiItem.build("Diplomatic Relations", ItemManager.getId(Material.NAME_TAG), 0, CivColor.Gold+"<Click to View>", "civ_tag000_COMING_SOON");
 //			civDip = LoreGuiItem.setAction(civDip, "BuildDiplomaticMenu");
-			guiInventory.setItem(13, civDip);
+			guiInventory.setItem(12, civDip);
 			
 			ItemStack techMenu = LoreGuiItem.build("Research Technology", ItemManager.getId(Material.POTION), 8194, CivColor.Gold+"<Click to View>");
 			techMenu = LoreGuiItem.setAction(techMenu, "BuildTechnologyList");
-			guiInventory.setItem(14, techMenu);
+			guiInventory.setItem(13, techMenu);
 			
-			ItemStack mobTutorial = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.MONSTER_EGG), 0, CivColor.Gold+"<Click to View>", "entity_tag000");
-//			mobTutorial = LoreGuiItem.setAction(gameInfo, "OpenInventory");
-//			mobTutorial = LoreGuiItem.setActionData(gameInfo, "invType", "shoMobTutorialInventory");
-			guiInventory.setItem(18, mobTutorial);
-			
-			ItemStack civTutorial = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "civ_tag001");
-//			civTutorial = LoreGuiItem.setAction(gameInfo, "OpenInventory");
-//			civTutorial = LoreGuiItem.setActionData(gameInfo, "invType", "showCivilizationTutorialInventory");
+			ItemStack civTutorial = LoreGuiItem.build("Civilizations", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "civ_tag001_COMING_SOON");
+//			civTutorial = LoreGuiItem.setAction(civTutorial, "OpenInventory");
+//			civTutorial = LoreGuiItem.setActionData(civTutorial, "invType", "showCivilizationTutorialInventory");
+//			researchTutorial = LoreGuiItem.setActionData(researchTutorial, "invType", "showResearchTutorialInventory");
+//			warTutorial = LoreGuiItem.setActionData(warTutorial, "invType", "showWarTutorialInventory");
 			guiInventory.setItem(20, civTutorial);
 			
-			ItemStack researchTutorial = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "civ_tag002");
-//			researchTutorial = LoreGuiItem.setAction(gameInfo, "OpenInventory");
-//			researchTutorial = LoreGuiItem.setActionData(gameInfo, "invType", "showResearchTutorialInventory");
-			guiInventory.setItem(21, researchTutorial);
+			ItemStack townTutorial = LoreGuiItem.build("Towns", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "town_tag000_COMING_SOON");
+//			townTutorial = LoreGuiItem.setAction(townTutorial, "OpenInventory");
+//			townTutorial = LoreGuiItem.setActionData(townTutorial, "invType", "showTownTutorialInventory");
+//			buildingTutorial = LoreGuiItem.setActionData(buildingTutorial, "invType", "showBuildingTutorialInventory");
+//			randomEventTutorial = LoreGuiItem.setActionData(randomEventTutorial, "invType", "showBuildingTutorialInventory");
+			guiInventory.setItem(21, townTutorial);
 			
-			ItemStack warTutorial = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "civ_tag003");
-//			warTutorial = LoreGuiItem.setAction(gameInfo, "OpenInventory");
-//			warTutorial = LoreGuiItem.setActionData(gameInfo, "invType", "showWarTutorialInventory");
-			guiInventory.setItem(22, warTutorial);
+			ItemStack mobTutorial = LoreGuiItem.build("Custom Mobs", ItemManager.getId(Material.MONSTER_EGG), 0, CivColor.Gold+"<Click to View>", "entity_tag000_COMING_SOON");
+//			mobTutorial = LoreGuiItem.setAction(mobTutorial, "OpenInventory");
+//			mobTutorial = LoreGuiItem.setActionData(mobTutorial, "invType", "shoMobTutorialInventory");
+			guiInventory.setItem(23, mobTutorial);
 			
-			ItemStack townTutorial = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "town_tag000");
-//			townTutorial = LoreGuiItem.setAction(gameInfo, "OpenInventory");
-//			townTutorial = LoreGuiItem.setActionData(gameInfo, "invType", "showTownTutorialInventory");
-			guiInventory.setItem(23, townTutorial);
-			
-			ItemStack buildingTutorial = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "town_tag001");
-//			buildingTutorial = LoreGuiItem.setAction(gameInfo, "OpenInventory");
-//			buildingTutorial = LoreGuiItem.setActionData(gameInfo, "invType", "showBuildingTutorialInventory");
-			guiInventory.setItem(24, buildingTutorial);
+			ItemStack tradeResourcesTutorial = LoreGuiItem.build("Trade Resources", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "tr_tag000_COMING_SOON");
+//			tradeResourcesTutorial = LoreGuiItem.setAction(tradeResourcesTutorial, "TradeResourceList");
+			guiInventory.setItem(24, tradeResourcesTutorial);
 			
 /*			if (player.isOp()) {
 				ItemStack adminMenu = LoreGuiItem.build("Admin Panel", ItemManager.getId(Material.COMMAND), 8194, CivColor.Gold+"<Click to View>", 

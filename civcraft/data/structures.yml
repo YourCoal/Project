@@ -30,50 +30,50 @@ trommel:
 trommel_cobble:
     max: 10000
     iron_rate: 0.05
-    gold_rate: 0.025
+    gold_rate: 0.02
     redstone_rate: 0.01
     diamond_rate: 0.005
-    emerald_rate: 0.0025
+    emerald_rate: 0.002
 #
 trommel_stone:
     max: 10000
     iron_rate: 0.05
-    gold_rate: 0.025
+    gold_rate: 0.02
     redstone_rate: 0.01
     diamond_rate: 0.005
-    emerald_rate: 0.0025
+    emerald_rate: 0.002
 #
 trommel_granite:
     max: 10000
     iron_rate: 0.05
-    gold_rate: 0.025
+    gold_rate: 0.02
     redstone_rate: 0.01
     diamond_rate: 0.005
-    emerald_rate: 0.0025
+    emerald_rate: 0.002
 #
 trommel_diorite:
     max: 10000
     iron_rate: 0.05
-    gold_rate: 0.025
+    gold_rate: 0.02
     redstone_rate: 0.01
     diamond_rate: 0.005
-    emerald_rate: 0.0025
+    emerald_rate: 0.002
 #
 trommel_andesite:
     max: 10000
     iron_rate: 0.05
-    gold_rate: 0.025
+    gold_rate: 0.02
     redstone_rate: 0.01
     diamond_rate: 0.005
-    emerald_rate: 0.0025
+    emerald_rate: 0.002
 #
 trommel_obsidian:
     max: 100000
     iron_rate: 0.1
-    gold_rate: 0.05
+    gold_rate: 0.04
     redstone_rate: 0.02
     diamond_rate: 0.01
-    emerald_rate: 0.005
+    emerald_rate: 0.004
 #
 ################ Grocer Settings ###############
 grocer_levels:
@@ -494,6 +494,7 @@ structures:
   - id: s_townhall
     itemId: 330
     itemData: 0
+    position: 1
     template: town_hall
     template_y_shift: 0
     displayName: Town Hall
@@ -520,6 +521,7 @@ structures:
   - id: s_capitol
     itemId: 314
     itemData: 0
+    position: 0
     template: capital
     template_y_shift: 0
     displayName: Capitol
@@ -546,6 +548,7 @@ structures:
   - id: s_bank
     itemId: 266
     itemData: 0
+    position: 2
     template: bank
     template_y_shift: 0
     displayName: Bank
@@ -565,6 +568,7 @@ structures:
   - id: s_trommel
     itemId: 154
     itemData: 0
+    position: 3
     template: trommel
     template_y_shift: 0
     displayName: Trommel
@@ -584,6 +588,7 @@ structures:
   - id: s_store
     itemId: 120
     itemData: 0
+    position: 4
     template: store
     template_y_shift: 0
     displayName: Store
@@ -603,6 +608,7 @@ structures:
   - id: s_library
     itemId: 47
     itemData: 0
+    position: 5
     template: library
     template_y_shift: 0
     displayName: Library
@@ -631,6 +637,7 @@ structures:
   - id: s_grocer
     itemId: 6
     itemData: 0
+    position: 6
     template: grocer
     template_y_shift: 0
     displayName: Grocer
@@ -650,6 +657,7 @@ structures:
   - id: s_blacksmith
     itemId: 145
     itemData: 0
+    position: 7
     template: blacksmith
     template_y_shift: -2
     displayName: Blacksmith
@@ -687,6 +695,7 @@ structures:
   - id: s_granary
     itemId: 170
     itemData: 0
+    position: 8
     template: granary
     template_y_shift: 0
     displayName: Granary
@@ -703,6 +712,7 @@ structures:
   - id: ti_cottage
     itemId: 123
     itemData: 0
+    position: 9
     template: cottage
     template_y_shift: 0
     displayName: Cottage
@@ -729,6 +739,7 @@ structures:
   - id: s_monument
     itemId: 397
     itemData: 4
+    position: 10
     template: monument
     template_y_shift: -2
     displayName: Monument
@@ -751,6 +762,7 @@ structures:
   - id: s_temple
     itemId: 6
     itemData: 0
+    position: 11
     template: temple
     template_y_shift: 0
     displayName: Temple
@@ -779,6 +791,7 @@ structures:
   - id: s_shipyard
     itemId: 333
     itemData: 0
+    position: 12
     template: shipyard
     template_y_shift: -3
     displayName: Shipyard
@@ -808,6 +821,7 @@ structures:
   - id: ti_mine
     itemId: 274
     itemData: 0
+    position: 13
     template: mine
     template_y_shift: -6
     displayName: Mine
@@ -831,6 +845,7 @@ structures:
   - id: ti_lab
     itemId: 374
     itemData: 0
+    position: 14
     template: mine
     template_y_shift: -6
     displayName: Lab
@@ -855,6 +870,7 @@ structures:
   - id: ti_trade_outpost
     itemId: 389
     itemData: 0
+    position: 15
     template: trade_outpost
     template_y_shift: 0
     displayName: Trade Outpost
@@ -876,6 +892,7 @@ structures:
   - id: ti_fishing_boat
     itemId: 346
     itemData: 0
+    position: 16
     template: fishingboats
     template_y_shift: -3
     displayName: Fishing Boat
@@ -898,6 +915,7 @@ structures:
   - id: ti_farm
     itemId: 290
     itemData: 0
+    position: 17
     template: farm
     template_y_shift: -1
     displayName: Farm
@@ -926,6 +944,7 @@ structures:
   - id: ti_pasture
     itemId: 383
     itemData: 0
+    position: 18
     template: pasture
     template_y_shift: -2
     displayName: Pasture
@@ -946,6 +965,7 @@ structures:
   - id: ti_wall
     itemId: 430
     itemData: 0
+    position: 19
     template: notused
     template_y_shift: 0
     displayName: Wall
@@ -967,6 +987,7 @@ structures:
   - id: s_arrowtower
     itemId: 262
     itemData: 0
+    position: 20
     template: arrow_tower
     template_y_shift: 0
     displayName: Arrow Tower
@@ -988,6 +1009,7 @@ structures:
   - id: s_cannontower
     itemId: 385
     itemData: 0
+    position: 21
     template: cannon_tower
     template_y_shift: 0
     displayName: Cannon Tower
@@ -1009,6 +1031,7 @@ structures:
   - id: s_scouttower
     itemId: 381
     itemData: 0
+    position: 22
     template: scout_tower
     template_y_shift: 0
     displayName: Scout Tower
@@ -1030,6 +1053,7 @@ structures:
   - id: s_barracks
     itemId: 276
     itemData: 0
+    position: 23
     template: barracks
     template_y_shift: 0
     displayName: Barracks
@@ -1053,6 +1077,7 @@ structures:
   - id: ti_windmill
     itemId: 295
     itemData: 0
+    position: 24
     template: windmill
     template_y_shift: 0
     displayName: Windmill
@@ -1073,6 +1098,7 @@ structures:
   - id: s_market
     itemId: 388
     itemData: 0
+    position: 25
     template: market
     template_y_shift: 0
     displayName: Market
@@ -1100,6 +1126,7 @@ structures:
   - id: s_stable
     itemId: 417
     itemData: 0
+    position: 26
     template: stable
     template_y_shift: -2
     displayName: Stable

@@ -31,8 +31,9 @@ import com.avrgaming.civcraft.object.Town;
 
 public class ConfigBuildableInfo {
 	public String id = "";
-	public int itemId = 0;
-	public int itemData = 0;
+	public Integer itemId = 0;
+	public Integer itemData = 0;
+	public Integer position = 0;
 	public String template_base_name = "";
 	public int templateYShift = 0;
 	public String displayName = "";
@@ -94,6 +95,7 @@ public class ConfigBuildableInfo {
 			sinfo.id = (String)obj.get("id");
 			sinfo.itemId = (Integer)obj.get("itemId");
 			sinfo.itemData = (Integer)obj.get("itemData");
+			sinfo.position = (Integer)obj.get("position");
 			sinfo.template_base_name = (String)obj.get("template");
 			sinfo.templateYShift = (Integer)obj.get("template_y_shift");
 			sinfo.displayName = (String)obj.get("displayName");

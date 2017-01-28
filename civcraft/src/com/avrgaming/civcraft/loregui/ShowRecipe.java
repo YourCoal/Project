@@ -1,7 +1,5 @@
 package com.avrgaming.civcraft.loregui;
 
-import gpl.AttributeUtil;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,6 +18,8 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.ItemManager;
 
+import gpl.AttributeUtil;
+
 public class ShowRecipe implements GuiAction {
 
 	public static final int START_OFFSET = LoreGuiItem.INV_ROW_COUNT + 3;
@@ -35,7 +35,11 @@ public class ShowRecipe implements GuiAction {
 		} else {
 			LoreCraftableMaterial cmat = LoreCraftableMaterial.getCraftMaterialFromId(ingred.custom_id);
 			name = cmat.getName();
-			message = "Click For Recipe";
+			if (cmat.getConfigMaterial().ingredients == null) {
+				message = "Not Craftable";	
+			} else {	
+				message = "Click For Recipe";
+			}
 			entryStack = LoreCraftableMaterial.spawn(cmat);
 			entryStack = LoreGuiItem.asGuiItem(entryStack);
 			entryStack = LoreGuiItem.setAction(entryStack, "ShowRecipe");
@@ -50,7 +54,7 @@ public class ShowRecipe implements GuiAction {
 	public void buildCraftTableBorder(Inventory recInv) {
 		int offset = 2;
 		ItemStack stack;
-	
+		
 		stack = LoreGuiItem.build("Craft Table Border", ItemManager.getId(Material.WORKBENCH), 0, "");
 		
 		for (int y = 0; y <= 4; y++) {
@@ -63,35 +67,105 @@ public class ShowRecipe implements GuiAction {
 	}
 	
 	public void buildInfoBar(LoreCraftableMaterial craftMat, Inventory recInv, Player player) {
-		int offset = 0;
+//		int offset = 0;
 		ItemStack stack = null;
 		
-		if (craftMat.getConfigMaterial().required_tech != null) {
-			Resident resident = CivGlobal.getResident(player);
-			ConfigTech tech = CivSettings.techs.get(craftMat.getConfigMaterial().required_tech);
-			if (tech != null) {
-			
-				if (resident.hasTown() && resident.getCiv().hasTechnology(craftMat.getConfigMaterial().required_tech)) {
-					stack = LoreGuiItem.build("Required Technology", ItemManager.getId(Material.EMERALD_BLOCK), 0, tech.name);
-				} else {
-					stack = LoreGuiItem.build("Required Technology", ItemManager.getId(Material.REDSTONE_BLOCK), 0, tech.name);
-				}
-			}
-			
-			if (stack != null) {
-				recInv.setItem(offset+0, stack);
-			}
+		//Row 1, Left 1
+		if (craftMat.getName() != null) {
+			stack = LoreGuiItem.build(craftMat.getName(), craftMat.getTypeID(), craftMat.getDamage(), ""+craftMat.getConfigMaterial().category);
+			recInv.setItem(0, stack);
+			} else {
+			stack = LoreGuiItem.build("ERROR Getting Name", ItemManager.getId(Material.EMPTY_MAP), 0, "");
+			recInv.setItem(0, stack);
 		}
 		
-		if (craftMat.isShaped()) {
-			stack = LoreGuiItem.build("Shaped", ItemManager.getId(Material.HOPPER), 0, "");
+		//Row 2, Left 1
+		Resident resident = CivGlobal.getResident(player);
+		ConfigTech tech = CivSettings.techs.get(craftMat.getConfigMaterial().required_tech);
+		if (tech != null) {
+			if (resident.hasTown() && resident.getCiv().hasTechnology(craftMat.getConfigMaterial().required_tech)) {
+				stack = LoreGuiItem.build("You Have Required Technology", ItemManager.getId(Material.EMERALD_BLOCK), 0, tech.name);
+				recInv.setItem(9, stack);
+			} else if (!resident.hasTown() || !resident.getCiv().hasTechnology(craftMat.getConfigMaterial().required_tech)) {
+				stack = LoreGuiItem.build("You Don't Have Required Technology", ItemManager.getId(Material.REDSTONE_BLOCK), 0, tech.name);
+				recInv.setItem(9, stack);
+			}
 		} else {
-			stack = LoreGuiItem.build("Unshaped", ItemManager.getId(Material.COAL), 0, "");
+			stack = LoreGuiItem.build("Doesn't Require Technology", ItemManager.getId(Material.LAPIS_BLOCK), 0, "");
+			recInv.setItem(9, stack);
 		}
-		offset += LoreGuiItem.INV_ROW_COUNT;
-		recInv.setItem(offset+0, stack);
 		
-
+		//Row 3, Left 1
+		if (craftMat.isShaped()) {
+			stack = LoreGuiItem.build("Is Shaped", ItemManager.getId(Material.HOPPER), 0, "");
+			recInv.setItem(18, stack);
+		} else {
+			stack = LoreGuiItem.build("Is Unshaped", ItemManager.getId(Material.COAL), 0, "");
+			recInv.setItem(18, stack);
+		}
+		
+		
+		//Row 1, Right 1
+		if (craftMat.getCraftAmount() > 1) {
+			stack = LoreGuiItem.build("Amount: "+craftMat.getCraftAmount(), ItemManager.getId(Material.COMMAND_MINECART), 0, "");
+			recInv.setItem(8, stack);
+			} else {
+			stack = LoreGuiItem.build("Amount: 1", ItemManager.getId(Material.MINECART), 0, "");
+			recInv.setItem(8, stack);
+		}
+		
+		//Row 2, Right 1
+		if (!craftMat.isVanilla()) {
+			stack = LoreGuiItem.build("Custom Item", ItemManager.getId(Material.DRAGONS_BREATH), 0, "");
+			recInv.setItem(17, stack);
+		} else {
+			stack = LoreGuiItem.build("Vanilla Item", ItemManager.getId(Material.POTION), 0, "");
+			recInv.setItem(17, stack);
+		}
+		
+/*		//Row 1, Right 1
+		if (craftMat.isMineable()) {
+			stack = LoreGuiItem.build("Is Mineable", ItemManager.getId(Material.DIAMOND_PICKAXE), 0, "");
+			recInv.setItem(8, stack);
+		} else {
+			stack = LoreGuiItem.build("Is Not Mineable", ItemManager.getId(Material.NETHER_BRICK_ITEM), 0, "");
+			recInv.setItem(8, stack);
+		}
+		
+		//Row 2, Right 1
+		if (craftMat.isFarmable()) {
+			stack = LoreGuiItem.build("Is Farmable", ItemManager.getId(Material.SOIL), 0, "");
+			recInv.setItem(17, stack);
+		} else {
+			stack = LoreGuiItem.build("Is Not Farmable", ItemManager.getId(Material.BEDROCK), 0, "");
+			recInv.setItem(17, stack);
+		}
+		
+		//Row 3, Right 1
+		if (craftMat.isQuest()) {
+			stack = LoreGuiItem.build("Is Used In Quests", ItemManager.getId(Material.BOOK_AND_QUILL), 0, "");
+			recInv.setItem(26, stack);
+		} else {
+			stack = LoreGuiItem.build("Not Used In Quests", ItemManager.getId(Material.BONE), 0, "");
+			recInv.setItem(26, stack);
+		}
+		
+		//Row 4, Left 1
+//		if (craftMat.getConfigMaterial().required_civic != null) {
+			ConfigCivic civic = CivSettings.civics.get(craftMat.getConfigMaterial().required_civic);
+			if (civic != null) {
+				if (resident.hasTown() && resident.getTown().hasRequiredCivic(craftMat.getConfigMaterial().required_civic)) {
+					stack = LoreGuiItem.build("You Have Required Civic", ItemManager.getId(Material.EMERALD_BLOCK), 0, civic.name);
+					recInv.setItem(35, stack);
+				} else if (!resident.hasTown() || !resident.getTown().hasRequiredCivic(craftMat.getConfigMaterial().required_civic)) {
+					stack = LoreGuiItem.build("You Don't Have Required Civic", ItemManager.getId(Material.REDSTONE_BLOCK), 0,civic.name);
+					recInv.setItem(35, stack);
+				}
+			} else {
+				stack = LoreGuiItem.build("Doesn't Require Civic", ItemManager.getId(Material.LAPIS_BLOCK), 0, "");
+				recInv.setItem(35, stack);
+			}
+//		}*/
 	}
 	
 	@Override
@@ -99,17 +173,18 @@ public class ShowRecipe implements GuiAction {
 		Player player = (Player)event.getWhoClicked();
 		
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
-		if (craftMat == null) {
+		if (craftMat == null || craftMat.getConfigMaterial().ingredients == null) {
 			/* Do nothing for now. */
 			return;
 		}
 		
-		String title = craftMat.getName()+" Recipe";
+/*		String title = craftMat.getName()+" Recipe";
 		if (title.length() > 32) {
 			title = title.substring(0, 32);
-		}
+		}*/
+//		String title = "";
 		
-		Inventory recInv = Bukkit.getServer().createInventory(player, LoreGuiItem.MAX_INV_SIZE, title);
+		Inventory recInv = Bukkit.getServer().createInventory(player, LoreGuiItem.MAX_INV_SIZE-9, craftMat.getName()+" Recipe");
 		if (craftMat.isShaped()) {		
 			int offset = START_OFFSET;
 			for (String line : craftMat.getConfigMaterial().shape) {
@@ -153,7 +228,7 @@ public class ShowRecipe implements GuiAction {
 			backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
 			backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
 			backButton = LoreGuiItem.setActionData(backButton, "invName", inv.getName());
-			recInv.setItem(LoreGuiItem.MAX_INV_SIZE-1, backButton);
+			recInv.setItem(LoreGuiItem.MAX_INV_SIZE-10, backButton);
 		} else {
 			ConfigMaterialCategory cat = ConfigMaterialCategory.getCategory(craftMat.getConfigMaterial().categoryCivColortripped); 
 			if (cat != null) {					
@@ -161,7 +236,7 @@ public class ShowRecipe implements GuiAction {
 				backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
 				backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
 				backButton = LoreGuiItem.setActionData(backButton, "invName", cat.name+" Recipes");
-				recInv.setItem(LoreGuiItem.MAX_INV_SIZE-1, backButton);
+				recInv.setItem(LoreGuiItem.MAX_INV_SIZE-10, backButton);
 			}
 		}
 		
@@ -170,5 +245,4 @@ public class ShowRecipe implements GuiAction {
 		buildInfoBar(craftMat, recInv, player);
 		player.openInventory(recInv);
 	}
-
 }

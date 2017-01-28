@@ -1,7 +1,5 @@
 package com.avrgaming.civcraft.loreenhancements;
 
-import gpl.AttributeUtil;
-
 import java.util.HashMap;
 
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -10,6 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.object.BuildableDamageBlock;
 import com.avrgaming.civcraft.util.ItemManager;
+
+import gpl.AttributeUtil;
 
 public abstract class LoreEnhancement {
 	public AttributeUtil add(AttributeUtil attrs) {
@@ -25,6 +25,7 @@ public abstract class LoreEnhancement {
 		enhancements.put("LoreEnhancementDurability", new LoreEnhancementDurability());
 		enhancements.put("LoreEnhancementBonusDamageI", new LoreEnhancementBonusDamageI());
 		enhancements.put("LoreEnhancementBonusDamageII", new LoreEnhancementBonusDamageII());
+		enhancements.put("LoreEnhancementThor", new LoreEnhancementThor());
 		enhancements.put("LoreEnhancementDefense", new LoreEnhancementDefense());
 		enhancements.put("LoreEnhancementPunchout", new LoreEnhancementPunchout());
 		enhancements.put("LoreEnhancementArenaItem", new LoreEnhancementArenaItem());

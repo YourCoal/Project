@@ -9,6 +9,7 @@ import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.util.CivColor;
+import com.avrgaming.civcraft.war.War;
 
 import me.confuser.barapi.BarAPI;
 
@@ -21,6 +22,12 @@ public class BossBarUpdateTimer implements Runnable {
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				Resident res = CivGlobal.getResident(p);
 				
+				if (War.isWarTime()) {
+					BarAPI.removeBar(p);
+					return;
+				}
+				
+				BarAPI.removeBar(p);
 				String weather;
 				if (p.getWorld().hasStorm() && p.getWorld().isThundering()) {
 					weather = CivColor.LightGreen+"Storming";
@@ -29,8 +36,9 @@ public class BossBarUpdateTimer implements Runnable {
 				} else {
 					weather = CivColor.Yellow+"Sunny";
 				}
-				BarAPI.setMessage(p, CivColor.GoldBold+"Weather: "+weather, 6);
-				Thread.sleep(6000);
+				BarAPI.setMessage(p, CivColor.GoldBold+"Weather: "+weather, 5);
+				Thread.sleep(4900);
+				BarAPI.removeBar(p);
 				
 				String sp;
 				if (!res.hasTown()) {
@@ -44,8 +52,9 @@ public class BossBarUpdateTimer implements Runnable {
 						sp = CivColor.LightGray+"None";
 					}
 				}
-				BarAPI.setMessage(p, CivColor.GoldBold+"Structure: "+sp, 6);
-				Thread.sleep(6000);
+				BarAPI.setMessage(p, CivColor.GoldBold+"Structure: "+sp, 5);
+				Thread.sleep(4900);
+				BarAPI.removeBar(p);
 				
 				String wp;
 				if (!res.hasTown()) {
@@ -59,13 +68,16 @@ public class BossBarUpdateTimer implements Runnable {
 						wp = CivColor.LightGray+"None";
 					}
 				}
-				BarAPI.setMessage(p, CivColor.GoldBold+"Wonder: "+wp, 6);
-				Thread.sleep(6000);
-				
+				BarAPI.setMessage(p, CivColor.GoldBold+"Wonder: "+wp, 5);
+				Thread.sleep(4900);
 				BarAPI.removeBar(p);
+				
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+				BarAPI.removeBar(p);
+			}
 		}
 	}
 }

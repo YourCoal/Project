@@ -58,7 +58,10 @@ public class Defense extends ItemComponent {
 			ConfigUnit unit = Unit.getPlayerUnit(p);
 			if (unit != null && unit.id.equals("u_warrior")) {
 				defValue = defValue - (defValue*0.1);
-				CivMessage.send(p, CivColor.LightGrayItalic+"-10% defense with Warrior Unit.");
+//				CivMessage.send(p, CivColor.LightGrayItalic+"-10% defense with Warrior Unit.");
+			} else if (unit != null && unit.id.equals("u_archer")) {
+				defValue *= 1.1;
+//				CivMessage.send(p, CivColor.LightGrayItalic+"+10% defense with Archer Unit.");
 			}
 			
 			if (!res.hasTechForItem(stack)) {

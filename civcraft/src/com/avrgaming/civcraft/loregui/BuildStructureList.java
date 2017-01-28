@@ -41,26 +41,32 @@ public class BuildStructureList implements GuiAction {
 				guiInventory.addItem(is);
 			} else if (!res.getTown().isMayor(res) && !res.getTown().isAssistant(res)) {
 				is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.BEDROCK), 0, CivColor.Rose+"Must be a town mayor or assistant build structures.");
-				guiInventory.addItem(is);
+				guiInventory.setItem(info.position, is);
 			} else {
 				if (!res.getCiv().hasTechnology(info.require_tech)) {
 					ConfigTech tech = CivSettings.techs.get(info.require_tech);
-					is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.PAPER), 0, CivColor.Rose+"Requires: "+tech.name);
-					guiInventory.addItem(is);
+					is = LoreGuiItem.build(info.displayName, type, data, CivColor.Rose+"Requires: "+tech.name);
+						AttributeUtil attrs = new AttributeUtil(is);
+						attrs.setShiny();
+					is = attrs.getStack();
+					guiInventory.setItem(info.position, is);
 				} else if (res.getTown().getStructureTypeCount(info.id) >= info.limit && info.limit != 0) {
-					is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.LAVA_BUCKET), 0, CivColor.Rose+"Max Limit ("+info.limit+"/"+info.limit+")");
-					guiInventory.addItem(is);
+					is = LoreGuiItem.build(info.displayName, type, data, CivColor.Rose+"Max Limit ("+info.limit+"/"+info.limit+")");
+						AttributeUtil attrs = new AttributeUtil(is);
+						attrs.setShiny();
+					is = attrs.getStack();
+					guiInventory.setItem(info.position, is);
 				} else if (!info.isAvailable(res.getTown())) {
-					is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.BARRIER), 0, CivColor.Rose+"Not available");
-					guiInventory.addItem(is);
+					is = LoreGuiItem.build(info.displayName, ItemManager.getId(Material.BARRIER), 0, CivColor.Rose+"Not available", "Other Reason");
+					guiInventory.setItem(info.position, is);
 				} else {
 					is = LoreGuiItem.build(info.displayName, type, data, CivColor.Gold+"<Click To Build>");
 					is = LoreGuiItem.setAction(is, "BuildChooseStructureTemplate");
 					is = LoreGuiItem.setActionData(is, "info", info.id);
-						AttributeUtil attrs = new AttributeUtil(is);
-						attrs.setShiny();
-					is = attrs.getStack();
-					guiInventory.addItem(is);
+//						AttributeUtil attrs = new AttributeUtil(is);
+//						attrs.setShiny();
+//					is = attrs.getStack();
+					guiInventory.setItem(info.position, is);
 				}
 			}
 		}

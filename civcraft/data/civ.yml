@@ -5,7 +5,7 @@
 
 global:
    # Hour at which daily upkeep occurs.
-   daily_upkeep_hour: 20
+   daily_upkeep_hour: 18
    hourly_tick: 3600
 
    start_kit:
