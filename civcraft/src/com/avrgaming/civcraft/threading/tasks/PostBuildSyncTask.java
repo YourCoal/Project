@@ -18,7 +18,6 @@
  */
 package com.avrgaming.civcraft.threading.tasks;
 
-
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.material.MaterialData;
@@ -68,15 +67,15 @@ public class PostBuildSyncTask implements Runnable {
 			}
 		}
 			
-//	for (BlockCoord relativeCoord : tpl.attachableLocations) {
-//			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
-//			BlockCoord absCoord = new BlockCoord(buildable.getCorner().getBlock().getRelative(relativeCoord.getX(), relativeCoord.getY(), relativeCoord.getZ()));
-//
-//			Block block = absCoord.getBlock();
-//			if (block.getTypeId() != sb.getType()) {
-//				block.setTypeIdAndData(sb.getType(), (byte)sb.getData(), false);
-//			}
-//		}
+		for (BlockCoord relativeCoord : tpl.attachableLocations) {
+			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
+			BlockCoord absCoord = new BlockCoord(buildable.getCorner().getBlock().getRelative(relativeCoord.getX(), relativeCoord.getY(), relativeCoord.getZ()));
+
+			Block block = absCoord.getBlock();
+			if (ItemManager.getId(block) != sb.getType()) {
+					ItemManager.setTypeIdAndData(block, sb.getType(), (byte)sb.getData(), false);
+			}
+		}
 		
 		/*
 		 * Use the location's of the command blocks in the template and the buildable's corner 

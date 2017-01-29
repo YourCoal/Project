@@ -205,8 +205,16 @@ public class CivSettings {
 	public static boolean hasBarAPI = false;
 	
 	public static final String MINI_ADMIN = "civ.admin";
+	public static final String HACKER = "civ.hacker";
 	public static final String MODERATOR = "civ.moderator";
 	public static final String FREE_PERKS = "civ.freeperks";
+	public static final String ARCTIC_PERKS = "civ.arcticperks";
+	public static final String AZTEC_PERKS = "civ.aztecperks";
+	public static final String EGYPTIAN_PERKS = "civ.egyptianperks";
+	public static final String ROMAN_PERKS = "civ.romanperks";
+	public static final String HELL_PERKS = "civ.hellperks";
+	public static final String ELVEN_PERKS = "civ.elvenperks";
+	public static final String CULTIST_PERKS = "civ.cultistperks";
 	public static final String ECON = "civ.econ";
 	public static final int MARKET_COIN_STEP = 5;
 	public static final int MARKET_BUYSELL_COIN_DIFF = 30;
@@ -306,9 +314,33 @@ public class CivSettings {
 		restrictedUndoBlocks.add(Material.CARROT);
 		restrictedUndoBlocks.add(Material.POTATO);
 		restrictedUndoBlocks.add(Material.REDSTONE);
+		restrictedUndoBlocks.add(Material.REDSTONE_WIRE);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_OFF);
 		restrictedUndoBlocks.add(Material.REDSTONE_TORCH_ON);
+		restrictedUndoBlocks.add(Material.DIODE_BLOCK_OFF);
+		restrictedUndoBlocks.add(Material.DIODE_BLOCK_ON);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_OFF);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR_ON);
+		restrictedUndoBlocks.add(Material.REDSTONE_COMPARATOR);
 		restrictedUndoBlocks.add(Material.STRING);
+		restrictedUndoBlocks.add(Material.TRIPWIRE);
+		restrictedUndoBlocks.add(Material.SUGAR_CANE_BLOCK);
+		restrictedUndoBlocks.add(Material.BEETROOT_SEEDS);
+		restrictedUndoBlocks.add(Material.LONG_GRASS);
+		restrictedUndoBlocks.add(Material.RED_ROSE);
+		restrictedUndoBlocks.add(Material.RED_MUSHROOM);
+		restrictedUndoBlocks.add(Material.DOUBLE_PLANT);
+		restrictedUndoBlocks.add(Material.CAKE_BLOCK);
+		restrictedUndoBlocks.add(Material.CACTUS);
+		restrictedUndoBlocks.add(Material.PISTON_BASE);
+		restrictedUndoBlocks.add(Material.PISTON_EXTENSION);
+		restrictedUndoBlocks.add(Material.PISTON_MOVING_PIECE);
+		restrictedUndoBlocks.add(Material.PISTON_STICKY_BASE);
+		restrictedUndoBlocks.add(Material.TRIPWIRE_HOOK);
+		restrictedUndoBlocks.add(Material.SAPLING);
+		restrictedUndoBlocks.add(Material.PUMPKIN_STEM);
+		restrictedUndoBlocks.add(Material.MELON_STEM);
+		
 	}
 
 	private static void initPlayerEntityWeapons() {
@@ -447,7 +479,7 @@ public class CivSettings {
 		CivGlobal.preGenerator.preGenerate();
 		Wall.init_settings();
 	}
-
+	
 	private static void initRestrictedSpawns() {
 		restrictedSpawns.put(EntityType.BLAZE, 0);
 		restrictedSpawns.put(EntityType.CAVE_SPIDER, 0);
@@ -493,6 +525,7 @@ public class CivSettings {
 		switchItems.add(Material.CAKE_BLOCK);
 		switchItems.add(Material.CAULDRON);
 		switchItems.add(Material.CHEST);
+		switchItems.add(Material.TRAPPED_CHEST);
 		switchItems.add(Material.COMMAND);
 		switchItems.add(Material.DIODE);
 		switchItems.add(Material.DIODE_BLOCK_OFF);
@@ -523,8 +556,21 @@ public class CivSettings {
 		switchItems.add(Material.TRAPPED_CHEST);
 		switchItems.add(Material.GOLD_PLATE);
 		switchItems.add(Material.IRON_PLATE);
+		switchItems.add(Material.IRON_TRAPDOOR);
 		
+		// 1.6 additions.
+		switchItems.add(Material.SPRUCE_DOOR);
+		switchItems.add(Material.BIRCH_DOOR);
+		switchItems.add(Material.JUNGLE_DOOR);
+		switchItems.add(Material.ACACIA_DOOR);
+		switchItems.add(Material.DARK_OAK_DOOR);
 		
+		// 1.7 additions
+		switchItems.add(Material.ACACIA_FENCE_GATE);
+		switchItems.add(Material.BIRCH_FENCE_GATE);
+		switchItems.add(Material.DARK_OAK_FENCE_GATE);
+		switchItems.add(Material.SPRUCE_FENCE_GATE);
+		switchItems.add(Material.JUNGLE_FENCE_GATE);
 	}
 	
 	private static void initBlockPlaceExceptions() {

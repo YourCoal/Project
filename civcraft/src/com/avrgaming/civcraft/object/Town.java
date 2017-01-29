@@ -1808,9 +1808,8 @@ public class Town extends SQLObject {
 		
 		try {
 			struct.onDemolish();
-//			struct.unbindStructureBlocks();
 			this.removeStructure(struct);
-			struct.delete();
+			struct.deleteSkipUndo();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new CivException("Internal database error.");
@@ -2442,9 +2441,11 @@ public class Town extends SQLObject {
 		/* Remove any outlaws which are in our new civ. */
 		LinkedList<String> removeUs = new LinkedList<String>();
 		for (String outlaw : this.outlaws) {
-			Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
-			if (newCiv.hasResident(resident)) {
-				removeUs.add(outlaw);
+			if (outlaw.length() >= 2) {
+				Resident resident = CivGlobal.getResidentViaUUID(UUID.fromString(outlaw));
+				if (newCiv.hasResident(resident)) {
+					removeUs.add(outlaw);
+				}
 			}
 		}
 		
@@ -3025,7 +3026,9 @@ public class Town extends SQLObject {
 		for (Perk perk : resident.getPersonalTemplatePerks(info)) {
 			perks.add(perk);
 		}
-		
+		for (Perk perk : resident.getUnboundTemplatePerks(perks, info)) {
+			perks.add(perk);
+		}
 		return perks;
 	}
 

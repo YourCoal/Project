@@ -33,6 +33,7 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.PlayerKickBan;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.TimeTools;
 import com.avrgaming.civcraft.war.War;
@@ -80,10 +81,7 @@ public class ACManager implements PluginMessageListener {
 		}
 	}
 	
-	
-	/*
-	 * Sends a CivCraftAC challenge packet to the player.
-	 */
+	// Sends a CivCraftAC challenge packet to the player.
 	public static void sendChallenge(Player player) {
 		class SyncTask implements Runnable {
 			String name;
@@ -108,7 +106,6 @@ public class ACManager implements PluginMessageListener {
 		}
 		
 		TaskMaster.syncTask(new SyncTask(player.getName()), TimeTools.toTicks(3));
-		
 		if (War.isWarTime() && !player.isOp()) {
 			
 			class WarCheckTask implements Runnable {
@@ -127,14 +124,11 @@ public class ACManager implements PluginMessageListener {
 						if (!resident.isUsesAntiCheat()) {
 							WarAntiCheat.onWarTimePlayerCheck(resident);
 						}
-						
 					} catch (CivException e) {
 					}
-					
 				}
 			}
-			
-			TaskMaster.syncTask(new WarCheckTask(player.getName()), TimeTools.toTicks(30));
+			TaskMaster.syncTask(new WarCheckTask(player.getName()), TimeTools.toTicks(15));
 		}
 		
 		Resident resident = CivGlobal.getResident(player);
@@ -162,18 +156,43 @@ public class ACManager implements PluginMessageListener {
 							
 							CivMessage.send(resident, CivColor.LightGray+"You've been teleported home since you cannot be inside an arena without anti-cheat.");
 						}
-						
 					} catch (CivException e) {
 					}
+				}
+			}
+			TaskMaster.syncTask(new ArenaCheckTask(player.getName()), TimeTools.toTicks(15));
+		}
+		
+		class HackerCheckTask implements Runnable {
+			String name;
+			
+			public HackerCheckTask(String name) {
+				this.name = name;
+			}
+			
+			@Override
+			public void run() {
+				try {
+					Player player = CivGlobal.getPlayer(name);
+					Resident resident = CivGlobal.getResident(player);
 					
+					if (resident != null && !resident.isUsesAntiCheat()) {
+						if (player.isOp() || player.hasPermission(CivSettings.MINI_ADMIN)) {
+							CivMessage.send(player, CivColor.YellowItalic+"You have the 'civ.hacker' permission, but because you are admin/OP, you are allowed to stay online.");
+						} else if (player.hasPermission(CivSettings.HACKER)) {
+							TaskMaster.syncTask(new PlayerKickBan(resident.getName(), true, false, 
+									"Kicked: You are required to have CivCraft's Anti-Cheat plugin installed to participate in the game."+
+									"Visit http://civcraft.net to get it."));
+						}
+					}
+				} catch (CivException e) {
 				}
 				
 			}
-			
-			TaskMaster.syncTask(new ArenaCheckTask(player.getName()), TimeTools.toTicks(30));
 		}
+		
+		TaskMaster.syncTask(new HackerCheckTask(player.getName()), TimeTools.toTicks(15));
 	}
-
 	
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte[] messageRaw) {

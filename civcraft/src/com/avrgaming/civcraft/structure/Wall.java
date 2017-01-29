@@ -154,6 +154,20 @@ public class Wall extends Structure {
 	{
 	}
 	
+	public void deleteOnDisband() throws SQLException {
+		if (this.wallBlocks != null) {
+			for (WallBlock wb : this.wallBlocks.values()) {
+				wb.delete();
+			}
+		}
+		
+		if (wallChunks != null) {
+			for (ChunkCoord coord : wallChunks) {
+				CivGlobal.removeWallChunk(this, coord);
+			}
+		}
+	}
+	
 	@Override 
 	public void delete() throws SQLException {
 		if (this.wallBlocks != null) {
@@ -167,7 +181,6 @@ public class Wall extends Structure {
 				CivGlobal.removeWallChunk(this, coord);
 			}
 		}
-		
 		super.delete();
 	}
 	

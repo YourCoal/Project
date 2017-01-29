@@ -1102,8 +1102,20 @@ public class BlockListener implements Listener {
 				if(tc.getTown().getCiv().getDiplomacyManager().atWarWith(resident.getTown().getCiv())) {
 
 					switch (event.getClickedBlock().getType()) {
+					case TRAP_DOOR:
 					case WOODEN_DOOR:
 					case IRON_DOOR:
+					case SPRUCE_DOOR:
+					case BIRCH_DOOR:
+					case JUNGLE_DOOR:
+					case ACACIA_DOOR:
+					case DARK_OAK_DOOR:
+                    case ACACIA_FENCE_GATE:
+                    case BIRCH_FENCE_GATE:
+                    case DARK_OAK_FENCE_GATE: 
+                    case FENCE_GATE:
+                    case SPRUCE_FENCE_GATE:
+                    case JUNGLE_FENCE_GATE: 
 						return;
 					default:
 						break;
@@ -1864,7 +1876,12 @@ public class BlockListener implements Listener {
 		CampBlock cb = CivGlobal.getCampBlock(bcoord);
 		if (cb != null) {
 			if (ItemManager.getId(event.getBlock()) == CivData.WOOD_DOOR ||
-					ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR) {
+					ItemManager.getId(event.getBlock()) == CivData.IRON_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.SPRUCE_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.BIRCH_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.JUNGLE_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.ACACIA_DOOR||
+					ItemManager.getId(event.getBlock()) == CivData.DARK_OAK_DOOR) {
 				event.setNewCurrent(0);
 				return;
 			}

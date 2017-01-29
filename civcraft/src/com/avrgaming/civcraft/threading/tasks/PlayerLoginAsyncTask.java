@@ -66,9 +66,9 @@ public class PlayerLoginAsyncTask implements Runnable {
 		try {
 			CivLog.info("Running PlayerLoginAsyncTask for "+getPlayer().getName()+" UUID("+playerUUID+")");
 			Resident resident = CivGlobal.getResidentViaUUID(playerUUID);
-			if (resident != null && !resident.getName().toLowerCase().equals(getPlayer().getName().toLowerCase())) {
+			if (resident != null && !resident.getName().equals(getPlayer().getName())) {
 				CivGlobal.removeResident(resident);
-				resident.setName(getPlayer().getName().toLowerCase());
+				resident.setName(getPlayer().getName());
 				resident.save();
 				CivGlobal.addResident(resident);
 			}
@@ -143,22 +143,34 @@ public class PlayerLoginAsyncTask implements Runnable {
 			if (!resident.isGivenKit()) {
 				TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
 			}
-					
+			
+			if (!resident.isUsesAntiCheat() && getPlayer().hasPermission(CivSettings.HACKER)) {
+				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
+					CivMessage.send(resident, CivColor.YellowItalic+"You have the 'civ.hacker' permission, but because you are admin/OP, you are allowed to stay online.");
+				} else {
+					TaskMaster.syncTask(new PlayerKickBan(resident.getName(), true, false, 
+							"Kicked: You are required to have CivCraft's Anti-Cheat plugin installed to participate in the game."+
+							"Visit http://civcraft.net to get it."));
+					return;
+				}
+			}
+			
 			if (War.isWarTime() && War.isOnlyWarriors()) {
 				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
 					//Allowed to connect since player is OP or mini admin.
+					CivMessage.send(resident, CivColor.YellowItalic+"Only players in civilizations at war can connect right now, but since you are admin/OP, you are allowed to stay online.");
 				} else if (!resident.hasTown() || !resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
 					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "Only players in civilizations at war can connect right now. Sorry."));
 					return;
 				}
 			}
 			
-			/* turn on allchat by default for admins and moderators. */
-			if (getPlayer().hasPermission(CivSettings.MODERATOR) || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
+			/* turn on allchat by default for admins. */
+			if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().isOp()) {
 				resident.allchat = true;
 				Resident.allchatters.add(resident.getName());
 			}
-	
+			
 			if (resident.getTreasury().inDebt()) {
 				TaskMaster.asyncTask("", new PlayerDelayedDebtWarning(resident), 1000);
 			}
@@ -192,11 +204,12 @@ public class PlayerLoginAsyncTask implements Runnable {
 			resident.setSpyExposure(resident.getSpyExposure());
 			resident.save();
 			
+			
 			//TODO send town board messages?
 			//TODO set default modes?
 			resident.showWarnings(getPlayer());
 			resident.loadPerks();
-	
+			
 			try {
 				if (CivSettings.getString(CivSettings.perkConfig, "system.free_perks").equalsIgnoreCase("true")) {
 					resident.giveAllFreePerks();
@@ -204,6 +217,27 @@ public class PlayerLoginAsyncTask implements Runnable {
 					if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
 						resident.giveAllFreePerks();
 					}
+				}
+				if (getPlayer().hasPermission(CivSettings.ARCTIC_PERKS)) {
+					resident.giveAllArcticPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.AZTEC_PERKS)) {
+					resident.giveAllAztecPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.CULTIST_PERKS)) {
+					resident.giveAllCultistPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.EGYPTIAN_PERKS)) {
+					resident.giveAllEgyptianPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.ELVEN_PERKS)) {
+					resident.giveAllElvenPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.HELL_PERKS)) {
+					resident.giveAllHellPerks();
+				}
+				if (getPlayer().hasPermission(CivSettings.ROMAN_PERKS)) {
+					resident.giveAllRomanPerks();
 				}
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();

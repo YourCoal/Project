@@ -109,10 +109,10 @@ public class Template {
 	
 	public static void initAttachableTypes() {
 		attachableTypes.add(ItemManager.getId(Material.SAPLING));
-		attachableTypes.add(ItemManager.getId(Material.BED));
+		attachableTypes.add(ItemManager.getId(Material.BED_BLOCK));
 		attachableTypes.add(ItemManager.getId(Material.POWERED_RAIL));
 		attachableTypes.add(ItemManager.getId(Material.DETECTOR_RAIL));
-		attachableTypes.add(ItemManager.getId(Material.GRASS));
+		attachableTypes.add(ItemManager.getId(Material.LONG_GRASS));
 		attachableTypes.add(ItemManager.getId(Material.DEAD_BUSH));
 		attachableTypes.add(ItemManager.getId(Material.YELLOW_FLOWER));
 		attachableTypes.add(ItemManager.getId(Material.RED_ROSE));
@@ -121,8 +121,8 @@ public class Template {
 		attachableTypes.add(ItemManager.getId(Material.TORCH));
 		attachableTypes.add(ItemManager.getId(Material.REDSTONE_WIRE));
 		attachableTypes.add(ItemManager.getId(Material.WHEAT));
-		attachableTypes.add(ItemManager.getId(Material.SIGN_POST));
-		attachableTypes.add(ItemManager.getId(Material.WALL_SIGN));
+//		attachableTypes.add(ItemManager.getId(Material.SIGN_POST));
+//		attachableTypes.add(ItemManager.getId(Material.WALL_SIGN));
 		attachableTypes.add(ItemManager.getId(Material.LADDER));
 		attachableTypes.add(ItemManager.getId(Material.RAILS));
 		attachableTypes.add(ItemManager.getId(Material.LEVER));
@@ -157,10 +157,14 @@ public class Template {
 		attachableTypes.add(ItemManager.getId(Material.ACTIVATOR_RAIL));
 	}
 	
+	public static boolean isAttachable(int blockID) {
+		if (attachableTypes.contains(blockID)) {
+			return true;
+		}
+		return false;
+	}
 	
-	public Template() 
-	{
-		
+	public Template() {
 	}
 	
 	/*public CivTemplate(Location center, String name, Type type) throws TownyException, IOException {
@@ -643,8 +647,11 @@ public class Template {
 				}
 			}
 			
-			blocks[blockX][blockY][blockZ] = block;
+			if (isAttachable(blockId)) {
+				this.attachableLocations.add(new BlockCoord("", blockX, blockY, blockZ));
+			}
 			
+			blocks[blockX][blockY][blockZ] = block;
 		}
 		
 		this.blocks = blocks;
@@ -746,9 +753,11 @@ public class Template {
 			for (int y = 0; y < tpl.size_y; y++) {
 				for (int z = 0; z < tpl.size_z; z++) {
 					Block b = centerBlock.getRelative(x, y, z);
-						if (CivSettings.restrictedUndoBlocks.contains(ItemManager.getId(b))) {
-							continue;
-						}
+					
+					SimpleBlock sb = tpl.blocks[x][y][z];
+					if (CivSettings.restrictedUndoBlocks.contains(sb.getMaterial())) {
+						continue;
+					}
 					
 						ItemManager.setTypeIdAndData(b, tpl.blocks[x][y][z].getType(), (byte)tpl.blocks[x][y][z].getData(), false);
 //						try {

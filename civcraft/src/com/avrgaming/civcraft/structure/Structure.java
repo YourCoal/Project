@@ -38,6 +38,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.util.BlockCoord;
@@ -410,8 +411,7 @@ public class Structure extends Buildable {
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);
 	}
 	
-	@Override
-	public void delete() throws SQLException {
+	public void deleteSkipUndo() throws SQLException {
 		super.delete();
 		
 		if (this.getTown() != null) {
@@ -428,18 +428,31 @@ public class Structure extends Buildable {
 				}
 			}
 			
-			try {
-				this.undoFromTemplate();	
-			} catch (IOException | CivException e1) {
-				e1.printStackTrace();
-				this.fancyDestroyStructureBlocks();
+			if (!(this instanceof Wall)) {
+				CivLog.debug("Delete with Undo! "+this.getDisplayName());
+				/* Remove StructureSigns */
+				for (StructureSign sign : this.getSigns()) {
+					sign.delete();
+				} try {
+					this.undoFromTemplate();	
+				} catch (IOException | CivException e1) {
+					e1.printStackTrace();
+					this.fancyDestroyStructureBlocks();
+				}
+				CivGlobal.removeStructure(this);
+				this.getTown().removeStructure(this);
+				this.unbindStructureBlocks();
+			} else {
+				CivLog.debug("Delete skip Undo! "+this.getDisplayName());
+				CivGlobal.removeStructure(this);
+				this.getTown().removeStructure(this);
+				this.unbindStructureBlocks();
+				if (this instanceof Wall) {
+					Wall wall = (Wall)this;
+					wall.deleteOnDisband();
+				}
 			}
-						
-			CivGlobal.removeStructure(this);
-			this.getTown().removeStructure(this);
-			this.unbindStructureBlocks();
 		}
-		
 		SQL.deleteNamedObject(this, TABLE_NAME);
 	}
 

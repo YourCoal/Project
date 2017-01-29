@@ -115,12 +115,28 @@ public class Capitol extends TownHall {
 			return;
 		}
 		
+		Boolean hasPermission = false;
+		if(resident.getTown().isMayor(resident) || resident.getTown().getAssistantGroup().hasMember(resident)
+					|| resident.getCiv().getLeaderGroup().hasMember(resident) || resident.getCiv().getAdviserGroup().hasMember(resident)) {
+			if (sign.getOwner().getCiv() == resident.getCiv()) {
+				hasPermission = true;
+			}
+		}
+		
 		switch (sign.getAction()) {
 		case "prev":
-			changeIndex((index-1));
+			if(hasPermission) {
+				changeIndex((index-1));
+			} else {
+				CivMessage.sendError(resident, "You must be a Leader, Advisor, Mayor, or Assistant of this civilization to change the respawn signs.");
+			}
 			break;
 		case "next":
-			changeIndex((index+1));
+			if(hasPermission) {
+				changeIndex((index-1));
+			} else {
+				CivMessage.sendError(resident, "You must be a Leader, Advisor, Mayor, or Assistant of this civilization to change the respawn signs.");
+			}
 			break;
 		case "respawn":
 			ArrayList<RespawnLocationHolder> respawnables =  this.getTown().getCiv().getAvailableRespawnables();

@@ -131,7 +131,6 @@ public class BuildCommand extends CommandBase {
 			CivMessage.send(player, CivColor.LightGreen+"Are you sure you want to demolish the structure "+CivColor.Yellow+nearest.getDisplayName()+
 					CivColor.LightGreen+" at "+CivColor.Yellow+nearest.getCorner()+CivColor.LightGreen+" ?");
 			CivMessage.send(player, CivColor.LightGray+"If yes, use /build demolishnearest yes");
-						
 			nearest.flashStructureBlocks();
 			return;
 		}

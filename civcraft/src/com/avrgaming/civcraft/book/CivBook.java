@@ -261,40 +261,55 @@ public class CivBook {
 					CivColor.Gold+"Citizen XP: "+CivColor.RoseItalic+"Coming Soon");
 			guiInventory.setItem(0, playerInfo);
 			
+			ItemStack civDip = LoreGuiItem.build("Diplomatic Relations", ItemManager.getId(Material.NAME_TAG), 0, CivColor.Gold+"<Click to View>", "civ_tag000_COMING_SOON");
+//			civDip = LoreGuiItem.setAction(civDip, "BuildDiplomaticMenu");
+			guiInventory.setItem(1, civDip);
+			
 			ItemStack craftRec = LoreGuiItem.build("Crafting Recipes", ItemManager.getId(Material.WORKBENCH), 0, CivColor.Gold+"<Click To View>");
 			craftRec = LoreGuiItem.setAction(craftRec, "OpenInventory");
 			craftRec = LoreGuiItem.setActionData(craftRec, "invType", "showCraftingHelp");
-			guiInventory.setItem(2, craftRec);
+			guiInventory.setItem(3, craftRec);
 			
-			ItemStack dynmapInfo = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.MAP), 0, CivColor.Gold+"<Click to View>", "map_tag000");
+			ItemStack dynmapInfo = LoreGuiItem.build("Useful Links", ItemManager.getId(Material.LADDER), 0, CivColor.Gold+"<Click to View>", "links_tag000_COMING_SOON");
+//			dynmapInfo = LoreGuiItem.setAction(dynmapInfo, "SendDynmapLink");
+			guiInventory.setItem(7, dynmapInfo);
+			
+	/*
+			ItemStack dynmapInfo = LoreGuiItem.build("Dynmap", ItemManager.getId(Material.MAP), 0, CivColor.Gold+"<Click to View>", "map_tag000");
 //			dynmapInfo = LoreGuiItem.setAction(dynmapInfo, "SendDynmapLink");
 			guiInventory.setItem(6, dynmapInfo);
 			
-			ItemStack techTreeInfo = LoreGuiItem.build("Coming Soon", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "techtree_tag000");
+			ItemStack techTreeInfo = LoreGuiItem.build("Tech Tree", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "techtree_tag000");
 //			techTreeInfo = LoreGuiItem.setAction(techTreeInfo, "SendDynmapLink");
 			guiInventory.setItem(7, techTreeInfo);
+		*/
 			
 			ItemStack gameInfo = LoreGuiItem.build("CivCraft Overview", ItemManager.getId(Material.WRITTEN_BOOK), 0, CivColor.Gold+"<Click To View>");
 			gameInfo = LoreGuiItem.setAction(gameInfo, "OpenInventory");
 			gameInfo = LoreGuiItem.setActionData(gameInfo, "invType", "showTutorialInventory");
 			guiInventory.setItem(8, gameInfo);
 			
-			ItemStack buildMenu = LoreGuiItem.build("Building Information", ItemManager.getId(Material.SLIME_BLOCK), 0, CivColor.Gold+"<Click to View>");
+			ItemStack buildMenu = LoreGuiItem.build("Building Menu", ItemManager.getId(Material.SLIME_BLOCK), 0, CivColor.Gold+"<Click to View>");
 			buildMenu = LoreGuiItem.setAction(buildMenu, "BuildMenuList");
 			guiInventory.setItem(9, buildMenu);
+			//TODO Put this in BuildMenuList \/ \/ \/ \/ \/
+//			ItemStack upgradeMenu = LoreGuiItem.build("Town Upgrades", ItemManager.getId(Material.ARMOR_STAND), 0, CivColor.Gold+"<Click to View>");
+//			upgradeMenu = LoreGuiItem.setAction(upgradeMenu, "BuildUpgradeList");
+//			guiInventory.setItem(20, upgradeMenu);
 			
-			ItemStack upgradeMenu = LoreGuiItem.build("Town Upgrades", ItemManager.getId(Material.ARMOR_STAND), 0, CivColor.Gold+"<Click to View>");
-			upgradeMenu = LoreGuiItem.setAction(upgradeMenu, "BuildUpgradeList");
-			guiInventory.setItem(10, upgradeMenu);
+			ItemStack perkMenu = LoreGuiItem.build("Perk Menu", ItemManager.getId(Material.BOOK_AND_QUILL), 0, CivColor.Gold+"<Click to View>");
+			perkMenu = LoreGuiItem.setAction(perkMenu, "ShowPerkPage");
+			guiInventory.setItem(10, perkMenu);
 			
-			ItemStack civDip = LoreGuiItem.build("Diplomatic Relations", ItemManager.getId(Material.NAME_TAG), 0, CivColor.Gold+"<Click to View>", "civ_tag000_COMING_SOON");
-//			civDip = LoreGuiItem.setAction(civDip, "BuildDiplomaticMenu");
-			guiInventory.setItem(12, civDip);
-			
-			ItemStack techMenu = LoreGuiItem.build("Research Technology", ItemManager.getId(Material.POTION), 8194, CivColor.Gold+"<Click to View>");
+			ItemStack techMenu = LoreGuiItem.build("Research Technology", ItemManager.getId(Material.POTION), 8267, CivColor.Gold+"<Click to View>");
 			techMenu = LoreGuiItem.setAction(techMenu, "BuildTechnologyList");
-			guiInventory.setItem(13, techMenu);
+			guiInventory.setItem(18, techMenu);
 			
+			ItemStack turorialMenu = LoreGuiItem.build("In-game Wiki", ItemManager.getId(Material.RED_ROSE), 1, CivColor.Gold+"<Click to View>", "wiki_tag000_COMING_SOON");
+//			turorialMenu = LoreGuiItem.setAction(turorialMenu, "BuildTutorialMenu");
+			guiInventory.setItem(26, turorialMenu);
+			
+	/*
 			ItemStack civTutorial = LoreGuiItem.build("Civilizations", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "civ_tag001_COMING_SOON");
 //			civTutorial = LoreGuiItem.setAction(civTutorial, "OpenInventory");
 //			civTutorial = LoreGuiItem.setActionData(civTutorial, "invType", "showCivilizationTutorialInventory");
@@ -317,6 +332,7 @@ public class CivBook {
 			ItemStack tradeResourcesTutorial = LoreGuiItem.build("Trade Resources", ItemManager.getId(Material.BOOK), 0, CivColor.Gold+"<Click to View>", "tr_tag000_COMING_SOON");
 //			tradeResourcesTutorial = LoreGuiItem.setAction(tradeResourcesTutorial, "TradeResourceList");
 			guiInventory.setItem(24, tradeResourcesTutorial);
+	 */
 			
 /*			if (player.isOp()) {
 				ItemStack adminMenu = LoreGuiItem.build("Admin Panel", ItemManager.getId(Material.COMMAND), 8194, CivColor.Gold+"<Click to View>", 
