@@ -91,6 +91,8 @@ public class CivSettings {
 	public static float normal_speed;
 	public static double highjump;
 	
+	public static FileConfiguration gameConfig; /*game.yml */
+	
 	public static FileConfiguration townConfig; /* town.yml */
 	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
 	public static Map<String, ConfigTownUpgrade> townUpgrades = new TreeMap<String, ConfigTownUpgrade>();
@@ -108,6 +110,7 @@ public class CivSettings {
 	public static Map<Integer, ConfigGrocerLevel> grocerLevels = new HashMap<Integer, ConfigGrocerLevel>();
 	public static Map<Integer, ConfigCottageLevel> cottageLevels = new HashMap<Integer, ConfigCottageLevel>();
 	public static ArrayList<ConfigTempleSacrifice> templeSacrifices = new ArrayList<ConfigTempleSacrifice>();
+	public static Map<Integer, ConfigMonumentLevel> monumentLevels = new HashMap<Integer, ConfigMonumentLevel>();
 	public static Map<Integer, ConfigMineLevel> mineLevels = new HashMap<Integer, ConfigMineLevel>();
 	public static Map<Integer, ConfigLabLevel> labLevels = new HashMap<Integer, ConfigLabLevel>();
 	
@@ -404,6 +407,7 @@ public class CivSettings {
 		ConfigGrocerLevel.loadConfig(structureConfig, grocerLevels);
 		ConfigCottageLevel.loadConfig(structureConfig, cottageLevels);
 		ConfigTempleSacrifice.loadConfig(structureConfig, templeSacrifices);
+		ConfigMonumentLevel.loadConfig(structureConfig, monumentLevels);
 		ConfigMineLevel.loadConfig(structureConfig, mineLevels);
 		ConfigLabLevel.loadConfig(structureConfig, labLevels);
 		ConfigStableItem.loadConfig(structureConfig, stableItems);
@@ -411,6 +415,7 @@ public class CivSettings {
 	}
 	
 	private static void loadConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException {
+		gameConfig = loadCivConfig("game.yml");
 		townConfig = loadCivConfig("town.yml");
 		civConfig = loadCivConfig("civ.yml");
 		cultureConfig = loadCivConfig("culture.yml");
@@ -452,6 +457,7 @@ public class CivSettings {
 		ConfigGrocerLevel.loadConfig(structureConfig, grocerLevels);
 		ConfigCottageLevel.loadConfig(structureConfig, cottageLevels);
 		ConfigTempleSacrifice.loadConfig(structureConfig, templeSacrifices);
+		ConfigMonumentLevel.loadConfig(structureConfig, monumentLevels);
 		ConfigMineLevel.loadConfig(structureConfig, mineLevels);
 		ConfigLabLevel.loadConfig(structureConfig, labLevels);
 		ConfigGovernment.loadConfig(governmentConfig, governments);

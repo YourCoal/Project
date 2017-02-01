@@ -87,6 +87,8 @@ public class CivData {
 	public static final int LOG = 17;
 	public static final int LEAF = 18;
 	
+	public static final int LAPIS_ORE = 21;
+	
 	public static final int TALL_GRASS = 31;
 	public static final int DEAD_BUSH = 32;
 	
@@ -94,8 +96,13 @@ public class CivData {
 	public static final int OTHER_FLOWERS = 38;
 	
 	public static final int REDSTONE_WIRE = 55;
+	public static final int DIAMOND_ORE = 56;
 	
 	public static final int REDSTONE_ORE = 73;
+	
+	public static final int ICE = 79;
+	public static final int SNOW_BLOCK = 80;
+	public static final int CACTUS = 81;
 	
 	public static final int SUGARCANE = 83;
 	
@@ -119,6 +126,7 @@ public class CivData {
 	public static final int CARPET = 171;
 	public static final int HARDENED_CLAY = 172;
 	
+	public static final int PACKED_ICE = 174;
 	public static final int DOUBLE_FLOWER = 175;
 	
 	public static final int BEETROOT_CROP = 207;
@@ -154,6 +162,7 @@ public class CivData {
 	
 	public static final int GOLD_PICKAXE = 285;
 	
+	public static final int POPPED_CHORUS_FRUIT = 433;
 	public static final int BEETROOT_ITEM = 434;
 	public static final int BEETROOT_SEED = 435;
 	
@@ -232,9 +241,6 @@ public class CivData {
 	public static final int PRISMARINE = 168;
 	public static final byte PRISMARINE_BRICKS = 0x1;
 	public static final byte DARK_PRISMARINE = 0x2;
-	public static final int ICE = 79;
-	public static final int SNOW = 80;
-	public static final int PACKED_ICE = 174;
 	public static final int SANDSTONE = 24;
 	public static final byte CHISELED_SANDSTONE = 0x1;
 	public static final byte SMOOTH_SANDSTONE = 0x2;

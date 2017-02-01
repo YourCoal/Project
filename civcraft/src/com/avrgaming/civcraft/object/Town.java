@@ -74,6 +74,7 @@ import com.avrgaming.civcraft.template.Template;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.threading.sync.SyncUpdateTags;
 import com.avrgaming.civcraft.threading.tasks.BuildAsyncTask;
+import com.avrgaming.civcraft.threading.tasks.BuildUndoTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -142,6 +143,8 @@ public class Town extends SQLObject {
 	private boolean pvp = false;
 	
 	public ArrayList<BuildAsyncTask> build_tasks = new ArrayList<BuildAsyncTask>();
+	public ArrayList<BuildUndoTask> undo_tasks = new ArrayList<BuildUndoTask>();
+	
 	public Buildable lastBuildableBuilt = null;
 
 	public boolean leaderWantsToDisband = false;
@@ -1227,12 +1230,12 @@ public class Town extends SQLObject {
 	public String getPvpString() {
 		if (!this.getCiv().getDiplomacyManager().isAtWar()) {
 			if (pvp) {
-				return CivColor.Red+"[PvP]";
+				return CivColor.Rose+"[Plot PvP]";
 			} else {
 				return CivColor.Green+"[No PvP]";
 			}
 		} else {
-			return CivColor.Red+"[WAR-PvP]";
+			return CivColor.Red+"[War PvP]";
 		}
 	}
 	
@@ -2410,7 +2413,11 @@ public class Town extends SQLObject {
 		//return outpost_upkeep*outposts.size();
 		return 0;
 	}
-
+	
+	public boolean isOutlaw(Resident res) {  
+		return this.outlaws.contains(res.getUUIDString());  
+	}
+	
 	public boolean isOutlaw(String name) {
 		Resident res = CivGlobal.getResident(name);
 		return this.outlaws.contains(res.getUUIDString());

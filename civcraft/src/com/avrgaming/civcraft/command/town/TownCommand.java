@@ -96,6 +96,20 @@ public class TownCommand extends CommandBase {
 		commands.put("claimmayor", "claim yourself as mayor of this town. All current mayors must be inactive.");
 		commands.put("movestructure", "[coord] [town] moves the structure specified by the coord to the specfied town.");
 		commands.put("enablestructure", "[coord] attempts to enable the specified structure if its currently disabled.");
+		commands.put("location", "Shows the location of your town hall; useful for new players.");
+	}
+	
+	public void location_cmd() throws CivException {
+		Town town = getSelectedTown();
+		Resident resident = getResident();
+		if (resident.getTown() == town) {
+			TownHall townhall = town.getTownHall();
+			if (townhall == null) {
+				CivMessage.send(sender, CivColor.LightBlueBold+town.getName()+CivColor.LightGreen+" Location: "+CivColor.RoseBold+"NO TOWN HALL");
+			} else {
+				CivMessage.send(sender, CivColor.LightGreen+CivColor.BOLD+town.getName()+CivColor.LightGreen+" Location: "+townhall.getCorner());
+			}
+		}
 	}
 	
 	public void enablestructure_cmd() throws CivException {

@@ -33,6 +33,10 @@ public class LoreCraftableMaterialListener implements Listener {
 				
 				/* Disable notch apples */
 				ItemStack resultStack = event.getInventory().getResult();
+				if (resultStack == null) {
+					return;
+				}
+				
 				if (resultStack.getType().equals(Material.GOLDEN_APPLE)) {
 					CivMessage.sendError((Player)event.getWhoClicked(), "You cannot craft golden apples. Sorry.");
 					event.setCancelled(true);
@@ -97,6 +101,12 @@ public class LoreCraftableMaterialListener implements Listener {
 				}
 			}
 			
+			String matName =loreMat.getId(); 
+			if (matName.contains("_alt")) {
+				String id = matName.replaceAll("_alt(.*)", "");
+				loreMat = LoreCraftableMaterial.getCraftMaterialFromId(id);
+			}
+			
 			ItemStack newStack;
 			if (!loreMat.isVanilla()) {
 				newStack = LoreMaterial.spawn(loreMat);
@@ -134,6 +144,11 @@ public class LoreCraftableMaterialListener implements Listener {
 				}
 			}
 			
+			String matName =loreMat.getId(); 
+			if (matName.contains("_alt")) {
+				String id = matName.replaceAll("_alt(.*)", "");
+				loreMat = LoreCraftableMaterial.getCraftMaterialFromId(id);
+			}
 			
 			ItemStack newStack;
 			if (!loreMat.isVanilla()) {

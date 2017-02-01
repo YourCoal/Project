@@ -51,6 +51,21 @@ public class CampCommand extends CommandBase {
 		commands.put("info", "Shows information about your current camp.");
 		commands.put("disband", "Disbands this camp.");
 		commands.put("upgrade", "Manage camp upgrades.");
+		commands.put("location", "Shows the location of your camp.");
+	}
+	
+	public void location_cmd() throws CivException {
+		Resident resident = getResident();
+		if (!resident.hasCamp()) {
+			throw new CivException("You are not currently in a camp.");
+		}
+		
+		Camp camp = resident.getCamp();
+		if (camp != null) {
+			CivMessage.send(sender, "");
+			CivMessage.send(sender, CivColor.GoldBold+"Camp Location: "+CivColor.LightGreen+camp.getCorner());
+			CivMessage.send(sender, "");
+		}
 	}
 	
 	public void refresh_cmd() throws CivException, IOException {

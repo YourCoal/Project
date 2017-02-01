@@ -166,7 +166,7 @@ public class Resident extends SQLObject {
 	private boolean insideArena = false;
 	private boolean isProtected = false;
 	
-	public HashMap<BlockCoord, SimpleBlock> previewUndo = null;
+	public ConcurrentHashMap<BlockCoord, SimpleBlock> previewUndo = null;
 	public LinkedHashMap<String, Perk> perks = new LinkedHashMap<String, Perk>();
 	private Date lastKilledTime = null;
 	private String lastIP = "";
@@ -1018,7 +1018,7 @@ public class Resident extends SQLObject {
 	
 	public void undoPreview() {
 		if (this.previewUndo == null) {
-			this.previewUndo = new HashMap<BlockCoord, SimpleBlock>();
+			this.previewUndo = new ConcurrentHashMap<BlockCoord, SimpleBlock>();
 			return;
 		}
 		
@@ -1045,7 +1045,7 @@ public class Resident extends SQLObject {
 		}
 		
 		this.previewUndo.clear();
-		this.previewUndo = new HashMap<BlockCoord, SimpleBlock>();
+		this.previewUndo = new ConcurrentHashMap<BlockCoord, SimpleBlock>();
 	}
 
 	public boolean isShowInfo() {
@@ -1104,7 +1104,6 @@ public class Resident extends SQLObject {
 				this.perks.put(perk.getIdent(), perk);
 			}
 		}
-		CivMessage.send(this, CivColor.LightGreen+"You have the Arctic Templates! Use /resident perks to apply them.");
 	}
 	
 	public void giveAllAztecPerks() {
@@ -1123,7 +1122,6 @@ public class Resident extends SQLObject {
 				this.perks.put(perk.getIdent(), perk);
 			}
 		}
-		CivMessage.send(this, CivColor.LightGreen+"You have the Aztec Templates! Use /resident perks to apply them.");
 	}
 	
 	public void giveAllEgyptianPerks() {
@@ -1142,7 +1140,6 @@ public class Resident extends SQLObject {
 				this.perks.put(perk.getIdent(), perk);
 			}
 		}
-		CivMessage.send(this, CivColor.LightGreen+"You have the Egyptian Templates! Use /resident perks to apply them.");
 	}
 	
 	public void giveAllRomanPerks() {
@@ -1161,7 +1158,6 @@ public class Resident extends SQLObject {
 				this.perks.put(perk.getIdent(), perk);
 			}
 		}
-		CivMessage.send(this, CivColor.LightGreen+"You have the Roman Templates! Use /resident perks to apply them.");
 	}
 	
 	public void giveAllHellPerks() {
@@ -1180,7 +1176,6 @@ public class Resident extends SQLObject {
 				this.perks.put(perk.getIdent(), perk);
 			}
 		}
-		CivMessage.send(this, CivColor.LightGreen+"You have the Hell Templates! Use /resident perks to apply them.");
 	}
 	
 	public void giveAllElvenPerks() {
@@ -1199,7 +1194,6 @@ public class Resident extends SQLObject {
 				this.perks.put(perk.getIdent(), perk);
 			}
 		}
-		CivMessage.send(this, CivColor.LightGreen+"You have the Elven Templates! Use /resident perks to apply them.");
 	}
 	
 	public void giveAllCultistPerks() {
@@ -1218,7 +1212,6 @@ public class Resident extends SQLObject {
 				this.perks.put(perk.getIdent(), perk);
 			}
 		}
-		CivMessage.send(this, CivColor.LightGreen+"You have the Cultist Templates! Use /resident perks to a them.");
 	}
 	
 	public void giveAllFreePerks() {
@@ -1237,7 +1230,6 @@ public class Resident extends SQLObject {
 				this.perks.put(perk.getIdent(), perk);
 			}
 		}
-		CivMessage.send(this, CivColor.LightGreen+"You've the weather perk! Use /resident perks to access it.");
 	}
 	
 	public void loadPerks() {

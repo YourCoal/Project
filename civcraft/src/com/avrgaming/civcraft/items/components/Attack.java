@@ -27,10 +27,11 @@ public class Attack extends ItemComponent {
 	
 	@Override
 	public void onPrepareCreate(AttributeUtil attrs) {
-		attrs.add(Attribute.newBuilder().name("Attack").
+		attrs.add(Attribute.newBuilder().name("Attack Damage").
 				type(AttributeType.GENERIC_ATTACK_DAMAGE).
 				amount(this.getDouble("value")).build());
-		attrs.addLore(CivColor.Rose+""+this.getDouble("value")+" Attack");
+		attrs.setHideFlag(63);
+		attrs.addLore(CivColor.Rose+""+this.getDouble("value")+" Attack Damage");
 		return;
 	}
 	

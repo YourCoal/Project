@@ -109,6 +109,7 @@ public class EffectEventTimer extends CivAsyncTask {
 			double totalCulture = 0;
 			AttrSource cultureSources = town.getCulture();
 			totalCulture += cultureSources.total;
+			town.addAccumulatedCulture(totalCulture);
 			
 /*			try {
 				if (town.getCiv().getResearchProgress() > 0) {

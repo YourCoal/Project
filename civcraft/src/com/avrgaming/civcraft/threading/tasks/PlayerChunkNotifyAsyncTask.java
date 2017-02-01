@@ -21,7 +21,6 @@ package com.avrgaming.civcraft.threading.tasks;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -32,7 +31,6 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Relation;
 import com.avrgaming.civcraft.object.Resident;
-import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.util.AsciiMap;
 import com.avrgaming.civcraft.util.ChunkCoord;
@@ -66,11 +64,9 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			break;
 		case WAR:
 			color = CivColor.Rose;
-
 			break;
 		case PEACE:
 			color = CivColor.LightBlue;
-
 			break;
 		case ALLY:
 			color = CivColor.Green;
@@ -78,11 +74,11 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 		return color;
 	}
 	
-	private String getToWildMessage() {
+/*	private String getToWildMessage() {
 		return CivColor.LightGray+"Entering Wilderness "+CivColor.Rose+"[PvP]";
-	}
+	}*/
 	
-	private String getToTownMessage(Town town, TownChunk tc) {
+/*	private String getToTownMessage(Town town, TownChunk tc) {
 		Player player;
 		try {
 			player = CivGlobal.getPlayer(playerName);
@@ -96,16 +92,14 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 				CivMessage.send(player, CivColor.Green+ChatColor.ITALIC+"You feel invigorated by the glorious hanging gardens.");
 			}
 		}
-		
 		if (!tc.isOutpost()) {
 			return CivColor.LightGray+"Entering "+CivColor.White+town.getName()+" "+town.getPvpString()+" ";
 		} else {
 			return CivColor.LightGray+"Entering Outpost of "+CivColor.White+town.getName()+" "+town.getPvpString()+" ";
 		}
-	}
+	}*/
 	
 	private void showPlotMoveMessage() {
-		
 		TownChunk fromTc = CivGlobal.getTownChunk(from);
 		TownChunk toTc = CivGlobal.getTownChunk(to);
 		CultureChunk fromCc = CivGlobal.getCultureChunk(from);
@@ -122,65 +116,88 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			return;
 		}
 		
-		String out = "";
+//		String out = "";
+		String title = "";
+		String subTitle = "";
 		
 		//We've entered a camp.
 		if (toCamp != null && toCamp != fromCamp) {
-			out += CivColor.Gold+"Camp "+toCamp.getName()+" "+CivColor.Rose+"[PvP]";
+			title += CivColor.Rose+"[Camp PvP]";
+			subTitle += CivColor.LightGray+"Entering "+CivColor.Gold+"Camp "+toCamp.getName();
+//			out += CivColor.Gold+"Camp "+toCamp.getName()+" "+CivColor.Rose+"[PvP]";
 		}
 		
 		if (toCamp == null && fromCamp != null) {
-			out += getToWildMessage();
+			title += CivColor.Rose+"[Wilderness PvP]";
+			subTitle += CivColor.LightGray+"Leaving Camp "+fromCamp.getName();
+//			out += getToWildMessage();
 		}
 		
 		// From Wild, to town
-		if (fromTc == null && toTc != null) {			
-			// To Town
-			out += getToTownMessage(toTc.getTown(), toTc);
+		if (fromTc == null && toTc != null) {	
+			title += toTc.getTown().getPvpString();
+			subTitle += CivColor.LightGray+"Entering "+CivColor.White+toTc.getTown().getName();
+//			out += getToTownMessage(toTc.getTown(), toTc);
 		}
 		
 		// From a town... to the wild
 		if (fromTc != null && toTc == null) {
-			out += getToWildMessage();
+			title += CivColor.Rose+"[Wilderness PvP]";
+			subTitle += CivColor.LightGray+"Leaving "+fromTc.getTown().getName()+", Entering Wilderness";
+//			out += getToWildMessage();
 		}
 		
 		// To another town(should never happen with culture...)
 		if (fromTc != null && toTc != null && fromTc.getTown() != toTc.getTown()) {
-			out += getToTownMessage(toTc.getTown(), toTc);
+			title += toTc.getTown().getPvpString();
+			subTitle += CivColor.LightGray+"Leaving "+CivColor.White+fromTc.getTown().getName()+","+
+						CivColor.LightGray+"Entering "+CivColor.White+toTc.getTown().getName();
+//			out += getToTownMessage(toTc.getTown(), toTc);
 		}
 		
 		if (toTc != null) {
-			out += toTc.getOnEnterString(player, fromTc);
+			title += "";
+			subTitle += toTc.getOnEnterString(player, fromTc);
+//			out += toTc.getOnEnterString(player, fromTc);
 		}
 		
 		// Leaving culture to the wild.
 		if (fromCc != null && toCc == null) {
-			out += fromCc.getOnLeaveString();
+			title += "";
+			subTitle += CivColor.LightPurple+"Leaving "+fromCc.getCiv().getName()+" Borders";
+//			out += fromCc.getOnLeaveString();
 		}
 		
 		// Leaving wild, entering culture. 
 		if (fromCc == null && toCc != null) {
-			out += toCc.getOnEnterString();
+			title += getNotifyColor(toCc, toCc.getCiv().getDiplomacyManager().getRelationStatus(player), player)+
+					"["+toCc.getCiv().getDiplomacyManager().getRelationStatus(player).toString().toUpperCase()+"]";
+			subTitle += CivColor.LightPurple+"Entering "+toCc.getCiv().getName()+" Borders";
+//			out += toCc.getOnEnterString();
 			onCultureEnter(toCc);
 		}
 		
 		//Leaving one civ's culture, into another. 
 		if (fromCc != null && toCc !=null && fromCc.getCiv() != toCc.getCiv()) {
-			out += fromCc.getOnLeaveString() +" | "+ toCc.getOnEnterString();
+			title += getNotifyColor(toCc, toCc.getCiv().getDiplomacyManager().getRelationStatus(player), player)+
+					"["+toCc.getCiv().getDiplomacyManager().getRelationStatus(player).toString().toUpperCase()+"]";
+			subTitle += CivColor.LightPurple+"Leaving "+fromCc.getCiv().getName()+" Borders"+
+					" | "+CivColor.LightPurple+"Entering "+toCc.getCiv().getName()+" Borders";
+//			out += fromCc.getOnLeaveString() +" | "+ toCc.getOnEnterString();
 			onCultureEnter(toCc);
 		}
 		
-		if (!out.equals("")) {
+		if (!title.equals("") && !subTitle.equals("")) {
 			//ItemMessage im = new ItemMessage(CivCraft.getPlugin());
 			//im.sendMessage(player, CivColor.BOLD+out, 3);
 			
-			CivMessage.send(player, out);
+			//CivMessage.send(player, out);
+			CivMessage.sendPCNTitle(player, title, subTitle);
 		}
 		
 		if (resident.isShowInfo()) {
 			CultureChunk.showInfo(player);
 		}
-		
 	}
 	
 	private void onCultureEnter(CultureChunk toCc) {
@@ -244,7 +261,4 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			CivMessage.send(player, AsciiMap.getMapAsString(player.getLocation()));
 		}	
 	}
-	
-	
-
 }

@@ -23,7 +23,7 @@ public class RangedAttack extends ItemComponent {
 
 	@Override
 	public void onPrepareCreate(AttributeUtil attrs) {
-		attrs.addLore(CivColor.Rose+this.getDouble("value")+" Ranged Attack");	
+		attrs.addLore(CivColor.Rose+this.getDouble("value")+" Ranged Attack Damage");	
 	}
 	
 	private static double ARROW_MAX_VEL = 6.0; 

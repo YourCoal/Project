@@ -127,15 +127,52 @@ public class CivMessage {
 			if (player != null && resident != null) {
 				TitleAPI.sendTitle(player, fadeIn, show, fadeOut, title, subTitle);
 			}
+		} else {
+			send(sender, title);
+			if (subTitle != "") {
+				send(sender, subTitle);
+			}
 		}
-//		send(sender, title);
-//		if (subTitle != "") {
-//			send(sender, subTitle);
-//		}
+	}
+	
+	public static void sendPCNTitle(Object sender, String title, String subTitle) {
+		if (CivSettings.hasTitleAPI) {
+			Player player = null;
+			Resident resident = null;
+			if ((sender instanceof Player)) {
+				player = (Player) sender;
+				resident = CivGlobal.getResident(player);
+			} else if (sender instanceof Resident) {
+				try {
+					resident = (Resident)sender;
+					player = CivGlobal.getPlayer(resident);
+				} catch (CivException e) { // No player online
+				}
+			}
+			if (player != null && resident != null) {
+				TitleAPI.sendTitle(player, 10, 30, 10, title, subTitle);
+			} else {
+				CivLog.debug("Could not send PCN Title to player "+player);
+			}
+		} else {
+			send(sender, subTitle+" "+title);
+		}
 	}
 	
 	public static void sendTitle(Object sender, String title, String subTitle) {
-		sendTitle(sender, 10, 60, 10, title, subTitle);
+		sendTitle(sender, 10, 50, 10, title, subTitle);
+	}
+	
+	public static void globalTitle(String title, String subTitle) {
+		CivLog.info("[GlobalTitle] "+title+" - "+subTitle);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (CivSettings.hasTitleAPI) {
+				CivMessage.sendTitle(player, 10, 50, 10, title, subTitle);
+			} else {
+				send(player, buildTitle(title));
+				send(player, subTitle);
+			}
+		}
 	}
 	
 	public static String buildTitle(String title) {

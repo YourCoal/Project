@@ -164,6 +164,13 @@ public class Template {
 		return false;
 	}
 	
+	public static boolean isAttachableMaterial(Material mat) {
+		if (attachableTypes.contains(mat)) {
+			return true;
+		}
+		return false;
+	}
+	
 	public Template() {
 	}
 	

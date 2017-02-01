@@ -31,6 +31,20 @@ materials:
 #================[ Resource Materials ]================#
 #======================================================#
 # Checked 01/21/2017
+  - id: 'civ_admin_sword'
+    item_id: 276
+    item_data: 0
+    name: 'Admin Sword'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Resources'
+    components:
+        - name: 'Attack'
+          value: '64'
+        - name: 'NoVanillaDurability'
+        - name: 'DurabilityOnDeath'
+          value: '0.0'
+# Checked 01/21/2017
   - id: 'civ_base_hammer'
     item_id: 139
     item_data: 0
@@ -293,6 +307,19 @@ materials:
     category: '<lightblueb>Refined Materials'
     ingredients:
         - type_id: 17
+          data: -1
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_refined_wood_alt0'
+    item_id: 17
+    item_data: 0
+    name: 'T1 Refined Wood'
+    craftable: true
+    shaped: false
+    shiny: true
+    category: '<lightblueb>Refined Materials'
+    ingredients:
+        - type_id: 162
           data: -1
           count: 9
 # Checked 01/21/2017
@@ -657,32 +684,6 @@ materials:
           custom_id: 'civ_clay_molding'
           data: 0
           count: 1
-# Checked 01/21/2017
-  - id: 'civ_crushed_stone'
-    item_id: 44
-    item_data: 0
-    name: 'T2 Crushed Stone'
-    craftable: true
-    shaped: false
-    category: '<yellow>Tier 2 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_refined_stone'
-          data: 0
-          count: 9
-# Checked 01/21/2017
-  - id: 'civ_milled_lumber'
-    item_id: 53
-    item_data: 0
-    name: 'T2 Milled Lumber'
-    craftable: true
-    shaped: false
-    category: '<lightblue>Tier 2 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_refined_wood'
-          data: 0
-          count: 9
 #======================================================#
 #=============[ ------- Materials Tier 3 ]=============#
 #======================================================#
@@ -891,36 +892,6 @@ materials:
           custom_id: 'civ_improved_molding'
           data: 0
           count: 1
-# Checked 01/21/2017
-  - id: 'civ_masonry_mortar'
-    item_id: 45
-    item_data: 0
-    name: 'T3 Masonry Mortar'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_smithy_resin'
-          data: 0
-          count: 2
-        - type_id: 0
-          custom_id: 'civ_improved_molding'
-          data: 0
-          count: 2
-# Checked 01/21/2017
-  - id: 'civ_compacted_stone'
-    item_id: 98
-    item_data: 0
-    name: 'T3 Compacted Stone'
-    craftable: true
-    shaped: false
-    category: '<lightpurple>Tier 3 Materials'
-    ingredients:
-        - type_id: 0
-          custom_id: 'civ_crushed_stone'
-          data: 0
-          count: 9
 #======================================================#
 #============[ Advanced Materials Tier 4 ]============##
 #======================================================#
@@ -1183,6 +1154,88 @@ materials:
 #          data: 0
 #          count: 1
 # Checked 01/21/2017
+  - id: 'civ_crushed_stone'
+    item_id: 44
+    item_data: 0
+    name: 'T2 Crushed Stone'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_stone'
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_crushed_stone_alt0'
+    item_id: 44
+    item_data: 0
+    name: 'T2 Crushed Stone'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_granite'
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_crushed_stone_alt1'
+    item_id: 44
+    item_data: 0
+    name: 'T2 Crushed Stone'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_diorite'
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_crushed_stone_alt2'
+    item_id: 44
+    item_data: 0
+    name: 'T2 Crushed Stone'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_andesite'
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_compacted_stone'
+    item_id: 98
+    item_data: 0
+    name: 'T3 Compacted Stone'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_crushed_stone'
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_masonry_mortar'
+    item_id: 45
+    item_data: 0
+    name: 'T3 Masonry Mortar'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_smithy_resin'
+          data: 0
+          count: 2
+        - type_id: 0
+          custom_id: 'civ_improved_molding'
+          data: 0
+          count: 2
+# Checked 01/21/2017
   - id: 'civ_jewelry_grade_gold'
     item_id: 322
     item_data: 0
@@ -1229,6 +1282,19 @@ materials:
         - "   "
         - "lll"
         - "ccc"
+# Checked 01/21/2017
+  - id: 'civ_milled_lumber'
+    item_id: 53
+    item_data: 0
+    name: 'T2 Milled Lumber'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_wood'
+          data: 0
+          count: 9
 # Checked 01/21/2017
   - id: 'civ_token_of_leadership'
     item_id: 370
@@ -1354,15 +1420,16 @@ materials:
 #======================================================#
 # Checked 12/01/2016
   - id: 'civ_stone_sword'
-    item_id: 268
+    item_id: 290
     item_data: 0
     name: 'Training Shank'
     craftable: true
     shaped: true
     category: '<gray>Gear Tier 0'
     components:
+        - name: 'NoRightClick'
         - name: 'Attack'
-          value: '7'
+          value: '8.5'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
           value: '0.05'
@@ -2023,7 +2090,7 @@ materials:
 #======================================================#
 # Checked 01/21/2017
   - id: 'civ_iron_sword'
-    item_id: 267
+    item_id: 292
     item_data: 0
     name: 'Iron Shortsword'
     craftable: true
@@ -2146,7 +2213,7 @@ materials:
 #======================================================#
 # Checked 01/21/2017
   - id: 'civ_bronze_sword'
-    item_id: 283
+    item_id: 294
     item_data: 0
     name: 'Bronze Longsword'
     craftable: true
@@ -2274,7 +2341,7 @@ materials:
 #======================================================#
 # Checked 01/21/2017
   - id: 'civ_steel_sword'
-    item_id: 272
+    item_id: 291
     item_data: 0
     name: 'Steel Sharpsword'
     craftable: true
@@ -2401,14 +2468,15 @@ materials:
 #======================================================#   
 # Checked 01/21/2017
   - id: 'civ_tungsten_sword'
-    item_id: 276
+    item_id: 293
     item_data: 0
-    name: 'Tungsten Broadsword'
+    name: 'Tungsten Shank'
     craftable: true
     required_techs: 'tech_tempering'
     shaped: true
     category: '<red>Gear Tier 4'
     components:
+        - name: 'NoRightClick'
         - name: 'Attack'
           value: '24'
         - name: 'NoVanillaDurability'

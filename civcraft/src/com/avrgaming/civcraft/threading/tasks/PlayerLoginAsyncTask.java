@@ -211,34 +211,47 @@ public class PlayerLoginAsyncTask implements Runnable {
 			resident.loadPerks();
 			
 			try {
+				String perkMessage = "";
+				perkMessage = "You have access to the Following Perks: ";
 				if (CivSettings.getString(CivSettings.perkConfig, "system.free_perks").equalsIgnoreCase("true")) {
 					resident.giveAllFreePerks();
+					perkMessage += "Weather, ";
 				} else if (CivSettings.getString(CivSettings.perkConfig, "system.free_admin_perks").equalsIgnoreCase("true")) {
 					if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
 						resident.giveAllFreePerks();
+						perkMessage += "Weather, ";
 					}
 				}
 				if (getPlayer().hasPermission(CivSettings.ARCTIC_PERKS)) {
 					resident.giveAllArcticPerks();
+					perkMessage += "Arctic, ";
 				}
 				if (getPlayer().hasPermission(CivSettings.AZTEC_PERKS)) {
 					resident.giveAllAztecPerks();
+					perkMessage += "Aztec, ";
 				}
 				if (getPlayer().hasPermission(CivSettings.CULTIST_PERKS)) {
 					resident.giveAllCultistPerks();
+					perkMessage += "Cultist, ";
 				}
 				if (getPlayer().hasPermission(CivSettings.EGYPTIAN_PERKS)) {
 					resident.giveAllEgyptianPerks();
+					perkMessage += "Egyptian, ";
 				}
 				if (getPlayer().hasPermission(CivSettings.ELVEN_PERKS)) {
 					resident.giveAllElvenPerks();
+					perkMessage += "Elven, ";
 				}
 				if (getPlayer().hasPermission(CivSettings.HELL_PERKS)) {
 					resident.giveAllHellPerks();
+					perkMessage += "Hell, ";
 				}
 				if (getPlayer().hasPermission(CivSettings.ROMAN_PERKS)) {
 					resident.giveAllRomanPerks();
+					perkMessage += "Roman, ";
 				}
+				perkMessage += "... Apply them in your backpack!";
+				CivMessage.send(resident, CivColor.LightGreen+perkMessage);
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
@@ -306,7 +319,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 			}
 			
 			if (EndConditionDiplomacy.canPeopleVote()) {
-				CivMessage.send(resident, CivColor.LightGreen+"The Council of Eight is built! Use /vote to vote for your favorite Civilization!");
+				CivMessage.send(resident, CivColor.LightGreen+"The Council of Eight is built! Use /civ vote [name] to vote for your favorite Civilization!");
 			}
 		} catch (CivException | InvalidNameException exception) {
 			// Player logged out while async task was running.

@@ -2,7 +2,7 @@ name: CivCraft
 author: YourCoal
 main: com.avrgaming.civcraft.main.CivCraft
 softdepend: [TitleAPI, HolographicDisplays, NametagEdit, BarAPI]
-version: 1.0.109
+version: 1.0.111
 #version: phase, update #, sub-update #
 
 commands:
@@ -12,8 +12,6 @@ commands:
         aliases: []
     civ:
         aliases: [c]
-    vote:
-        aliases: [v]
     market:
         aliases: [m]
     town:

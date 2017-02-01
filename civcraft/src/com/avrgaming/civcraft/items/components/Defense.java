@@ -25,6 +25,7 @@ public class Defense extends ItemComponent {
 		attrs.add(Attribute.newBuilder().name("Defense").
 				type(AttributeType.GENERIC_ARMOR).
 				amount(this.getDouble("value")).build());
+		attrs.setHideFlag(63);
 		attrs.addLore(CivColor.Blue+""+this.getDouble("value")+" Defense");
 		return;
 	}

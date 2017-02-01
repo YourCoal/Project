@@ -30,12 +30,6 @@ import com.avrgaming.civcraft.threading.tasks.WindmillStartSyncTask;
 
 public class Windmill extends Structure {
 	
-	public enum CropType {
-		WHEAT,
-		CARROTS,
-		POTATOES
-	}
-	
 	public Windmill(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}

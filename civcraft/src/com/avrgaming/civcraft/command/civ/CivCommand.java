@@ -42,6 +42,7 @@ import com.avrgaming.civcraft.object.Relation.Status;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
+import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.war.War;
 
@@ -65,11 +66,60 @@ public class CivCommand extends CommandBase {
 		commands.put("group", "Manage the leaders and advisers group.");
 		commands.put("dip", "Manage civilization's diplomacy.");
 		commands.put("victory", "Show which civs are close to victory.");
+		commands.put("vote", "/civ vote [civ name] - votes for your favorite civ for a diplomatic victory!");
 		commands.put("votes", "Shows the diplomatic votes for all civs.");
 		commands.put("top5", "Show the top 5 civilizations in the world.");
 		commands.put("disbandtown", "[town] Disbands this town. Mayor must also issue /town disbandtown");
 		commands.put("revolution", "stages a revolution for the mother civilization!");
 		commands.put("claimleader", "claim yourself as leader of this civ. All current leaders must be inactive.");
+		commands.put("location", "Shows the location of every Town Hall in your civ.");
+	}
+	
+	public void location_cmd() throws CivException {
+		Civilization civ = getSenderCiv();
+		Resident resident = getResident();
+		if (resident.getCiv() == civ) {
+			for (Town town : civ.getTowns()) {
+				String name = town.getName();
+				TownHall townhall = town.getTownHall();
+				if (townhall == null) {
+					CivMessage.send(sender, CivColor.LightPurpleBold+name+CivColor.LightGreen+" Location: "+CivColor.RESET+CivColor.RoseBold+" NO TOWN HALL");
+				} else {
+					CivMessage.send(sender, CivColor.LightPurpleBold+name+CivColor.LightGreen+" Location: "+townhall.getCorner());
+				}
+			}
+		}
+	}
+	
+	public void vote_cmd() throws CivException {
+		if (args.length < 2) {
+			CivMessage.sendError(sender, "/civ vote [civ name] - votes for your favorite civ for a diplomatic victory!");
+			return;
+		}
+		
+		if (sender instanceof Player) {
+			Player player = (Player)sender;
+			Resident resident = CivGlobal.getResident(player);
+			if (!resident.hasTown()) {
+				CivMessage.sendError(sender, "You must be a member of a town in order to cast a vote.");
+				return;
+			}
+			
+			Civilization civ = CivGlobal.getCiv(args[1]);
+			if (civ == null) {
+				CivMessage.sendError(sender, "Couldn't find eligable civ named '"+args[1]+"'.");
+				return;
+			}
+			
+			if (!EndConditionDiplomacy.canPeopleVote()) {
+				CivMessage.sendError(sender, "Council of Eight not yet built. Cannot vote for civs until then.");
+				return;
+			}
+			EndConditionDiplomacy.addVote(civ, resident);
+			return;
+		} else {
+			return;
+		}
 	}
 	
 	public void claimleader_cmd() throws CivException {

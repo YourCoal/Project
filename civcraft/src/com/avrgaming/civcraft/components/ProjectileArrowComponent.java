@@ -39,6 +39,7 @@ public class ProjectileArrowComponent extends ProjectileComponent {
 	}
 
 	private double power;
+	private boolean isActive = true;
 	
 	@Override
 	public void loadSettings() {
@@ -59,7 +60,7 @@ public class ProjectileArrowComponent extends ProjectileComponent {
 	
 	@Override
 	public void fire(Location turretLoc, Entity targetEntity) {
-		if (!buildable.isValid()) {
+		if (!buildable.isValid() || !isActive) {
 			return;
 		}
 		

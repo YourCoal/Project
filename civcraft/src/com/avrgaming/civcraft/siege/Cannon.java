@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Random;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -555,6 +556,16 @@ public class Cannon extends Buildable {
 				return;
 			}
 		} else {
+			Random rand = new Random();
+			int randDestroy = rand.nextInt(100);
+			if (randDestroy <= 5) {
+				destroy();
+				CivMessage.send(event.getPlayer(), "Cannon misfired and was destroyed");
+				CivMessage.sendCiv(owner.getCiv(), CivColor.Yellow+"Our Cannon at "+
+						cannonLocation.getBlockX()+","+cannonLocation.getBlockY()+","+cannonLocation.getBlockZ()+
+						" has been destroyed due to a 5% misfire!");
+				return;
+			}
 			CivMessage.send(event.getPlayer(), "Fire!");
 			cannonLocation.setDirection(direction);
 			Resident resident = CivGlobal.getResident(event.getPlayer());

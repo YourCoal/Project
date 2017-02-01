@@ -74,13 +74,11 @@ public class SQLUpdate implements Runnable {
 				}
 				
 				obj.saveNow();
-				
 				Integer count = statSaveCompletions.get(obj.getClass().getSimpleName());
 				if (count == null) {
 					count = 0;
 				}
 				statSaveCompletions.put(obj.getClass().getSimpleName(), ++count);
-				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -90,6 +90,7 @@ public class CultureChunk {
 	public String getOnEnterString() {
 		return CivColor.LightPurple+"Entering "+town.getCiv().getName()+" Borders";
 	}
+	
 	public double getPower() {
 		// power = max/(distance^2).
 		// if distance == 0, power = DOUBLEMAX;

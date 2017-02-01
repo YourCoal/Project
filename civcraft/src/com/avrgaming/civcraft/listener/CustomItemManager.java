@@ -71,10 +71,12 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
+import com.avrgaming.civcraft.mobs.components.MobComponent;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
+import com.moblib.moblib.MobLib;
 
 import gpl.AttributeUtil;
 
@@ -93,6 +95,11 @@ public class CustomItemManager implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 	//	this.onItemDurabilityChange(event.getPlayer(), event.getPlayer().getItemInHand());
 	}
+	
+//	@EventHandler(priority=EventPriority.NORMAL)
+//	public static void LeavesDecayEvent(LeavesDecayEvent event) {
+//		event.setCancelled(true);
+//	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreakSpawnItems(BlockBreakEvent event) {
@@ -125,7 +132,7 @@ public class CustomItemManager implements Listener {
 				}
 				
 				for (int i = 0; i < randAmount; i++) {
-					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_tungsten_ore"));
+					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ_tungsten_ore"));
 					event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 				}
 			} catch (InvalidConfiguration e) {
@@ -166,7 +173,7 @@ public class CustomItemManager implements Listener {
 				}
 				
 				for (int i = 0; i < randAmount; i++) {
-					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("mat_tungsten_ore"));
+					ItemStack stack = LoreMaterial.spawn(LoreMaterial.materialMap.get("civ_tungsten_ore"));
 					event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 				}
 			} catch (InvalidConfiguration e) {
@@ -284,7 +291,7 @@ public class CustomItemManager implements Listener {
 		}
 	}
 	
-	private static String isCustomDrop(ItemStack stack) {
+	public static String isCustomDrop(ItemStack stack) {
 		if (stack == null || ItemManager.getId(stack) != 166) {
 			return null;
 		}
@@ -376,12 +383,14 @@ public class CustomItemManager implements Listener {
 					afc.setHit(true);
 					afc.destroy(event.getDamager());
 					
-					Resident defenderResident = CivGlobal.getResident(defendingPlayer);
-					if (defenderResident != null && defenderResident.hasTown() && 
-							defenderResident.getTown().getCiv() == afc.getFromTower().getTown().getCiv()) {
-						/* Prevent friendly fire from arrow towers. */
-						event.setCancelled(true);
-						return;
+					if (defendingPlayer != null) {
+						Resident defenderResident = CivGlobal.getResident(defendingPlayer);
+						if (defenderResident != null && defenderResident.hasTown() &&
+								defenderResident.getTown().getCiv() == afc.getFromTower().getTown().getCiv()) {
+							/* Prevent friendly fire from arrow towers. */
+							event.setCancelled(true);
+							return;
+						}
 					}
 					
 					/* Return after arrow tower does damage, do not apply armor defense. */
@@ -409,6 +418,11 @@ public class CustomItemManager implements Listener {
 		}
 		
 		if (defendingPlayer == null) {
+			if (event.getEntity() instanceof LivingEntity) {
+				if (MobLib.isMobLibEntity((LivingEntity) event.getEntity())) {
+					MobComponent.onDefense(event.getEntity(), event);
+				}	
+			}
 			return;
 		} else {
 			/* Search equipt items for defense event. */
@@ -595,7 +609,7 @@ public class CustomItemManager implements Listener {
 		if (event.getEntity() instanceof Player) {
 			return;
 		}
-				
+		
 		/* Remove any vanilla item IDs that can't be crafted from vanilla drops. */
 		LinkedList<ItemStack> removed = new LinkedList<ItemStack>();
 		for (ItemStack stack : event.getDrops()) {
@@ -619,7 +633,7 @@ public class CustomItemManager implements Listener {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getItem().getItemStack());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
-				LoreCraftableMaterial slime = LoreCraftableMaterial.getCraftMaterialFromId("mat_vanilla_slime");
+				LoreCraftableMaterial slime = LoreCraftableMaterial.getCraftMaterialFromId("civ_vanilla_slimeball");
 				ItemStack newStack = LoreCraftableMaterial.spawn(slime);
 				newStack.setAmount(event.getItem().getItemStack().getAmount());
 				event.getPlayer().getInventory().addItem(newStack);
@@ -635,7 +649,7 @@ public class CustomItemManager implements Listener {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getItem().getItemStack());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
-				LoreCraftableMaterial clown = LoreCraftableMaterial.getCraftMaterialFromId("mat_vanilla_clownfish");
+				LoreCraftableMaterial clown = LoreCraftableMaterial.getCraftMaterialFromId("civ_vanilla_clownfish");
 				ItemStack newStack = LoreCraftableMaterial.spawn(clown);
 				newStack.setAmount(event.getItem().getItemStack().getAmount());
 				event.getPlayer().getInventory().addItem(newStack);
@@ -651,7 +665,7 @@ public class CustomItemManager implements Listener {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getItem().getItemStack());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
-				LoreCraftableMaterial clown = LoreCraftableMaterial.getCraftMaterialFromId("mat_vanilla_pufferfish");
+				LoreCraftableMaterial clown = LoreCraftableMaterial.getCraftMaterialFromId("civ_vanilla_pufferfish");
 				ItemStack newStack = LoreCraftableMaterial.spawn(clown);
 				newStack.setAmount(event.getItem().getItemStack().getAmount());
 				event.getPlayer().getInventory().addItem(newStack);
@@ -674,7 +688,7 @@ public class CustomItemManager implements Listener {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getCurrentItem());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
-				LoreCraftableMaterial slime = LoreCraftableMaterial.getCraftMaterialFromId("mat_vanilla_slime");
+				LoreCraftableMaterial slime = LoreCraftableMaterial.getCraftMaterialFromId("civ_vanilla_slimeball");
 				ItemStack newStack = LoreCraftableMaterial.spawn(slime);
 				newStack.setAmount(event.getCurrentItem().getAmount());
 				event.setCurrentItem(newStack);
@@ -687,7 +701,7 @@ public class CustomItemManager implements Listener {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getCurrentItem());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
-				LoreCraftableMaterial clown = LoreCraftableMaterial.getCraftMaterialFromId("mat_vanilla_clownfish");
+				LoreCraftableMaterial clown = LoreCraftableMaterial.getCraftMaterialFromId("civ_vanilla_clownfish");
 				ItemStack newStack = LoreCraftableMaterial.spawn(clown);
 				newStack.setAmount(event.getCurrentItem().getAmount());
 				event.setCurrentItem(newStack);
@@ -700,7 +714,7 @@ public class CustomItemManager implements Listener {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getCurrentItem());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
-				LoreCraftableMaterial clown = LoreCraftableMaterial.getCraftMaterialFromId("mat_vanilla_pufferfish");
+				LoreCraftableMaterial clown = LoreCraftableMaterial.getCraftMaterialFromId("civ_vanilla_pufferfish");
 				ItemStack newStack = LoreCraftableMaterial.spawn(clown);
 				newStack.setAmount(event.getCurrentItem().getAmount());
 				event.setCurrentItem(newStack);
@@ -1058,14 +1072,14 @@ public class CustomItemManager implements Listener {
 	public LoreCraftableMaterial getCompatibleCatalyst(LoreCraftableMaterial craftMat) {
 		/* Setup list of catalysts to refund. */
 		LinkedList<LoreMaterial> cataList = new LinkedList<LoreMaterial>();
-		cataList.add(LoreMaterial.materialMap.get("mat_common_attack_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_common_defense_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_uncommon_attack_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_uncommon_defense_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_rare_attack_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_rare_defense_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_legendary_attack_catalyst"));
-		cataList.add(LoreMaterial.materialMap.get("mat_legendary_defense_catalyst"));
+		cataList.add(LoreMaterial.materialMap.get("civ_common_attack_catalyst"));
+		cataList.add(LoreMaterial.materialMap.get("civ_common_defense_catalyst"));
+		cataList.add(LoreMaterial.materialMap.get("civ_uncommon_attack_catalyst"));
+		cataList.add(LoreMaterial.materialMap.get("civ_uncommon_defense_catalyst"));
+		cataList.add(LoreMaterial.materialMap.get("civ_rare_attack_catalyst"));
+		cataList.add(LoreMaterial.materialMap.get("civ_rare_defense_catalyst"));
+		cataList.add(LoreMaterial.materialMap.get("civ_legendary_attack_catalyst"));
+		cataList.add(LoreMaterial.materialMap.get("civ_legendary_defense_catalyst"));
 		
 		for (LoreMaterial mat : cataList) {
 			LoreCraftableMaterial cMat = (LoreCraftableMaterial)mat;

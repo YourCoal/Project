@@ -74,6 +74,7 @@ public class Civilization extends SQLObject {
 	
 	private int color;
 	private int daysInDebt = 0;
+	private int currentEra = 0;
 	private double incomeTaxRate;
 	private double sciencePercentage;
 	private ConfigTech researchTech = null;
@@ -1086,12 +1087,12 @@ public class Civilization extends SQLObject {
 		}
 		
 		boolean noanarchy = false;
-		for (Town t : this.getTowns()) {
+/*		for (Town t : this.getTowns()) {
 			if (t.getBuffManager().hasBuff("buff_noanarchy")) {
 				noanarchy = true;
 				break;
 			}
-		}
+		}*/
 		
 		if (!noanarchy) {
 			String key = "changegov_"+this.getId();
@@ -1106,10 +1107,7 @@ public class Civilization extends SQLObject {
 			civ.setGovernment(gov.id);
 			CivMessage.global(civ.getName()+" has emerged from anarchy and has adopted "+CivSettings.governments.get(gov.id).displayName);
 		}
-		
-		
 		civ.save();
-		
 	}
 
 	public String getUpkeepPaid(Town town, String type) {
@@ -1260,6 +1258,10 @@ public class Civilization extends SQLObject {
 		}
 		for (Relation relation : deletedRelations) {
 			try {
+				if (relation.getStatus() == Relation.Status.WAR) {
+					relation.setStatus(Relation.Status.NEUTRAL);
+					relation.saveNow();
+				}
 				relation.delete();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1945,9 +1947,18 @@ public class Civilization extends SQLObject {
 		if (resident != null) {
 			leader = resident.getName();
 		}
-		
 		ItemStack stack = ItemManager.spawnPlayerHead(leader, message+" ("+leader+")");
 		return stack;
 	}
 	
+	public int getCurrentEra() {
+		return currentEra;
+	}
+	
+	public void setCurrentEra(int currentEra) {
+		this.currentEra = currentEra;
+		if (this.currentEra > CivGlobal.highestCivEra) {
+			CivGlobal.setCurrentEra(this.currentEra, this);
+		}
+	}
 }

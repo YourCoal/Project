@@ -201,6 +201,7 @@ public class CivGlobal {
 	public static boolean endWorld = false;
 	public static PerkManager perkManager = null;
 	public static boolean installMode = false;
+	public static int highestCivEra = 0;
 	
 	public static void loadGlobals() throws SQLException, CivException {
 		
@@ -351,7 +352,48 @@ public class CivGlobal {
 			}
 		}
 	}
-
+	
+	public static String EraString(int era) {
+		String newEra = "";
+		switch (era) {
+		case 0: //ANCIENT
+			newEra = "Ancient Era";
+			break;
+		case 1: //CLASSICAL
+			newEra = "C lassical Era";
+			break;
+		case 2: //MEDIEVAL
+			newEra = "Medieval Era";
+			break;
+		case 3: //RENAISSANCE
+			newEra = "Renaissance Era";
+			break;
+		case 4: //INDUSTRIAL
+			newEra = "Industrial Era";
+			break;
+		case 5: //MODERN
+			newEra = "Modern Era";
+			break;
+		case 6: //ATOMIC
+			newEra = "Atomic Era";
+			break;
+		case 7: //INFORMATION
+			newEra = "Information Era";
+			break;
+		default:
+			break;
+		}
+		return newEra;
+	}
+	
+	public static void setCurrentEra(int era, Civilization civ) {
+		if (era > highestCivEra && !civ.isAdminCiv()) {
+			highestCivEra = era;
+			CivMessage.globalTitle(CivColor.Green+ highestCivEra, "has been achieved by "+civ.getName());
+			
+		}
+	}
+	
 	private static void loadCivs() throws SQLException {
 		Connection context = null;
 		ResultSet rs = null;
@@ -366,6 +408,10 @@ public class CivGlobal {
 			while(rs.next()) {
 				try {
 					Civilization civ = new Civilization(rs);
+					if (highestCivEra < civ.getCurrentEra()) {
+						highestCivEra = civ.getCurrentEra();
+					}
+					
 					if (!civ.isConquered()) {
 						CivGlobal.addCiv(civ);
 					} else {

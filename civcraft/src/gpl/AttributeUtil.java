@@ -56,19 +56,23 @@ public class AttributeUtil {
 		}
 	}
 	
-   // private List<String> lore = new LinkedList<String>();
-	
-	
 	public static class AttributeType {
+		// http://minecraft.gamepedia.com/Attribute
 		private static ConcurrentMap<String, AttributeType> LOOKUP = Maps.newConcurrentMap();
+		
+		//All Living Entities
 		public static final AttributeType GENERIC_MAX_HEALTH = new AttributeType("generic.maxHealth").register();
 		public static final AttributeType GENERIC_FOLLOW_RANGE = new AttributeType("generic.followRange").register();
-		public static final AttributeType GENERIC_ATTACK_DAMAGE = new AttributeType("generic.attackDamage").register();
-		public static final AttributeType GENERIC_MOVEMENT_SPEED = new AttributeType("generic.movementSpeed").register();
 		public static final AttributeType GENERIC_KNOCKBACK_RESISTANCE = new AttributeType("generic.knockbackResistance").register();
+		public static final AttributeType GENERIC_MOVEMENT_SPEED = new AttributeType("generic.movementSpeed").register();
 		
+		public static final AttributeType GENERIC_ATTACK_DAMAGE = new AttributeType("generic.attackDamage").register();
 		public static final AttributeType GENERIC_ARMOR = new AttributeType("generic.armor").register();
 		public static final AttributeType GENERIC_ARMOR_TOUGHNESS = new AttributeType("generic.armorToughness").register();
+		
+		//Players
+		public static final AttributeType GENERIC_ATTACK_SPEED = new AttributeType("generic.attackSpeed").register();
+		public static final AttributeType GENERIC_LUCK = new AttributeType("generic.luck").register();
 		
 		private final String minecraftId;
 		

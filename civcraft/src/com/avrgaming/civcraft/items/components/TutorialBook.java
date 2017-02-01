@@ -15,6 +15,8 @@ public class TutorialBook extends ItemComponent {
 	public void onPrepareCreate(AttributeUtil attrs) {
 		attrs.addLore(CivColor.Gold+"CivCraft Info");
 		attrs.addLore(CivColor.Rose+"<Right Click to Open>");
+		attrs.addEnhancement("LoreEnhancementSoulBound", null, null);
+		attrs.addLore(CivColor.Gold+"Soulbound");
 	}
 
 	

@@ -454,7 +454,7 @@ public class TownChunk extends SQLObject {
 		}
 		
 		if (this.isForSale()) {
-			out += CivColor.Yellow+"[For Sale: "+this.price+" coins]";
+			out += CivColor.Yellow+"[For Sale: "+this.price+" Coins]";
 		}
 		
 		return out;

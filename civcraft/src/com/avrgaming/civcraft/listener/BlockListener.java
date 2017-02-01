@@ -122,6 +122,7 @@ import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
+import com.moblib.moblib.MobLib;
 
 import gpl.HorseModifier;
 import net.minecraft.server.v1_10_R1.AttributeInstance;
@@ -867,7 +868,7 @@ public class BlockListener implements Listener {
 			}
 		}
 		
-		//XXX Changed so farms don't get trampled by all entities 1.1pre6
+		//XXX Changed so farms don't get trampled by all entities
 		if (event.getBlock().getType() == Material.SOIL) {
 			event.setCancelled(true); 
 			CivLog.debug("Entity ("+event.getEntity().getName()+") tried to trample crop - "+event.getEntity().getLocation().getBlockX()+","+
@@ -1394,13 +1395,11 @@ public class BlockListener implements Listener {
 			}
 
 		}
-
 		TaskMaster.syncTask(new AsyncTask(fc), 500);
 	}
-
+	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event) {
-
 		Pasture pasture = Pasture.pastureEntities.get(event.getEntity().getUniqueId());
 		if (pasture != null) {
 			pasture.onEntityDeath(event.getEntity());
@@ -1514,10 +1513,14 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
+		if (MobLib.isMobLibEntity(event.getEntity())) {
+			return;
+		}
+		
 		if (event.getEntity().getType().equals(EntityType.BAT) ||
-//			event.getEntity().getType().equals(EntityType.WITCH) ||
+			event.getEntity().getType().equals(EntityType.WITCH) ||
 			event.getEntity().getType().equals(EntityType.GUARDIAN) ||
-//			event.getEntity().getType().equals(EntityType.ZOMBIE) ||
+			event.getEntity().getType().equals(EntityType.ZOMBIE) ||
 			event.getEntity().getType().equals(EntityType.SKELETON) ||
 			event.getEntity().getType().equals(EntityType.CREEPER) ||
 			event.getEntity().getType().equals(EntityType.SPIDER) ||
@@ -1527,8 +1530,13 @@ public class BlockListener implements Listener {
 			event.getEntity().getType().equals(EntityType.ENDERMAN) ||
 			event.getEntity().getType().equals(EntityType.WOLF) ||
 			event.getEntity().getType().equals(EntityType.OCELOT) ||
+			event.getEntity().getType().equals(EntityType.IRON_GOLEM) ||
 			
-//			event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) ||
+			event.getEntity().getType().equals(EntityType.SHULKER) ||
+			event.getEntity().getType().equals(EntityType.GUARDIAN) ||
+			event.getEntity().getType().equals(EntityType.POLAR_BEAR) ||
+			
+			event.getEntity().getType().equals(EntityType.PIG_ZOMBIE) ||
 			event.getEntity().getType().equals(EntityType.MAGMA_CUBE) ||
 			event.getEntity().getType().equals(EntityType.GHAST) ||
 			event.getEntity().getType().equals(EntityType.BLAZE)) {

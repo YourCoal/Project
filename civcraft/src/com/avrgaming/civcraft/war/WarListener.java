@@ -1,7 +1,14 @@
 package com.avrgaming.civcraft.war;
 
+import java.util.HashSet;
+import java.util.Random;
+
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,19 +18,37 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 
+import com.avrgaming.civcraft.camp.CampBlock;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
-import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.CultureChunk;
-import com.avrgaming.civcraft.siege.Cannon;
+import com.avrgaming.civcraft.object.StructureBlock;
+import com.avrgaming.civcraft.structure.Buildable;
+import com.avrgaming.civcraft.structure.TownHall;
+import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.FireWorkTask;
+import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
-import com.avrgaming.civcraft.util.ItemManager;
+import com.avrgaming.civcraft.util.CivColor;
 
 public class WarListener implements Listener {
 
 	ChunkCoord coord = new ChunkCoord();
+	
+	public static final String RESTORE_NAME = "special:TNT";
+	public static int yield;
+	public static int structureDamage;
+	static {
+		try {
+			yield = CivSettings.getInteger(CivSettings.warConfig, "tnt.yield");
+			structureDamage = CivSettings.getInteger(CivSettings.warConfig, "tnt.structure_damage");
+		} catch (InvalidConfiguration e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.HIGH)
     public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled()) {
@@ -112,14 +137,31 @@ public class WarListener implements Listener {
 		event.setCancelled(true);
 	}
 	
+	private void explodeBlock(Block b) {
+		WarRegen.explodeThisBlock(b, WarListener.RESTORE_NAME);
+		launchExplodeFirework(b.getLocation());
+	}
+	
+	private void launchExplodeFirework(Location loc) {
+		Random rand = new Random();
+		int rand1 = rand.nextInt(100);
+		
+		if (rand1 > 75) {
+			FireworkEffect fe = FireworkEffect.builder().withColor(Color.ORANGE).withColor(Color.YELLOW).flicker(true).with(Type.BURST).build();		
+			TaskMaster.syncTask(new FireWorkTask(fe, loc.getWorld(), loc, 2), 0);
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityExplode(EntityExplodeEvent event) {
-			
-		if (event.isCancelled()) {
+		if (War.isWarTime()) {
+			event.setCancelled(false);
+		} else {
+			event.setCancelled(true);
 			return;
 		}
 		
-		if (!War.isWarTime()) {
+		if (event.isCancelled()) {
 			return;
 		}
 		
@@ -131,27 +173,60 @@ public class WarListener implements Listener {
 			return;
 		}
 		
-		if (event.getEntityType().equals(EntityType.PRIMED_TNT) ||
-				event.getEntityType().equals(EntityType.MINECART_TNT)) {
-						
-			int yield;
-			try {
-				yield = CivSettings.getInteger(CivSettings.warConfig, "cannon.yield");
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-				return;
-			}
-		
-			yield = yield / 2;
-		
+		if (event.getEntityType().equals(EntityType.PRIMED_TNT) || event.getEntityType().equals(EntityType.MINECART_TNT) || event.getEntityType().equals(EntityType.CREEPER)) {
+			HashSet<Buildable> structuresHit = new HashSet<Buildable>();
 			for (int y = -yield; y <= yield; y++) {
 				for (int x = -yield; x <= yield; x++) {
 					for (int z = -yield; z <= yield; z++) {
 						Location loc = event.getLocation().clone().add(new Vector(x,y,z));
-					
+						Block b = loc.getBlock();
 						if (loc.distance(event.getLocation()) < yield) {
-							WarRegen.saveBlock(loc.getBlock(), Cannon.RESTORE_NAME, false);
-							ItemManager.setTypeIdAndData(loc.getBlock(), CivData.AIR, 0, false);
+							BlockCoord bcoord = new BlockCoord();
+							bcoord.setFromLocation(loc);
+							
+							StructureBlock sb = CivGlobal.getStructureBlock(bcoord);
+							CampBlock cb = CivGlobal.getCampBlock(bcoord);
+							
+							if (sb == null && cb == null) {
+								explodeBlock(b);
+								continue;
+							}
+							
+							if (sb != null) {
+								if (!sb.isDamageable()) {
+									continue;
+								}
+								
+								if (sb.getOwner() instanceof TownHall) {
+									TownHall th = (TownHall)sb.getOwner();
+									if (th.getControlPoints().containsKey(bcoord)) {
+										continue;
+									}
+								}
+								
+								if (!sb.getOwner().isDestroyed()) {
+									if (!structuresHit.contains(sb.getOwner())) {
+										structuresHit.add(sb.getOwner());
+										if (sb.getOwner() instanceof TownHall) {
+											TownHall th = (TownHall)sb.getOwner();
+
+											if (th.getHitpoints() == 0) { 
+												explodeBlock(b);
+											} else {
+												th.onTNTDamage(structureDamage);
+											}
+										} else {
+											sb.getOwner().onDamage(structureDamage, b.getWorld(), null, sb.getCoord(), sb);
+											CivMessage.sendCiv(sb.getCiv(), CivColor.Yellow+"Our "+sb.getOwner().getDisplayName()+" ("+sb.getOwner().getCenterLocation().getX()+","+
+													sb.getOwner().getCenterLocation().getY()+","+ sb.getOwner().getCenterLocation().getZ()+")"+
+													" was hit by TNT. HP is now "+sb.getOwner().getHitpoints()+"/"+sb.getOwner().getMaxHitPoints());
+										}
+									}
+								} else {
+									explodeBlock(b);
+								}
+								continue;
+							}
 						}
 					}	
 				}
@@ -159,6 +234,5 @@ public class WarListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
-
 }
 

@@ -27,16 +27,16 @@ import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.object.Town;
 
 public class Monument extends Structure {
-
-	protected Monument(Location center, String id, Town town)
-			throws CivException {
-		super(center, id, town);
-	}
-
+	
 	public Monument(ResultSet rs) throws SQLException, CivException {
 		super(rs);
 	}
-
+	
+	public Monument(Location center, String id, Town town)
+			throws CivException {
+		super(center, id, town);
+	}
+	
 	@Override
 	public String getDynmapDescription() {
 		String out = "<u><b>Monument</u></b><br/>";

@@ -184,7 +184,49 @@ public class WarRegen {
 		
 		
 	}
-	
+	public static void explodeThisBlock(Block blk, String file) {
+
+		switch (blk.getType()) {
+		case SIGN_POST:
+			return;
+		case WALL_SIGN:
+			return;
+		case TNT:
+			return;
+		default:
+			break;
+		}
+		
+		WarRegen.saveBlock(blk, file, false);
+				
+		switch (blk.getType()) {
+		case TRAPPED_CHEST:
+			((Chest)blk.getState()).getBlockInventory().clear();
+			break;
+		case CHEST:
+			((Chest)blk.getState()).getBlockInventory().clear();
+			break;
+		case DISPENSER:
+			((Dispenser)blk.getState()).getInventory().clear();
+			break;
+		case BURNING_FURNACE:
+		case FURNACE:
+			((Furnace)blk.getState()).getInventory().clear();
+			break;
+		case DROPPER:
+			((Dropper)blk.getState()).getInventory().clear();
+			break;
+		case HOPPER:
+			((Hopper)blk.getState()).getInventory().clear();
+			break;
+		default:
+			break;
+		}
+		
+		ItemManager.setTypeId(blk, CivData.AIR);
+		ItemManager.setData(blk, 0x0, true);
+		
+	}
 	
 	public static void destroyThisBlock(Block blk, Town town) {
 		
@@ -268,7 +310,6 @@ public class WarRegen {
 				return; 
 			
 			BufferedReader reader = new BufferedReader(new FileReader(warLog));
-			
 			String line = null;
 			while((line=reader.readLine()) != null) {
 				try {
@@ -286,6 +327,4 @@ public class WarRegen {
 			e.printStackTrace();
 		}
 	}
-	
-	
 }

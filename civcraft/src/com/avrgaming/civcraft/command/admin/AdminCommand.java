@@ -90,6 +90,7 @@ public class AdminCommand extends CommandBase {
 		commands.put("arena", "Arena management commands.");
 		commands.put("perk", "Admin perk management.");
 		
+		commands.put("mob", "Mob management commands.");
 		commands.put("gui", "Opens book options. Type 'open' after book to get the GUI.");
 		commands.put("reload", "Allows for some aspects of CivCraft to be reloaded in the server.");
 		commands.put("tradeholo", "Enables all trade good holograms.");
@@ -238,6 +239,11 @@ public class AdminCommand extends CommandBase {
 			e.printStackTrace();
 		}
 	}*/
+	
+	public void mob_cmd() {
+		AdminMobCommand cmd = new AdminMobCommand();	
+		cmd.onCommand(sender, null, "mob", this.stripArgs(args, 1));
+	}
 	
 	public void gui_cmd() {
 		AdminGUICommand cmd = new AdminGUICommand();	
