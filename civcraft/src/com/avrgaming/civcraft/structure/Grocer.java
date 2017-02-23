@@ -35,18 +35,21 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
+import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
+import com.avrgaming.civcraft.util.SimpleBlock;
 
 public class Grocer extends Structure {
-
+	
 	private int level = 1;
-
+	
 	private NonMemberFeeComponent nonMemberFeeComponent; 
 	
 	protected Grocer(Location center, String id, Town town) throws CivException {
 		super(center, id, town);
 		nonMemberFeeComponent = new NonMemberFeeComponent(this);
 		nonMemberFeeComponent.onSave();
+		setLevel(town.saved_grocer_level);
 	}
 
 	public Grocer(ResultSet rs) throws SQLException, CivException {
@@ -71,7 +74,12 @@ public class Grocer extends Structure {
 	public String getMarkerIconName() {
 		return "cutlery";
 	}
-
+	
+	@Override
+	public void onPostBuild(BlockCoord absCoord, SimpleBlock commandBlock) {
+		this.level = getTown().saved_grocer_level;
+	}
+	
 	public int getLevel() {
 		return level;
 	}

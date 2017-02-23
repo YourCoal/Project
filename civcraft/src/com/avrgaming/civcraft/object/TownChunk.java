@@ -556,6 +556,7 @@ public class TownChunk extends SQLObject {
 	}
 	
 	public boolean isAgricultural() {
+		if (this.district.getType() == "agricultural" || this.district.getID() == 1) {
 			return true;
 		}
 		return false;
