@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.items.components;
 
-import gpl.AttributeUtil;
-
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -37,6 +35,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.lorestorage.ItemChangeResult;
 import com.avrgaming.civcraft.object.BuildableDamageBlock;
+
+import gpl.AttributeUtil;
 
 public abstract class ItemComponent {
 

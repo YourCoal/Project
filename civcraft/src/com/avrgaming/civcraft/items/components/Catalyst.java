@@ -1,7 +1,5 @@
 package com.avrgaming.civcraft.items.components;
 
-import gpl.AttributeUtil;
-
 import java.util.Random;
 
 import org.bukkit.ChatColor;
@@ -14,6 +12,8 @@ import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreMaterial;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.util.CivColor;
+
+import gpl.AttributeUtil;
 
 public class Catalyst extends ItemComponent {
 

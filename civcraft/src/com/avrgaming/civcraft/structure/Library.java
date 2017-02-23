@@ -43,7 +43,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.CivColor;
 
 public class Library extends Structure {
-
+	
 	private int level;
 	public AttributeBiome cultureBeakers;
 	

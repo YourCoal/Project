@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.items.units;
 
-import gpl.AttributeUtil;
-
 import java.text.DecimalFormat;
 
 import org.bukkit.ChatColor;
@@ -44,6 +42,8 @@ import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
+
+import gpl.AttributeUtil;
 
 public class Settler extends UnitMaterial implements CallbackInterface {
 

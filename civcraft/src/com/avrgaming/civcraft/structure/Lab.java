@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 
-import com.avrgaming.civcraft.components.AttributeBiomeRadiusPerLevel;
 import com.avrgaming.civcraft.components.ConsumeLevelComponent;
 import com.avrgaming.civcraft.components.ConsumeLevelComponent.Result;
 import com.avrgaming.civcraft.config.CivSettings;
@@ -47,7 +46,6 @@ import com.avrgaming.civcraft.util.MultiInventory;
 
 public class Lab extends Structure {
 	
-	private double produced_beakers = 0;
 	private ConsumeLevelComponent consumeComp = null;
 	
 	protected Lab(Location center, String id, Town town) throws CivException {
@@ -120,7 +118,7 @@ public class Lab extends Structure {
 		return false;
 	}
 	
-	public void generateBeakers(CivAsyncTask task) {
+	public void generateTownBeakers(CivAsyncTask task) {
 		if (!this.isActive()) {
 			return;
 		}
@@ -212,6 +210,7 @@ public class Lab extends Structure {
 //			total_beakers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
+		total_beakers *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_MIXING);
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {
@@ -221,9 +220,6 @@ public class Lab extends Structure {
 				e.printStackTrace();
 			}
 		}
-		
-		setProducedHammers(total_beakers);
-		produced_beakers = total_beakers;
 		
 		String stateMessage = "";
 		switch (result) {
@@ -260,26 +256,35 @@ public class Lab extends Structure {
 		return lvl.count;
 	}
 	
-	public double getProducedBeakers() {
+	public double getBonusBeakers() {
 		if (!this.isComplete()) {
 			return 0.0;
 		}
-		return produced_beakers;
-	}
-	
-	public double setProducedHammers(double amount) {
-		if (!this.isComplete()) {
-			amount = 0;
+		
+		if (getConsumeComponent().getLevel() == 0 && getConsumeComponent().getCount() == 0) {
+			return 0.0;
 		}
-		return amount;
-	}
-	
-	public double getBeakersPerTile() {
-		AttributeBiomeRadiusPerLevel attrBiome = (AttributeBiomeRadiusPerLevel)this.getComponent("AttributeBiomeRadiusPerLevel");
-		double base = attrBiome.getBaseValue();
-		double rate = 1;
-		rate += this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
-		return (rate*base);
+		
+		int level = getLevel(); 
+		ConfigLabLevel lvl = CivSettings.labLevels.get(level);
+		
+		int total_beakers = (int)Math.round(lvl.beakers*this.getTown().getLabRate());
+		//TODO make a new buff that works for labs/labs
+//		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
+//			total_beakers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
+//		}
+		
+		total_beakers *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_MIXING);
+		if (this.getCiv().hasTech("tech_taxation")) {
+			double tech_bonus;
+			try {
+				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_lab_buff");
+				total_beakers *= tech_bonus;
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
+		return total_beakers;
 	}
 	
 	public void delevel() {

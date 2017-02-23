@@ -45,6 +45,42 @@ materials:
         - name: 'DurabilityOnDeath'
           value: '0.0'
 # Checked 01/21/2017
+  - id: 'civ_sword_ban_hammer'
+    item_id: 268
+    item_data: 0
+    name: 'Coal''s -Pokey- Ban Hammer'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Resources'
+    components:
+        - name: 'Attack'
+          value: '420'
+        - name: 'Defense'
+          value: '420'
+        - name: 'MaxHealth'
+          value: '100'
+        - name: 'NoVanillaDurability'
+        - name: 'DurabilityOnDeath'
+          value: '0.0'
+# Checked 01/21/2017
+  - id: 'civ_ranged_ban_hammer'
+    item_id: 261
+    item_data: 0
+    name: 'Coal''s -Ranged- Ban Hammer'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Resources'
+    components:
+        - name: 'RangedAttack'
+          value: '420'
+        - name: 'Defense'
+          value: '420'
+        - name: 'MaxHealth'
+          value: '100'
+        - name: 'NoVanillaDurability'
+        - name: 'DurabilityOnDeath'
+          value: '0.0'
+# Checked 01/21/2017
   - id: 'civ_base_hammer'
     item_id: 139
     item_data: 0
@@ -189,6 +225,420 @@ materials:
     quest: true
     components:
         - name: 'MobExperience2'
+# Checked 01/21/2017
+  - id: 'civ_mob_essence_sheep'
+    item_id: 383
+    item_data: 91
+    name: 'Sheep Essence'
+    craftable: false
+    shaped: false
+    shiny: true
+    category: '<lightgreen>Resources'
+    quest: true
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civ_mob_essence_pig'
+    item_id: 383
+    item_data: 90
+    name: 'Pig Essence'
+    craftable: false
+    shaped: false
+    shiny: true
+    category: '<lightgreen>Resources'
+    quest: true
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civ_mob_essence_cow'
+    item_id: 383
+    item_data: 92
+    name: 'Cow Essence'
+    craftable: false
+    shaped: false
+    shiny: true
+    category: '<lightgreen>Resources'
+    quest: true
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civ_mob_essence_chicken'
+    item_id: 383
+    item_data: 93
+    name: 'Çhicken Essence'
+    craftable: false
+    shaped: false
+    shiny: true
+    category: '<lightgreen>Resources'
+    quest: true
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civ_mob_essence_rabbit'
+    item_id: 383
+    item_data: 101
+    name: 'Rabbit Essence'
+    craftable: false
+    shaped: false
+    shiny: true
+    category: '<lightgreen>Resources'
+    quest: true
+    components:
+        - name: 'NoRightClick'
+#======================================================#
+#================[ Resource Materials ]================#
+#======[ NOTE: these are copied from goods.yml! ]======#
+#======================================================#
+# Checked 01/21/2017
+  - id: 'civgood_citrus'
+    item_id: 351
+    item_data: 14
+    name: 'Citrus [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_cocoa'
+    item_id: 351
+    item_data: 3
+    name: 'Cocoa [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_coffee'
+    item_id: 390
+    item_data: 0
+    name: 'Coffee [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_copper'
+    item_id: 369
+    item_data: 0
+    name: 'Copper [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_corn'
+    item_id: 371
+    item_data: 0
+    name: 'Corn [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_cotton'
+    item_id: 351
+    item_data: 15
+    name: 'Cotton [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_gems'
+    item_id: 388
+    item_data: 0
+    name: 'Gems [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_grapes'
+    item_id: 372
+    item_data: 0
+    name: 'Grapes [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_guarana'
+    item_id: 351
+    item_data: 1
+    name: 'Guarana [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_hemlock'
+    item_id: 31
+    item_data: 0
+    name: 'Hemlock [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_herbs'
+    item_id: 31
+    item_data: 2
+    name: 'Herbs [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_horses'
+    item_id: 420
+    item_data: 0
+    name: 'Horses [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_incense'
+    item_id: 362
+    item_data: 0
+    name: 'Incense [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_ivory'
+    item_id: 406
+    item_data: 0
+    name: 'Ivory [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_jade'
+    item_id: 295
+    item_data: 0
+    name: 'Jade [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_limestone'
+    item_id: 1
+    item_data: 6
+    name: 'Limestone [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_marble'
+    item_id: 1
+    item_data: 4
+    name: 'Marble [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_niter'
+    item_id: 263
+    item_data: 1
+    name: 'Niter [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_oil'
+    item_id: 351
+    item_data: 0
+    name: 'Oil [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_olives'
+    item_id: 434
+    item_data: 0
+    name: 'Olives [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_papyrus'
+    item_id: 351
+    item_data: 2
+    name: 'Papyrus [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_pelts'
+    item_id: 334
+    item_data: 0
+    name: 'Pelts [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_poison_ivy'
+    item_id: 106
+    item_data: 0
+    name: 'Poison Ivy [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_silver'
+    item_id: 265
+    item_data: 0
+    name: 'Silver [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_spice'
+    item_id: 435
+    item_data: 0
+    name: 'Spice [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_tobacco'
+    item_id: 338
+    item_data: 0
+    name: 'Tobacco [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_crabs'
+    item_id: 432
+    item_data: 0
+    name: 'Crabs [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_pearls'
+    item_id: 410
+    item_data: 0
+    name: 'Pearls [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_rice'
+    item_id: 361
+    item_data: 0
+    name: 'Rice [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_salmon'
+    item_id: 349
+    item_data: 1
+    name: 'Salmon [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_salt'
+    item_id: 353
+    item_data: 0
+    name: 'Salt [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_shrimp'
+    item_id: 349
+    item_data: 2
+    name: 'Shrimp [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_tea'
+    item_id: 175
+    item_data: 0
+    name: 'Tea [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_tuna'
+    item_id: 349
+    item_data: 0
+    name: 'Tuna [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
+# Checked 01/21/2017
+  - id: 'civgood_whale'
+    item_id: 345
+    item_data: 0
+    name: 'Whale [Goodie]'
+    craftable: false
+    shaped: false
+    category: '<lightgreen>Trade Goods'
+    components:
+        - name: 'NoRightClick'
 #======================================================#
 #================[ Refined  Materials ]================#
 #======================================================#
@@ -363,7 +813,7 @@ materials:
           data: 0
           count: 9
 # Checked 01/21/2017
-  - id: 'civ_refined_sticks'
+  - id: 'civ_crafted_sticks'
     item_id: 280
     item_data: 0
     name: 'T1 Crafted Sticks'
@@ -533,7 +983,7 @@ materials:
           data: 0
           count: 3
         - type_id: 0
-          custom_id: 'civ_refined_sticks'
+          custom_id: 'civ_crafted_sticks'
           data: 0
           count: 3
 # Checked 01/21/2017
@@ -580,7 +1030,7 @@ materials:
     category: '<yellow>Tier 2 Materials'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_refined_sticks'
+          custom_id: 'civ_crafted_sticks'
           data: 0
           count: 3
         - type_id: 0
@@ -1126,10 +1576,18 @@ materials:
           data: 0
           custom_id: 'civ_compacted_stone'
           letter: 's'
+        - type_id: 0
+          data: 0
+          custom_id: 'civ_treated_lumber'
+          letter: 'l'
+        - type_id: 0
+          data: 0
+          custom_id: 'civ_civflag_part'
+          letter: 'l'
     shape:
-        - " r "
         - "sss"
-        - "mmm"
+        - "lpl"
+        - "mrm"
 # Checked 01/21/2017
   - id: 'civ_royal_crown'
     item_id: 314
@@ -1149,9 +1607,31 @@ materials:
           custom_id: 'civ_decorative_jewels'
           data: 0
           count: 2
-#        - type_id: 0
-#          custom_id: 'civ_proof_of_leadership'
-#          data: 0
+# Checked 01/21/2017
+  - id: 'civ_civflag_part'
+    item_id: 408
+    item_data: 0
+    name: 'Civ Flag Part'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_stone'
+          data: 0
+          count: 2
+        - type_id: 0
+          custom_id: 'civ_refined_granite'
+          data: 0
+          count: 2
+        - type_id: 0
+          custom_id: 'civ_refined_diorite'
+          data: 0
+          count: 2
+        - type_id: 0
+          custom_id: 'civ_refined_andesite'
+          data: 0
+          count: 2
 #          count: 1
 # Checked 01/21/2017
   - id: 'civ_crushed_stone'
@@ -1230,11 +1710,11 @@ materials:
         - type_id: 0
           custom_id: 'civ_smithy_resin'
           data: 0
-          count: 2
+          count: 3
         - type_id: 0
-          custom_id: 'civ_improved_molding'
+          custom_id: 'civ_clay_molding'
           data: 0
-          count: 2
+          count: 3
 # Checked 01/21/2017
   - id: 'civ_jewelry_grade_gold'
     item_id: 322
@@ -1293,6 +1773,19 @@ materials:
     ingredients:
         - type_id: 0
           custom_id: 'civ_refined_wood'
+          data: 0
+          count: 9
+# Checked 01/21/2017
+  - id: 'civ_treated_lumber'
+    item_id: 126
+    item_data: 0
+    name: 'T3 Treated Lumber'
+    craftable: true
+    shaped: false
+    category: '<whiteb>Mechanics'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_milled_lumber'
           data: 0
           count: 9
 # Checked 01/21/2017
@@ -3346,7 +3839,7 @@ materials:
         - type_id: 280
           data: 0
           letter: 's'
-        - type_id: 265
+        - type_id: 4
           data: 0
           letter: 'm' 
     shape:
@@ -3842,16 +4335,12 @@ removed_recipes:
   - type_id: 279
     data: 0
 
-# Iron, Diamond, and Gold Hoes
+# Stone, Iron, Diamond, and Gold Hoes
+  - type_id: 291
+    data: 0
   - type_id: 292
     data: 0
   - type_id: 293
     data: 0
   - type_id: 294
     data: 0
-
-
-# Amount of tungston to drop
-tungsten_min_drop: 0
-tungsten_max_drop: 1
-tungsten_max_drop_with_fortune: 3

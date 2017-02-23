@@ -157,10 +157,14 @@ public class CivData {
 	
 	public static final int GOLD_SWORD = 283;
 	public static final int GOLD_SHOVEL = 284;
-	public static final int GOLD_PICAXE = 285;
+	public static final int GOLD_PICKAXE = 285;
 	public static final int GOLD_AXE = 286;
 	
-	public static final int GOLD_PICKAXE = 285;
+	public static final int WOOD_HOE = 290;
+	public static final int STONE_HOE = 291;
+	public static final int IRON_HOE = 292;
+	public static final int DIAMOND_HOE = 293;
+	public static final int GOLD_HOE = 294;
 	
 	public static final int POPPED_CHORUS_FRUIT = 433;
 	public static final int BEETROOT_ITEM = 434;

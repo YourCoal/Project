@@ -240,15 +240,11 @@ public class AdminCivCommand extends CommandBase {
 	}
 	
 	public void alltech_cmd() throws CivException {
-	
 		Civilization civ = getNamedCiv(1);
-		
 		for (ConfigTech tech : CivSettings.techs.values()) {
-			civ.addTech(tech);
+			civ.addAdminAllTech(tech);
 		}
-		
 		civ.save();
-		
 		CivMessage.sendSuccess(sender, "All techs awarded.");
 	}
 	

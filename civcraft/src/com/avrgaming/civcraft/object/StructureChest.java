@@ -17,6 +17,7 @@
  * from AVRGAMING LLC.
  */
 package com.avrgaming.civcraft.object;
+import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.util.BlockCoord;
 
@@ -30,8 +31,12 @@ public class StructureChest {
 	private int chestId;
 	
 	public StructureChest(BlockCoord coord, Buildable owner) {
-		this.setCoord(coord);
-		this.setOwner(owner);
+		this.coord = coord;
+		this.owner = owner;
+	}
+	
+	public void delete() {
+		CivGlobal.removeStructureChest(this);
 	}
 	
 	public BlockCoord getCoord() {

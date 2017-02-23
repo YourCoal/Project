@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.lorestorage;
 
-import gpl.AttributeUtil;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -44,9 +42,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
+import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.object.BuildableDamageBlock;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
+
+import gpl.AttributeUtil;
 
 public abstract class LoreMaterial {
 
@@ -174,6 +175,14 @@ public abstract class LoreMaterial {
 		AttributeUtil attrs = new AttributeUtil(stack);
 		setMIDAndName(attrs, material.getId(), material.getName());
 		
+/*			ItemMeta im = stack.getItemMeta();
+			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+			im.addItemFlags(ItemFlag.HIDE_DESTROYS);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			im.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+			im.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+			im.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);*/
+		
 		if (material instanceof LoreCraftableMaterial) {
 			LoreCraftableMaterial craftMat = (LoreCraftableMaterial)material;
 			attrs.addLore(CivColor.ITALIC+craftMat.getConfigMaterial().category);
@@ -183,6 +192,63 @@ public abstract class LoreMaterial {
 		}
 		material.applyAttributes(attrs);
 		return attrs.getStack();
+	}
+	
+	public static boolean isSpamItem(ItemStack is) {
+		switch (ItemManager.getId(is)) {
+		case CivData.DIAMOND_HELMET:
+		case CivData.DIAMOND_CHESTPLATE:
+		case CivData.DIAMOND_LEGGINGS:
+		case CivData.DIAMOND_BOOTS:
+		case CivData.DIAMOND_SWORD:
+		case CivData.DIAMOND_PICKAXE:
+		case CivData.DIAMOND_SHOVEL:
+		case CivData.DIAMOND_AXE:
+		case CivData.DIAMOND_HOE:
+			
+		case CivData.IRON_HELMET:
+		case CivData.IRON_CHESTPLATE:
+		case CivData.IRON_LEGGINGS:
+		case CivData.IRON_BOOTS:
+		case CivData.IRON_SWORD:
+		case CivData.IRON_PICKAXE:
+		case CivData.IRON_SHOVEL:
+		case CivData.IRON_AXE:
+		case CivData.IRON_HOE:
+			
+		case CivData.GOLD_HELMET:
+		case CivData.GOLD_CHESTPLATE:
+		case CivData.GOLD_LEGGINGS:
+		case CivData.GOLD_BOOTS:
+		case CivData.GOLD_SWORD:
+		case CivData.GOLD_PICKAXE:
+		case CivData.GOLD_SHOVEL:
+		case CivData.GOLD_AXE:
+		case CivData.GOLD_HOE:
+			
+		case CivData.CHAIN_HELMET:
+		case CivData.CHAIN_CHESTPLATE:
+		case CivData.CHAIN_LEGGINGS:
+		case CivData.CHAIN_BOOTS:
+		case CivData.STONE_SWORD:
+		case CivData.STONE_PICKAXE:
+		case CivData.STONE_SHOVEL:
+		case CivData.STONE_AXE:
+		case CivData.STONE_HOE:
+			
+		case CivData.LEATHER_HELMET:
+		case CivData.LEATHER_CHESTPLATE:
+		case CivData.LEATHER_LEGGINGS:
+		case CivData.LEATHER_BOOTS:
+		case CivData.WOOD_SWORD:
+		case CivData.WOOD_PICKAXE:
+		case CivData.WOOD_SHOVEL:
+		case CivData.WOOD_AXE:
+		case CivData.WOOD_HOE:
+			return true;
+		default:
+			return false;
+		}
 	}
 	
 	public int getTypeID() {

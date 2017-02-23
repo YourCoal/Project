@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.war;
 
-import gpl.InventorySerializer;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -42,6 +40,8 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.BukkitObjects;
 import com.avrgaming.civcraft.util.ItemManager;
+
+import gpl.InventorySerializer;
 
 public class WarRegen {
 

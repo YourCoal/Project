@@ -179,6 +179,8 @@ public class BonusGoodie extends LoreItem {
 				
 		if (isStackable()) {
 			lore.add(CivColor.LightBlue+"Stackable");
+		} else {
+			lore.add(CivColor.LightGray+"Not Stackable");
 		}
 		
 		this.setLore(stack, lore);
@@ -728,6 +730,14 @@ public class BonusGoodie extends LoreItem {
 	
 	public String getDisplayName() {
 		return config.name;
+	}
+	
+	public double getAddedCulture() {
+		return config.culture;
+	}
+	
+	public int getAddedFood() {
+		return config.food;
 	}
 
 	public boolean isStackable() {

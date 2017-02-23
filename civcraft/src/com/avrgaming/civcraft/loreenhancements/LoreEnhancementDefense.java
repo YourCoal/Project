@@ -1,12 +1,12 @@
 package com.avrgaming.civcraft.loreenhancements;
 
-import gpl.AttributeUtil;
-
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.util.CivColor;
+
+import gpl.AttributeUtil;
 
 public class LoreEnhancementDefense extends LoreEnhancement {
 	

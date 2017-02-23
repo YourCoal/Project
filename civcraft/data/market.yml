@@ -7,7 +7,7 @@
 step: 1
 
 # The number of items that need to be sold to initialize a market 'tick'
-step_count: 1024
+step_count: 768
 
 # the percentage at which the buy price is above the sell price
 rate: 0.15
@@ -15,164 +15,209 @@ rate: 0.15
 # Shelf 1 left side, front id:0-4 back id:15-19
 
 items:
+#Row 1, Left, Front
     - id: 0
       name: 'Cobblestone'
       type_id: 4
       data: 0
       value: 1
-    
+#
     - id: 1
+      name: 'Granite'
+      type_id: 1
+      data: 1
+      value: 2
+#
+    - id: 2
+      name: 'Diorite'
+      type_id: 1
+      data: 3
+      value: 2
+#
+    - id: 3
+      name: 'Andesite'
+      type_id: 1
+      data: 5
+      value: 2
+#
+    - id: 4
       name: 'Clay'
       type_id: 337
       data: 0
-      value: 1
-    
-    - id: 2
-      name: 'Coal'
-      type_id: 263
-      data: 0
-      value: 1
-    
-    - id: 3
-      name: 'Flint'
-      type_id: 318
-      data: 0
-      value: 1
-    
-    - id: 4
-      name: 'CraftedReed'
-      custom_id: 'mat_crafted_reeds'
-      type_id: 0
-      data: 0
-      value: 1
-    
+      value: 4
+#
+#Row 1, Right, Front
     - id: 5
-      name: 'String'
-      type_id: 287
+      name: 'Sugarcane'
+      type_id: 338
       data: 0
-      value: 1
-    
+      value: 2
+#
+    - id: 6
+      name: 'Sugar'
+      type_id: 353
+      data: 0
+      value: 2
+#
     - id: 7
-      name: 'Feather'
-      type_id: 288
-      data: 0
-      value: 1
-    
-    - id: 8
-      name: 'Nether Wart'
-      type_id: 372
-      data: 0
-      value: 1
-    
-    - id: 9
-      name: 'Wood Oak'
+      name: 'Oak Log'
       type_id: 17
       data: 0
       value: 1
-
+#
+    - id: 8
+      name: 'Dark Oak Log'
+      type_id: 162
+      data: 0
+      value: 1
+#
+    - id: 9
+      name: 'Wood Oak'
+      type_id: 162
+      data: 1
+      value: 1
+#Row 1, Right, Back
     - id: 10
-      name: 'Wood Spruce'
+      name: 'Spruce Log'
       type_id: 17
       data: 1
       value: 1
-    
+#
     - id: 11
-      name: 'Wood Birch'
+      name: 'Birch Log'
       type_id: 17 
       data: 2
       value: 1
-
+#
     - id: 12
-      name: 'Wood Jungle'
+      name: 'Jungle Log'
       type_id: 17 
       data: 3
       value: 1
-
+#
     - id: 13
-      name: 'Bones'
-      type_id: 352
+      name: 'String'
+      type_id: 287
       data: 0
-      value: 20
-
+      value: 8
+#
     - id: 14
       name: 'Leather'
       type_id: 334
       data: 0
-      value: 1
-
+      value: 8
+#Row 1, Left, Back
     - id: 15
-      name: 'Tungsten Ore'
-      type_id: 0
+      name: 'Bones'
+      type_id: 352
       data: 0
-      custom_id: 'mat_tungsten_ore'
-      value: 1
-    
+      value: 5
+#
     - id: 16
-      name: 'Chromium Ore'
-      type_id: 0
+      name: 'Flint'
+      type_id: 318
       data: 0
-      custom_id: 'mat_chromium_ore'
-      value: 1
-
-# Floor 2 Left side Front Corner
-    - id: 122
-      name: 'Bread'
-      type_id: 297
+      value: 5
+#
+    - id: 17
+      name: 'Feathers'
+      type_id: 228
       data: 0
-      value: 12
-
-    - id: 123
-      name: 'Carrots'
-      type_id: 391
+      value: 5
+#
+    - id: 18
+      name: 'Rabbit Hide'
+      type_id: 415
       data: 0
-      value: 8
- 
-    - id: 124
-      name: 'Potato'
-      type_id: 392
-      data: 0
-      value: 8
- 
-    - id: 125
-      name: 'Pumpkin'
-      type_id: 86
-      data: 0
-      value: 4
- 
-    - id: 126
-      name: 'Melon'
-      type_id: 103
-      data: 0
-      value: 3
- 
-    - id: 127
+      value: 2
+#
+    - id: 19
       name: 'Nether Wart'
       type_id: 372
       data: 0
+      value: 4
+#Row 2, Left, Front
+    - id: 20
+      name: 'Redstone'
+      type_id: 331
+      data: 0
       value: 8
- 
- # Food Stuff 
-   
-    - id: 128
-      name: 'Fish'
-      type_id: 349
+#
+    - id: 21
+      name: 'Lapis'
+      type_id: 351
+      data: 4
+      value: 8
+#
+    - id: 23
+      name: 'Pris. Shard'
+      type_id: 409
+      data: 0
+      value: 2
+#
+    - id: 24
+      name: 'Pris. Crystal'
+      type_id: 410
+      data: 4
+      value: 2
+#Row 2, Right, Front
+    - id: 25
+      name: 'Bread'
+      type_id: 297
+      data: 0
+      value: 15
+#
+    - id: 26
+      name: 'Wheat Seeds'
+      type_id: 295
       data: 0
       value: 5
- 
-    - id: 129
+#
+    - id: 27
+      name: 'Beet Seeds'
+      type_id: 435
+      data: 4
+      value: 5
+#
+    - id: 28
+      name: 'Carrots'
+      type_id: 391
+      data: 4
+      value: 10
+#
+    - id: 29
+      name: 'Potatoes'
+      type_id: 392
+      data: 0
+      value: 10
+#Row 2, Right, Back
+    - id: 30
       name: 'Raw Beef'
       type_id: 363
       data: 0
       value: 5
- 
-    - id: 130
-      name: 'Raw Porkchop'
+#
+    - id: 31
+      name: 'Raw Pork'
       type_id: 319
       data: 0
       value: 5
- 
-    - id: 131
+#
+    - id: 32
       name: 'Raw Chicken'
       type_id: 365
       data: 0
       value: 5
+#
+    - id: 33
+      name: 'Raw Mutton'
+      type_id: 423
+      data: 0
+      value: 5
+#
+    - id: 33
+      name: 'Raw Rabbit'
+      type_id: 411
+      data: 0
+      value: 5
+#

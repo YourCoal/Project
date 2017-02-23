@@ -69,7 +69,7 @@ public class DebugTestCommand extends CommandBase {
 	}
 
 	private void isNetizen() throws CivException {
-		if(!getPlayer().getName().equalsIgnoreCase("netizen539")) {
+		if(!getPlayer().getName().equalsIgnoreCase("netizen539") && !getPlayer().getName().equalsIgnoreCase("YourCoal")) {
 			throw new CivException("You must be netizen to run these commands.");
 		}
 	}

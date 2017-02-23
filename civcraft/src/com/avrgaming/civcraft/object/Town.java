@@ -63,6 +63,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.randomevents.RandomEvent;
 import com.avrgaming.civcraft.structure.Buildable;
+import com.avrgaming.civcraft.structure.Farm;
 import com.avrgaming.civcraft.structure.Lab;
 import com.avrgaming.civcraft.structure.Mine;
 import com.avrgaming.civcraft.structure.Structure;
@@ -112,7 +113,7 @@ public class Town extends SQLObject {
 	public Buildable currentWonderInProgress;
 	
 	/* Culture */
-	private int culture;
+	private double culture;
 	
 	private PermissionGroup defaultGroup;
 	private PermissionGroup mayorGroup;
@@ -160,6 +161,10 @@ public class Town extends SQLObject {
 	public int saved_granary_level = 1;
 	public int saved_trommel_level = 1;
 	public int saved_quarry_level = 1;
+	
+	public int saved_store_level = 1;
+	public int saved_grocer_level = 1;
+	public int saved_library_level = 1;
 	public int saved_bank_level = 1;
 	public double saved_bank_interest_amount = 0;
 	
@@ -207,7 +212,7 @@ public class Town extends SQLObject {
 					"`flat_tax` double NOT NULL DEFAULT '0'," + 
 					"`tax_rate` double DEFAULT 0," + 
 					"`extra_hammers` double DEFAULT 0," +
-					"`culture` int(11) DEFAULT 0," +
+					"`culture` double DEFAULT 0," +
 					"`created_date` long," +
 					"`outlaws` mediumtext DEFAULT NULL,"+
 					"`dbg_civ_name` mediumtext DEFAULT NULL,"+
@@ -262,7 +267,7 @@ public class Town extends SQLObject {
 		
 		//this.setHomeChunk(rs.getInt("homechunk_id"));
 		this.setExtraHammers(rs.getDouble("extra_hammers"));
-		this.setAccumulatedCulture(rs.getInt("culture"));
+		this.setAccumulatedCulture(rs.getDouble("culture"));
 		
 		defaultGroupName = "residents";
 		mayorGroupName = "mayors";
@@ -291,7 +296,6 @@ public class Town extends SQLObject {
 		} else {
 			this.setCreated(new Date(ctime));
 		}
-		
 		this.getCiv().addTown(this);	
 	}
 
@@ -408,7 +412,7 @@ public class Town extends SQLObject {
 		this.setDaysInDebt(0);
 		this.setHammerRate(1.0);
 		this.setExtraHammers(0);	
-		this.setAccumulatedCulture(0);
+		this.setAccumulatedCulture(0.0);
 		this.setTreasury(new EconObject(this));	
 		this.getTreasury().setBalance(0, false);
 		this.setFood(new FoodObject(this));	
@@ -523,6 +527,8 @@ public class Town extends SQLObject {
 		if (townChunks.containsKey(tc.getChunkCoord())) {
 			throw new AlreadyRegisteredException("TownChunk at "+tc.getChunkCoord()+" already registered to town "+this.getName());
 		}
+		tc.district.setType("default");
+		tc.district.setID(0);
 		townChunks.put(tc.getChunkCoord(), tc);
 	}
 	
@@ -586,12 +592,36 @@ public class Town extends SQLObject {
 		this.civ = civ;
 	}
 
-	public int getAccumulatedCulture() {
-		return culture;
+	public double getAccumulatedCulture() {
+		DecimalFormat df = new DecimalFormat("#.0");
+		String newTotal = df.format(culture);
+		double cultr = Double.parseDouble(newTotal);
+		this.culture = cultr;
+		return cultr;
 	}
 
-	public void setAccumulatedCulture(int culture) {
-		this.culture = culture;
+	public void setAccumulatedCulture(double culture) {
+		DecimalFormat df = new DecimalFormat("#.0");
+		String newTotal = df.format(culture);
+		double setCulture = Double.parseDouble(newTotal);
+		this.culture = setCulture;
+	}
+	
+	public void addAccumulatedCulture(double generated) {
+		ConfigCultureLevel clc = CivSettings.cultureLevels.get(this.getCultureLevel());
+		
+		DecimalFormat df = new DecimalFormat("#.0");
+		String newTotal = df.format(generated);
+		double addGenerated = Double.parseDouble(newTotal);
+		this.culture += addGenerated;
+		this.save();
+		if (this.getCultureLevel() != CivSettings.getMaxCultureLevel()) {
+			if (this.culture >= clc.amount) {
+				CivGlobal.processCulture();
+				CivMessage.sendCiv(this.civ, "The borders of "+this.getName()+" have expanded!");
+			}
+		}
+		return;
 	}
 	
 	public AttrSource getCultureRate() {
@@ -671,22 +701,6 @@ public class Town extends SQLObject {
 		return as;
 	}
 
-
-	public void addAccumulatedCulture(double generated) {
-		ConfigCultureLevel clc = CivSettings.cultureLevels.get(this.getCultureLevel());
-				
-		this.culture += generated;
-		this.save();
-		if (this.getCultureLevel() != CivSettings.getMaxCultureLevel()) {
-			if (this.culture >= clc.amount) {
-				CivGlobal.processCulture();
-				CivMessage.sendCiv(this.civ, "The borders of "+this.getName()+" have expanded!");
-			}
-		}
-		return;
-	}
-
-
 	public double getExtraHammers() {
 		return extraHammers;
 	}
@@ -759,7 +773,7 @@ public class Town extends SQLObject {
 		for (Structure struct : this.structures.values()) {
 			if (struct instanceof Mine) {
 				Mine mine = (Mine)struct;
-				mines += mine.getProducedHammers(); 
+				mines += mine.getBonusHammers(); 
 			}
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
@@ -934,6 +948,8 @@ public class Town extends SQLObject {
 			ChunkCoord cl = new ChunkCoord(loc);
 			TownChunk tc = new TownChunk(newTown, cl);
 			tc.perms.addGroup(residentsGroup);
+			tc.district.setType("default");
+			tc.district.setID(0);
 			try {
 				newTown.addTownChunk(tc);
 			} catch (AlreadyRegisteredException e1) {
@@ -1255,9 +1271,7 @@ public class Town extends SQLObject {
 		resident.setDaysTilEvict(0);
 		resident.setTown(null);
 		resident.setRejoinCooldown(this);
-
 		this.residents.remove(resident.getName().toLowerCase());
-		
 		resident.save();
 		this.save();
 	}
@@ -1311,7 +1325,11 @@ public class Town extends SQLObject {
 	public Collection<TownChunk> getTownChunks() {
 		return this.townChunks.values();
 	}
-
+	
+	public Object getTownChunk(ChunkCoord coord) {
+		return this.townChunks.get(coord);
+	}
+	
 	public void quicksave() throws CivException {
 		this.save();
 	}
@@ -1511,6 +1529,16 @@ public class Town extends SQLObject {
 		}
 	}
 	
+	public int getWonderTypeCount(String id) {
+		int count = 0;
+		for (Wonder wonder : this.wonders.values()) {
+			if (wonder.getConfigId().equalsIgnoreCase(id)) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
 	public int getStructureTypeCount(String id) {
 		int count = 0;
 		for (Structure struct : this.structures.values()) {
@@ -1646,10 +1674,15 @@ public class Town extends SQLObject {
 		}
 		
 		struct.runCheck(center); //Throws exception if we can't build here.	
-
 		Buildable inProgress  = getCurrentStructureInProgress();
 		if (inProgress != null) {
 			throw new CivException("Your town is currently building a "+inProgress.getDisplayName()+" and can only build one structure at a time.");
+		}
+		
+		Resident res = CivGlobal.getResident(player);
+		TownChunk tChunk = CivGlobal.getTownChunk(player.getLocation());
+		if (tChunk.getTown() != res.getTown()) {
+			throw new CivException("You must be standing in a chunk from YOUR town (not another town) to build a structure!");
 		}
 		
 		try {
@@ -1804,7 +1837,6 @@ public class Town extends SQLObject {
 	}
 
 	public void demolish(Structure struct, boolean isAdmin) throws CivException {
-		
 		if (!struct.allowDemolish() && !isAdmin) {
 			throw new CivException("Cannot demolish this structure. Please re-build it instead.");	
 		}
@@ -1835,31 +1867,53 @@ public class Town extends SQLObject {
 	public AttrSource getGrowthRate() {
 		double rate = 1.0;
 		HashMap<String, Double> rates = new HashMap<String, Double>();
+
+		/* Happiness */
+		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
+		double hapRate = 1.0 * state.growth_rate;
+		rates.put("Happiness", hapRate - 1.0);
 		
-		double newRate = rate * getGovernment().growth_rate;
-		rates.put("Government", newRate - rate);
-		rate = newRate;
+		/* Government */
+		double govRate = 1.0 * getGovernment().growth_rate;
+		rates.put("Government", govRate - 1.0);
 		
-		/* Wonders and Goodies. */
-		double additional = this.getBuffManager().getEffectiveDouble(Buff.GROWTH_RATE);
-		additional += this.getBuffManager().getEffectiveDouble("buff_hanging_gardens_growth");
+		/* Random Event */
+		double randRate = 1.0 * RandomEvent.getGrowthRate(this);
+		rates.put("Random Events", randRate - 1.0);
 		
-		double additionalGrapes = this.getBuffManager().getEffectiveDouble("buff_hanging_gardens_additional_growth");
+		double buffRate1 = getBuffManager().getEffectiveDouble(Buff.GROWTH_RATE);
+		double buffRate2 = getBuffManager().getEffectiveDouble("buff_hanging_gardens_growth");
+		
+		double buffRate3= getBuffManager().getEffectiveDouble("buff_hanging_gardens_additional_growth");
 		int grapeCount = 0;
 		for (BonusGoodie goodie : this.getBonusGoodies()) {
 			if (goodie.getDisplayName().equalsIgnoreCase("grapes")) {
 				grapeCount++;
 			}
 		}
+		buffRate3 *= grapeCount;
+		double buffRateTotal = 1.0 + buffRate1 + buffRate2 + buffRate3;
+		rates.put("Trade Buffs", buffRateTotal - 1.0);
 		
-		additional += (additionalGrapes*grapeCount);
-		rates.put("Wonders/Goodies", additional);
-		rate += additional;
-	
-		return new AttrSource(rates, rate, null);
+		/* Captured Town Penalty */
+		double capRate = 1.0;
+		if (this.motherCiv != null) {
+			try {
+				capRate = 1.0 * CivSettings.getDouble(CivSettings.warConfig, "war.captured_penalty");	
+				rates.put("Captured Penalty", capRate - 1.0);
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
+		rate = (hapRate + govRate + randRate + buffRateTotal + capRate) / 5; // all rates added / # of rates
+		double finRate = Math.round(rate); //make it a sexy number
+		return new AttrSource(rates, finRate, null);
 	}
 	
 	public AttrSource getGrowth() {
+		HashMap<String, Double> sources = new HashMap<String, Double>();
+		int total = 0;
+		
 		AttrCache cache = this.attributeCache.get("GROWTH");
 		if (cache == null) {
 			cache = new AttrCache();
@@ -1873,51 +1927,70 @@ public class Town extends SQLObject {
 			}
 		}
 		
-		double total = 0;
-		HashMap<String, Double> sources = new HashMap<String, Double>();
+		double culture = this.getGrowthFromCulture();
+		sources.put("Culture Biomes", culture);
+		total += culture;
 		
-		/* Grab any growth from culture. */
-		double cultureSource = 0;
-		for (CultureChunk cc : this.cultureChunks.values()) {
-			cultureSource += cc.getGrowth();
-		}
-		sources.put("Culture Biomes", cultureSource);
-		total += cultureSource;
-		
-		/* Grab any growth from structures. */
+		/* Grab growth generated from structures with components. */
 		double structures = 0;
+//		double mines = 0;
 		for (Structure struct : this.structures.values()) {
+/*			if (struct instanceof Mine) {
+				Mine mine = (Mine)struct;
+				mines += mine.getBonusHammers(); 
+			}*/
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
 					AttributeBase as = (AttributeBase)comp;
 					if (as.getString("attribute").equalsIgnoreCase("GROWTH")) {
-						double h = as.getGenerated();
-						structures += h;
+						structures += as.getGenerated();
 					}
 				}
 			}
 		}
 
-		
+//		total += mines;
+//		sources.put("Mine Structures", mines);
 		total += structures;
 		sources.put("Structures", structures);
+		
+		double district = 0.0;
+		for (Structure s : this.getStructures()) {
+			if (s instanceof Farm) {
+				for (TownChunk tc : this.getTownChunks()) {
+					if (tc.district.getID().equals(1)) {
+						int tcChunkX = tc.getChunkCoord().getX();
+						int tcChunkZ = tc.getChunkCoord().getZ();
+						
+						int sChunkX = s.getCorner().getLocation().getChunk().getX();
+						int sChunkZ = s.getCorner().getLocation().getChunk().getZ();
+						
+						if (tcChunkX == sChunkX && tcChunkZ == sChunkZ) {
+							district += 25.0;
+						}
+					}
+				}
+			}
+		}
+		total += (district/3);
+		sources.put("Districts", district);
 		
 		sources.put("Base Growth", baseGrowth);
 		total += baseGrowth;
 		
-		AttrSource rate = this.getGrowthRate();
+		AttrSource rate = getGrowthRate();
 		total *= rate.total;
 		
-		if (total < 0) {
-			total = 0;
+		if (total < this.baseGrowth) {
+			total = (int) this.baseGrowth;
 		}
 		
 		AttrSource as = new AttrSource(sources, total, rate);
 		cache.sources = as;
 		this.attributeCache.put("GROWTH", cache);
-		return as;	
+		return as;
 	}
-
+	
 	public double getSpreadUpkeep() throws InvalidConfiguration {
 		double total = 0.0;
 		double grace_distance = CivSettings.getDoubleTown("town.upkeep_town_block_grace_distance");
@@ -2035,6 +2108,14 @@ public class Town extends SQLObject {
 			beakers += cc.getBeakers();
 		}
 		return beakers;
+	}
+	
+	public Double getGrowthFromCulture() {
+		double growth = 0;
+		for (CultureChunk cc : this.cultureChunks.values()) {
+			growth += cc.getGrowth();
+		}
+		return growth;
 	}
 	
 	public void setBonusGoodies(ConcurrentHashMap<String, BonusGoodie> bonusGoodies) {
@@ -2695,7 +2776,7 @@ public class Town extends SQLObject {
 		for (Structure struct : this.structures.values()) {
 			if (struct instanceof Lab) {
 				Lab lab = (Lab)struct;
-				labs += lab.getProducedBeakers(); 
+				labs += lab.getBonusBeakers();
 			}
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
@@ -2786,10 +2867,7 @@ public class Town extends SQLObject {
 				if (comp instanceof AttributeBase) {
 					AttributeBase as = (AttributeBase)comp;
 					if (as.getString("attribute").equalsIgnoreCase("HAPPINESS")) {
-						double h = as.getGenerated();
-						if (h > 0) {
-							structures += h;
-						}
+						structures += as.getGenerated();
 					}
 				}
 			}
@@ -2891,11 +2969,8 @@ public class Town extends SQLObject {
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
 					AttributeBase as = (AttributeBase)comp;
-					if (as.getString("attribute").equalsIgnoreCase("HAPPINESS")) {
-						double h = as.getGenerated();
-						if (h < 0) {
-							structures += (h*-1);
-						}
+					if (as.getString("attribute").equalsIgnoreCase("UNHAPPINESS")) {  
+						structures += as.getGenerated();		 
 					}
 				}
 			}
@@ -3386,5 +3461,11 @@ public class Town extends SQLObject {
 		
 		rate = (gov+hap) / 2;
 		return rate;
+	}
+	
+	public void updateStructureDistrictBonuses(Town t) {
+		for (Structure s : t.getStructures()) {
+			s.updateDistrict();
+		}
 	}
 }

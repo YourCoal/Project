@@ -21,6 +21,7 @@ package com.avrgaming.civcraft.threading.tasks;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -70,6 +71,10 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			break;
 		case ALLY:
 			color = CivColor.Green;
+			break;
+		case HOME:
+			color = CivColor.LightGray;
+			break;
 		}
 		return color;
 	}
@@ -143,7 +148,7 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 		// From a town... to the wild
 		if (fromTc != null && toTc == null) {
 			title += CivColor.Rose+"[Wilderness PvP]";
-			subTitle += CivColor.LightGray+"Leaving "+fromTc.getTown().getName()+", Entering Wilderness";
+			subTitle += CivColor.LightGray+"Leaving "+CivColor.White+fromTc.getTown().getName()+CivColor.LightGray+", Entering Wilderness";
 //			out += getToWildMessage();
 		}
 		
@@ -163,16 +168,16 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 		
 		// Leaving culture to the wild.
 		if (fromCc != null && toCc == null) {
-			title += "";
-			subTitle += CivColor.LightPurple+"Leaving "+fromCc.getCiv().getName()+" Borders";
+			title += " ";
+			subTitle += fromCc.getOnLeaveString();
 //			out += fromCc.getOnLeaveString();
 		}
 		
 		// Leaving wild, entering culture. 
 		if (fromCc == null && toCc != null) {
-			title += getNotifyColor(toCc, toCc.getCiv().getDiplomacyManager().getRelationStatus(player), player)+
-					"["+toCc.getCiv().getDiplomacyManager().getRelationStatus(player).toString().toUpperCase()+"]";
-			subTitle += CivColor.LightPurple+"Entering "+toCc.getCiv().getName()+" Borders";
+			String relation = StringUtils.capitalize(toCc.getCiv().getDiplomacyManager().getRelationStatus(player).toString().toLowerCase());
+			title += getNotifyColor(toCc, toCc.getCiv().getDiplomacyManager().getRelationStatus(player), player)+"["+relation+"]";
+			subTitle += toCc.getOnEnterString();
 //			out += toCc.getOnEnterString();
 			onCultureEnter(toCc);
 		}
@@ -181,8 +186,7 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 		if (fromCc != null && toCc !=null && fromCc.getCiv() != toCc.getCiv()) {
 			title += getNotifyColor(toCc, toCc.getCiv().getDiplomacyManager().getRelationStatus(player), player)+
 					"["+toCc.getCiv().getDiplomacyManager().getRelationStatus(player).toString().toUpperCase()+"]";
-			subTitle += CivColor.LightPurple+"Leaving "+fromCc.getCiv().getName()+" Borders"+
-					" | "+CivColor.LightPurple+"Entering "+toCc.getCiv().getName()+" Borders";
+			subTitle += fromCc.getOnLeaveString()+" | "+toCc.getOnEnterString();
 //			out += fromCc.getOnLeaveString() +" | "+ toCc.getOnEnterString();
 			onCultureEnter(toCc);
 		}
@@ -192,6 +196,7 @@ public class PlayerChunkNotifyAsyncTask implements Runnable {
 			//im.sendMessage(player, CivColor.BOLD+out, 3);
 			
 			//CivMessage.send(player, out);
+			CivMessage.send(player, subTitle+" "+title);
 			CivMessage.sendPCNTitle(player, title, subTitle);
 		}
 		

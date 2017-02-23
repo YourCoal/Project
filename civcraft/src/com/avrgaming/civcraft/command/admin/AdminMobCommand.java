@@ -3,8 +3,6 @@ package com.avrgaming.civcraft.command.admin;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import net.minecraft.server.v1_10_R1.EntityCreature;
-
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -16,6 +14,8 @@ import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobType;
 import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.EntityProximity;
+
+import net.minecraft.server.v1_10_R1.EntityCreature;
 
 public class AdminMobCommand extends CommandBase {
 	

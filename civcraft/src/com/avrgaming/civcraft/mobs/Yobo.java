@@ -3,11 +3,14 @@ package com.avrgaming.civcraft.mobs;
 import java.util.LinkedList;
 
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetEvent.TargetReason;
 
 import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.main.CivLog;
+import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobLevel;
+import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobType;
 import com.avrgaming.civcraft.mobs.components.MobComponentDefense;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.moblib.mob.ICustomMob;
@@ -53,10 +56,11 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
 			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(32.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.SNOW_BLOCK), (short)0, 0.10);
 			
@@ -69,10 +73,11 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
 			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(32.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.ICE), (short)0, 0.10);
 			
@@ -85,10 +90,11 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
 			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(32.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.CHORUS_FRUIT_POPPED), (short)0, 0.10);
 			
@@ -101,10 +107,11 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
 			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(32.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.CACTUS), (short)0, 0.10);
 			
@@ -117,10 +124,11 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
 			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(32.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.INK_SACK), (short)0, 0.10);
 			
@@ -180,15 +188,25 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 	}
 	
 	public static void register() {
-//		setValidBiome(CustomMobType.YOBO, CustomMobLevel.SNOWY, Biome.PLAINS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.SNOWY, Biome.TAIGA_COLD);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.SNOWY, Biome.TAIGA_COLD_HILLS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.SNOWY, Biome.MUTATED_TAIGA_COLD);
 		
-//		setValidBiome(CustomMobType.YOBO, CustomMobLevel.COLD, Biome.PLAINS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.COLD, Biome.TAIGA);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.COLD, Biome.TAIGA_HILLS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.COLD, Biome.MUTATED_TAIGA);
 		
-//		setValidBiome(CustomMobType.YOBO, CustomMobLevel.LUSH, Biome.PLAINS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.LUSH, Biome.PLAINS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.LUSH, Biome.MUTATED_PLAINS);
 		
-//		setValidBiome(CustomMobType.YOBO, CustomMobLevel.WARM, Biome.PLAINS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.LUSH, Biome.FOREST);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.LUSH, Biome.FOREST_HILLS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.LUSH, Biome.MUTATED_FOREST);
 		
-//		setValidBiome(CustomMobType.YOBO, CustomMobLevel.WATER, Biome.PLAINS);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.WARM, Biome.DESERT);
+		
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.WATER, Biome.RIVER);
+		setValidBiome(CustomMobType.YOBO, CustomMobLevel.WATER, Biome.FROZEN_RIVER);
 	}
 	
 	@Override

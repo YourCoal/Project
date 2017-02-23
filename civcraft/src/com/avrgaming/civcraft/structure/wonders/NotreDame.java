@@ -59,24 +59,22 @@ public class NotreDame extends Wonder {
 	
 	@Override
 	protected void removeBuffs() {
-		this.removeBuffFromTown(this.getTown(), "buff_notre_dame_no_anarchy");
-		this.removeBuffFromTown(this.getTown(), "buff_notre_dame_coins_from_peace");
+		this.removeBuffFromCiv(this.getCiv(), "buff_notre_dame_no_anarchy");
+		this.removeBuffFromCiv(this.getCiv(), "buff_notre_dame_coins_from_peace");
 		this.removeBuffFromTown(this.getTown(), "buff_notre_dame_extra_war_penalty");
 	}
 
 	@Override
 	protected void addBuffs() {
-		this.addBuffToTown(this.getTown(), "buff_notre_dame_no_anarchy");
-		this.addBuffToTown(this.getTown(), "buff_notre_dame_coins_from_peace");
+		this.addBuffToCiv(this.getCiv(), "buff_notre_dame_no_anarchy");
+		this.addBuffToCiv(this.getCiv(), "buff_notre_dame_coins_from_peace");
 		this.addBuffToTown(this.getTown(), "buff_notre_dame_extra_war_penalty");
 
 	}
 
 	public void processPeaceTownCoins() {
 		double totalCoins = 0;
-		
 		double coinsPerTown = this.getTown().getBuffManager().getEffectiveInt("buff_notre_dame_coins_from_peace");
-		
 		for (Civilization civ : CivGlobal.getCivs()) {
 			if (civ.isAdminCiv()) {
 				continue;
@@ -85,13 +83,9 @@ public class NotreDame extends Wonder {
 			if (civ.getDiplomacyManager().isAtWar()) {
 				continue;
 			}
-			
 			totalCoins += (coinsPerTown*civ.getTowns().size());
 		}
-		
 		this.getTown().depositTaxed(totalCoins);
-		CivMessage.sendTown(this.getTown(), "Generated "+totalCoins+" from the peaceful towns of the world!");	
-		
+		CivMessage.sendTown(this.getTown(), "Generated "+totalCoins+" from the peaceful towns of the world!");
 	}
-
 }

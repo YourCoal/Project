@@ -162,7 +162,7 @@ public class DiplomacyManager {
 		
 	public Relation.Status getRelationStatus(Civilization otherCiv) {
 		if (otherCiv.getId() == ourCiv.getId()) {
-			return Relation.Status.ALLY;
+			return Relation.Status.HOME;
 		}
 		
 		Relation relation = relations.get(otherCiv.getId());
@@ -215,7 +215,6 @@ public class DiplomacyManager {
 		if (!resident.hasTown()) {
 			return Status.NEUTRAL;
 		}
-		
 		return getRelationStatus(resident.getTown().getCiv());
 	}
 

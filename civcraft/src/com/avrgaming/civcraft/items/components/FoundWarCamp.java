@@ -1,7 +1,5 @@
 package com.avrgaming.civcraft.items.components;
 
-import gpl.AttributeUtil;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,6 +21,8 @@ import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.war.War;
+
+import gpl.AttributeUtil;
 
 public class FoundWarCamp extends ItemComponent implements CallbackInterface {
 	

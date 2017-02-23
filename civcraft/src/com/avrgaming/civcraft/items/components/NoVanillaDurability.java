@@ -18,9 +18,9 @@
  */
 package com.avrgaming.civcraft.items.components;
 
-import gpl.AttributeUtil;
-
 import org.bukkit.event.player.PlayerItemDamageEvent;
+
+import gpl.AttributeUtil;
 
 public class NoVanillaDurability extends ItemComponent {
 

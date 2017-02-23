@@ -68,6 +68,24 @@ public class Farm extends Structure {
 		return "basket";
 	}
 	
+/*	@Override
+	public void updateDistrict() {
+		double gainGrowth = 1.0;
+		for (TownChunk tc : this.getTown().getTownChunks()) {
+			if (tc.district.getID().equals(1)) {
+				gainGrowth += 0.1;
+			}
+		}
+	}*/
+	
+	public void removeFarmChunk() throws SQLException {
+		if (this.getCorner() != null) {
+			ChunkCoord coord = new ChunkCoord(this.getCorner().getLocation());
+			CivGlobal.removeFarmChunk(coord);
+			CivGlobal.getSessionDB().delete_all(getSessionKey());
+		}
+	}
+	
 	@Override
 	public void delete() throws SQLException {
 		if (this.getCorner() != null) {

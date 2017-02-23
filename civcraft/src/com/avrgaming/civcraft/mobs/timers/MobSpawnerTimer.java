@@ -28,7 +28,7 @@ public class MobSpawnerTimer implements Runnable {
 	public static int MOB_AREA = 32;
 	
 	public static int MIN_SPAWN_DISTANCE = 20;
-	public static int MAX_SPAWN_DISTANCE = 50;
+	public static int MAX_SPAWN_DISTANCE = 44;
 	public static int MIN_SPAWN_AMOUNT = 5;
 	
 	public static int Y_SHIFT = 3;
@@ -75,8 +75,11 @@ public class MobSpawnerTimer implements Runnable {
 					
 					TownChunk tc = CivGlobal.getTownChunk(new ChunkCoord(loc));
 					if (tc != null) {
+						if (tc.perms.mobs != true) {
+							continue;
+						}
 						/* Dont spawn in towns. */
-						continue;
+//						continue;
 					}
 					
 					if ((ItemManager.getId(loc.getBlock().getRelative(BlockFace.DOWN)) == CivData.WATER_STILL) ||

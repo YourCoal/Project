@@ -38,6 +38,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.template.Template;
@@ -143,7 +144,7 @@ public class Structure extends Buildable {
 				struct = (Structure) new Cottage(rs);
 			}
 			break;
-		case "s_monument":
+		case "ti_monument":
 			if (rs == null) {
 				struct = (Structure) new Monument(center, id, town);
 			} else {
@@ -234,7 +235,7 @@ public class Structure extends Buildable {
 				struct = (Structure) new Shipyard(rs);
 			}
 			break;
-		case "ti_wall":
+		case "war_wall":
 			if (rs == null) {
 				struct = (Structure) new Wall(center, id, town);
 			} else {
@@ -428,29 +429,35 @@ public class Structure extends Buildable {
 				}
 			}
 			
-			if (!(this instanceof Wall)) {
-				CivLog.debug("Delete with Undo! "+this.getDisplayName());
-				/* Remove StructureSigns */
-				for (StructureSign sign : this.getSigns()) {
-					sign.delete();
-				} try {
-					this.undoFromTemplate();	
-				} catch (IOException | CivException e1) {
-					e1.printStackTrace();
-					this.fancyDestroyStructureBlocks();
-				}
-				CivGlobal.removeStructure(this);
-				this.getTown().removeStructure(this);
-				this.unbindStructureBlocks();
-			} else {
-				CivLog.debug("Delete skip Undo! "+this.getDisplayName());
-				CivGlobal.removeStructure(this);
-				this.getTown().removeStructure(this);
-				this.unbindStructureBlocks();
-				if (this instanceof Wall) {
-					Wall wall = (Wall)this;
-					wall.deleteOnDisband();
-				}
+			CivLog.debug("Delete with Undo! "+this.getDisplayName());
+			/* Remove Structure Signs */
+			for (StructureChest chest : this.getChests()) {
+				chest.delete();
+			}
+			/* Remove Structure Chests */
+			for (StructureSign sign : this.getSigns()) {
+				sign.delete();
+			}
+			
+			try {
+				this.undoFromTemplate();	
+			} catch (IOException | CivException e1) {
+				e1.printStackTrace();
+				this.fancyDestroyStructureBlocks();
+			}
+			
+			CivGlobal.removeStructure(this);
+			this.getTown().removeStructure(this);
+			this.unbindStructureBlocks();
+			
+			if (this instanceof Wall) {
+				Wall wall = (Wall)this;
+				wall.deleteOnDisband();
+			}
+			
+			if (this instanceof Farm) {
+				Farm farm = (Farm)this;
+				farm.removeFarmChunk();
 			}
 		}
 		SQL.deleteNamedObject(this, TABLE_NAME);
@@ -686,6 +693,12 @@ public class Structure extends Buildable {
 		}
 		
 		super.loadSettings();
+	}
+
+	@Override
+	public void updateDistrict() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

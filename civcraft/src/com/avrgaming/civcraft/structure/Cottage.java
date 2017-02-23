@@ -118,8 +118,8 @@ public class Cottage extends Structure {
 		
 		/* Bail early for results that do not generate coins. */
 		if (townFood < foodCost) {
-			CivMessage.sendTownCottage(town, "Your town does not have the food ("+foodCost+") in order to supply the people! "
-					+CivColor.Rose+CivColor.ITALIC+"Cottage generated no money.");
+			CivMessage.sendTownCottage(town, CivColor.Rose+"Your town does not have the food ("+foodCost+") in order to supply the people! "
+											+CivColor.ITALIC+"Cottage generated no money.");
 		} else {
 			if (townFood >= foodCost) {
 				/* Calculate how much money we made. */	

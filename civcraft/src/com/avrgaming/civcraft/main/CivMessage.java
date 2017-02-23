@@ -25,7 +25,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -150,7 +152,7 @@ public class CivMessage {
 				}
 			}
 			if (player != null && resident != null) {
-				TitleAPI.sendTitle(player, 10, 30, 10, title, subTitle);
+				TitleAPI.sendTitle(player, 10, 50, 10, title, subTitle);
 			} else {
 				CivLog.debug("Could not send PCN Title to player "+player);
 			}
@@ -173,6 +175,31 @@ public class CivMessage {
 				send(player, subTitle);
 			}
 		}
+	}
+	
+	public static void globalTitle(int fadeIn, int show, int fadeOut, String title, String subTitle) {
+		CivLog.info("[GlobalTitle] "+title+" - "+subTitle);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (CivSettings.hasTitleAPI) {
+				CivMessage.sendTitle(player, fadeIn, show, fadeOut, title, subTitle);
+			} else {
+				send(player, buildTitle(title));
+				send(player, subTitle);
+			}
+		}
+	}
+	
+	public static void playGlobalSound(Sound sound, float f, float g) {
+		CivLog.info("[GlobalSound] "+sound.toString());
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			p.playSound(p.getLocation(), sound, f, g);
+		}
+	}
+	
+	public static void worldSound(Sound sound, float g) {
+		World w = Bukkit.getWorld("world");
+		Location l = new Location(w, 0, 0, 0);
+		w.playSound(l, sound, 10000, g);
 	}
 	
 	public static String buildTitle(String title) {
@@ -495,19 +522,31 @@ public class CivMessage {
 		}
 		return names;
 	}
-
+	
 	public static void sendTownSound(Town town, Sound sound, float f, float g) {
 		for (Resident resident : town.getResidents()) {
 			Player player;
 			try {
 				player = CivGlobal.getPlayer(resident);
-				
 				player.playSound(player.getLocation(), sound, f, g);
 			} catch (CivException e) {
 				//player not online.
 			}
 		}
-		
+	}
+	
+	public static void sendCivSound(Civilization c, Sound sound, float f, float g) {
+		for (Town t : c.getTowns()) {
+			for (Resident resident : t.getResidents()) {
+				Player player;
+				try {
+					player = CivGlobal.getPlayer(resident);
+					player.playSound(player.getLocation(), sound, f, g);
+				} catch (CivException e) {
+					//player not online.
+				}
+			}
+		}
 	}
 
 	public static void sendAll(String str) {

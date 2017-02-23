@@ -290,12 +290,15 @@ public class ResidentCommand extends CommandBase {
 
 	public void paydebt_cmd() throws CivException {
 		Resident resident = getResident();
-	
+		
+		if (!resident.getTreasury().inDebt() || !resident.hasTown()) {  
+			throw new CivException("You currently do not have any debt.");  
+		}  
+
+		
 		if (!resident.getTreasury().hasEnough(resident.getTreasury().getDebt())) {
 			throw new CivException("You do not have the required "+resident.getTreasury().getDebt()+" coins to pay off your debt.");
 		}
-		
-
 		CivMessage.sendSuccess(sender, "Paid "+resident.getTreasury().getDebt()+" coins of debt.");
 		resident.payOffDebt();
 	}

@@ -1,7 +1,5 @@
 package com.avrgaming.civcraft.lorestorage;
 
-import gpl.AttributeUtil;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -43,6 +41,8 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.object.BuildableDamageBlock;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.mysql.jdbc.StringUtils;
+
+import gpl.AttributeUtil;
 
 public class LoreCraftableMaterial extends LoreMaterial {
 

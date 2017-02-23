@@ -173,7 +173,7 @@ public class CivCraft extends JavaPlugin {
 		// Global Event timers
 		TaskMaster.asyncTimer("BossBarUpdateTimer", new BossBarUpdateTimer(), 0, TimeTools.toTicks(20)); //have +5sec of empty so we don't make errors occur.
 		TaskMaster.asyncTimer("ActionBarUpdateTimer", new ActionBarUpdateTimer(), 0, TimeTools.toTicks(2));
-		TaskMaster.asyncTimer("PlayerTagUpdateTimer", new PlayerTagUpdateTimer(), 0, TimeTools.toTicks(10));
+		TaskMaster.asyncTimer("PlayerTagUpdateTimer", new PlayerTagUpdateTimer(), 0, TimeTools.toTicks(5));
 		
 		TaskMaster.syncTimer("FarmCropCache", new FarmPreCachePopulateTimer(), TimeTools.toTicks(30));
 		TaskMaster.asyncTimer("FarmGrowthTimer", new FarmGrowthSyncTask(), TimeTools.toTicks(Farm.GROW_RATE));
@@ -191,7 +191,7 @@ public class CivCraft extends JavaPlugin {
 //			TaskMaster.asyncTimer(PlatinumManager.class.getName(), new PlatinumManager(), TimeTools.toTicks(5));
 //		}
 		
-		TaskMaster.syncTimer("WindmillTimer", new WindmillTimer(), TimeTools.toTicks(60));
+		TaskMaster.syncTimer("WindmillTimer", new WindmillTimer(), TimeTools.toTicks(15));
 		TaskMaster.asyncTimer("EndGameNotification", new EndConditionNotificationTask(), TimeTools.toTicks(3600));
 				
 		TaskMaster.asyncTask(new StructureValidationChecker(), TimeTools.toTicks(120));
@@ -313,7 +313,6 @@ public class CivCraft extends JavaPlugin {
 				HolographicDisplaysListener.generateTradeGoodHolograms();
 			}
 		});
-
 	}
 	
 	public boolean hasPlugin(String name) {

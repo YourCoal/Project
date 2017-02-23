@@ -1,11 +1,11 @@
 package com.avrgaming.civcraft.loregui;
 
 
-import gpl.AttributeUtil;
-
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+
+import gpl.AttributeUtil;
 
 
 public class SpawnItem implements GuiAction {

@@ -745,5 +745,11 @@ public class Cannon extends Buildable {
 		return baseStructureDamage;
 	}
 
+	@Override
+	public void updateDistrict() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

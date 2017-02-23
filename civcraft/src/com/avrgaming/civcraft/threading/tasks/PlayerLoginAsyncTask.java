@@ -25,7 +25,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.avrgaming.anticheat.ACManager;
-import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.endgame.EndConditionDiplomacy;
 import com.avrgaming.civcraft.exception.CivException;
@@ -99,16 +98,16 @@ public class PlayerLoginAsyncTask implements Runnable {
 								return;
 							}
 							
-							Thread.sleep(1000);
+							Thread.sleep(2000);
 							resident.setisProtected(true);
 							CivMessage.sendTitle(resident, 10, 80, 10, CivColor.ITALIC+"Time to Begin your Adventure!", CivColor.LightGray+CivColor.ITALIC+"Don't fall into the ruins of forgoten lands.");
 							CivMessage.send(resident, "Generating player... "+CivColor.LightGray+"Adding player to database...");
 							CivGlobal.addResident(resident);
 							CivMessage.send(resident, "Generating player... "+CivColor.LightGray+"Giving tutorial kit...");
 							TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
-							CivMessage.send(resident, CivColor.LightGray+"PvP Timer enabling in 30 seconds.");
-							CivBook.showTutorialInventory(getPlayer());
-							Thread.sleep(30000);
+							CivMessage.send(resident, CivColor.LightGray+"PvP Timer enabling in 10 seconds.");
+//							CivBook.showTutorialInventory(getPlayer());
+							Thread.sleep(10000);
 							int mins;
 							try {
 								mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
@@ -130,7 +129,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 			/* Resident is present. Lets check the UUID against the stored UUID.
 			 * We are not going to allow residents to change names without admin permission.
 			 * If someone logs in with a name that does not match the stored UUID, we'll kick them. */
-			if (resident.getUUID() == null) {
+			if (resident != null && resident.getUUID() == null) {
 				/* This resident does not yet have a UUID stored. Free lunch. */
 				resident.setUUID(getPlayer().getUniqueId());
 				CivLog.info("Resident named:"+resident.getName()+" was acquired by UUID:"+resident.getUUIDString());
@@ -219,7 +218,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 				} else if (CivSettings.getString(CivSettings.perkConfig, "system.free_admin_perks").equalsIgnoreCase("true")) {
 					if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
 						resident.giveAllFreePerks();
-						perkMessage += "Weather, ";
+						perkMessage += "(Admin Perks), ";
 					}
 				}
 				if (getPlayer().hasPermission(CivSettings.ARCTIC_PERKS)) {

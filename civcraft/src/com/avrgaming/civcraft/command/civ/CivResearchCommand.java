@@ -60,7 +60,7 @@ public class CivResearchCommand extends CommandBase {
 			throw new CivException("Couldn't find technology named "+techname);
 		}
 		
-		if (!civ.getTreasury().hasEnough(tech.cost)) {
+		if (!civ.getTreasury().hasEnough(tech.getAdjustedTechCost(civ))) {
 			throw new CivException("You do not have enough coins to research "+tech.name);
 		}
 		
@@ -126,9 +126,9 @@ public class CivResearchCommand extends CommandBase {
 		CivMessage.sendHeading(sender, "Currently Researching");
 		
 		if (civ.getResearchTech() != null) {
-			int percentageComplete = (int)((civ.getResearchProgress() / civ.getResearchTech().beaker_cost)*100);		
+			int percentageComplete = (int)((civ.getResearchProgress() / civ.getResearchTech().getAdjustedBeakerCost(civ))*100);		
 			CivMessage.send(sender, civ.getResearchTech().name+" is "+percentageComplete+"% complete. ("+
-					civ.getResearchProgress()+" / "+civ.getResearchTech().beaker_cost+ " ) ");
+					civ.getResearchProgress()+" / "+civ.getResearchTech().getAdjustedBeakerCost(civ)+ " ) ");
 		} else {
 			CivMessage.send(sender, "Nothing currently researching.");
 		}
@@ -142,8 +142,8 @@ public class CivResearchCommand extends CommandBase {
 		CivMessage.sendHeading(sender, "Available Research");
 		for (ConfigTech tech : techs) {
 			CivMessage.send(sender, tech.name+CivColor.LightGray+" Cost: "+
-					CivColor.Yellow+tech.cost+CivColor.LightGray+" Beakers: "+
-					CivColor.Yellow+tech.beaker_cost);
+					CivColor.Yellow+tech.getAdjustedTechCost(civ)+CivColor.LightGray+" Beakers: "+
+					CivColor.Yellow+tech.getAdjustedBeakerCost(civ));
 		}
 				
 	}

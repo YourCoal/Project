@@ -275,7 +275,6 @@ public class TradeGood extends SQLObject {
 	public static double getTownBaseGoodPaymentViaGoodie(Town town) {
 		// Find trade goods from goodies in town hall.
 		double total_payment = 0.0;
-		
 		for (BonusGoodie goodie : town.getBonusGoodies()) {
 			TradeOutpost outpost = (TradeOutpost)goodie.getOutpost();
 			if (outpost == null) {
@@ -301,21 +300,14 @@ public class TradeGood extends SQLObject {
 	public static double getTownTradePayment(Town town) {
 		double total_payment = getTownBaseGoodPaymentViaGoodie(town);
 		total_payment *= town.getTradeRate();
-		
-
-		
 		return total_payment;
 	}
-
-
+	
 	public Structure getStruct() {
 		return struct;
 	}
-
-
+	
 	public void setStruct(Structure struct) {
 		this.struct = struct;
 	}
-	
-	
 }

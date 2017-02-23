@@ -85,12 +85,6 @@ public class ConsumeLevelComponent extends Component {
 	@Override
 	public void createComponent(Buildable buildable, boolean async) {
 		super.createComponent(buildable, async);
-		if (buildable instanceof Monument) {
-			for (ConfigMonumentLevel lvl : CivSettings.monumentLevels.values()) {
-				this.addLevel(lvl.level, lvl.count);
-				this.setConsumes(lvl.level, lvl.consumes);
-			}
-		}
 		if (buildable instanceof Mine) {
 			for (ConfigMineLevel lvl : CivSettings.mineLevels.values()) {
 				this.addLevel(lvl.level, lvl.count);
@@ -99,6 +93,12 @@ public class ConsumeLevelComponent extends Component {
 		}
 		if (buildable instanceof Lab) {
 			for (ConfigLabLevel lvl : CivSettings.labLevels.values()) {
+				this.addLevel(lvl.level, lvl.count);
+				this.setConsumes(lvl.level, lvl.consumes);
+			}
+		}
+		if (buildable instanceof Monument) {
+			for (ConfigMonumentLevel lvl : CivSettings.monumentLevels.values()) {
 				this.addLevel(lvl.level, lvl.count);
 				this.setConsumes(lvl.level, lvl.consumes);
 			}

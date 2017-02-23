@@ -62,9 +62,9 @@ public class ArrowTower extends Structure {
 	}
 	
 	public int getDamage() {
-		double rate = 1;
-		rate += this.getTown().getBuffManager().getEffectiveDouble(Buff.FIRE_BOMB);
-		return (int)(arrowComponent.getDamage()*rate);
+		int additional = 0;
+		additional += this.getTown().getBuffManager().getEffectiveInt(Buff.FIRE_BOMB);
+		return (arrowComponent.getDamage()+additional);
 	}
 	
 	@Override

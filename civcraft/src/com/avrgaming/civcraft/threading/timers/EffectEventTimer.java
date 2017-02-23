@@ -18,10 +18,13 @@
  */
 package com.avrgaming.civcraft.threading.timers;
 
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.avrgaming.civcraft.config.CivSettings;
+import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
@@ -29,11 +32,15 @@ import com.avrgaming.civcraft.object.AttrSource;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.Cottage;
+import com.avrgaming.civcraft.structure.Granary;
 import com.avrgaming.civcraft.structure.Lab;
 import com.avrgaming.civcraft.structure.Mine;
+import com.avrgaming.civcraft.structure.Monument;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
+import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.GranaryAsyncTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
 
@@ -46,7 +53,7 @@ public class EffectEventTimer extends CivAsyncTask {
 	public EffectEventTimer() {
 	}
 
-	private void processTick() {
+	private void processTick() throws InterruptedException {
 		/* Clear the last taxes so they don't accumulate. */
 		for (Civilization civ : CivGlobal.getCivs()) {
 			civ.lastTaxesPaidMap.clear();
@@ -60,16 +67,16 @@ public class EffectEventTimer extends CivAsyncTask {
 		while(iter.hasNext()) {
 			Structure struct = iter.next().getValue();
 			TownHall townhall = struct.getTown().getTownHall();
-
+			
 			if (townhall == null) {
 				continue;
 			}
-
+			
 			if (!struct.isActive())
 				continue;
-
+			
 			struct.onEffectEvent();
-
+			
 			if (struct.getEffectEvent() == null || struct.getEffectEvent().equals(""))
 				continue;
 			
@@ -85,17 +92,30 @@ public class EffectEventTimer extends CivAsyncTask {
 				if (struct instanceof Mine) {
 					Mine mine = (Mine)struct;
 					mine.generateTownHammers(this);
-					mine.generateItemHammers(this);
+//					mine.generateItemHammers(this);
 				}
 				break;
 			case "process_lab":
 				if (struct instanceof Lab) {
 					Lab lab = (Lab)struct;
-					lab.generateBeakers(this);
+					lab.generateTownBeakers(this);
+				}
+				break;
+			case "process_monument":
+				if (struct instanceof Monument) {
+					Monument monument = (Monument)struct;
+					monument.generateTownCulture(this);
+				}
+				break;
+			case "granary_process":
+				if (struct instanceof Granary) {
+					TaskMaster.asyncTask("Granary-"+struct.getCorner().toString(), new GranaryAsyncTask(struct), 0);
 				}
 				break;
 			}
 		}
+		
+		Thread.sleep(1000);
 		
 		/* Process any hourly attributes for this town - Culture */
 		for (Town town : CivGlobal.getTowns()) {
@@ -109,7 +129,23 @@ public class EffectEventTimer extends CivAsyncTask {
 			double totalCulture = 0;
 			AttrSource cultureSources = town.getCulture();
 			totalCulture += cultureSources.total;
-			town.addAccumulatedCulture(totalCulture);
+			
+			try {
+				double baseBeakers = CivSettings.getDouble(CivSettings.cultureConfig, "base_culture") * (town.getGovernment().culture_rate*2);
+				if (baseBeakers <= 0) {
+					baseBeakers = 0.5;
+				}
+				
+				DecimalFormat df = new DecimalFormat("#.0");
+				String newTotal = df.format(baseBeakers);
+				double newBaseBeakers = Double.parseDouble(newTotal);
+				
+				CivMessage.sendTown(town, CivColor.LightGreen+"Given "+CivColor.LightPurple+newBaseBeakers+CivColor.LightGreen+" culture from government rate.");
+				totalCulture += newBaseBeakers;
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+				return;
+			}
 			
 /*			try {
 				if (town.getCiv().getResearchProgress() > 0) {
@@ -133,6 +169,11 @@ public class EffectEventTimer extends CivAsyncTask {
 				e.printStackTrace();
 				return;
 			}*/
+			
+			DecimalFormat df = new DecimalFormat("#.0");
+			String newTotal = df.format(totalCulture);
+			double newTotalCulture = Double.parseDouble(newTotal);
+			town.addAccumulatedCulture(newTotalCulture);
 			CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.LightPurple+totalCulture+CivColor.LightGreen+" culture.");
 		}
 		/* Checking for expired vassal states. */
@@ -144,6 +185,9 @@ public class EffectEventTimer extends CivAsyncTask {
 		if (runningLock.tryLock()) {
 			try {
 				processTick();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} finally {
 				runningLock.unlock();
 			}

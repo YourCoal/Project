@@ -7,8 +7,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
-import com.avrgaming.civcraft.threading.TaskMaster;
-import com.avrgaming.civcraft.threading.tasks.GranaryAsyncTask;
 import com.avrgaming.civcraft.util.BlockCoord;
 
 public class Minute5UpdateEventTimer extends CivAsyncTask {
@@ -33,12 +31,12 @@ public class Minute5UpdateEventTimer extends CivAsyncTask {
 				
 				try {
 					if (struct.getUpdateEvent() != null && !struct.getUpdateEvent().equals("")) {
-						if (struct.getUpdateEvent().equals("granary_process")) {
+/*						if (struct.getUpdateEvent().equals("granary_process")) {
 							if (!CivGlobal.questStructuresEnabled) {
 								continue;
 							}
 							TaskMaster.asyncTask("Granary-"+struct.getCorner().toString(), new GranaryAsyncTask(struct), 0);
-						}
+						}*/
 					}
 					struct.onUpdate();
 				} catch (Exception e) {

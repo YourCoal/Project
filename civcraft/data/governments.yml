@@ -3,7 +3,7 @@
 #
 
 # Number of hours to remain in anarchy after switching governments.
-anarchy_duration: 24
+anarchy_duration: 12
 
 ######################################################################
 #               CivCraft Governments
@@ -71,7 +71,7 @@ governments:
           cottage_rate: 1.5
           growth_rate: 0.8
           maximum_tax_rate: 0.30
-          culture_rate: 1.05
+          culture_rate: 1.1
           hammer_rate: 1.0
           beaker_rate: 1.0
           power_type: mayor_all_power

@@ -1,13 +1,13 @@
 package com.avrgaming.civcraft.loreenhancements;
 
-import gpl.AttributeUtil;
-
 import java.util.Random;
 
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.object.BuildableDamageBlock;
 import com.avrgaming.civcraft.util.CivColor;
+
+import gpl.AttributeUtil;
 
 public class LoreEnhancementPunchout extends LoreEnhancement {
 	
@@ -27,7 +27,7 @@ public class LoreEnhancementPunchout extends LoreEnhancement {
 		
 		if (damage <= 1) {
 			if (rand.nextInt(100) <= 50) {
-				damage += rand.nextInt(5)+1;
+				damage += rand.nextInt(3)+1;
 			}		
 		}
 		

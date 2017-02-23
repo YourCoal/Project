@@ -1,4 +1,4 @@
-package com.avrgaming.civcraft.loregui.buildings;
+package com.avrgaming.civcraft.loregui;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.global.perks.Perk;
 
-public class BuildChooseWonderTemplate implements GuiAction {
+public class _1BuildChooseWonderTemplate implements GuiAction {
 
 	@Override
 	public void performAction(InventoryClickEvent event, ItemStack stack) {

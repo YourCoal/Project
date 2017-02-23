@@ -1,0 +1,88 @@
+
+Snowy:
+ICE_FLATS - Ice Plains
+ICE_MOUNTAINS - Ice Mountains
+MUTATED_ICE_FLATS - Ice Plains Spikes
+
+TAIGA_COLD - Cold Taiga
+TAIGA_COLD_HILLS - Cold Taiga Hills
+MUTATED_TAIGA_COLD - Cold Taiga M
+
+Cold:
+EXTREME_HILLS - Extreme Hills
+EXTREME_HILLS_WITH_TREES - Extreme Hills Plus
+SMALLER_EXTREME_HILLS - Extreme Hills Edge
+MUTATED_EXTREME_HILLS - Extreme Hills M
+MUTATED_EXTREME_HILLS_WITH_TREES - Extreme Hills+ M
+
+TAIGA - Taiga
+TAIGA_HILLS - Taiga Hills
+MUTATED_TAIGA - Taiga M
+
+REDWOOD_TAIGA - Mega Taiga
+REDWOOD_TAIGA_HILLS - Mega Taiga Hills
+MUTATED_REDWOOD_TAIGA - Mesa Spruce Taiga
+MUTATED_REDWOOD_TAIGA_HILLS - Redwood Taiga Hills M
+
+Lush:
+PLAINS - Plains
+MUTATED_PLAINS - Sunflower Plains
+
+FOREST - Forest
+FOREST_HILLS - Forest Hills
+MUTATED_FOREST - Flower Forest
+
+BIRCH_FOREST - Birch Forest
+BIRCH_FOREST_HILLS - Birch Forest Hills
+MUTATED_BIRCH_FOREST - Birch Forest M
+MUTATED_BIRCH_FOREST_HILLS - Birch Forest Hills M
+
+ROOFED_FOREST - Roofed Forest
+MUTATED_ROOFED_FOREST - Roofed Forest M
+
+JUNGLE - Jungle
+JUNGLE_EDGE - Jungle Edge
+JUNGLE_HILLS - Jungle Hills
+MUTATED_JUNGLE - Jungle M
+MUTATED_JUNGLE_EDGE - Jungle Edge M
+
+SWAMPLAND - Swampland
+MUTATED_SWAMPLAND - Swampland M
+
+Warm:
+DESERT - Desert
+DESERT_HILLS - Desert Hills
+MUTATED_DESERT - Desert M
+
+MESA - Mesa
+MESA_CLEAR_ROCK - Mesa Plateau
+MESA_ROCK - Mesa Plateau F
+MUTATED_MESA - Mesa Bryce
+MUTATED_MESA_CLEAR_ROCK - Mesa Plateau M
+MUTATED_MESA_ROCK - Mesa Plateau F M
+
+SAVANNA - Savanna
+SAVANNA_ROCK - Savanna Plateau
+MUTATED_SAVANNA - Savanna M
+MUTATED_SAVANNA_ROCK - Savanna Plateau M
+
+Water-Add:
+RIVER - River
+
+BEACHES - Beach
+COLD_BEACH - Cold Beach
+STONE_BEACH - Stone Beach
+
+MUSHROOM_ISLAND - Mushroom Island
+MUSHROOM_ISLAND_SHORE Mushroom Island Shore
+
+Water-Disregard:
+OCEAN - Ocean
+DEEP_OCEAN - Deep Ocean
+FROZEN_OCEAN - Frozen Ocean
+FROZEN_RIVER - Frozen River
+
+Other-Disregard:
+HELL - Hell
+SKY - The End
+VOID - The Void

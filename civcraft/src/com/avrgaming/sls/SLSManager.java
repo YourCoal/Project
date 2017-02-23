@@ -59,13 +59,13 @@ public class SLSManager implements Runnable {
 			gen_id = uid.toString();
 			CivSettings.saveGenID(gen_id);
 		}
-		TaskMaster.asyncTimer("SLS", new SLSManager(), TimeTools.toTicks(15));
+		TaskMaster.asyncTimer("SLS", new SLSManager(), TimeTools.toTicks(20));
 	}
 	
 	public static String getParsedVersion() {
-		String version = "Vanilla Minecraft 1.10-1.10.2";
-		//String version = Bukkit.getVersion();
-		//version = version.split("MC: ")[1].split("\\)")[0];
+		//String version = "Vanilla Minecraft 1.10-1.10.2";
+		String version = Bukkit.getVersion();
+		version = version.split("MC: ")[1].split("\\)")[0];
 		return version;
 	}
 	

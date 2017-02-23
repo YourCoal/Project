@@ -42,6 +42,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.entity.Witch;
 import org.bukkit.event.EventHandler;
@@ -72,6 +73,7 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.SlimeSplitEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -278,11 +280,17 @@ public class BlockListener implements Listener {
 					location.add(x, y, z);
 					TaskMaster.syncTask(new FireWorkTask(fe, loc.getWorld(), loc, 3), rand.nextInt(30));
 				}
-
 			}
 		}
 	}
-
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onSlimeSplitEvent(SlimeSplitEvent event) {
+		if (event.getEntity() instanceof Slime) {
+			event.setCancelled(false);
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
 		/* Protect the Protected Item Frames! */
@@ -755,14 +763,14 @@ public class BlockListener implements Listener {
 		StructureSign structSign = CivGlobal.getStructureSign(bcoord);
 		if (structSign != null && !resident.isSBPermOverride()) {
 			event.setCancelled(true);
-			CivMessage.sendError(event.getPlayer(), "Please do not destroy signs.");
+			CivMessage.sendError(event.getPlayer(), "Please do not destroy structure signs.");
 			return;
 		}
 
 		StructureChest structChest = CivGlobal.getStructureChest(bcoord);
 		if (structChest != null && !resident.isSBPermOverride()) {
 			event.setCancelled(true);
-			CivMessage.sendError(event.getPlayer(), "Please do not destroy chests.");
+			CivMessage.sendError(event.getPlayer(), "Please do not destroy structure chests.");
 			return;
 		}
 
@@ -1356,6 +1364,19 @@ public class BlockListener implements Listener {
 		if (persist != null && persist == true) {
 			event.setCancelled(true);
 		}
+		
+		for (org.bukkit.entity.Entity ent : event.getChunk().getEntities()) {
+			if (ent.getType().equals(EntityType.ZOMBIE) || ent.getType().equals(EntityType.SKELETON) ||
+					ent.getType().equals(EntityType.CREEPER) || ent.getType().equals(EntityType.SPIDER) ||
+					ent.getType().equals(EntityType.CAVE_SPIDER) || ent.getType().equals(EntityType.ENDERMAN) ||
+					ent.getType().equals(EntityType.WITCH) || ent.getType().equals(EntityType.BLAZE) ||
+					ent.getType().equals(EntityType.SILVERFISH) || ent.getType().equals(EntityType.ENDERMITE) ||
+					ent.getType().equals(EntityType.GHAST) || ent.getType().equals(EntityType.MAGMA_CUBE) ||
+					ent.getType().equals(EntityType.SLIME) || ent.getType().equals(EntityType.IRON_GOLEM) ||
+					ent.getType().equals(EntityType.BAT) || ent.getType().equals(EntityType.PIG_ZOMBIE)) {
+				ent.remove();
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -1458,7 +1479,7 @@ public class BlockListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCreatureSpawnEvent(CreatureSpawnEvent event) {
-		if (War.isWarTime()) {
+		if (War.isWarTime() && !event.getEntity().getType().equals(EntityType.HORSE)) {
 			if (!event.getSpawnReason().equals(SpawnReason.BREEDING)){
 				event.setCancelled(true);
 				return;

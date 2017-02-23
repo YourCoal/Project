@@ -64,7 +64,8 @@ public class Trommel extends Structure {
 	}
 	
 	protected Trommel(Location center, String id, Town town) throws CivException {
-		super(center, id, town);	
+		super(center, id, town);
+		setLevel(town.saved_trommel_level);
 	}
 	
 	public Trommel(ResultSet rs) throws SQLException, CivException {
@@ -198,9 +199,9 @@ public class Trommel extends Structure {
 		chance += increase;
 		try {
 			if (this.getTown().getGovernment().id.equals("gov_technocracy")) {
-				chance *= CivSettings.getDouble(CivSettings.structureConfig, "trommel.technocracy_rate");
+				chance += CivSettings.getDouble(CivSettings.structureConfig, "trommel.despotism_rate");
 			} else if (this.getTown().getGovernment().id.equals("gov_anarchy")){
-				chance *= CivSettings.getDouble(CivSettings.structureConfig, "trommel.penalty_rate");
+				chance -= CivSettings.getDouble(CivSettings.structureConfig, "trommel.penalty_rate");
 			}
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();

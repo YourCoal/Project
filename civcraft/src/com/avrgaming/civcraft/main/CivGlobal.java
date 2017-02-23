@@ -45,6 +45,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
@@ -360,7 +361,7 @@ public class CivGlobal {
 			newEra = "Ancient Era";
 			break;
 		case 1: //CLASSICAL
-			newEra = "C lassical Era";
+			newEra = "Classical Era";
 			break;
 		case 2: //MEDIEVAL
 			newEra = "Medieval Era";
@@ -387,10 +388,17 @@ public class CivGlobal {
 	}
 	
 	public static void setCurrentEra(int era, Civilization civ) {
-		if (era > highestCivEra && !civ.isAdminCiv()) {
-			highestCivEra = era;
-			CivMessage.globalTitle(CivColor.Green+ highestCivEra, "has been achieved by "+civ.getName());
-			
+		try {
+			if (era > highestCivEra && !civ.isAdminCiv()) {
+				highestCivEra = era;
+				CivMessage.globalTitle(20, 100, 20, CivColor.Green+"The "+EraString(highestCivEra), CivColor.LightGrayItalic+"has been achieved by "+civ.getName());
+				CivMessage.global(CivColor.Green+"The "+EraString(highestCivEra)+CivColor.LightGrayItalic+" has been achieved by "+civ.getName());
+				CivMessage.worldSound(Sound.ENTITY_WITHER_SPAWN, 0.25F);
+				Thread.sleep(5000);
+				CivMessage.worldSound(Sound.RECORD_STRAD, 1.0F);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -408,7 +416,7 @@ public class CivGlobal {
 			while(rs.next()) {
 				try {
 					Civilization civ = new Civilization(rs);
-					if (highestCivEra < civ.getCurrentEra()) {
+					if (highestCivEra < civ.getCurrentEra() && !civ.isAdminCiv()) {
 						highestCivEra = civ.getCurrentEra();
 					}
 					
@@ -1210,6 +1218,11 @@ public class CivGlobal {
 	}
 
 	public static void removeFarmChunk(ChunkCoord coord) {
+		FarmChunk fc = getFarmChunk(coord);
+		if (fc != null) {
+			CivGlobal.dequeueFarmChunk(fc);
+			farmGrowQueue.remove(fc);
+		}
 		farmChunks.remove(coord);
 	}
 	
@@ -1970,6 +1983,10 @@ public class CivGlobal {
 
 	public static Collection<Structure> getStructures() {
 		return structures.values();
+	}
+	
+	public static void dequeueFarmChunk(FarmChunk fc) {
+		farmChunkUpdateQueue.remove(fc);
 	}
 	
 	public static void queueFarmChunk(FarmChunk fc) {

@@ -29,6 +29,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.permission.PermissionGroup;
+import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.farm.FarmChunk;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
@@ -52,6 +53,37 @@ public class PlotCommand extends CommandBase {
 		commands.put("farminfo", "Special information about this plot if it is a farm plot.");
 		commands.put("removegroup", "[name] - removes this group from the plot.");
 		commands.put("cleargroups", "Clears all groups from this plot.");
+		
+		commands.put("setdistrict", "Change the district on this plot.");
+	}
+	
+	public void setdistrict_cmd() throws CivException {
+		TownChunk tc = this.getStandingTownChunk();
+		String warning =  CivColor.YellowItalic+" (Warning, this may have reset district bonuses to structures in this plot)";
+		if (args.length < 2) {
+			throw new CivException("Please specify a district.");
+		}
+		
+		if (args[1].equalsIgnoreCase("none") || args[1].equalsIgnoreCase("default")) {
+			tc.district.setID(0);
+			tc.district.setType("default");
+			tc.save();
+			CivMessage.sendSuccess(sender, "Set district as Default."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+			return;
+		} else if (args[1].equalsIgnoreCase("agricultural")) {
+			tc.district.setID(1);
+			tc.district.setType("agricultural");
+			tc.save();
+			CivMessage.sendSuccess(sender, "Set district as Agricultural."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else {
+			throw new CivException(args[1]+" is not a valid district. Please try again.");
+		}
 	}
 	
 	public void farminfo_cmd() throws CivException {
@@ -283,6 +315,8 @@ public class PlotCommand extends CommandBase {
 	}
 	
 	private void showPermOwnership(TownChunk tc) {
+		CivMessage.send(sender, CivColor.Green+"District: "+CivColor.LightGreen+tc.district.getType());
+		
 		String out = CivColor.Green+"Town: "+CivColor.LightGreen+tc.getTown().getName();
 		out += CivColor.Green+" Owner: "+CivColor.LightGreen;
 		if (tc.perms.getOwner() != null) {
@@ -297,7 +331,6 @@ public class PlotCommand extends CommandBase {
 		} else {
 			out += "none";
 		}
-		
 		CivMessage.send(sender, out);
 	}
 	
@@ -333,7 +366,7 @@ public class PlotCommand extends CommandBase {
 	private void showPriceInfo(TownChunk tc) {
 		String out = "";
 		if (tc.isForSale()) {
-			out += CivColor.Yellow+" [For Sale at "+tc.getPrice()+" coins] ";
+			out += CivColor.Yellow+" [For Sale at "+tc.getPrice()+" Coins] ";
 		}
 		CivMessage.send(sender, CivColor.Green+"Value: "+CivColor.LightGreen+tc.getValue()+out);
 	}

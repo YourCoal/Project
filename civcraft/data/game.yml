@@ -9,3 +9,14 @@ pvp:
 inventory:
     # Enable or Disable use off off-hand.
     allow_offhand: false
+
+# Amount of Tungston to drop from Lapis Ore
+tungsten_min_drop: 0
+tungsten_max_drop: 1
+tungsten_max_drop_with_fortune: 3
+
+# Amount of Lapis to drop from Lapis Ore
+lapis_min_drop: 2
+lapis_max_drop: 5
+lapis_max_drop_with_fortune: 8
+

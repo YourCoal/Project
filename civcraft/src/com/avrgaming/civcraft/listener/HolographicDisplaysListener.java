@@ -40,18 +40,18 @@ public class HolographicDisplaysListener {
 				hologram.appendItemLine(new ItemStack(good.getInfo().material, 1, (short)good.getInfo().material_data));
 				hologram.appendTextLine(CivColor.GoldBold+"Trade Good: "+CivColor.LightBlueBold+CivColor.ITALIC+good.getInfo().name);
 				hologram.appendTextLine(CivColor.GoldBold+"Value: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().value+" Coins");
-				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+"n/a"
-										+CivColor.GrayBold+CivColor.BOLD+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+"n/a");
-//				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().culture
-//										+CivColor.GoldBold+" | Food:"+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().food);
+//				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+"n/a"
+//										+CivColor.GrayBold+CivColor.BOLD+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+"n/a");
+				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().culture
+										+CivColor.GoldBold+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().food);
 			} else {
 				hologram.appendItemLine(new ItemStack(good.getInfo().material, 1, (short)good.getInfo().material_data));
 				hologram.appendTextLine(CivColor.GoldBold+"Trade Good: "+CivColor.LightGreenBold+CivColor.ITALIC+good.getInfo().name);
 				hologram.appendTextLine(CivColor.GoldBold+"Value: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().value+" Coins");
-				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+"n/a"
-										+CivColor.GoldBold+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+"n/a");
-//				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().culture
-//										+CivColor.GoldBold+" | Food:"+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().food);
+//				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+"n/a"
+//										+CivColor.GoldBold+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+"n/a");
+				hologram.appendTextLine(CivColor.GoldBold+"Culture: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().culture
+										+CivColor.GoldBold+" | Food: "+CivColor.YellowBold+CivColor.ITALIC+good.getInfo().food);
 			}
 		}
 		CivLog.info(CivGlobal.getTradeGoods().size()+" Trade Good Holograms created.");

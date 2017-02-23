@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.inventory.Inventory;
 
-import com.avrgaming.civcraft.components.AttributeBiomeRadiusPerLevel;
 import com.avrgaming.civcraft.components.ConsumeLevelComponent;
 import com.avrgaming.civcraft.components.ConsumeLevelComponent.Result;
 import com.avrgaming.civcraft.config.CivSettings;
@@ -47,7 +46,7 @@ import com.avrgaming.civcraft.util.MultiInventory;
 
 public class Mine extends Structure {
 	
-	private double produced_hammers = 0;
+
 	private ConsumeLevelComponent consumeComp = null;
 	
 	protected Mine(Location center, String id, Town town) throws CivException {
@@ -201,7 +200,7 @@ public class Mine extends Structure {
 		/* leveling down doesnt generate coins, so we don't have to check it here. */
 		ConfigMineLevel lvl = null;
 		if (result == Result.LEVELUP) {
-			lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel()-1);	
+			lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel()-1);
 		} else {
 			lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel());
 		}
@@ -212,6 +211,7 @@ public class Mine extends Structure {
 //			total_hammers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
+		total_hammers *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {
@@ -221,9 +221,6 @@ public class Mine extends Structure {
 				e.printStackTrace();
 			}
 		}
-		
-		setProducedHammers(total_hammers);
-		produced_hammers = total_hammers;
 		
 		String stateMessage = "";
 		switch (result) {
@@ -318,27 +315,44 @@ public class Mine extends Structure {
 		return lvl.count;
 	}
 	
-	public double getProducedHammers() {
+	public double getBonusHammers() {
 		if (!this.isComplete()) {
 			return 0.0;
 		}
-		return produced_hammers;
-	}
-	
-	public double setProducedHammers(double amount) {
-		if (!this.isComplete()) {
-			amount = 0;
+		
+		if (getConsumeComponent().getLevel() == 0 && getConsumeComponent().getCount() == 0) {
+			return 0.0;
 		}
-		return amount;
+		
+		int level = getLevel(); 
+		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
+		
+		int total_hammers = (int)Math.round(lvl.hammers*this.getTown().getMineRate());
+		//TODO make a new buff that works for mines/labs
+//		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
+//			total_hammers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
+//		}
+		
+		total_hammers *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
+		if (this.getCiv().hasTech("tech_taxation")) {
+			double tech_bonus;
+			try {
+				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_mine_buff");
+				total_hammers *= tech_bonus;
+			} catch (InvalidConfiguration e) {
+				e.printStackTrace();
+			}
+		}
+		return total_hammers;
 	}
 	
-	public double getHammersPerTile() {
+/*	public double getHammersPerTile() {
 		AttributeBiomeRadiusPerLevel attrBiome = (AttributeBiomeRadiusPerLevel)this.getComponent("AttributeBiomeRadiusPerLevel");
 		double base = attrBiome.getBaseValue();
 		double rate = 1;
 		rate += this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
 		return (rate*base);
-	}
+	}*/
 	
 	public void delevel() {
 		int currentLevel = getLevel();

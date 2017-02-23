@@ -18,10 +18,6 @@
  */
 package com.avrgaming.civcraft.structure;
 
-import gpl.HorseModifier;
-import gpl.HorseModifier.HorseType;
-import gpl.HorseModifier.HorseVariant;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -51,6 +47,10 @@ import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
+
+import gpl.HorseModifier;
+import gpl.HorseModifier.HorseType;
+import gpl.HorseModifier.HorseVariant;
 
 @SuppressWarnings("deprecation")
 public class Stable extends Structure {

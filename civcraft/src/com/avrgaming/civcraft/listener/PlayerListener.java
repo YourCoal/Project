@@ -86,18 +86,19 @@ public class PlayerListener implements Listener {
 		
 		String name;
 		boolean rare = false;
-		if (event.getItem().getItemStack().getItemMeta().hasDisplayName()) {
-			name = event.getItem().getItemStack().getItemMeta().getDisplayName();
+		ItemStack item = event.getItem().getItemStack();
+		if (item.getItemMeta().hasDisplayName()) {
+			name = item.getItemMeta().getDisplayName();
 			rare = true;
 		} else {
-			name = event.getItem().getItemStack().getType().name().replace("_", " ").toLowerCase();
+			name = item.getType().name().replace("_", " ").toLowerCase();
 		}
 		
 		Resident resident = CivGlobal.getResident(event.getPlayer());
 		if (resident.getItemMode().equals("all")) {
-			CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've picked up "+CivColor.LightPurple+event.getItem().getItemStack().getAmount()+" "+name);
+			CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've picked up "+CivColor.LightPurple+item.getAmount()+" "+name);
 		} else if (resident.getItemMode().equals("rare") && rare) {
-			CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've picked up "+CivColor.LightPurple+event.getItem().getItemStack().getAmount()+" "+name);
+			CivMessage.send(event.getPlayer(), CivColor.LightGreen+"You've picked up "+CivColor.LightPurple+item.getAmount()+" "+name);
 		}
 	}
 	
@@ -492,16 +493,13 @@ public class PlayerListener implements Listener {
 		}
 		
 		damage = new DecimalFormat("#.#").format(event.getDamage());
-		
 		if (defender != null) {
 			Resident defenderResident = CivGlobal.getResident(defender);
 			if (defenderResident.isCombatInfo()) {	
 				if (attacker != null) {
-					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+
-							" damage "+CivColor.LightGray+" from "+CivColor.LightPurple+attacker.getName());				
+					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+" damage "+CivColor.LightGray+" from "+CivColor.LightPurple+attacker.getName());				
 				} else {
 					String entityName = null;
-					
 					if (event.getDamager() instanceof LivingEntity) {
 						entityName = ((LivingEntity)event.getDamager()).getCustomName();
 					}
@@ -509,9 +507,7 @@ public class PlayerListener implements Listener {
 					if (entityName == null) {
 						entityName = event.getDamager().getType().toString();
 					}
-					
-					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+
-							" damage "+CivColor.LightGray+" from a "+entityName);
+					CivMessage.send(defender, CivColor.LightGray+"   [Combat] Took "+CivColor.Rose+damage+" damage "+CivColor.LightGray+" from a "+entityName);
 				}
 			}
 		}
@@ -523,15 +519,13 @@ public class PlayerListener implements Listener {
 					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to "+CivColor.LightPurple+defender.getName());
 				} else {
 					String entityName = null;
-					
-					if (event.getEntity()instanceof LivingEntity) {
+					if (event.getEntity() instanceof LivingEntity) {
 						entityName = ((LivingEntity)event.getEntity()).getCustomName();
 					}
 					
 					if (entityName == null) {
 						entityName = event.getEntity().getType().toString();
 					}
-					
 					CivMessage.send(attacker, CivColor.LightGray+"   [Combat] Gave "+CivColor.LightGreen+damage+CivColor.LightGray+" damage to a "+entityName);
 				}
 			}

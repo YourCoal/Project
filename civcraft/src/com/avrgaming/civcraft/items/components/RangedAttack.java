@@ -1,6 +1,6 @@
 package com.avrgaming.civcraft.items.components;
 
-import gpl.AttributeUtil;
+import java.util.Random;
 
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -14,15 +14,19 @@ import com.avrgaming.civcraft.config.ConfigUnit;
 import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementAttack;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancementThor;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.CivColor;
 
+import gpl.AttributeUtil;
+
 public class RangedAttack extends ItemComponent {
 
 	@Override
 	public void onPrepareCreate(AttributeUtil attrs) {
+//		attrs.setHideFlag(63);
 		attrs.addLore(CivColor.Rose+this.getDouble("value")+" Ranged Attack Damage");	
 	}
 	
@@ -68,9 +72,18 @@ public class RangedAttack extends ItemComponent {
 			if (enh instanceof LoreEnhancementAttack) {
 				extraAtt +=  ((LoreEnhancementAttack)enh).getExtraAttack(attrs);
 			}
+			
+			if (enh instanceof LoreEnhancementThor) {
+				Random r = new Random();
+				int lightning_chance = r.nextInt(20);
+				if (lightning_chance == 1) {
+					CivMessage.send(event.getDamager(), CivColor.LightBlueItalic+"You bring down lightning on your enemy.");
+					event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
+				}
+			}
 		}
-		dmg += extraAtt;
 		
+		dmg += extraAtt;
 		
 		Vector vel = event.getDamager().getVelocity();
 		double magnitudeSquared = Math.pow(vel.getX(), 2) + Math.pow(vel.getY(), 2) + Math.pow(vel.getZ(), 2);
@@ -90,7 +103,7 @@ public class RangedAttack extends ItemComponent {
 				
 				ConfigUnit unit = Unit.getPlayerUnit(p);
 				if (unit != null && unit.id.equals("u_warrior")) {
-					dmg = dmg - (dmg*0.25);
+					dmg = dmg - (dmg*0.9); //only remove 10%, so 1.0 - 0.1
 //					CivMessage.send(p, CivColor.LightGrayItalic+"-25% damage with Archer Unit.");
 				} else if (unit != null && unit.id.equals("u_archer")) {
 					dmg *= 1.25;

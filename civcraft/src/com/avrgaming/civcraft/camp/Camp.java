@@ -57,7 +57,6 @@ import com.avrgaming.civcraft.exception.CivException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.exception.InvalidNameException;
 import com.avrgaming.civcraft.exception.InvalidObjectException;
-import com.avrgaming.civcraft.items.components.Tagged;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
@@ -82,8 +81,6 @@ import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.MultiInventory;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.SimpleBlock.Type;
-
-import gpl.AttributeUtil;
 
 public class Camp extends Buildable {
 
@@ -734,7 +731,7 @@ public class Camp extends Buildable {
 		double total_coins = lvl.coins;
 		this.getOwner().getTreasury().deposit(total_coins);
 		
-		LoreCraftableMaterial craftMat =  LoreCraftableMaterial.getCraftMaterialFromId("mat_token_of_leadership");
+/*		LoreCraftableMaterial craftMat =  LoreCraftableMaterial.getCraftMaterialFromId("civ_token_of_leadership");
 		if (craftMat != null) {
 			ItemStack token = LoreCraftableMaterial.spawn(craftMat);
 			
@@ -747,7 +744,7 @@ public class Camp extends Buildable {
 			token = attrs.getStack();
 			
 			mInv.addItem(token);
-		}
+		}*/
 		
 		String stateMessage = "";
 		switch (result) {
@@ -877,7 +874,6 @@ public class Camp extends Buildable {
 	}
 	
 	protected void checkBlockPermissionsAndRestrictions(Player player, Block centerBlock, int regionX, int regionY, int regionZ) throws CivException {
-		
 		ChunkCoord ccoord = new ChunkCoord(centerBlock.getLocation());
 		CultureChunk cc = CivGlobal.getCultureChunk(ccoord);
 		if (cc != null) {
@@ -1059,15 +1055,14 @@ public class Camp extends Buildable {
 			}
 						
 			Random rand = new Random();
-			
 			// Each block has a 10% chance to turn into gravel
 			if (rand.nextInt(100) <= 10) {
 				ItemManager.setTypeId(coord.getBlock(), CivData.GRAVEL);
 				continue;
 			}
 			
-			// Each block has a 50% chance of starting a fire
-			if (rand.nextInt(100) <= 50) {
+			// Each block has a 25% chance of starting a fire
+			if (rand.nextInt(100) <= 25) {
 				ItemManager.setTypeId(coord.getBlock(), CivData.FIRE);
 				continue;
 			}
@@ -1332,5 +1327,11 @@ public class Camp extends Buildable {
 
 	public void setGardenEnabled(boolean gardenEnabled) {
 		this.gardenEnabled = gardenEnabled;
+	}
+
+	@Override
+	public void updateDistrict() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -31,9 +31,9 @@ public class Archer extends UnitMaterial {
 		attrs.addEnhancement("LoreEnhancementSoulBound", null, null);
 		attrs.addLore(CivColor.Gold+"Soulbound");
 		attrs.addLore(CivColor.LightGreen+"Level 1");
-		attrs.addLore(CivColor.LightGray+"-25% Attack with Sword");
+		attrs.addLore(CivColor.LightGray+"-10% Attack with Sword");
 		attrs.addLore(CivColor.LightGray+"+25% Attack with Bow");
-		attrs.addLore(CivColor.LightGray+"+10% Defense on Armor");
+//		attrs.addLore(CivColor.LightGray+"+10% Defense on Armor");
 		is = attrs.getStack();
 		
 		if (!Unit.addItemNoStack(inv, is)) {

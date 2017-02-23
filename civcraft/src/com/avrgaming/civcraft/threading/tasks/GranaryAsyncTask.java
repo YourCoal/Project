@@ -85,7 +85,7 @@ public class GranaryAsyncTask extends CivAsyncTask {
 				}
 				
 				int mod = (int) Math.round((granary.getTown().saved_granary_level*1.5)-2);
-				int requiredItem = 4 + granary.getTown().saved_granary_level;
+				int requiredItem = 1;
 				if (ItemManager.getId(stack) == CivData.BREAD) {
 					try {
 						if (stack.getAmount() < requiredItem) {
@@ -169,7 +169,7 @@ public class GranaryAsyncTask extends CivAsyncTask {
 				}
 				
 				int mod = (int) Math.round((granary.getTown().saved_granary_level*1.5)-2);
-				int requiredItem = 4 + granary.getTown().saved_granary_level;
+				int requiredItem = 1;
 				if (ItemManager.getId(stack) == CivData.CARROT_ITEM) {
 					try {
 						if (stack.getAmount() < requiredItem) {
@@ -253,7 +253,7 @@ public class GranaryAsyncTask extends CivAsyncTask {
 				}
 				
 				int mod = (int) Math.round((granary.getTown().saved_granary_level*1.5)-2);
-				int requiredItem = 4 + granary.getTown().saved_granary_level;
+				int requiredItem = 1;
 				if (ItemManager.getId(stack) == CivData.POTATO_ITEM) {
 					try {
 						if (stack.getAmount() < requiredItem) {
@@ -301,6 +301,12 @@ public class GranaryAsyncTask extends CivAsyncTask {
 		if (this.granary.lock.tryLock()) {
 			try {
 				try {
+					consumeGranaryBread();
+					consumeGranaryCarrots();
+					consumeGranaryPotatoes();
+					consumeGranaryBread();
+					consumeGranaryCarrots();
+					consumeGranaryPotatoes();
 					consumeGranaryBread();
 					consumeGranaryCarrots();
 					consumeGranaryPotatoes();

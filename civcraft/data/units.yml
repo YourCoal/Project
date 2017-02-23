@@ -38,7 +38,7 @@ units:
     require_tech:
     require_struct:
     require_upgrade:
-    cost: 25000.0
+    cost: 10000.0
     hammer_cost: 2500.0
     limit: 0
     item_id: 330

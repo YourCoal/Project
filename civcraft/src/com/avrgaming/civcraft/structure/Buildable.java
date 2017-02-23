@@ -1140,6 +1140,7 @@ public abstract class Buildable extends SQLObject {
 	public abstract String getDynmapDescription();
 	public abstract String getMarkerIconName();
 	
+	public abstract void updateDistrict();
 	
 	/* SessionDB helpers */
 	public void sessionAdd(String key, String value) {
@@ -1180,6 +1181,10 @@ public abstract class Buildable extends SQLObject {
 	
 	public void onDamage(int amount, World world, Player player, BlockCoord coord, BuildableDamageBlock hit) {
 		boolean wasTenPercent = false;
+		
+		if (!this.getCiv().getDiplomacyManager().isAtWar()) {
+			return;
+		}
 		
 		if(hit.getOwner().isDestroyed()) {
 			if (player != null) {

@@ -30,7 +30,7 @@ public class Attack extends ItemComponent {
 		attrs.add(Attribute.newBuilder().name("Attack Damage").
 				type(AttributeType.GENERIC_ATTACK_DAMAGE).
 				amount(this.getDouble("value")).build());
-		attrs.setHideFlag(63);
+//		attrs.setHideFlag(63);
 		attrs.addLore(CivColor.Rose+""+this.getDouble("value")+" Attack Damage");
 		return;
 	}
@@ -83,7 +83,7 @@ public class Attack extends ItemComponent {
 				dmg *= 1.25;
 //				CivMessage.send(p, CivColor.LightGrayItalic+"+25% damage with Warrior Unit.");
 			} else if (unit != null && unit.id.equals("u_archer")) {
-				dmg = dmg - (dmg*0.25);
+				dmg = dmg - (dmg*0.9); //only remove 10%, so 1.0 - 0.1
 //				CivMessage.send(p, CivColor.LightGrayItalic+"-25% damage with Archer Unit.");
 			}
 			

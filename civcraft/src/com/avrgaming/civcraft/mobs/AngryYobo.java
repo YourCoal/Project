@@ -44,11 +44,11 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 		case SNOWY:
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
-			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(24.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.SNOW_BLOCK), (short)0, 0.10);
 			
@@ -60,11 +60,11 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 		case COLD:
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
-			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(24.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.ICE), (short)0, 0.10);
 			
@@ -76,11 +76,11 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 		case LUSH:
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
-			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(24.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.CHORUS_FRUIT_POPPED), (short)0, 0.10);
 			
@@ -92,11 +92,11 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 		case WARM:
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
-			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(24.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.CACTUS), (short)0, 0.10);
 			
@@ -109,10 +109,11 @@ public class AngryYobo  extends CommonCustomMob implements ICustomMob {
 			defense = new MobComponentDefense(5);
 			setMaxHealth(48.0);
 			modifySpeed(1.25);
-			this.setAttack(9.0);
-//			this.addDrop("civ_CONFIG_ME_1", 0.10);
-//			this.addDrop("civ_CONFIG_ME_2", 0.075);
-//			this.addDrop("civ_CONFIG_ME_3", 0.05);
+			this.setAttack(24.0);
+			this.addDrop("civ_crafted_reeds", 0.04);
+			this.addDrop("civ_crafted_sticks", 0.04);
+			this.addDrop("civ_refined_leather", 0.01);
+			this.addDrop("civ_refined_string", 0.01);
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.INK_SACK), (short)0, 0.10);
 			

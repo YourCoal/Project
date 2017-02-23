@@ -81,7 +81,7 @@ public class Barracks extends Structure {
 	
 	@Override
 	public String getDynmapDescription() {
-		String out = "<u><b>Bank</u></b><br/>";
+		String out = "<u><b>Barracks</u></b><br/>";
 		return out;
 	}
 	
@@ -99,10 +99,18 @@ public class Barracks extends Structure {
 		
 		ConfigUnit unit = unitList.get(index);
 		String out = "\n";
+		int previousSettlers = 1;
+		double totalCoins = unit.cost;
+		if (unit.id.equals("u_settler")) {
+			ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup("settlers:"+this.getCiv().getName());
+			if (entries != null) {
+				for (SessionEntry entry : entries) previousSettlers += Integer.parseInt(entry.value);
+			}
+			totalCoins += (previousSettlers*10000);
+		}
 		out += CivColor.LightPurple+unit.name+"\n";
-		out += CivColor.Yellow+unit.cost+"\n";
-		out += CivColor.Yellow+"coins";
-		
+		out += CivColor.LightGreen+totalCoins+"\n";
+		out += CivColor.LightGreen+"Coins";
 		return out;
 	}
 	
@@ -134,10 +142,6 @@ public class Barracks extends Structure {
 			throw new CivException("We've reached the maximum number of "+unit.name+" units we can have.");
 		}
 		
-		if (!getTown().getTreasury().hasEnough(unit.cost)) {
-			throw new CivException("Not enough coins to train unit. We require "+unit.cost+" coins.");
-		}
-		
 		if (!unit.isAvailable(getTown())) {
 			throw new CivException("This unit is unavailable.");
 		}
@@ -146,20 +150,40 @@ public class Barracks extends Structure {
 			throw new CivException("Already training a "+this.trainingUnit.name+".");
 		}
 		
+		int previousSettlers = 1;
+		double totalCoins = unit.cost;
 		if (unit.id.equals("u_settler")) {
 			if (!this.getCiv().getLeaderGroup().hasMember(whoClicked) && !this.getCiv().getAdviserGroup().hasMember(whoClicked)) {
-				throw new CivException("You must be an adivser to the civilization in order to build a Settler.");
+				throw new CivException("You must be a leader or adivser to the civilization in order to build a Settler.");
+			}
+			ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup("settlers:"+this.getCiv().getName());
+			if (entries != null) {
+				CivLog.debug("entries: "+entries.size());
+				for (SessionEntry entry : entries) {
+					CivLog.debug("value: "+entry.value);
+					previousSettlers += Integer.parseInt(entry.value);
+				}
+				
+				CivLog.debug("previousSettlers: "+previousSettlers);
+				totalCoins += (previousSettlers*10000);
+				CivLog.debug("unit.cost: "+totalCoins);
 			}
 		}
 		
+		if (!getTown().getTreasury().hasEnough(totalCoins)) {
+			throw new CivException("Not enough coins to train unit. We require "+totalCoins+" coins.");
+		}
 		
-		getTown().getTreasury().withdraw(unit.cost);
-		
+		getTown().getTreasury().withdraw(totalCoins);
 		
 		this.setCurrentHammers(0.0);
 		this.setTrainingUnit(unit);
 		CivMessage.sendTown(getTown(), "We've begun training a "+unit.name+"!");
 		this.updateTraining();
+		if (unit.id.equals("u_settler")) {
+			CivGlobal.getSessionDB().add("settlers:"+this.getCiv().getName(), "1" , this.getCiv().getId(), this.getCiv().getId(), this.getId());
+  		}
+		this.onTechUpdate(); //Updates the sign on the structure to show latest updated price.
 	}
 	
 	@Override
@@ -181,10 +205,10 @@ public class Barracks extends Structure {
 		case "train":
 			if (resident.hasTown()) {
 				try {
-				if (getTown().getAssistantGroup().hasMember(resident) || getTown().getMayorGroup().hasMember(resident)) {
+				if (getCiv().getLeaderGroup().hasMember(resident) || getCiv().getAdviserGroup().hasMember(resident) || getTown().getMayorGroup().hasMember(resident)) {
 					train(resident);
 				} else {
-					throw new CivException("Only Mayors and Assistants may train units.");
+					throw new CivException("Only Leaders, Advisers, and Mayors may train units.");
 				}
 				} catch (CivException e) {
 					CivMessage.send(player, CivColor.Rose+e.getMessage());
@@ -227,21 +251,34 @@ public class Barracks extends Structure {
 			try {
 				double totalCost;
 				if (craftMat.hasComponent("RepairCost")) {
-					RepairCost repairCost = (RepairCost)craftMat.getComponent("RepairCost");
-					totalCost = repairCost.getDouble("value");
+					RepairCost getRepairCost = (RepairCost)craftMat.getComponent("RepairCost");
+					double repairCost = getRepairCost.getDouble("value");
+					
+					double durabilityDamp = CivSettings.getDouble(CivSettings.structureConfig, "barracks.durability_damp");
+					double itemDurability = inHand.getDurability();
+					double durabilityCost = Math.pow(itemDurability, durabilityDamp);
+					
+					double subTotal = (repairCost + durabilityCost);
+					totalCost = Math.round(subTotal);
 				} else {
 					double baseTierRepair = CivSettings.getDouble(CivSettings.structureConfig, "barracks.base_tier_repair");
+					
 					double tierDamp = CivSettings.getDouble(CivSettings.structureConfig, "barracks.tier_damp");
-					double tierCost = Math.pow((craftMat.getConfigMaterial().tier), tierDamp);				
-					double fromTier = Math.pow(baseTierRepair, tierCost);				
-					totalCost = Math.round(fromTier+0);
+					double tierCost = Math.pow((craftMat.getConfigMaterial().tier), tierDamp);
+					double fromTier = Math.pow(baseTierRepair, tierCost);
+					
+					double durabilityDamp = CivSettings.getDouble(CivSettings.structureConfig, "barracks.durability_damp");
+					double itemDurability = inHand.getDurability();
+					double durabilityCost = Math.pow(itemDurability, durabilityDamp);
+					
+					double subTotal = (fromTier + durabilityCost);
+					totalCost = Math.round(subTotal);
 				}
 				
 				InteractiveRepairItem repairItem = new InteractiveRepairItem(totalCost, p.getName(), craftMat);
 				repairItem.displayMessage();
 				resident.setInteractiveMode(repairItem);
 				return;
-				
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				throw new CivException("Internal configuration error");

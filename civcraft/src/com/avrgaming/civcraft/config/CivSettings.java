@@ -68,7 +68,10 @@ public class CivSettings {
 	/* Number of days that you can remain in debt before an action occurs. */
 
 	//TODO make this configurable.
-	public static final int GRACE_DAYS = 3; 
+	public static final int GRACE_DAYS = 3;
+	
+	public static final int TOWN_EVICT_DAYS = 1;
+	public static final int TOWN_INDEBT_DAYS = 4;
 	
 	public static final int CIV_DEBT_GRACE_DAYS = 7;
 	public static final int CIV_DEBT_SELL_DAYS = 14;
@@ -716,7 +719,6 @@ public class CivSettings {
 				closestState = state;
 			}
 		}
-		
 		return closestState;
 	}
 	
@@ -785,7 +787,7 @@ public class CivSettings {
 		
 		return null;
 	}
-
+	
 	public static ConfigTech getTechByName(String techname) {
 		for (ConfigTech tech : techs.values()) {
 			if (tech.name.equalsIgnoreCase(techname)) {
@@ -794,7 +796,7 @@ public class CivSettings {
 		}
 		return null;
 	}
-
+	
 	public static int getCottageMaxLevel() {
 		int returnLevel = 0;
 		for (Integer level : cottageLevels.keySet()) {
@@ -802,10 +804,9 @@ public class CivSettings {
 				returnLevel = level;
 			}
 		}
-		
 		return returnLevel;
 	}
-
+	
 	public static int getMineMaxLevel() {
 		int returnLevel = 0;
 		for (Integer level : mineLevels.keySet()) {
@@ -813,10 +814,9 @@ public class CivSettings {
 				returnLevel = level;
 			}
 		}
-		
 		return returnLevel;
 	}
-
+	
 	public static int getMaxCultureLevel() {
 		int returnLevel = 0;
 		for (Integer level : cultureLevels.keySet()) {
@@ -824,22 +824,14 @@ public class CivSettings {
 				returnLevel = level;
 			}
 		}
-		
 		return returnLevel;
-		
 	}
-
 	
 	public static ConfigCultureBiomeInfo getCultureBiome(String name) {
 		ConfigCultureBiomeInfo biomeInfo = cultureBiomes.get(name);
 		if (biomeInfo == null) {
 			biomeInfo = cultureBiomes.get("UNKNOWN");
 		}
-		
 		return biomeInfo;
 	}
-
-	
-	
-	
 }

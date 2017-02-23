@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.items.units;
 
-import gpl.AttributeUtil;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -38,6 +36,8 @@ import com.avrgaming.civcraft.object.MissionLogger;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.BookUtil;
+
+import gpl.AttributeUtil;
 
 public class Spy extends UnitMaterial {
 	

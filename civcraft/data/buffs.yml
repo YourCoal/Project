@@ -5,6 +5,38 @@
 #
 
 buffs:
+    - id: 'buff_bakery_bread_increase'
+      name: '(No Name) Bakery Bread Increase'
+      description: 'Increases Bakery bread output by <lightgreen>50%<r> - <red>Not Stackable<r>'
+      value: '1.5'
+      stackable: false
+      parent:
+#
+#
+#
+#
+#
+    - id: 'buff_advanced_mixing'
+      name: 'Advanced Mixing'
+      description: 'Increases Lab beaker production by <lightgreen>50%<r> - <red>Not Stackable<r>'
+      value: '1.5'
+      stackable: false
+      parent:
+#
+    - id: 'buff_advanced_tooling'
+      name: 'Advanced Tooling'
+      description: 'Increases Mine hammer production by <lightgreen>50%<r> - <red>Not Stackable<r>'
+      value: '1.5'
+      stackable: false
+      parent:
+#
+    - id: 'buff_advanced_touring'
+      name: 'Advanced Touring'
+      description: 'Increases Monument culture production by <lightgreen>50%<r> - <red>Not Stackable<r>'
+      value: '1.5'
+      stackable: false
+      parent:
+#
     - id: 'buff_construction'
       name: 'Construction'
       description: 'Increases hammer production by <lightgreen>100<r> hammers. <gold>Stackable<r>'
@@ -29,8 +61,8 @@ buffs:
 
     - id: 'buff_monopoly'
       name: 'Monopoly'
-      description: 'Increases coin output from all trade goods in use by <lightgreen>3%<r> <gold>Stackable<r>'
-      value: '0.03'
+      description: 'Increases coin output from all trade goods in use by <lightgreen>10%<r> <gold>Stackable<r>'
+      value: '0.10'
       stackable: true
       parent:
     
@@ -39,13 +71,6 @@ buffs:
       description: 'Reduces consumption of cottages by <lightgreen>50%<r>'
       value: '0.5'
       stackable: false
-      parent:
-
-    - id: 'buff_advanced_tooling'
-      name: 'Advanced Tooling'
-      description: 'Increases the mine improvement production by a <lightgreen>50%<r> <gold>Stackable<r>'
-      value: '0.5'
-      stackable: true
       parent:
 
     - id: 'buff_barricade'
@@ -78,8 +103,8 @@ buffs:
 
     - id: 'buff_fire_bomb'
       name: 'Fire Bomb'
-      description: 'Increases damage of arrow/cannon towers by a <lightgreen>10%<r> Also makes arrow towers shoot flaming arrows <gold>Stackable<r>'
-      value: '1.0'
+      description: 'Increases damage of Arrow and Cannon Towers by a <lightgreen>1 Heart<r> (Arrow Towers shoot flaming arrows) <gold>Stackable<r>'
+      value: '1'
       stackable: false
       parent:
 
@@ -149,36 +174,36 @@ buffs:
 # PYRAMID BUFFS
     - id: 'buff_pyramid_cottage_consume'
       name: 'Pyramid Reduced Bread Consumption'
-      description: 'Reduces cottage bread consumption by 1/4'
-      value: '0.25'
+      description: 'Reduces cottage bread consumption by 20%'
+      value: '0.20'
       stackable: false
       parent:
 
     - id: 'buff_pyramid_cottage_bonus'
       name: 'Pyramid Increased Cottage Output'
-      description: 'Increases cottage income by 10%'
-      value: '1.1'
+      description: 'Increases cottage income by 15%'
+      value: '1.15'
       stackable: false
       parent:
 
     - id: 'buff_pyramid_culture'
       name: 'Pyramid Culture Bonus' 
-      description: 'Increases culture output from civilization by 10%'
-      value: '1.1'
+      description: 'Increases culture output from civilization by 25%'
+      value: '1.25'
       stackable: false
       parent:
 
     - id: 'buff_pyramid_leech'
       name: 'Pyramid Leech Culture'
-      description: 'Leeches 1% of the culture output from the nearest civilization.'
-      value: '0.01'
+      description: 'Leeches 2% of the culture output from the nearest civilization.'
+      value: '0.02'
       stackable: false
       parent:
 
     - id: 'debuff_pyramid_leech'
       name: 'Pyramid Leech Culture'
-      description: 'Leeches 1% of your culture. Gives it to the town with the pyramid.'
-      value: '0.01'
+      description: 'Leeches 2% of your culture. Gives it to the town with the pyramid.'
+      value: '0.02'
       stackable: false
       parent:
 # Great library buffs
@@ -221,15 +246,15 @@ buffs:
 # Colossus buffs
     - id: 'debuff_colossus_leech_upkeep'
       name: 'Colossus Leach Upkeep'
-      description: 'Leeches 2% of your upkeep payments and sends it to the town with the Colossus.'
-      value: '0.02'
+      description: 'Leeches 3% of your upkeep payments and sends it to the town with the Colossus.'
+      value: '0.03'
       stackable: false
       parent:
 
     - id: 'buff_colossus_reduce_upkeep'
       name: 'Colossus Reduce Upkeep'
-      description: 'Reduces upkeep of your town by 25%'
-      value: '0.25'
+      description: 'Reduces upkeep of your town by 20%'
+      value: '0.2'
       stackable: false
       parent:
 
@@ -249,7 +274,7 @@ buffs:
 
     - id: 'buff_notre_dame_coins_from_peace'
       name: 'Notre Dame Peace Coins'
-      description: 'Civilization collects coins from each town in each civilization not currently at war.'
+      description: 'Civilization collects 100 coins from each town in each civilization not currently at war.'
       value: '100'
       stackable: false
       parent:
@@ -278,7 +303,7 @@ buffs:
       
     - id: 'buff_chichen_itza_cp_bonus_hp'
       name: 'Chichen Itza Control Point Bonus HP'
-      description: 'Increase the hitpoints of all Control Points of a town by 10 HP.'
-      value: '10'
+      description: 'Increase the hitpoints of all Control Points of a town by 15 HP.'
+      value: '15'
       stackable: false
       parent:

@@ -20,6 +20,7 @@ package com.avrgaming.civcraft.command.admin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -30,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.camp.Camp;
 import com.avrgaming.civcraft.command.CommandBase;
 import com.avrgaming.civcraft.command.ReportChestsTask;
 import com.avrgaming.civcraft.command.ReportPlayerInventoryTask;
@@ -39,6 +41,7 @@ import com.avrgaming.civcraft.config.ConfigMaterialCategory;
 import com.avrgaming.civcraft.config.ConfigUnit;
 import com.avrgaming.civcraft.endgame.EndGameCondition;
 import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.items.BonusGoodie;
 import com.avrgaming.civcraft.listener.HolographicDisplaysListener;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
@@ -49,8 +52,13 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.Resident;
+import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
+import com.avrgaming.civcraft.object.TownChunk;
+import com.avrgaming.civcraft.object.TradeGood;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
+import com.avrgaming.civcraft.structure.Structure;
+import com.avrgaming.civcraft.structure.wonders.Wonder;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -95,6 +103,63 @@ public class AdminCommand extends CommandBase {
 		commands.put("reload", "Allows for some aspects of CivCraft to be reloaded in the server.");
 		commands.put("tradeholo", "Enables all trade good holograms.");
 		commands.put("test", "Literally for testing purposes.");
+		commands.put("usd", "Update Structure Districts");
+		commands.put("savesql", "Saves SQL Databases");
+	}
+	
+	public void savesql_cmd() {
+		try {
+			for (Camp c : CivGlobal.getCamps()) {
+				c.saveNow();
+			}
+			
+			for (Civilization c : CivGlobal.getCivs()) {
+				c.saveNow();
+			}
+			
+			for (Town t : CivGlobal.getTowns()) {
+				t.saveNow();
+			}
+			
+			for (Resident r : CivGlobal.getResidents()) {
+				r.saveNow();
+			}
+			
+			for (TownChunk tc : CivGlobal.getTownChunks()) {
+				tc.saveNow();
+			}
+			
+			for (Structure s : CivGlobal.getStructures()) {
+				s.saveNow();
+			}
+			
+			for (Wonder w : CivGlobal.getWonders()) {
+				w.saveNow();
+			}
+			
+			for (TradeGood tg : CivGlobal.getTradeGoods()) {
+				tg.saveNow();
+			}
+			
+			for (BonusGoodie bg : CivGlobal.getBonusGoodies()) {
+				bg.saveNow();
+			}
+			
+			for (StructureSign ss : CivGlobal.getStructureSigns()) {
+				ss.saveNow();
+			}
+			
+			CivMessage.sendSuccess(sender, "Saved All SQL Information.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void usd_cmd() {
+		for (Town t : CivGlobal.getTowns()) {
+			t.updateStructureDistrictBonuses(t);
+		}
+		CivMessage.sendSuccess(sender, "Updated Structure Districts.");
 	}
 	
 	public void tradeholo_cmd() {

@@ -562,4 +562,10 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 		
 		this.structureBlocks.clear();
 	}
+
+	@Override
+	public void updateDistrict() {
+		// TODO Auto-generated method stub
+		
+	}
 }

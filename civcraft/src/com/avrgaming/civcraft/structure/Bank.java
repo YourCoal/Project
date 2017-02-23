@@ -58,6 +58,8 @@ public class Bank extends Structure {
 		super(center, id, town);
 		nonMemberFeeComponent = new NonMemberFeeComponent(this);
 		nonMemberFeeComponent.onSave();
+		setLevel(town.saved_bank_level);
+		setInterestRate(town.saved_bank_interest_amount);
 	}
 	
 	public Bank(ResultSet rs) throws SQLException, CivException {
@@ -100,16 +102,16 @@ public class Bank extends Structure {
 			exchange_rate = 0.90;
 			break;
 		case 7:
-			exchange_rate = 1;
+			exchange_rate = 1.00;
 			break;
 		case 8:
-			exchange_rate = 1.20;
+			exchange_rate = 1.25;
 			break;
 		case 9:
 			exchange_rate = 1.50;
 			break;
 		case 10:
-			exchange_rate = 2;
+			exchange_rate = 2.00;
 			break;
 		}
 		

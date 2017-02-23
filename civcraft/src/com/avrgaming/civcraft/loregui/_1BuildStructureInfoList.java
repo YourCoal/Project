@@ -1,4 +1,4 @@
-package com.avrgaming.civcraft.loregui.buildings;
+package com.avrgaming.civcraft.loregui;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 
-public class BuildStructureInfoList implements GuiAction {
+public class _1BuildStructureInfoList implements GuiAction {
 
 	@Override
 	public void performAction(InventoryClickEvent event, ItemStack stack) {
@@ -83,7 +83,7 @@ public class BuildStructureInfoList implements GuiAction {
 						CivColor.LightPurpleBold+"Location: "+CivColor.LightBlue+"X "+s.getCenterLocation().getX()+", Y "+s.getCenterLocation().getY()+", Z "+s.getCenterLocation().getZ(),
 						CivColor.GreenBold+"Level: "+CivColor.Yellow+mine.getLevel(),
 						CivColor.GreenBold+"Count: "+CivColor.Yellow+mine.getCount(),
-						CivColor.GreenBold+"Hammers/Hour: "+CivColor.Yellow+mine.getProducedHammers());
+						CivColor.GreenBold+"Hammers/Hour: "+CivColor.Yellow+mine.getBonusHammers());
 				guiInventory.addItem(is);
 			} else if (s instanceof Lab) {
 				Lab lab = (Lab)s;
@@ -91,7 +91,7 @@ public class BuildStructureInfoList implements GuiAction {
 						CivColor.LightPurpleBold+"Location: "+CivColor.LightBlue+"X "+s.getCenterLocation().getX()+", Y "+s.getCenterLocation().getY()+", Z "+s.getCenterLocation().getZ(),
 						CivColor.GreenBold+"Level: "+CivColor.Yellow+lab.getLevel(),
 						CivColor.GreenBold+"Count: "+CivColor.Yellow+lab.getCount(),
-						CivColor.GreenBold+"Beakers/Hour: "+CivColor.Yellow+lab.getProducedBeakers());
+						CivColor.GreenBold+"Beakers/Hour: "+CivColor.Yellow+lab.getBonusBeakers());
 				guiInventory.addItem(is);
 			} else {
 				is = LoreGuiItem.build(s.getDisplayName(), type, 0, 
@@ -105,7 +105,7 @@ public class BuildStructureInfoList implements GuiAction {
 		ItemStack backButton = LoreGuiItem.build("Back", ItemManager.getId(Material.MAP), 0, "Back to Topics");
 		backButton = LoreGuiItem.setAction(backButton, "OpenInventory");
 		backButton = LoreGuiItem.setActionData(backButton, "invType", "showGuiInv");
-		backButton = LoreGuiItem.setActionData(backButton, "invName", BuildMenuList.guiInventory.getName());
+		backButton = LoreGuiItem.setActionData(backButton, "invName", _1BuildMenuList.guiInventory.getName());
 		guiInventory.setItem((9*5)-1, backButton);
 		
 		LoreGuiItemListener.guiInventories.put(guiInventory.getName(), guiInventory);

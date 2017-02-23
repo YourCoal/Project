@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.HashSet;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import com.avrgaming.civcraft.cache.PlayerLocationCache;
@@ -164,6 +165,7 @@ public class ScoutTower extends Structure {
 				switch (relation) {
 				case PEACE:
 				case ALLY:
+				case HOME:
 //				case VASSAL:
 //				case MASTER:
 					scoutDebug("ally or peace");
@@ -187,12 +189,10 @@ public class ScoutTower extends Structure {
 			
 			if (center.distance(player.getLocation()) < range) {
 				/* Notify the town or civ. */
-					CivMessage.sendScout(this.getCiv(), "Scout tower detected "+relationColor+
-							player.getName()+"("+relationName+")"+CivColor.White+
-							" at ("+player.getLocation().getBlockX()+","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()+") in "+
-							this.getTown().getName());
+					CivMessage.sendScout(this.getCiv(), "Scout tower detected "+relationColor+player.getName()+"("+relationName+")"+CivColor.White+
+							" at ("+player.getLocation().getBlockX()+","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()+") in "+this.getTown().getName());
 					alreadyAnnounced.add(this.getCiv().getName()+":"+player.getName());
-				
+					CivMessage.sendCivSound(this.getCiv(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2F, 0.75F);
 			}
 		}
 		

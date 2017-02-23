@@ -30,18 +30,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import net.minecraft.server.v1_10_R1.AttributeMapBase;
-import net.minecraft.server.v1_10_R1.AttributeMapServer;
-import net.minecraft.server.v1_10_R1.GenericAttributes;
-import net.minecraft.server.v1_10_R1.InventoryEnderChest;
-import net.minecraft.server.v1_10_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.NBTTagDouble;
-import net.minecraft.server.v1_10_R1.NBTTagFloat;
-import net.minecraft.server.v1_10_R1.NBTTagList;
-import net.minecraft.server.v1_10_R1.PlayerAbilities;
-import net.minecraft.server.v1_10_R1.PlayerInventory;
-
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -58,6 +46,18 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.NBTStaticHelper;
 import com.google.common.io.Files;
+
+import net.minecraft.server.v1_10_R1.AttributeMapBase;
+import net.minecraft.server.v1_10_R1.AttributeMapServer;
+import net.minecraft.server.v1_10_R1.GenericAttributes;
+import net.minecraft.server.v1_10_R1.InventoryEnderChest;
+import net.minecraft.server.v1_10_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagDouble;
+import net.minecraft.server.v1_10_R1.NBTTagFloat;
+import net.minecraft.server.v1_10_R1.NBTTagList;
+import net.minecraft.server.v1_10_R1.PlayerAbilities;
+import net.minecraft.server.v1_10_R1.PlayerInventory;
 
 /**
  * @name ImprovedOfflinePlayer

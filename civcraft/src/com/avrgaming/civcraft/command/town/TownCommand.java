@@ -518,22 +518,22 @@ public class TownCommand extends CommandBase {
 			throw new CivException("Mayors and assistants cannot be evicted from town, demote them first.");
 		}
 		
-		if (!residentToKick.isLandOwner()) {
+/*		if (!residentToKick.isLandOwner()) {
 			town.removeResident(residentToKick);
-
 			try {
 				CivMessage.send(CivGlobal.getPlayer(residentToKick), CivColor.Yellow+"You have been evicted from town!");
 			} catch (CivException e) {
 				//Player not online.
 			}
-			CivMessage.sendTown(town, residentToKick.getName()+" has been evicted from town by "+resident.getName());
+			CivMessage.sendTown(town, residentToKick.getName()+" has been evicted from the town by "+resident.getName());
 			return;
-		}
+		}*/
 		
-		residentToKick.setDaysTilEvict(CivSettings.GRACE_DAYS);
+		residentToKick.setDaysTilEvict(CivSettings.TOWN_EVICT_DAYS);
 		residentToKick.warnEvict();
 		residentToKick.save();
-		CivMessage.sendSuccess(sender, args[1]+" will be evicted from town in "+CivSettings.GRACE_DAYS+" days.");
+		CivMessage.sendTown(town, residentToKick.getName()+" is being evicted from the town in "+CivSettings.TOWN_EVICT_DAYS+" days.");
+		CivMessage.sendSuccess(sender, args[1]+" will be evicted from town in "+CivSettings.TOWN_EVICT_DAYS+" days.");
 	}
 	
 	public void show_cmd() throws CivException {
@@ -792,16 +792,16 @@ public class TownCommand extends CommandBase {
 			throw new CivException("Only mayors and assistants can use this command.");
 		}
 		
-		if (town.getTownChunks().size() <= 1) {
-			throw new CivException("Cannot unclaim your last town chunk.");
-		}
-		
 		if (tc.getTown() != resident.getTown()) {
 			throw new CivException("You cannot unclaim a town chunk that isn't yours.");
 		}
 		
 		if (tc.perms.getOwner() != null && tc.perms.getOwner() != resident) {
 			throw new CivException("You cannot unclaim a chunk that belongs to another resident.");
+		}
+		
+		if (town.getTownChunks().size() <= 1) {
+			throw new CivException("Cannot unclaim your last town chunk.");
 		}
 		
 		TownChunk.unclaim(tc);

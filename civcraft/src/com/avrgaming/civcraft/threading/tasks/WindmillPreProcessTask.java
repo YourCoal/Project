@@ -30,6 +30,8 @@ import com.avrgaming.civcraft.exception.CivTaskAbortException;
 import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.object.StructureChest;
+import com.avrgaming.civcraft.object.TownChunk;
+import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.Windmill;
 import com.avrgaming.civcraft.threading.CivAsyncTask;
 import com.avrgaming.civcraft.threading.TaskMaster;
@@ -52,8 +54,25 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 		int plant_max;
 		try {
 			plant_max = CivSettings.getInteger(CivSettings.structureConfig, "windmill.plant_max");
+			for (Structure s : windmill.getTown().getStructures()) {
+				if (s instanceof Windmill) {
+					for (TownChunk tc : windmill.getTown().getTownChunks()) {
+						if (tc.district.getID().equals(1)) {
+							int tcChunkX = tc.getChunkCoord().getX();
+							int tcChunkZ = tc.getChunkCoord().getZ();
+							
+							int sChunkX = s.getCorner().getLocation().getChunk().getX();
+							int sChunkZ = s.getCorner().getLocation().getChunk().getZ();
+							
+							if (tcChunkX == sChunkX && tcChunkZ == sChunkZ) {
+								plant_max += 2;
+							}
+						}
+					}
+				}
+			}
 			
-			if (windmill.getCiv().hasTechnology("tech_machinery")) {
+			if (windmill.getCiv().hasTechnology("tech_efficiency")) {
 				plant_max *= 2;
 			}
 		} catch (InvalidConfiguration e) {

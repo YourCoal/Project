@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.exception.CivException;
+import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterial;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
@@ -57,6 +58,7 @@ public class GivePlayerStartingKit implements Runnable {
 						continue;
 					}
 					stack = LoreCraftableMaterial.spawn(craftMat);
+					LoreCraftableMaterial.addEnhancement(stack, LoreEnhancement.enhancements.get("LoreEnhancementSoulBound"));
 				}
 				player.getInventory().addItem(stack);
 			}

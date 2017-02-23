@@ -35,6 +35,8 @@ public class ConfigTradeGood implements Comparable<ConfigTradeGood> {
 	public HashMap<String, ConfigBuff> buffs = new HashMap<String, ConfigBuff>();
 	public int material;
 	public int material_data;
+	public double culture;
+	public Integer food;
 	public String hemiString = null;
 	public Double rarity = null;
 	
@@ -52,7 +54,7 @@ public class ConfigTradeGood implements Comparable<ConfigTradeGood> {
 	}
 	
 	public static void loadConfig(FileConfiguration cfg, Map<String, ConfigTradeGood> goods,
-			Map<String, ConfigTradeGood> landGoods, Map<String, ConfigTradeGood> waterGoods){
+			Map<String, ConfigTradeGood> landGoods, Map<String, ConfigTradeGood> waterGoods) {
 		goods.clear();
 		List<Map<?, ?>> land_goods = cfg.getMapList("land_goods");
 		for (Map<?, ?> g : land_goods) {
@@ -64,6 +66,8 @@ public class ConfigTradeGood implements Comparable<ConfigTradeGood> {
 			good.water = false;
 			good.material = (Integer)g.get("material");
 			good.material_data = (Integer)g.get("material_data");
+			good.culture = (Double)g.get("culture");
+			good.food = (Integer)g.get("food");
 			good.hemiString = ((String)g.get("hemispheres"));
 			good.rarity = ((Double)g.get("rarity"));
 			if (good.rarity == null) {
@@ -83,23 +87,21 @@ public class ConfigTradeGood implements Comparable<ConfigTradeGood> {
 			good.water = true;
 			good.material = (Integer)g.get("material");
 			good.material_data = (Integer)g.get("material_data");
+			good.culture = (Double)g.get("culture");
+			good.food = (Integer)g.get("food");
 			good.hemiString = ((String)g.get("hemispheres"));
 			good.rarity = ((Double)g.get("rarity"));
 			if (good.rarity == null) {
 				good.rarity = 1.0;
 			}
-
-			
 			waterGoods.put(good.id, good);
 			goods.put(good.id, good);
 		}
-		
 		CivLog.info("Loaded "+goods.size()+" Trade Goods.");
 	}
 
 	@Override
 	public int compareTo(ConfigTradeGood otherGood) {
-		
 		if (this.rarity < otherGood.rarity) {
 			// A lower rarity should go first.
 			return 1;

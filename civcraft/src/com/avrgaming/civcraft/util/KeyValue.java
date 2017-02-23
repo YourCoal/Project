@@ -2,9 +2,9 @@ package com.avrgaming.civcraft.util;
 
 import java.util.Collection;
 import java.util.HashMap;
- 
+
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
- 
+
 import com.mysql.jdbc.StringUtils;
  
 /*

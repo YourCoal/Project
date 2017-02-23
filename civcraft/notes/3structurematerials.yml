@@ -1,0 +1,49 @@
+Rock:
+Stone: 2
+Granite: 2
+Diorite: 2
+Andesite: 2
+Polished Granite: 4
+Polished Diorite: 4
+Polished Andesite: 4
+Cobblestone: 1
+
+Lumber:
+Oak Wood: 4
+Spruce Wood: 4
+Birch Wood: 4
+Jungle Wood: 4
+Dark Oak Wood: 4
+Acacia Wood: 4
+Oak Plank: 1
+Spruce Plank: 1
+Birch Plank: 1
+Jungle Plank: 1
+Dark Oak Plank: 1
+Acacia Plank: 1
+
+Metal:
+Iron Ingot: 2
+Iron Block: 18
+Gold Ingot: 5
+Gold Block: 45
+Diamond: 12
+Diamond Block: 108
+Emerald: 25
+Emerald Block: 225
+Nether Quartz: 8
+Nether Quartz Block: 32
+Blaze Rod: 50
+
+Cloth:
+String: 2
+Leather: 4
+Rabbit Hide: 3
+
+(idk what to call, Resources? bad name tho):
+Trade Good Items: 5
+Sugar Cane: 2
+Wheat: 2
+Carrot: 2
+Potato: 2
+Beetroot: 2

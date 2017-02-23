@@ -125,12 +125,12 @@ public class CommonCustomMob implements ICustomMob,Listener {
 				
 		/* common drops. */
 		this.addVanillaDrop(ItemManager.getId(Material.BONE), (short)0, 0.1);
-		this.addVanillaDrop(ItemManager.getId(Material.SUGAR), (short)0, 0.1);
-		this.addVanillaDrop(ItemManager.getId(Material.SULPHUR), (short)0, 0.25);
-		this.addVanillaDrop(ItemManager.getId(Material.POTATO_ITEM), (short)0, 0.1);
-		this.addVanillaDrop(ItemManager.getId(Material.CARROT_ITEM), (short)0, 0.1);
+		this.addVanillaDrop(ItemManager.getId(Material.SULPHUR), (short)0, 0.2);
+		this.addVanillaDrop(ItemManager.getId(Material.POTATO_ITEM), (short)0, 0.15);
+		this.addVanillaDrop(ItemManager.getId(Material.CARROT_ITEM), (short)0, 0.15);
 		this.addVanillaDrop(ItemManager.getId(Material.COAL), (short)0, 0.1);
-		this.addVanillaDrop(ItemManager.getId(Material.STRING), (short)0, 0.1);
+		this.addVanillaDrop(ItemManager.getId(Material.STRING), (short)0, 0.05);
+		this.addVanillaDrop(ItemManager.getId(Material.LEATHER), (short)0, 0.05);
 		this.addVanillaDrop(ItemManager.getId(Material.SLIME_BALL), (short)0, 0.02);
 
 	}
@@ -238,7 +238,7 @@ public class CommonCustomMob implements ICustomMob,Listener {
 		}
 		
 		tickCount++;
-		if (tickCount > 90) {
+		if (tickCount > 80) {
 			checkForStuck();
 			checkForTownBorders();
 			checkForisWarTime();

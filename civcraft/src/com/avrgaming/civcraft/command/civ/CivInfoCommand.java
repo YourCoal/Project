@@ -37,7 +37,6 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.util.CivColor;
-import com.avrgaming.civcraft.util.DecimalHelper;
 
 public class CivInfoCommand extends CommandBase {
 
@@ -201,20 +200,28 @@ public class CivInfoCommand extends CommandBase {
 			CivMessage.send(sender, CivColor.Green+"Advisers: "+CivColor.LightGreen+civ.getAdviserGroup().getMembersString());
 		}
 	    
-	    if (resident == null || civ.hasResident(resident)) {
-	    	CivMessage.send(sender, CivColor.Green+"Income Tax Rate: "+CivColor.LightGreen+civ.getIncomeTaxRateString()+
-					CivColor.Green+" Science Percentage: "+CivColor.LightGreen+DecimalHelper.formatPercentage(civ.getSciencePercentage()));
-			CivMessage.send(sender ,CivColor.Green+"Beakers: "+CivColor.LightGreen+civ.getBeakers()+
-					CivColor.Green+" Online: "+CivColor.LightGreen+civ.getOnlineResidents().size());
+	    if (civ.hasResident(resident)) {
+	    	CivMessage.send(sender, CivColor.Green+"Income Tax Rate: "+CivColor.LightGreen+civ.getIncomeTaxRateString()
+	    							+CivColor.Green+" : Science Rate: "+CivColor.LightGreen+civ.getSciencePercentage());
+	    	
+			CivMessage.send(sender, CivColor.Green+"Government: "+CivColor.LightGreen+civ.getGovernment().displayName);
+	    	
+//			ConfigFaithLevel cfl = CivSettings.faithLevels.get(civ.getFaithLevel());
+//			CivMessage.send(sender, CivColor.Green+"Faith Level: "+CivColor.LightGreen+cfl.level+" ("+civ.getAccumulatedFaith()+"/"+cfl.amount+")");
+			CivMessage.send(sender, CivColor.Green+CivColor.MAGIC+"----- -----"+CivColor.Green+": "+CivColor.LightGreen+"0 (0/10)");
+			
+			CivMessage.send(sender ,CivColor.Green+"Beakers: "+CivColor.LightGreen+Math.round(civ.getBeakers())
+									+CivColor.Green+" : Online: "+CivColor.LightGreen+civ.getOnlineResidents().size());
 	    }
 		
-		if (resident == null || civ.getLeaderGroup().hasMember(resident) || civ.getAdviserGroup().hasMember(resident) || isOP) {
-			CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+civ.getTreasury().getBalance()+CivColor.Green+" coins.");
+		if (civ.getLeaderGroup().hasMember(resident) || civ.getAdviserGroup().hasMember(resident) || isOP) {
+			CivMessage.send(sender, CivColor.Green+"Treasury: "+CivColor.LightGreen+civ.getTreasury().getBalance()+" Coins");
 		}
 		
 		if (civ.getTreasury().inDebt()) {
-			CivMessage.send(sender, CivColor.Yellow+"In Debt: "+civ.getTreasury().getDebt()+" coins.");	
+			CivMessage.send(sender, CivColor.Yellow+"In Debt: "+civ.getTreasury().getDebt()+" Coins");	
 			CivMessage.send(sender, CivColor.Yellow+civ.getDaysLeftWarning());
+			CivMessage.send(sender, CivColor.Yellow+"Use '/civ deposit (amount)' to pay it off.");
 		}
 		
 		for (EndGameCondition endCond : EndGameCondition.endConditions) {
@@ -258,7 +265,6 @@ public class CivInfoCommand extends CommandBase {
 			}
 			out += ", ";
 		}
-		
 		CivMessage.send(sender, out);
 	}
 	
@@ -275,8 +281,5 @@ public class CivInfoCommand extends CommandBase {
 
 	@Override
 	public void permissionCheck() throws CivException {
-		
 	}
-
-	
 }

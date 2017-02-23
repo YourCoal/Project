@@ -3,8 +3,6 @@ package com.avrgaming.civcraft.siege;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
@@ -32,6 +30,8 @@ import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.EntityProximity;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.WarRegen;
+
+import net.minecraft.server.v1_10_R1.EntityPlayer;
 
 public class CannonProjectile {
 	public Cannon cannon;

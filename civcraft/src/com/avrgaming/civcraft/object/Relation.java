@@ -46,6 +46,7 @@ public class Relation extends SQLObject {
 		WAR,
 		PEACE,
 		ALLY,
+		HOME
 //		MASTER,
 //		VASSAL
 	}
@@ -193,16 +194,19 @@ public class Relation extends SQLObject {
 		case NEUTRAL:
 			break;
 		case HOSTILE:
-			color = CivColor.Yellow;
+			color = CivColor.YellowBold;
 			break;
 		case WAR:
-			color = CivColor.Rose;
+			color = CivColor.RoseBold;
 			break;
 		case PEACE:
-			color = CivColor.LightBlue;
+			color = CivColor.LightBlueBold;
 			break;
 		case ALLY:
-			color = CivColor.Green;
+			color = CivColor.GreenBold;
+			break;
+		case HOME:
+			color = CivColor.LightGrayBold;
 			break;
 //		case MASTER:
 //			color = CivColor.Gold;
@@ -237,6 +241,8 @@ public class Relation extends SQLObject {
 			return CivColor.LightBlue;
 		case ALLY:
 			return CivColor.Green;
+		case HOME:
+			return CivColor.LightGray;
 //		case MASTER:
 //			return CivColor.Gold;
 //		case VASSAL:

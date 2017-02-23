@@ -100,9 +100,9 @@ public abstract class ProjectileComponent extends Component {
 	}
 	
 	public int getDamage() {
-		double rate = 1;
-		rate += this.getBuildable().getTown().getBuffManager().getEffectiveDouble(Buff.FIRE_BOMB);
-		return (int)(this.damage*rate);
+		int additional = 0;
+		additional += this.getBuildable().getTown().getBuffManager().getEffectiveInt(Buff.FIRE_BOMB);
+		return (this.damage+additional);
 	}
 	
 	public void setDamage(int damage) {

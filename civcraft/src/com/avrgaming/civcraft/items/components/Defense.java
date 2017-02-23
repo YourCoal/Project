@@ -1,12 +1,19 @@
 package com.avrgaming.civcraft.items.components;
 
+import java.util.Map;
+
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpectralArrow;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.avrgaming.civcraft.config.ConfigUnit;
-import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
 import com.avrgaming.civcraft.main.CivGlobal;
@@ -25,7 +32,7 @@ public class Defense extends ItemComponent {
 		attrs.add(Attribute.newBuilder().name("Defense").
 				type(AttributeType.GENERIC_ARMOR).
 				amount(this.getDouble("value")).build());
-		attrs.setHideFlag(63);
+//		attrs.setHideFlag(63);
 		attrs.addLore(CivColor.Blue+""+this.getDouble("value")+" Defense");
 		return;
 	}
@@ -56,14 +63,84 @@ public class Defense extends ItemComponent {
 			Player p = (Player)event.getEntity();
 			Resident res = CivGlobal.getResident(p);
 			
-			ConfigUnit unit = Unit.getPlayerUnit(p);
+			//Enable Projectile Protection
+			if (event.getDamager() instanceof Arrow || event.getDamager() instanceof SpectralArrow || event.getDamager() instanceof TippedArrow || event.getCause() == DamageCause.PROJECTILE) {
+				if (p.getInventory().getHelmet() != null && p.getInventory().getHelmet().getType() != Material.AIR) {
+					Map<Enchantment, Integer> helm = p.getInventory().getHelmet().getEnchantments();
+					if (helm.containsKey(Enchantment.PROTECTION_PROJECTILE)) {
+						int level = helm.get(Enchantment.PROTECTION_PROJECTILE);
+						defValue += level*2;
+					}
+				}
+				
+				if (p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != Material.AIR) {
+					Map<Enchantment, Integer> chest = p.getInventory().getChestplate().getEnchantments();
+					if (chest.containsKey(Enchantment.PROTECTION_PROJECTILE)) {
+						int level = chest.get(Enchantment.PROTECTION_PROJECTILE);
+						defValue += level*2;
+					}
+				}
+				
+				if (p.getInventory().getLeggings() != null && p.getInventory().getLeggings().getType() != Material.AIR) {
+					Map<Enchantment, Integer> pants = p.getInventory().getLeggings().getEnchantments();
+					if (pants.containsKey(Enchantment.PROTECTION_PROJECTILE)) {
+						int level = pants.get(Enchantment.PROTECTION_PROJECTILE);
+						defValue += level*2;
+					}
+				}
+				
+				if (p.getInventory().getBoots() != null && p.getInventory().getBoots().getType() != Material.AIR) {
+					Map<Enchantment, Integer> boots = p.getInventory().getBoots().getEnchantments();
+					if (boots.containsKey(Enchantment.PROTECTION_PROJECTILE)) {
+						int level = boots.get(Enchantment.PROTECTION_PROJECTILE);
+						defValue += level*2;
+					}
+				}
+			}
+			
+			//Enable Blast Protection
+			if (event.getDamager() instanceof Fireball || event.getCause() == DamageCause.BLOCK_EXPLOSION || event.getCause() == DamageCause.ENTITY_EXPLOSION || event.getCause() == DamageCause.LIGHTNING) {
+				if (p.getInventory().getHelmet() != null && p.getInventory().getHelmet().getType() != Material.AIR) {
+					Map<Enchantment, Integer> helm = p.getInventory().getHelmet().getEnchantments();
+					if (helm.containsKey(Enchantment.PROTECTION_EXPLOSIONS)) {
+						int level = helm.get(Enchantment.PROTECTION_EXPLOSIONS);
+						defValue += level*2;
+					}
+				}
+				
+				if (p.getInventory().getChestplate() != null && p.getInventory().getChestplate().getType() != Material.AIR) {
+					Map<Enchantment, Integer> chest = p.getInventory().getChestplate().getEnchantments();
+					if (chest.containsKey(Enchantment.PROTECTION_EXPLOSIONS)) {
+						int level = chest.get(Enchantment.PROTECTION_EXPLOSIONS);
+						defValue += level*2;
+					}
+				}
+				
+				if (p.getInventory().getLeggings() != null && p.getInventory().getLeggings().getType() != Material.AIR) {
+					Map<Enchantment, Integer> pants = p.getInventory().getLeggings().getEnchantments();
+					if (pants.containsKey(Enchantment.PROTECTION_EXPLOSIONS)) {
+						int level = pants.get(Enchantment.PROTECTION_EXPLOSIONS);
+						defValue += level*2;
+					}
+				}
+				
+				if (p.getInventory().getBoots() != null && p.getInventory().getBoots().getType() != Material.AIR) {
+					Map<Enchantment, Integer> boots = p.getInventory().getBoots().getEnchantments();
+					if (boots.containsKey(Enchantment.PROTECTION_EXPLOSIONS)) {
+						int level = boots.get(Enchantment.PROTECTION_EXPLOSIONS);
+						defValue += level*2;
+					}
+				}
+			}
+			
+/*			ConfigUnit unit = Unit.getPlayerUnit(p);
 			if (unit != null && unit.id.equals("u_warrior")) {
 				defValue = defValue - (defValue*0.1);
 //				CivMessage.send(p, CivColor.LightGrayItalic+"-10% defense with Warrior Unit.");
 			} else if (unit != null && unit.id.equals("u_archer")) {
 				defValue *= 1.1;
 //				CivMessage.send(p, CivColor.LightGrayItalic+"+10% defense with Archer Unit.");
-			}
+			}*/
 			
 			if (!res.hasTechForItem(stack)) {
 				defValue = defValue / 2;

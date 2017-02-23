@@ -35,12 +35,13 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.StoreMaterial;
 import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.Town;
+import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
+import com.avrgaming.civcraft.util.SimpleBlock;
 
 public class Store extends Structure {
 	
 	private int level = 1;
-	
 	private NonMemberFeeComponent nonMemberFeeComponent;
 	
 	ArrayList<StoreMaterial> materials = new ArrayList<StoreMaterial>();
@@ -49,6 +50,7 @@ public class Store extends Structure {
 		super(center, id, town);
 		nonMemberFeeComponent = new NonMemberFeeComponent(this);
 		nonMemberFeeComponent.onSave();
+		setLevel(town.saved_store_level);
 	}
 	
 	protected Store(ResultSet rs) throws SQLException, CivException {
@@ -56,7 +58,12 @@ public class Store extends Structure {
 		nonMemberFeeComponent = new NonMemberFeeComponent(this);
 		nonMemberFeeComponent.onLoad();
 	}
-
+	
+	@Override
+	public void onPostBuild(BlockCoord absCoord, SimpleBlock commandBlock) {
+		this.level = getTown().saved_store_level;
+	}
+	
 	public int getLevel() {
 		return level;
 	}

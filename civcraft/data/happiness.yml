@@ -7,7 +7,7 @@ happiness:
     per_resident: 0.0
     # Empire Unhappiness, how much unhappiness to add, per town, to the entire
     # civilization's towns.
-    per_town: 0.0
+    per_town: 0.5
     # Captured Town Unhappiness. Amount of unhappiness to add to each non-captured town
     # for each captured town in the civ.
     per_captured_town: 1.5
@@ -20,7 +20,7 @@ happiness:
     # Maximum amount of distance unhappiness
     distance_max: 10.0
     # Amount of happiness generated per war, as the aggressor
-    per_war: 2.0
+    per_war: 1.5
     # Amount of extra happiness generated per score difference between aggressor and victim civ.
     # Rounded to the nearest whole number (-1, -2, etc)
     per_war_score: 0.0001
@@ -63,71 +63,68 @@ happiness:
           name: 'Revolt'
           color: 'Red'
           amount: 0.0
-          beaker_rate: 0.20
-          coin_rate: 0.20
-          culture_rate: 0.20
-          hammer_rate: 0.20
-
+          growth_rate: 0.25
+          hammer_rate: 0.25
+          beaker_rate: 0.25
+          culture_rate: 0.25
+          coin_rate: 0.25
+#
         - level: 1
           name: 'Unrest'
           color: 'Rose'
-          amount: 0.2
-          beaker_rate: 0.5
-          coin_rate: 0.5
-          culture_rate: 0.5
-          hammer_rate: 0.5
-
+          amount: 0.19
+          growth_rate: 0.50
+          hammer_rate: 0.50
+          beaker_rate: 0.50
+          culture_rate: 0.50
+          coin_rate: 0.50
+#
         - level: 2
           name: 'Unhappy'
           color: 'Gold'
-          amount: 0.4
-          beaker_rate: 0.75
-          coin_rate: 0.75
-          culture_rate: 0.75
+          amount: 0.38
+          growth_rate: 0.75
           hammer_rate: 0.75
-
+          beaker_rate: 0.75
+          culture_rate: 0.75
+          coin_rate: 0.75
+#
         - level: 3
           name:  'Content'
           color: 'White'
           amount: 0.5
-          beaker_rate: 1.0
-          coin_rate: 1.0
-          culture_rate: 1.0
+          growth_rate: 1.0
           hammer_rate: 1.0
-
+          beaker_rate: 1.0
+          culture_rate: 1.0
+          coin_rate: 1.0
+#
         - level: 4
           name:  'Happy'
           color: 'LightGreen'
-          amount: 0.7
-          beaker_rate: 1.15
-          coin_rate: 1.15
-          culture_rate: 1.15
+          amount: 0.69
+          growth_rate: 1.15
           hammer_rate: 1.15
-
+          beaker_rate: 1.15
+          culture_rate: 1.15
+          coin_rate: 1.15
+#
         - level: 5
           name:  'Elated'
           color: 'LightBlue'
           amount: 0.85
-          beaker_rate: 1.30
-          coin_rate: 1.30
-          culture_rate: 1.30
+          growth_rate: 1.30
           hammer_rate: 1.30
-
+          beaker_rate: 1.30
+          culture_rate: 1.30
+          coin_rate: 1.30
+#
         - level: 6
           name:  'Ecstatic'
           color: 'LightPurple'
           amount: 0.92
-          beaker_rate: 1.5
-          coin_rate: 1.5
-          culture_rate: 1.5
+          growth_rate: 1.5
           hammer_rate: 1.5
-
-
-
-
-
-
-
-
-
-    
+          beaker_rate: 1.5
+          culture_rate: 1.5
+          coin_rate: 1.5

@@ -169,6 +169,11 @@ public abstract class Wonder extends Buildable {
 		SQL.deleteNamedObject(this, TABLE_NAME);
 		CivGlobal.removeWonder(this);
 	}
+	
+	@Override
+	public void updateDistrict() {
+		
+	}
 
 	@Override
 	public void updateBuildProgess() {

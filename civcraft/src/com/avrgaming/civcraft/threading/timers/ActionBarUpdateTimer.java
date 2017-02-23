@@ -15,14 +15,15 @@ public class ActionBarUpdateTimer implements Runnable {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			Resident res = CivGlobal.getResident(p);
 			
-			String citLevel = "Coming Soon";
-			String citXP = " (0/64)";
+//			String citLevel = "Coming Soon";
+//			String citXP = " (0/64)";
 			int exposure = (int) res.getSpyExposure();
 			
 			ActionBar abl = new ActionBar(
-					CivColor.Gold+CivColor.BOLD+" Citizen Level: "+CivColor.LightGreen+CivColor.ITALIC+citLevel+citXP
-					+CivColor.Gray+CivColor.BOLD+" |"
-					+CivColor.Gold+CivColor.BOLD+" Spy Exposure: "+CivColor.LightGreen+CivColor.ITALIC+exposure);
+//					CivColor.Gold+CivColor.BOLD+" Citizen Level: "+CivColor.LightGreen+CivColor.ITALIC+citLevel+citXP
+//					+CivColor.Gray+CivColor.BOLD+" |"
+//					+CivColor.Gold+CivColor.BOLD+" Spy Exposure: "+CivColor.LightGreen+CivColor.ITALIC+exposure);
+					CivColor.Gold+CivColor.BOLD+" Spy Exposure: "+CivColor.LightGreen+CivColor.ITALIC+exposure);
 			abl.sendToAll();
 		}
 	}

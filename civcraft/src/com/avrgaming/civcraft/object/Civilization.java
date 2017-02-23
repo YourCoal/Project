@@ -230,6 +230,12 @@ public class Civilization extends SQLObject {
 		this.setTreasury(new EconObject(this));
 		this.getTreasury().setBalance(rs.getDouble("coins"), false);
 		this.getTreasury().setDebt(rs.getDouble("debt"));
+		
+		for (ConfigTech tech : this.getTechs()) {
+			if (tech.era > this.getCurrentEra() && !this.isAdminCiv()) {
+				this.setCurrentEra(tech.era);
+			}
+		}
 	}
 
 	@Override
@@ -354,13 +360,23 @@ public class Civilization extends SQLObject {
 	}
 	
 	public void addTech(ConfigTech t) {
+		if (t.era > this.getCurrentEra()) {
+			this.setCurrentEra(t.era);
+		}
+		
 		CivGlobal.researchedTechs.add(t.id.toLowerCase());
 		techs.put(t.id, t);
-		
 		for (Town town : this.getTowns()) {
 			town.onTechUpdate();
 		}
-		
+	}
+	
+	public void addAdminAllTech(ConfigTech t) {
+		CivGlobal.researchedTechs.add(t.id.toLowerCase());
+		techs.put(t.id, t);
+		for (Town town : this.getTowns()) {
+			town.onTechUpdate();
+		}
 	}
 	
 	public void removeTech(ConfigTech t) {
@@ -1005,7 +1021,7 @@ public class Civilization extends SQLObject {
 		TaskMaster.asyncTask(new UpdateTechBar(this), 0);
 		setResearchProgress(getResearchProgress() + beakers);
 		
-		if (getResearchProgress() >= getResearchTech().beaker_cost) {
+		if (getResearchProgress() >= getResearchTech().getAdjustedBeakerCost(this)) {
 			CivMessage.sendCiv(this, "Our civilization has discovered "+getResearchTech().name+"!");
 			this.addTech(this.getResearchTech());
 			this.setResearchProgress(0);
@@ -1016,7 +1032,7 @@ public class Civilization extends SQLObject {
 			return;
 		}
 		
-		int percentageComplete = (int)((getResearchProgress() / this.getResearchTech().beaker_cost)*100);
+		int percentageComplete = (int)((getResearchProgress() / this.getResearchTech().getAdjustedBeakerCost(this))*100);
 		if ((percentageComplete % 10) == 0) {
 			
 			if (percentageComplete != lastTechPercentage) {
@@ -1036,8 +1052,8 @@ public class Civilization extends SQLObject {
 					"If you want to change your focus, use /civ research switch instead.");
 		}
 		
-		if (!this.getTreasury().hasEnough(tech.cost)) {
-			throw new CivException("Our Civilization's treasury does have the required "+tech.cost+" coins to start this research.");
+		if (!this.getTreasury().hasEnough(tech.getAdjustedTechCost(this))) {
+			throw new CivException("Our Civilization's treasury does have the required "+tech.getAdjustedTechCost(this)+" coins to start this research.");
 		}
 		
 		if (this.hasTech(tech.id)) {
@@ -1052,7 +1068,7 @@ public class Civilization extends SQLObject {
 		this.setResearchProgress(0.0);
 		CivMessage.sendCiv(this, "Your civilization started researching "+tech.name+"!");
 		
-		this.getTreasury().withdraw(tech.cost);
+		this.getTreasury().withdraw(tech.getAdjustedTechCost(this));
 		TaskMaster.asyncTask(new UpdateTechBar(this),0);
 	}
 

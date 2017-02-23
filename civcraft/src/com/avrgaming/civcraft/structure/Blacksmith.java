@@ -18,8 +18,6 @@
  */
 package com.avrgaming.civcraft.structure;
 
-import gpl.AttributeUtil;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -55,6 +53,8 @@ import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.TimeTools;
+
+import gpl.AttributeUtil;
 
 public class Blacksmith extends Structure {
 	

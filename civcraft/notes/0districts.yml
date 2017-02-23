@@ -1,0 +1,54 @@
+  - Default: (Gives No Benefits)
+      - Town Hall
+      - Capitol
+      - Any Unlisted Structure
+
+  - Campus:
+      - Library (+15 Beakers for every River biome)
+      - School
+      - University
+
+  - Encampment:
+      - Barracks
+      - Blacksmith (+1 Ore output gain for every Extreme Hills biome)
+      - Stable
+      - Scout Tower (+16 block distance for every town level)
+      - Arrow Tower (+0.5 damage on arrows)
+      - Cannon Tower (+1.0 damage on cannon balls)
+      - Walls
+
+  - Harbor:
+      - Shipyard
+      - Fishing Boat
+      - Lighthouse
+
+  - Commercial Hub:
+      - Bank
+      - Market
+      - Trade Outpost
+      - Stock Exchange
+
+  - Industrial:
+      - Trommel
+      - Quarry
+      - Factory
+      - Grocer
+      - Store
+
+  - Agricultural:
+      - Farm (+25 Growth Per Farm)
+      - Granary
+      - Windmill (+2 Seeds Planted Per Windmill or Granary)
+      - Lumber Mill
+      - Pasture
+
+  - Holy Site:
+      - Temple
+
+  - Production:
+      - Mine
+      - Lab
+      - Monument
+
+  - NeighborHood:
+      - Cottage

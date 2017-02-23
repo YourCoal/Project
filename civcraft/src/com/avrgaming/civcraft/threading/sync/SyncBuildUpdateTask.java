@@ -84,12 +84,16 @@ public class SyncBuildUpdateTask implements Runnable {
 						ItemManager.setData(block, 0);
 						break;
 					case LITERAL:
-						s = (Sign)block.getState();
-						for (int j = 0; j < 4; j++) {
-							s.setLine(j, next.message[j]);
+						if (block.getState() instanceof Sign) {
+							s = (Sign)block.getState();
+							for (int j = 0; j < 4; j++) {
+								s.setLine(j, next.message[j]);
+							}
+							s.update();
+						} else {
+							ItemManager.setTypeId(block, CivData.AIR);
+							ItemManager.setData(block, 0);
 						}
-						
-						s.update();
 						break;
 					case NORMAL:
 						break;

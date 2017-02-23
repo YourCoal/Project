@@ -20,6 +20,7 @@ package com.avrgaming.civcraft.threading.timers;
 
 import java.text.DecimalFormat;
 
+import com.avrgaming.civcraft.items.BonusGoodie;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Town;
@@ -32,25 +33,41 @@ public class SyncTradeTimer implements Runnable {
 	}
 	
 	public void processTownsTradePayments(Town town) {
-		
 		//goodies = town.getEffectiveBonusGoodies();
-		
 		//double payment = TradeGood.getTownTradePayment(town, goodies);
 		double payment = TradeGood.getTownTradePayment(town);
-		DecimalFormat df = new DecimalFormat();
+		DecimalFormat df = new DecimalFormat("0.0");
 		
 		if (payment > 0.0) {
-			
 			double taxesPaid = payment*town.getDepositCiv().getIncomeTaxRate();
 			if (taxesPaid > 0) {
-				CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.Yellow+df.format(payment)+CivColor.LightGreen+" coins from trade."+
+				CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.Yellow+df.format(payment)+CivColor.LightGreen+" Coins from trade."+
 					CivColor.Yellow+" (Paid "+df.format(taxesPaid)+" in taxes to "+town.getDepositCiv().getName()+")");
 			} else {
-				CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.Yellow+df.format(payment)+CivColor.LightGreen+" coins from trade.");
+				CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.Yellow+df.format(payment)+CivColor.LightGreen+" Coins from trade.");
 			}
-			
 			town.getTreasury().deposit(payment - taxesPaid);
 			town.getDepositCiv().taxPayment(town, taxesPaid);
+		}
+		
+		double addCulture = 0.0;
+		int addFood = 0;
+		for (BonusGoodie goodie : town.getBonusGoodies()) {
+			addCulture += goodie.getAddedCulture();
+			if (addCulture >= 0.0) {
+				town.addAccumulatedCulture(addCulture);
+			}
+			addFood += goodie.getAddedFood();
+			if (addFood >= 0) {
+				town.getFood().giveFood(addFood);
+			}
+		}
+		
+		if (addCulture > 0.0) {
+			CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.Yellow+df.format(addCulture)+CivColor.LightGreen+" Culture from trade.");
+		}
+		if (addFood > 0) {
+			CivMessage.sendTown(town, CivColor.LightGreen+"Generated "+CivColor.Yellow+df.format(addFood)+CivColor.LightGreen+" Food from trade.");
 		}
 	}
 	
@@ -61,7 +78,6 @@ public class SyncTradeTimer implements Runnable {
 		}
 
 		CivGlobal.checkForDuplicateGoodies();
-		
 		for (Town town : CivGlobal.getTowns()) {
 			try {
 				processTownsTradePayments(town);
@@ -70,5 +86,4 @@ public class SyncTradeTimer implements Runnable {
 			}
 		}
 	}
-
 }

@@ -290,7 +290,7 @@ public class CivBook {
 			guiInventory.setItem(8, gameInfo);
 			
 			ItemStack buildMenu = LoreGuiItem.build("Building Menu", ItemManager.getId(Material.SLIME_BLOCK), 0, CivColor.Gold+"<Click to View>");
-			buildMenu = LoreGuiItem.setAction(buildMenu, "BuildMenuList");
+			buildMenu = LoreGuiItem.setAction(buildMenu, "_1BuildMenuList");
 			guiInventory.setItem(9, buildMenu);
 			//TODO Put this in BuildMenuList \/ \/ \/ \/ \/
 //			ItemStack upgradeMenu = LoreGuiItem.build("Town Upgrades", ItemManager.getId(Material.ARMOR_STAND), 0, CivColor.Gold+"<Click to View>");
@@ -302,7 +302,7 @@ public class CivBook {
 			guiInventory.setItem(10, perkMenu);
 			
 			ItemStack techMenu = LoreGuiItem.build("Research Technology", ItemManager.getId(Material.POTION), 8267, CivColor.Gold+"<Click to View>");
-			techMenu = LoreGuiItem.setAction(techMenu, "BuildTechnologyList");
+			techMenu = LoreGuiItem.setAction(techMenu, "_2BuildTechnologyList");
 			guiInventory.setItem(18, techMenu);
 			
 			ItemStack turorialMenu = LoreGuiItem.build("In-game Wiki", ItemManager.getId(Material.RED_ROSE), 1, CivColor.Gold+"<Click to View>", "wiki_tag000_COMING_SOON");

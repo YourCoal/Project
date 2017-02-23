@@ -79,7 +79,7 @@ scout_tower:
 
 arrow_tower:
     # Damage done per hit from arrow tower
-    damage: 6
+    damage: 5
     # Range of the arrow tower
     range: 128.0
     # Min-range watch tower will target players at

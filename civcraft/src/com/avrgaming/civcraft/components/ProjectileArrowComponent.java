@@ -73,7 +73,7 @@ public class ProjectileArrowComponent extends ProjectileComponent {
 		arrow.setVelocity(dir.multiply(power));
 		
 		if (buildable.getTown().getBuffManager().hasBuff(Buff.FIRE_BOMB)) {
-			arrow.setFireTicks(1000);
+			arrow.setFireTicks(2000);
 		}
 		
 		CivCache.arrowsFired.put(arrow.getUniqueId(), new ArrowFiredCache(this, targetEntity, arrow, this.getDamage()));
