@@ -129,10 +129,29 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
-					} else if (info.tier == 0) {
+					} else if (info.tier == 11) {
+						type = ItemManager.getId(Material.END_CRYSTAL);
+						is = LoreGuiItem.build(info.name, type, 0,
+								CivColor.LightBlueBold+"<VICTORY TECHNOLOGY!!!>",
+								CivColor.Gold+"<Click To Research>",
+								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
+								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
+						is = LoreGuiItem.setActionData(is, "info", info.id);
+						guiInventory.addItem(is);
+					} else if (info.tier == 99) {
 						type = ItemManager.getId(Material.CHORUS_PLANT);
 						is = LoreGuiItem.build(info.name, type, 0,
 								CivColor.Gold+"<Click To Research>  "+CivColor.LightPurple+"<Wonder Tech>",
+								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
+								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
+						is = LoreGuiItem.setActionData(is, "info", info.id);
+						guiInventory.addItem(is);
+					} else {
+						type = ItemManager.getId(Material.DIRT);
+						is = LoreGuiItem.build(info.name, type, 0,
+								CivColor.RoseItalic+"<Click To Research>  "+CivColor.LightPurple+"<Tech W/out Item>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
 								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");

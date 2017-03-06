@@ -444,7 +444,7 @@ public class AdminTownCommand extends CommandBase {
 		Town town = getNamedTown(1);
 		
 		try {
-			town.setHammerRate(Double.valueOf(args[2]));
+			town.setProductionRate(Double.valueOf(args[2]));
 			CivMessage.sendSuccess(sender, "Set "+args[1]+" hammer rate to "+args[2]);
 		} catch (NumberFormatException e) {
 			throw new CivException(args[2]+" is not a number.");

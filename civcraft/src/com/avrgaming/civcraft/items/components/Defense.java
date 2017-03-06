@@ -14,6 +14,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
+import com.avrgaming.civcraft.config.ConfigUnit;
+import com.avrgaming.civcraft.items.units.Unit;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancement;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementDefense;
 import com.avrgaming.civcraft.main.CivGlobal;
@@ -133,14 +135,12 @@ public class Defense extends ItemComponent {
 				}
 			}
 			
-/*			ConfigUnit unit = Unit.getPlayerUnit(p);
-			if (unit != null && unit.id.equals("u_warrior")) {
-				defValue = defValue - (defValue*0.1);
-//				CivMessage.send(p, CivColor.LightGrayItalic+"-10% defense with Warrior Unit.");
-			} else if (unit != null && unit.id.equals("u_archer")) {
-				defValue *= 1.1;
-//				CivMessage.send(p, CivColor.LightGrayItalic+"+10% defense with Archer Unit.");
-			}*/
+			ConfigUnit unit = Unit.getPlayerUnit(p);
+			if (unit != null && unit.id.equals("u_berserker")) {
+				defValue *= 1.15;
+			} else if (unit != null && unit.id.equals("u_spearman")) {
+				defValue *= 1.30;
+			}
 			
 			if (!res.hasTechForItem(stack)) {
 				defValue = defValue / 2;

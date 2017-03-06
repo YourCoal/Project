@@ -16,17 +16,21 @@ public class PlayerTagUpdateTimer implements Runnable {
 		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 			Resident res = CivGlobal.getResident(p);
 			String pName;
-			if (res.getCiv() != null) {
-				pName = CivColor.LightPurple+CivColor.BOLD+" ["+StringUtils.left(res.getCiv().getName(), 5)+"]";
-			} else if (res.getCiv() == null && res.getCamp() != null) {
-				pName = CivColor.Gold+CivColor.BOLD+" ["+StringUtils.left(res.getCamp().getName(), 5)+"]";
+			if (res == null) {
+				pName = CivColor.RoseItalic+" [resident NULL]";
 			} else {
-				pName = CivColor.LightGray+CivColor.BOLD+" [-----]";
-			}
-			NametagEdit.getApi().setSuffix(p, pName);
-			
-			if (p.isOp()) {
-				NametagEdit.getApi().setPrefix(p, CivColor.RedBold+"[A] "+CivColor.LightGray);
+				if (res.getCiv() != null) {
+					pName = CivColor.LightPurpleBold+" ["+StringUtils.left(res.getCiv().getName(), 5)+"]";
+				} else if (res.getCiv() == null && res.getCamp() != null) {
+					pName = CivColor.GoldBold+" ["+StringUtils.left(res.getCamp().getName(), 5)+"]";
+				} else {
+					pName = CivColor.LightGrayBold+" [-----]";
+				}
+				NametagEdit.getApi().setSuffix(p, pName);
+				
+				if (p.isOp()) {
+					NametagEdit.getApi().setPrefix(p, CivColor.RedBold+"[A] "+CivColor.LightGray);
+				}
 			}
 		}
 	}

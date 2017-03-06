@@ -197,8 +197,8 @@ public class Bank extends Structure {
 		giveToTown = Math.round(giveToTown);
 		giveToPlayer = Math.round(giveToPlayer);
 		
-			this.getTown().depositDirect(giveToTown);
-			resident.getTreasury().deposit(giveToPlayer);
+		this.getTown().depositDirect(giveToTown);
+		resident.getTreasury().deposit(giveToPlayer);
 		
 		CivMessage.send(player, CivColor.LightGreen + "Exchanged 1 "+itemName+" for "+ giveToPlayer+ " coins.");
 		CivMessage.send(player,CivColor.Yellow+" Paid "+giveToTown+" coins in non-resident taxes.");
@@ -240,7 +240,6 @@ public class Bank extends Structure {
 	@Override
 	public void updateSignText() {
 		for (StructureSign sign : getSigns()) {
-			
 			switch (sign.getAction().toLowerCase()) {
 			case "iron":
 				sign.setText("Iron\n"+
@@ -267,8 +266,6 @@ public class Bank extends Structure {
 							getNonResidentFeeString());
 					break;
 			}
-				
-			
 			sign.update();
 		}
 	}
@@ -311,7 +308,6 @@ public class Bank extends Structure {
 	
 	@Override
 	public void onDailyEvent() {
-		
 		/* Process the interest rate. */
 		double effectiveInterestRate = interestRate;
 		if (effectiveInterestRate == 0.0) {
@@ -328,7 +324,6 @@ public class Bank extends Structure {
 		}
 		
 		double newCoins = principal*effectiveInterestRate;
-
 		//Dont allow fractional coins.
 		newCoins = Math.floor(newCoins);
 		
@@ -340,7 +335,6 @@ public class Bank extends Structure {
 		
 		/* Update the principal with the new value. */
 		this.getTown().getTreasury().setPrincipalAmount(this.getTown().getTreasury().getBalance());
-		
 	}
 	
 	@Override
@@ -364,5 +358,4 @@ public class Bank extends Structure {
 	public void onGoodieToFrame() {
 		this.updateSignText();
 	}
-	
 }

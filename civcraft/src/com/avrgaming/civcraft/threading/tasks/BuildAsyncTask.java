@@ -41,7 +41,7 @@ import com.avrgaming.civcraft.util.SimpleBlock.Type;
 public class BuildAsyncTask extends CivAsyncTask {
 	/*
 	 * This task slow-builds a struct block-by-block based on the 
-	 * town's hammer rate. This task is per-structure building and will
+	 * town's production rate. This task is per-structure building and will
 	 * use the CivAsynTask interface to send synchronous requests to the main
 	 * thread to build individual blocks.
 	 */
@@ -173,7 +173,7 @@ public class BuildAsyncTask extends CivAsyncTask {
 					Thread.sleep(min);
 					timeleft -= 10000;
 					
-					/* Calculate our speed again in case our hammer rate has changed. */
+					/* Calculate our speed again in case our production rate has changed. */
 					int newSpeed = buildable.getBuildSpeed();
 					if(newSpeed != speed) {
 						speed = newSpeed;
@@ -344,18 +344,18 @@ public class BuildAsyncTask extends CivAsyncTask {
 
 	}
 	
-	public double setExtraHammers(double extra_hammers) {
+	public double setExtraProduction(double extra_production) {
 		
-		double leftover_hammers = 0.0;
-		//Get the total number of blocks represented by the extra hammers.
+		double leftover_production = 0.0;
+		//Get the total number of blocks represented by the extra production.
 		synchronized(this) {
-			this.extra_blocks = (int)(buildable.getBlocksPerHammer()*extra_hammers);
+			this.extra_blocks = (int)(buildable.getBlocksPerProduction()*extra_production);
 			int blocks_left = buildable.getTotalBlockCount() - buildable.getBuiltBlockCount();
 			if (this.extra_blocks > blocks_left) {
-				leftover_hammers = (this.extra_blocks - blocks_left)/buildable.getBlocksPerHammer();
+				leftover_production = (this.extra_blocks - blocks_left)/buildable.getBlocksPerProduction();
 			}
 		}
-		return leftover_hammers;
+		return leftover_production;
 	}
 
 	public void abort() {

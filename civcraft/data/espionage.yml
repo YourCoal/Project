@@ -64,8 +64,8 @@ missions:
       compromise_chance: 0.01
       intel: 0
       length: 30
-      slot: 7
-
+      slot: 4
+#
     - id: 'spy_steal_treasury'
       name: 'Steal Treasury'
       description: 
@@ -78,22 +78,22 @@ missions:
       compromise_chance: 0.25
       intel: 2
       length: 140
-      slot: 6
-
-    - id: 'spy_incite_riots'
-      name: 'Incite Riots'
-      description: 
-          - 'Incites riots in the target town.'
-          - 'Causes between 5 to 10 unhappiness for 3 days.'
-      cost: 20000.0
-      range: 50.0
-      cooldown: 2.0
-      fail_chance: 0.3
-      compromise_chance: 0.25
-      intel: 2
-      length: 120
-      slot: 6
-
+      slot: 5
+#
+#    - id: 'spy_incite_riots'
+#      name: 'Incite Riots'
+#      description: 
+#          - 'Incites riots in the target town.'
+#          - 'Causes between 5 to 10 unhappiness for 3 days.'
+#      cost: 20000.0
+#      range: 50.0
+#      cooldown: 2.0
+#      fail_chance: 0.3
+#      compromise_chance: 0.25
+#      intel: 2
+#      length: 120
+#      slot: 6
+#
 #    - id: 'spy_subvert_government'
 #      name: 'Subvert Government'
 #      description: 
@@ -106,7 +106,7 @@ missions:
 #      fail_chance: 0.40
 #      compromise_chance: 1.0
 #      slot: 5
-
+#
     - id: 'spy_poison_granary'
       name: 'Poison Granary'
       description: 
@@ -119,8 +119,8 @@ missions:
       compromise_chance: 0.1
       intel: 0
       length: 60
-      slot: 4
-    
+      slot: 6
+#
     - id: 'spy_pirate'
       name: 'Pirate'
       description: 
@@ -133,8 +133,8 @@ missions:
       compromise_chance: 0.00
       intel: 0
       length: 60
-      slot: 3
- 
+      slot: 7
+#
     - id: 'spy_sabotage'
       name: 'Sabotage'
       description: 
@@ -147,8 +147,8 @@ missions:
       compromise_chance: 0.5
       intel: 4
       length: 300
-      slot: 2
-    
+      slot: 34
+#
     - id: 'spy_sabotage_wonder'
       name: 'Sabotage'
       description: 
@@ -161,4 +161,4 @@ missions:
       compromise_chance: 0.5
       intel: 4
       length: 300
-      slot: -1
+      slot: 35

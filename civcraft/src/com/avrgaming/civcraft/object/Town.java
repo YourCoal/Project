@@ -95,8 +95,8 @@ public class Town extends SQLObject {
 	private ConcurrentHashMap<ChunkCoord, TownChunk> outposts = new ConcurrentHashMap<ChunkCoord, TownChunk>();
 	private ConcurrentHashMap<ChunkCoord, CultureChunk> cultureChunks = new ConcurrentHashMap<ChunkCoord, CultureChunk>();
 	
-	private ConcurrentHashMap<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
-	private ConcurrentHashMap<BlockCoord, Structure> structures = new ConcurrentHashMap<BlockCoord, Structure>();
+	public ConcurrentHashMap<BlockCoord, Wonder> wonders = new ConcurrentHashMap<BlockCoord, Wonder>();
+	public ConcurrentHashMap<BlockCoord, Structure> structures = new ConcurrentHashMap<BlockCoord, Structure>();
 	private ConcurrentHashMap<BlockCoord, Buildable> disabledBuildables = new ConcurrentHashMap<BlockCoord, Buildable>();
 	
 	private int level;
@@ -106,9 +106,9 @@ public class Town extends SQLObject {
 	private Civilization motherCiv;
 	private int daysInDebt;
 	
-	/* Hammers */
-	private double baseHammers = 1.0;
-	private double extraHammers;
+	/* Production */
+	private double baseProduction = 1.0;
+	private double extraProduction;
 	public Buildable currentStructureInProgress;
 	public Buildable currentWonderInProgress;
 	
@@ -211,7 +211,7 @@ public class Town extends SQLObject {
 					"`daysInDebt` int(11) DEFAULT 0,"+
 					"`flat_tax` double NOT NULL DEFAULT '0'," + 
 					"`tax_rate` double DEFAULT 0," + 
-					"`extra_hammers` double DEFAULT 0," +
+					"`extra_production` double DEFAULT 0," +
 					"`culture` double DEFAULT 0," +
 					"`created_date` long," +
 					"`outlaws` mediumtext DEFAULT NULL,"+
@@ -266,7 +266,7 @@ public class Town extends SQLObject {
 		this.setUpgradesFromString(rs.getString("upgrades"));
 		
 		//this.setHomeChunk(rs.getInt("homechunk_id"));
-		this.setExtraHammers(rs.getDouble("extra_hammers"));
+		this.setExtraProduction(rs.getDouble("extra_production"));
 		this.setAccumulatedCulture(rs.getDouble("culture"));
 		
 		defaultGroupName = "residents";
@@ -325,7 +325,7 @@ public class Town extends SQLObject {
 		hashmap.put("daysInDebt", this.getDaysInDebt());
 		hashmap.put("flat_tax", this.getFlatTax());
 		hashmap.put("tax_rate", this.getTaxRate());
-		hashmap.put("extra_hammers", this.getExtraHammers());
+		hashmap.put("extra_production", this.getExtraProduction());
 		hashmap.put("culture", this.getAccumulatedCulture());
 		hashmap.put("upgrades", this.getUpgradesString());
 		hashmap.put("coins", this.getTreasury().getBalance());
@@ -410,8 +410,8 @@ public class Town extends SQLObject {
 		this.setCiv(civ);
 		
 		this.setDaysInDebt(0);
-		this.setHammerRate(1.0);
-		this.setExtraHammers(0);	
+		this.setProductionRate(1.0);
+		this.setExtraProduction(0);	
 		this.setAccumulatedCulture(0.0);
 		this.setTreasury(new EconObject(this));	
 		this.getTreasury().setBalance(0, false);
@@ -429,7 +429,7 @@ public class Town extends SQLObject {
 	
 	public void loadSettings() {
 		try {
-			this.baseHammers = CivSettings.getDouble(CivSettings.townConfig, "town.base_hammer_rate");
+			this.baseProduction = CivSettings.getDouble(CivSettings.townConfig, "town.base_production_rate");
 			this.setBaseGrowth(CivSettings.getDouble(CivSettings.townConfig, "town.base_growth_rate"));
 			
 //			this.happyCoinRate = new AttributeComponent();
@@ -523,12 +523,9 @@ public class Town extends SQLObject {
 	}
 	
 	public void addTownChunk(TownChunk tc) throws AlreadyRegisteredException {
-		
 		if (townChunks.containsKey(tc.getChunkCoord())) {
 			throw new AlreadyRegisteredException("TownChunk at "+tc.getChunkCoord()+" already registered to town "+this.getName());
 		}
-		tc.district.setType("default");
-		tc.district.setID(0);
 		townChunks.put(tc.getChunkCoord(), tc);
 	}
 	
@@ -701,30 +698,30 @@ public class Town extends SQLObject {
 		return as;
 	}
 
-	public double getExtraHammers() {
-		return extraHammers;
+	public double getExtraProduction() {
+		return extraProduction;
 	}
 
 
-	public void setExtraHammers(double extraHammers) {
-		this.extraHammers = extraHammers;
+	public void setExtraProduction(double extraProduction) {
+		this.extraProduction = extraProduction;
 	}
 	
-	public AttrSource getHammerRate() {
+	public AttrSource getProductionRate() {
 		double rate = 1.0;
 		HashMap<String, Double> rates = new HashMap<String, Double>();
 
 		/* Happiness */
 		ConfigHappinessState state = CivSettings.getHappinessState(this.getHappinessPercentage());
-		double hapRate = 1.0 * state.hammer_rate;
+		double hapRate = 1.0 * state.production_rate;
 		rates.put("Happiness", hapRate - 1.0);
 		
 		/* Government */
-		double govRate = 1.0 * getGovernment().hammer_rate;
+		double govRate = 1.0 * getGovernment().production_rate;
 		rates.put("Government", govRate - 1.0);
 		
 		/* Random Event */
-		double randRate = 1.0 * RandomEvent.getHammerRate(this);
+		double randRate = 1.0 * RandomEvent.getProductionRate(this);
 		rates.put("Random Events", randRate - 1.0);
 		
 		double buffRate1 = getBuffManager().getEffectiveDouble(Buff.CONSTRUCTION);
@@ -746,7 +743,7 @@ public class Town extends SQLObject {
 		return new AttrSource(rates, finRate, null);
 	}
 	
-	public AttrSource getHammers() {
+	public AttrSource getProduction() {
 		HashMap<String, Double> sources = new HashMap<String, Double>();
 		int total = 0;
 		
@@ -763,17 +760,17 @@ public class Town extends SQLObject {
 			}
 		}
 		
-		double culture = this.getHammersFromCulture();
+		double culture = this.getProductionFromCulture();
 		sources.put("Culture Biomes", culture);
 		total += culture; 
 		
-		/* Grab hammers generated from structures with components. */
+		/* Grab production generated from structures with components. */
 		double structures = 0;
 		double mines = 0;
 		for (Structure struct : this.structures.values()) {
 			if (struct instanceof Mine) {
 				Mine mine = (Mine)struct;
-				mines += mine.getBonusHammers(); 
+				mines += mine.getBonusProduction(); 
 			}
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
@@ -790,14 +787,14 @@ public class Town extends SQLObject {
 		total += structures;
 		sources.put("Structures", structures);
 		
-		sources.put("Base Hammers", this.baseHammers);
-		total += this.baseHammers;
+		sources.put("Base Production", this.baseProduction);
+		total += this.baseProduction;
 		
-		AttrSource rate = getHammerRate();
+		AttrSource rate = getProductionRate();
 		total *= rate.total;
 		
-		if (total < this.baseHammers) {
-			total = (int) this.baseHammers;
+		if (total < this.baseProduction) {
+			total = (int) this.baseProduction;
 		}
 		
 		AttrSource as = new AttrSource(sources, total, rate);
@@ -806,8 +803,8 @@ public class Town extends SQLObject {
 		return as;
 	}
 	
-	public void setHammerRate(double hammerRate) {
-		this.baseHammers = hammerRate;
+	public void setProductionRate(double productionRate) {
+		this.baseProduction = productionRate;
 	}
 	
 	public static Town newTown(Resident resident, String name, Civilization civ, boolean free, boolean capitol, Location loc) throws CivException {
@@ -948,15 +945,13 @@ public class Town extends SQLObject {
 			ChunkCoord cl = new ChunkCoord(loc);
 			TownChunk tc = new TownChunk(newTown, cl);
 			tc.perms.addGroup(residentsGroup);
-			tc.district.setType("default");
-			tc.district.setID(0);
 			try {
 				newTown.addTownChunk(tc);
 			} catch (AlreadyRegisteredException e1) {
 				throw new CivException("Town already has this town chunk?");
 			}
 
-			tc.save();
+			tc.saveNow();
 			CivGlobal.addTownChunk(tc);			
 			civ.addTown(newTown);
 			
@@ -1549,20 +1544,20 @@ public class Town extends SQLObject {
 		return count;
 	}
 	
-	public void giveExtraHammers(double extra) {
+	public void giveExtraProduction(double extra) {
 		if (build_tasks.size() == 0) {
-			//Nothing is building, store the extra hammers for when a structure starts building.
-			extraHammers = extra;
+			//Nothing is building, store the extra production for when a structure starts building.
+			extraProduction = extra;
 		} else {
 			//Currently building structures ... divide them evenly between 
-			double hammers_per_task = extra / build_tasks.size();
+			double production_per_task = extra / build_tasks.size();
 			double leftovers = 0.0;
 			
 			for (BuildAsyncTask task : build_tasks) {
-				leftovers += task.setExtraHammers(hammers_per_task);	
+				leftovers += task.setExtraProduction(production_per_task);	
 			}
 			
-			extraHammers = leftovers;
+			extraProduction = leftovers;
 		}
 		this.save();
 	}
@@ -1623,8 +1618,8 @@ public class Town extends SQLObject {
 		
 		try {
 			wonder.build(player, center, tpl);
-			if (this.getExtraHammers() > 0) {
-				this.giveExtraHammers(this.getExtraHammers());
+			if (this.getExtraProduction() > 0) {
+				this.giveExtraProduction(this.getExtraProduction());
 			}
 		} catch (Exception e) {
 			if (CivGlobal.testFileFlag("debug")) {
@@ -1681,7 +1676,7 @@ public class Town extends SQLObject {
 		
 		Resident res = CivGlobal.getResident(player);
 		TownChunk tChunk = CivGlobal.getTownChunk(player.getLocation());
-		if (tChunk.getTown() != res.getTown()) {
+		if (tChunk.getTown() != res.getTown() && res.hasTown()) {
 			throw new CivException("You must be standing in a chunk from YOUR town (not another town) to build a structure!");
 		}
 		
@@ -1710,8 +1705,8 @@ public class Town extends SQLObject {
 			}
 			struct.townChunksToSave.clear();
 			
-			if (this.getExtraHammers() > 0) {
-				this.giveExtraHammers(this.getExtraHammers());
+			if (this.getExtraProduction() > 0) {
+				this.giveExtraProduction(this.getExtraProduction());
 			}
 		} catch (CivException e) {
 			throw new CivException("Failed to build: "+e.getMessage());
@@ -1937,7 +1932,7 @@ public class Town extends SQLObject {
 		for (Structure struct : this.structures.values()) {
 /*			if (struct instanceof Mine) {
 				Mine mine = (Mine)struct;
-				mines += mine.getBonusHammers(); 
+				mines += mine.getBonusProduction(); 
 			}*/
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
@@ -2094,12 +2089,12 @@ public class Town extends SQLObject {
 		}
 	}
 
-	public Double getHammersFromCulture() {
-		double hammers = 0;
+	public Double getProductionFromCulture() {
+		double production = 0;
 		for (CultureChunk cc : this.cultureChunks.values()) {
-			hammers += cc.getHammers();
+			production += cc.getProduction();
 		}
-		return hammers;
+		return production;
 	}
 	
 	public Double getBeakersFromCulture() {
@@ -3439,9 +3434,9 @@ public class Town extends SQLObject {
 		double rate = 1.0;
 		
 		//Adjust for Government
-		double gov = getGovernment().hammer_rate;
+		double gov = getGovernment().production_rate;
 		//Adjust for Happiness
-		double hap = this.getHappinessState().hammer_rate;
+		double hap = this.getHappinessState().production_rate;
 		//Adjust for Trade Goods
 //		double buf = rate*this.getBuffManager().getEffectiveDouble(Buff.COTTAGE_RATE);
 		

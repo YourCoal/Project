@@ -35,95 +35,167 @@ units:
   - id: 'u_settler'
     name: "Settler"
     class_name: 'com.avrgaming.civcraft.items.units.Settler'
-    require_tech:
+    require_tech: 'tech_advanced_armory'
     require_struct:
     require_upgrade:
     cost: 10000.0
-    hammer_cost: 2500.0
+    production_cost: 2500.0
     limit: 0
     item_id: 330
+    item_data: 0
+#
+  - id: 'u_spy'
+    name: "Spy"
+    class_name: 'com.avrgaming.civcraft.items.units.Spy'
+    require_tech: 'tech_advanced_masonry:tech_military_engineering'
+    require_struct:
+    require_upgrade:
+    cost: 20000.0
+    production_cost: 2000.0
+    limit: 1
+    item_id: 381
     item_data: 0
 #
   - id: 'u_warrior'
     name: "Warrior"
     class_name: 'com.avrgaming.civcraft.items.units.Warrior'
-    require_tech: ''
+    require_tech: 'tech_military_tactics'
     require_struct:
     require_upgrade:
     cost: 10000.0
-    hammer_cost: 1000.0
+    production_cost: 1000.0
     limit: 1
-    item_id: 399
+    item_id: 167
     item_data: 0
 #
   - id: 'u_archer'
     name: "Archer"
     class_name: 'com.avrgaming.civcraft.items.units.Archer'
-    require_tech: ''
+    require_tech: 'tech_military_tactics'
     require_struct:
     require_upgrade:
     cost: 10000.0
-    hammer_cost: 1000.0
+    production_cost: 1000.0
     limit: 1
-    item_id: 399
+    item_id: 96
     item_data: 0
-
-  - id: 'u_spy'
-    name: "Spy"
-    class_name: 'com.avrgaming.civcraft.items.units.Spy'
-    require_tech: 'tech_nationalism'
+#
+  - id: 'u_berserker'
+    name: "Berserker"
+    class_name: 'com.avrgaming.civcraft.items.units.Berserker'
+    require_tech: 'tech_military_tactics'
     require_struct:
     require_upgrade:
-    cost: 20000.0
-    hammer_cost: 2000.0
+    cost: 15000.0
+    production_cost: 1500.0
     limit: 1
-    item_id: 381
+    item_id: 281
+    item_data: 0
+#
+  - id: 'u_swordsman'
+    name: "Swordsman"
+    class_name: 'com.avrgaming.civcraft.items.units.Swordsman'
+    require_tech: 'tech_brewing'
+    require_struct:
+    require_upgrade:
+    cost: 40000.0
+    production_cost: 4000.0
+    limit: 1
+    item_id: 131
+    item_data: 0
+#
+  - id: 'u_crossbowman'
+    name: "Crossbowman"
+    class_name: 'com.avrgaming.civcraft.items.units.Crossbowman'
+    require_tech: 'tech_brewing'
+    require_struct:
+    require_upgrade:
+    cost: 40000.0
+    production_cost: 4000.0
+    limit: 1
+    item_id: 416
+    item_data: 0
+#
+  - id: 'u_spearman'
+    name: "Spearman"
+    class_name: 'com.avrgaming.civcraft.items.units.Spearman'
+    require_tech: 'tech_brewing'
+    require_struct:
+    require_upgrade:
+    cost: 50000.0
+    production_cost: 5000.0
+    limit: 1
+    item_id: 282
+    item_data: 0
+#
+  - id: 'u_musketman'
+    name: "Musketman"
+    class_name: 'com.avrgaming.civcraft.items.units.Musketman'
+    require_tech: 'tech_malting'
+    require_struct:
+    require_upgrade:
+    cost: 100000.0
+    production_cost: 10000.0
+    limit: 1
+    item_id: 198
+    item_data: 0
+#
+  - id: 'u_slinger'
+    name: "Slinger"
+    class_name: 'com.avrgaming.civcraft.items.units.Slinger'
+    require_tech: 'tech_malting'
+    require_struct:
+    require_upgrade:
+    cost: 100000.0
+    production_cost: 10000.0
+    limit: 1
+    item_id: 439
+    item_data: 0
+#
+  - id: 'u_knight'
+    name: "Knight"
+    class_name: 'com.avrgaming.civcraft.items.units.Knight'
+    require_tech: 'tech_malting'
+    require_struct:
+    require_upgrade:
+    cost: 125000.0
+    production_cost: 12500.0
+    limit: 1
+    item_id: 442
     item_data: 0
 #
 #  - id: 'u_phalanx'
 #    name: "Phalanx"
 #    class_name: 'com.avrgaming.civcraft.items.units.Phalanx'
-#    require_tech: ''
+#    require_tech:
 #    require_struct:
 #    require_upgrade:
 #    cost: 50000.0
-#    hammer_cost: 5000.0
+#    production_cost: 5000.0
 #    limit: 1
 #    item_id: 7
 #    item_data: 0
 #
-#  - id: 'u_crossbowman'
-#    name: "Crossbowman"
-#    class_name: 'com.avrgaming.civcraft.items.units.Crossbowman'
-#    require_tech: ''
-#    require_struct:
-#    require_upgrade:
-#    cost: 50000.0
-#    hammer_cost: 5000.0
-#    limit: 1
-#    item_id: 7
-#    item_data: 0
-#
-#  - id: 'u_engineer'
-#    name: "Engineer"
-#    class_name: 'com.avrgaming.civcraft.items.units.Engineer'
-#    require_tech: ''
-#    require_struct:
-#    require_upgrade:
-#    cost: 100000.0
-#    hammer_cost: 10000.0
-#    limit: 1
-#    item_id: 7
-#    item_data: 0
+  - id: 'u_engineer'
+    name: "Engineer"
+    class_name: 'com.avrgaming.civcraft.items.units.Engineer'
+    require_tech: 'tech_advanced_education:tech_military_engineering'
+    require_struct:
+    require_upgrade:
+    cost: 100000.0
+    production_cost: 10000.0
+    limit: 1
+    item_id: 137
+    item_data: 0
 #
 #  - id: 'u_siege'
 #    name: "Siege"
 #    class_name: 'com.avrgaming.civcraft.items.units.Siege'
-#    require_tech: ''
+#    require_tech:
 #    require_struct:
 #    require_upgrade:
 #    cost: 100000.0
-#    hammer_cost: 10000.0
+#    production_cost: 10000.0
 #    limit: 1
 #    item_id: 7
 #    item_data: 0

@@ -24,7 +24,7 @@ import com.avrgaming.civcraft.object.SQLObject;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.randomevents.components.BeakerRate;
 import com.avrgaming.civcraft.randomevents.components.GrowthRate;
-import com.avrgaming.civcraft.randomevents.components.HammerRate;
+import com.avrgaming.civcraft.randomevents.components.ProductionRate;
 import com.avrgaming.civcraft.randomevents.components.Happiness;
 import com.avrgaming.civcraft.randomevents.components.Unhappiness;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
@@ -407,8 +407,8 @@ public class RandomEvent extends SQLObject {
 		return happy;
 	}
 
-	public static double getHammerRate(Town town) {
-		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(HammerRate.getKey(town));
+	public static double getProductionRate(Town town) {
+		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(ProductionRate.getKey(town));
 		double hammerrate = 1.0;
 		
 		ArrayList<SessionEntry> removed = new ArrayList<SessionEntry>();

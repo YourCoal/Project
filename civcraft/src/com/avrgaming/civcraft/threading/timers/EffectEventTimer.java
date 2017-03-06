@@ -91,7 +91,7 @@ public class EffectEventTimer extends CivAsyncTask {
 			case "process_mine":
 				if (struct instanceof Mine) {
 					Mine mine = (Mine)struct;
-					mine.generateTownHammers(this);
+					mine.generateTownProduction(this);
 //					mine.generateItemHammers(this);
 				}
 				break;

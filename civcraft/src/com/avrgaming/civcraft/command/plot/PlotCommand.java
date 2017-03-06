@@ -18,6 +18,7 @@
  */
 package com.avrgaming.civcraft.command.plot;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 import org.bukkit.entity.Player;
@@ -57,8 +58,12 @@ public class PlotCommand extends CommandBase {
 		commands.put("setdistrict", "Change the district on this plot.");
 	}
 	
-	public void setdistrict_cmd() throws CivException {
-		TownChunk tc = this.getStandingTownChunk();
+	public void setdistrict_cmd() throws CivException, SQLException {
+		if (!(sender instanceof Player)) {
+			throw new CivException("Must be a player in-game.");
+		}
+		Player p = (Player)sender;
+		TownChunk tc = CivGlobal.getTownChunk(p.getLocation());
 		String warning =  CivColor.YellowItalic+" (Warning, this may have reset district bonuses to structures in this plot)";
 		if (args.length < 2) {
 			throw new CivException("Please specify a district.");
@@ -67,7 +72,7 @@ public class PlotCommand extends CommandBase {
 		if (args[1].equalsIgnoreCase("none") || args[1].equalsIgnoreCase("default")) {
 			tc.district.setID(0);
 			tc.district.setType("default");
-			tc.save();
+			tc.saveNow();
 			CivMessage.sendSuccess(sender, "Set district as Default."+warning);
 			for (Structure s : tc.getTown().getStructures()) {
 				s.updateDistrict();
@@ -76,7 +81,7 @@ public class PlotCommand extends CommandBase {
 		} else if (args[1].equalsIgnoreCase("agricultural")) {
 			tc.district.setID(1);
 			tc.district.setType("agricultural");
-			tc.save();
+			tc.saveNow();
 			CivMessage.sendSuccess(sender, "Set district as Agricultural."+warning);
 			for (Structure s : tc.getTown().getStructures()) {
 				s.updateDistrict();
@@ -315,7 +320,7 @@ public class PlotCommand extends CommandBase {
 	}
 	
 	private void showPermOwnership(TownChunk tc) {
-		CivMessage.send(sender, CivColor.Green+"District: "+CivColor.LightGreen+tc.district.getType());
+		CivMessage.send(sender, CivColor.Green+"District: "+CivColor.LightGreen+tc.district.getType()+" ("+CivColor.LightGreen+"DID: "+tc.district.getID()+") ("+CivColor.LightGreen+"PID: "+tc.getId()+")");
 		
 		String out = CivColor.Green+"Town: "+CivColor.LightGreen+tc.getTown().getName();
 		out += CivColor.Green+" Owner: "+CivColor.LightGreen;

@@ -70,10 +70,10 @@ public class AdminGUICommand extends CommandBase implements Listener {
 		townCultureMeta.setDisplayName("Add Town Culture");
 		townCulture.setItemMeta(townCultureMeta);
 		
-		ItemStack townHammerRate = new ItemStack(Material.COBBLE_WALL, 1);
-		ItemMeta townHammerRateMeta = townHammerRate.getItemMeta();
-		townHammerRateMeta.setDisplayName("Change Town Hammer Rate");
-		townHammerRate.setItemMeta(townHammerRateMeta);
+		ItemStack townProductionRate = new ItemStack(Material.COBBLE_WALL, 1);
+		ItemMeta townProductionRateMeta = townProductionRate.getItemMeta();
+		townProductionRateMeta.setDisplayName("Change Town Production Rate");
+		townProductionRate.setItemMeta(townProductionRateMeta);
 		
 		inv.setItem(0, civMoney);
 		inv.setItem(3, townMoney);
@@ -83,7 +83,7 @@ public class AdminGUICommand extends CommandBase implements Listener {
 		inv.setItem(18, civBeakerRate);
 		
 		inv.setItem(12, townCulture);
-		inv.setItem(21, townHammerRate);
+		inv.setItem(21, townProductionRate);
 		p.openInventory(inv);
 	}
 	
@@ -163,7 +163,7 @@ public class AdminGUICommand extends CommandBase implements Listener {
 			if (res.getTown() == null) {
 				CivMessage.sendError(p, "You are not in a town!");
 			}
-			res.getTown().setHammerRate(10000000);
+			res.getTown().setProductionRate(10000000);
 			res.getTown().save();
 			CivMessage.sendSuccess(p, "Set hammerrate to 10 million in your town.");
 			break;

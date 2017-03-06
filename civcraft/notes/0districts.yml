@@ -29,25 +29,25 @@
       - Stock Exchange
 
   - Industrial:
-      - Trommel
-      - Quarry
+      - Trommel (0.05% chance to spawn a block of an item)
+      - Quarry (50% chance to mine twice as much ore)
       - Factory
       - Grocer
       - Store
 
   - Agricultural:
       - Farm (+25 Growth Per Farm)
-      - Granary
-      - Windmill (+2 Seeds Planted Per Windmill or Granary)
+      - Granary (+3 food per Granary)
+      - Windmill (+2 Seeds Planted per Windmill or Granary)
       - Lumber Mill
       - Pasture
 
   - Holy Site:
-      - Temple
+      - Temple (+0.5 Faith an hour)
 
   - Production:
-      - Mine
-      - Lab
+      - Mine (+15 Hammers for every Plains biome)
+      - Lab (+15 Beakers for every River biome)
       - Monument
 
   - NeighborHood:

@@ -3,6 +3,7 @@ package com.avrgaming.civcraft.threading.timers;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.avrgaming.civcraft.main.CivCraft;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.structure.Buildable;
@@ -18,6 +19,10 @@ public class BossBarUpdateTimer implements Runnable {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void run() {
+		if (CivCraft.isDisable) {
+			return;
+		}
+		
 		try {
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				Resident res = CivGlobal.getResident(p);

@@ -56,6 +56,7 @@ import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Relation.Status;
 import com.avrgaming.civcraft.permission.PermissionGroup;
 import com.avrgaming.civcraft.structure.Capitol;
+import com.avrgaming.civcraft.structure.Monument;
 import com.avrgaming.civcraft.structure.RespawnLocationHolder;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
@@ -93,7 +94,8 @@ public class Civilization extends SQLObject {
 	private ConcurrentHashMap<String, Town> towns = new ConcurrentHashMap<String, Town>();
 	private ConfigGovernment government;
 
-	private double baseBeakers = 1.0;	
+	private double baseBeakers = 1.0;
+	private double baseCulture = 1.0;
 
 	public static final int HEX_COLOR_MAX = 16777215;
 	public static final int HEX_COLOR_TOLERANCE = 40;
@@ -338,7 +340,6 @@ public class Civilization extends SQLObject {
 	}
 
 	public boolean hasTechnology(String require_tech) {
-		
 		if (require_tech != null) {
 			String split[] = require_tech.split(":");
 			for (String str : split) {
@@ -998,13 +999,25 @@ public class Civilization extends SQLObject {
 	
 	public double getBeakers() {
 		double total = 0;
-		
 		for (Town town : this.getTowns()) {
 			total += town.getBeakers().total;
 		}
-		
 		total += baseBeakers;
-		
+		return total;
+	}
+	
+	public double getCulture() {
+		double total = 0;
+		for (Town town : this.getTowns()) {
+			total += town.getCulture().total;
+			for (Structure struct : town.structures.values()) {
+				if (struct instanceof Monument) {
+					Monument monument = (Monument)struct;
+					total += monument.getBonusCulture(); 
+				}
+			}
+		}
+		total += baseCulture;
 		return total;
 	}
 

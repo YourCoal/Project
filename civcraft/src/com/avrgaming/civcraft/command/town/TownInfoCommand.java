@@ -71,7 +71,7 @@ public class TownInfoCommand extends CommandBase {
 		commands.put("lab", "Shows Lab production information.");
 		commands.put("mine", "Shows Mine production information.");
 		commands.put("monument", "Shows Monument production information.");
-		commands.put("hammers", "Shows town hammer information.");
+		commands.put("production", "Shows town production information.");
 		commands.put("goodies", "Shows which goodies are being used by the town.");
 		commands.put("rates", "Shows the culture,growth,trade and cottage rates of this town.");
 		commands.put("growth", "Shows growth info about the town.");
@@ -112,7 +112,7 @@ public class TownInfoCommand extends CommandBase {
 		CivMessage.sendHeading(sender, "Area Info");
 		HashMap<String, Integer> biomes = new HashMap<String, Integer>();
 		
-		double hammers = 0.0;
+		double production = 0.0;
 		double growth = 0.0;
 		double happiness = 0.0;
 		double beakers = 0.0;
@@ -127,7 +127,7 @@ public class TownInfoCommand extends CommandBase {
 				biomes.put(cc.getBiome().name(), value+1);
 			}
 			
-			hammers += cc.getHammers();
+			production += cc.getProduction();
 			growth += cc.getGrowth();
 			happiness += cc.getHappiness();
 			beakers += cc.getBeakers();
@@ -147,7 +147,7 @@ public class TownInfoCommand extends CommandBase {
 		
 		CivMessage.send(sender, CivColor.LightBlue+"Totals");
 		CivMessage.send(sender, CivColor.Green+" Happiness:"+CivColor.LightGreen+df.format(happiness)+
-				CivColor.Green+" Hammers:"+CivColor.LightGreen+df.format(hammers)+
+				CivColor.Green+" Production:"+CivColor.LightGreen+df.format(production)+
 				CivColor.Green+" Growth:"+CivColor.LightGreen+df.format(growth)+
 				CivColor.Green+" Beakers:"+CivColor.LightGreen+df.format(beakers));
 		
@@ -250,15 +250,15 @@ public class TownInfoCommand extends CommandBase {
 		}
 	}
 	
-	public void hammers_cmd() throws CivException {
+	public void production_cmd() throws CivException {
 		Town town = getSelectedTown();
 		
-		CivMessage.sendHeading(sender, "Hammer Info");
-		AttrSource hammerSources = town.getHammers();
+		CivMessage.sendHeading(sender, "Production Info");
+		AttrSource productionSources = town.getProduction();
 		
-		CivMessage.send(sender, hammerSources.getSourceDisplayString(CivColor.Green, CivColor.LightGreen));
-		CivMessage.send(sender, hammerSources.getRateDisplayString(CivColor.Green, CivColor.LightGreen));
-		CivMessage.send(sender, hammerSources.getTotalDisplayString(CivColor.Green, CivColor.LightGreen));
+		CivMessage.send(sender, productionSources.getSourceDisplayString(CivColor.Green, CivColor.LightGreen));
+		CivMessage.send(sender, productionSources.getRateDisplayString(CivColor.Green, CivColor.LightGreen));
+		CivMessage.send(sender, productionSources.getTotalDisplayString(CivColor.Green, CivColor.LightGreen));
 	}
 	
 	public void culture_cmd() throws CivException {
@@ -475,11 +475,11 @@ public class TownInfoCommand extends CommandBase {
 			out.add(CivColor.Green+"    Level: "+CivColor.Yellow+mine.getLevel()+
 					CivColor.Green+" Count: "+CivColor.Yellow+"("+mine.getCount()+"/"+mine.getMaxCount()+")");
 			out.add(CivColor.Green+" Last Result: "+CivColor.Yellow+mine.getLastResult().name());
-			total += mine.getBonusHammers();
+			total += mine.getBonusProduction();
 		}
 		out.add(CivColor.Green+"----------------------------");
 		out.add(CivColor.Green+"Sub Total: "+CivColor.Yellow+total);
-		out.add(CivColor.Green+"Total: "+CivColor.Yellow+df.format(total)+" hammers (estimate).");
+		out.add(CivColor.Green+"Total: "+CivColor.Yellow+df.format(total)+" production (estimate).");
 		CivMessage.send(sender, out);
 	}
 	
@@ -593,7 +593,7 @@ public class TownInfoCommand extends CommandBase {
 									CivColor.Green+" | Population: "+CivColor.LightGreen+"("+df.format(town.getTotalPopulation().total)+"/"+df.format(town.getAllowedPopulation().total)+")");
 			
 			CivMessage.send(sender, CivColor.Green+"Growth: "+CivColor.LightGreen+df.format(town.getGrowth().total)+
-									CivColor.Green+" | Hammers: "+CivColor.LightGreen+df.format(town.getHammers().total)+
+									CivColor.Green+" | Production: "+CivColor.LightGreen+df.format(town.getProduction().total)+
 									CivColor.Green+" | Beakers: "+CivColor.LightGreen+df.format(town.getBeakers().total));
 			
 			CivMessage.send(sender, CivColor.Green+"Members: "+CivColor.LightGreen+town.getResidentCount()

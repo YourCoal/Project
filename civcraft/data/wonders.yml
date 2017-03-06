@@ -2,34 +2,10 @@
 # This file contains the configuration information about
 # wonders.
 
-
-
 # Wonders
-#
 #  This is a standard configuration for a structure. See structures.yml for details.
 #  Any option for structures is also available for wonders.
 wonders:
-  - id: w_pyramid
-    itemId: 128
-    itemData: 0
-    template: the_great_pyramid
-    template_y_shift: 0
-    displayName: The Great Pyramid
-    require_tech: 'tech_great_pyramid'
-    require_upgrade:
-    check_event:
-    effect_event:
-    update_event:
-    onBuild_event:
-    limit: 1
-    cost: 750000.0
-    upkeep: 0.0
-    # 168 = one week
-    hammer_cost: 508000.0
-    max_hitpoints: 5000
-    points: 190000
-    regen_rate: 6
-  
   - id: w_greatlibrary
     itemId: 340
     itemData: 0
@@ -38,19 +14,30 @@ wonders:
     displayName: The Great Library
     require_tech: 'tech_great_library'
     require_upgrade:
-    check_event:
-    effect_event:
-    update_event:
-    onBuild_event:
     limit: 1
     cost: 500000.0
     upkeep: 0.0
-    # 168 = one week
-    hammer_cost: 448000.0
-    points: 220000
+    points: 50000
+    production_cost: 450000.0
     max_hitpoints: 5000
     regen_rate: 6
-  
+#
+  - id: w_pyramid
+    itemId: 128
+    itemData: 0
+    template: the_great_pyramid
+    template_y_shift: 0
+    displayName: The Great Pyramid
+    require_tech: 'tech_great_pyramid'
+    require_upgrade:
+    limit: 1
+    cost: 750000.0
+    upkeep: 0.0
+    points: 50000
+    production_cost: 500000.0
+    max_hitpoints: 5000
+    regen_rate: 6
+#
   - id: w_hanginggardens
     itemId: 168
     itemData: 0
@@ -59,19 +46,14 @@ wonders:
     displayName: The Hanging Gardens
     require_tech: 'tech_hanging_gardens'
     require_upgrade:
-    check_event:
-    effect_event:
-    update_event:
-    onBuild_event:
     limit: 1
     cost: 1000000.0
     upkeep: 0.0
-    # 336 = two weeks
-    hammer_cost: 666000.0
-    points: 220000
+    points: 50000
+    production_cost: 625000.0
     max_hitpoints: 5000
     regen_rate: 6
-
+#
   - id: w_colossus
     itemId: 315
     itemData: 0
@@ -80,38 +62,14 @@ wonders:
     displayName: The Colossus
     require_tech: 'tech_colossus'
     require_upgrade:
-    check_event:
-    effect_event:
-    update_event:
-    onBuild_event:
     limit: 1
     cost: 750000.0
     upkeep: 0.0
-    hammer_cost: 625000.0
-    points: 235000
+    points: 50000
+    production_cost: 625000.0
     max_hitpoints: 5000
     regen_rate: 6
-
-  - id: w_notre_dame
-    itemId: 155
-    itemData: 0
-    template: notre_dame
-    template_y_shift: 0
-    displayName: Notre Dame
-    require_tech: 'tech_notre_dame'
-    require_upgrade:
-    check_event:
-    effect_event:
-    update_event:
-    onBuild_event:
-    limit: 1
-    cost: 1750000.0
-    upkeep: 0.0
-    hammer_cost: 805000.0
-    points: 275000
-    max_hitpoints: 5000
-    regen_rate: 6
-
+#
   - id: w_chichen_itza
     itemId: 98
     itemData: 0
@@ -120,18 +78,30 @@ wonders:
     displayName: Chichen Itza
     require_tech: 'tech_chichen_itza'
     require_upgrade:
-    check_event:
-    effect_event:
-    update_event:
-    onBuild_event:
     limit: 1
-    cost: 800000.0
+    cost: 825000.0
     upkeep: 0.0
-    hammer_cost: 550000.0
-    points: 250000
+    points: 50000
+    production_cost: 625000.0
     max_hitpoints: 5000
     regen_rate: 6
-  
+#
+  - id: w_notre_dame
+    itemId: 155
+    itemData: 0
+    template: notre_dame
+    template_y_shift: 0
+    displayName: Notre Dame
+    require_tech: 'tech_notre_dame'
+    require_upgrade:
+    limit: 1
+    cost: 1500000.0
+    upkeep: 0.0
+    points: 50000
+    production_cost: 750000.0
+    max_hitpoints: 5000
+    regen_rate: 6
+#
   - id: w_council_of_eight
     itemId: 386
     itemData: 0
@@ -140,15 +110,11 @@ wonders:
     displayName: Council Of Eight
     require_tech: 'tech_council_of_eight'
     require_upgrade:
-    check_event:
-    effect_event:
-    update_event:
-    onBuild_event:
     limit: 1
-    cost: 2000000.0
+    cost: 2500000.0
     upkeep: 0.0
-    hammer_cost: 900000.0
-    points: 250000
+    points: 50000
+    production_cost: 1000000.0
     max_hitpoints: 5000
     regen_rate: 6
 # Wonder Buffs
@@ -159,7 +125,6 @@ wonders:
 # as shown below.
 #
 # To configure new buffs use buffs.yml
-#
 #
 wonder_buffs:
    - id: w_pyramid

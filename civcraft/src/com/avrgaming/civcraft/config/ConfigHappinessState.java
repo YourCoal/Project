@@ -13,7 +13,7 @@ public class ConfigHappinessState {
 	public String color;
 	public double amount;
 	public double growth_rate;
-	public double hammer_rate;
+	public double production_rate;
 	public double beaker_rate;
 	public double culture_rate;
 	public double coin_rate;
@@ -29,7 +29,7 @@ public class ConfigHappinessState {
 			happy_level.color = (String)cl.get("color");
 			happy_level.amount = (Double)cl.get("amount");
 			happy_level.growth_rate = (Double)cl.get("growth_rate");
-			happy_level.hammer_rate = (Double)cl.get("hammer_rate");
+			happy_level.production_rate = (Double)cl.get("production_rate");
 			happy_level.beaker_rate = (Double)cl.get("beaker_rate");
 			happy_level.culture_rate = (Double)cl.get("culture_rate");
 			happy_level.coin_rate = (Double)cl.get("coin_rate");

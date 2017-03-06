@@ -204,14 +204,16 @@ public class CivInfoCommand extends CommandBase {
 	    	CivMessage.send(sender, CivColor.Green+"Income Tax Rate: "+CivColor.LightGreen+civ.getIncomeTaxRateString()
 	    							+CivColor.Green+" : Science Rate: "+CivColor.LightGreen+civ.getSciencePercentage());
 	    	
-			CivMessage.send(sender, CivColor.Green+"Government: "+CivColor.LightGreen+civ.getGovernment().displayName);
+			CivMessage.send(sender, CivColor.Green+"Government: "+CivColor.LightGreen+civ.getGovernment().displayName
+									+CivColor.Green+" | Online: "+CivColor.LightGreen+civ.getOnlineResidents().size());
 	    	
 //			ConfigFaithLevel cfl = CivSettings.faithLevels.get(civ.getFaithLevel());
 //			CivMessage.send(sender, CivColor.Green+"Faith Level: "+CivColor.LightGreen+cfl.level+" ("+civ.getAccumulatedFaith()+"/"+cfl.amount+")");
-			CivMessage.send(sender, CivColor.Green+CivColor.MAGIC+"----- -----"+CivColor.Green+": "+CivColor.LightGreen+"0 (0/10)");
+//			CivMessage.send(sender, CivColor.Green+CivColor.MAGIC+"----- -----"+CivColor.Green+": "+CivColor.LightGreen+"0 (0/10)");
 			
-			CivMessage.send(sender ,CivColor.Green+"Beakers: "+CivColor.LightGreen+Math.round(civ.getBeakers())
-									+CivColor.Green+" : Online: "+CivColor.LightGreen+civ.getOnlineResidents().size());
+			DecimalFormat df = new DecimalFormat("#.0");
+			CivMessage.send(sender ,CivColor.Green+"Beakers: "+CivColor.LightGreen+df.format(civ.getBeakers())
+									+CivColor.Green+" | Culture: "+CivColor.LightGreen+df.format(civ.getCulture()));
 	    }
 		
 		if (civ.getLeaderGroup().hasMember(resident) || civ.getAdviserGroup().hasMember(resident) || isOP) {

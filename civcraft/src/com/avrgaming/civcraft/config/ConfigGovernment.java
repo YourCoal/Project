@@ -38,7 +38,7 @@ public class ConfigGovernment {
 	public double cottage_rate;
 	public double growth_rate;
 	public double culture_rate;
-	public double hammer_rate;
+	public double production_rate;
 	public double beaker_rate;
 	public double maximum_tax_rate;
 	
@@ -57,7 +57,7 @@ public class ConfigGovernment {
 			gov.cottage_rate = (Double)level.get("cottage_rate");
 			gov.growth_rate = (Double)level.get("growth_rate");
 			gov.culture_rate = (Double)level.get("culture_rate");
-			gov.hammer_rate = (Double)level.get("hammer_rate");
+			gov.production_rate = (Double)level.get("production_rate");
 			gov.beaker_rate = (Double)level.get("beaker_rate");
 			gov.maximum_tax_rate = (Double)level.get("maximum_tax_rate");
 

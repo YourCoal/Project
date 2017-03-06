@@ -56,10 +56,11 @@ public class Settler extends UnitMaterial implements CallbackInterface {
 		UnitMaterial.setOwningTown(town, is);
 		
 		AttributeUtil attrs = new AttributeUtil(is);
-		attrs.addLore(CivColor.Rose+"Only Usable In Civ: "+CivColor.LightBlue+town.getCiv().getName());
-		attrs.addLore(CivColor.Gold+"Right Click To Found Town");
 		attrs.addEnhancement("LoreEnhancementSoulBound", null, null);
 		attrs.addLore(CivColor.Gold+"Soulbound");
+		attrs.addLore(CivColor.White+"Level City");
+		attrs.addLore(CivColor.LightGray+"Right Click to Found a Town");
+		attrs.addLore(CivColor.Rose+"Only Usable In Civ: "+CivColor.LightBlue+town.getCiv().getName());
 		attrs.setCivCraftProperty("owner_civ_id", ""+town.getCiv().getId());
 		is = attrs.getStack();
 		
@@ -117,10 +118,7 @@ public class Settler extends UnitMaterial implements CallbackInterface {
 			}
 		}
 		
-		
-		/*
-		 * Build a preview for the Capitol structure.
-		 */
+		//Build a preview for the Capitol structure.
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Checking structure position...Please wait.");
 		ConfigBuildableInfo info = CivSettings.structures.get("s_townhall");
 		try {
@@ -149,5 +147,4 @@ public class Settler extends UnitMaterial implements CallbackInterface {
 		
 		resident.setInteractiveMode(new InteractiveTownName());
 	}
-	
 }

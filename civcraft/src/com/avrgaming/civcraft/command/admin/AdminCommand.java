@@ -101,7 +101,7 @@ public class AdminCommand extends CommandBase {
 		commands.put("mob", "Mob management commands.");
 		commands.put("gui", "Opens book options. Type 'open' after book to get the GUI.");
 		commands.put("reload", "Allows for some aspects of CivCraft to be reloaded in the server.");
-		commands.put("tradeholo", "Enables all trade good holograms.");
+		commands.put("holograms", "Refreshes all holograms in the game.");
 		commands.put("test", "Literally for testing purposes.");
 		commands.put("usd", "Update Structure Districts");
 		commands.put("savesql", "Saves SQL Databases");
@@ -162,8 +162,9 @@ public class AdminCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, "Updated Structure Districts.");
 	}
 	
-	public void tradeholo_cmd() {
+	public void holograms_cmd() {
 		HolographicDisplaysListener.generateTradeGoodHolograms();
+		HolographicDisplaysListener.generateBankHolograms();
 		CivMessage.sendSuccess(sender, "Updated holograms.");
 	}
 	

@@ -36,7 +36,7 @@ public class ConfigUnit {
 	public String require_struct;
 	public String require_upgrade;
 	public double cost;
-	public double hammer_cost;
+	public double production_cost;
 	public int limit;
 	public int item_id;
 	public int item_data;
@@ -55,7 +55,7 @@ public class ConfigUnit {
 			unit.require_struct = (String)b.get("require_struct");
 			unit.require_upgrade = (String)b.get("require_upgrade");
 			unit.cost = (Double)b.get("cost");
-			unit.hammer_cost = (Double)b.get("hammer_cost");
+			unit.production_cost = (Double)b.get("production_cost");
 			unit.limit = (Integer)b.get("limit");
 			unit.item_id = (Integer)b.get("item_id");
 			unit.item_data = (Integer)b.get("item_data");

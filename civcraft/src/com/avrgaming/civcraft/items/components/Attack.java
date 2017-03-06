@@ -81,10 +81,16 @@ public class Attack extends ItemComponent {
 			ConfigUnit unit = Unit.getPlayerUnit(p);
 			if (unit != null && unit.id.equals("u_warrior")) {
 				dmg *= 1.25;
-//				CivMessage.send(p, CivColor.LightGrayItalic+"+25% damage with Warrior Unit.");
+			} else if (unit != null && unit.id.equals("u_berserker")) {
+				dmg *= 1.05;
 			} else if (unit != null && unit.id.equals("u_archer")) {
-				dmg = dmg - (dmg*0.9); //only remove 10%, so 1.0 - 0.1
-//				CivMessage.send(p, CivColor.LightGrayItalic+"-25% damage with Archer Unit.");
+				dmg = dmg - (dmg*0.1);
+			} else if (unit != null && unit.id.equals("u_swordsman")) {
+				dmg *= 1.40;
+			} else if (unit != null && unit.id.equals("u_swordsman")) {
+				dmg *= 1.05;
+			} else if (unit != null && unit.id.equals("u_crossbowman")) {
+				dmg = dmg - (dmg*0.2);
 			}
 			
 			if (!res.hasTechForItem(inHand)) {

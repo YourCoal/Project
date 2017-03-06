@@ -216,9 +216,9 @@ public class MissionBook extends UnitItemMaterial {
 			case "spy_steal_treasury":
 				performStealTreasury(player, mission);
 				break;
-			case "spy_incite_riots":
-				performInciteRiots(player, mission);
-				break;
+//			case "spy_incite_riots":
+//				performInciteRiots(player, mission);
+//				break;
 			case "spy_poison_granary":
 				performPosionGranary(player, mission);
 				break;
@@ -295,17 +295,12 @@ public class MissionBook extends UnitItemMaterial {
 		// Check that the player is within range of the town hall.
 		Buildable buildable = cc.getTown().getNearestBuildable(player.getLocation());
 		if (buildable instanceof TownHall) {
-			throw new CivException("Nearest structure is a town hall which cannot be destroyed.");
-		}
-		if (buildable instanceof Wonder) {
-			if (buildable.isComplete()) {
-				throw new CivException("Cannot sabotage completed wonders.");
-			}
+			throw new CivException("Nearest structure is a Town Hall, which cannot be destroyed.");
 		}
 		
 		double distance = player.getLocation().distance(buildable.getCorner().getLocation());
 		if (distance > mission.range) {
-			throw new CivException("Too far away the "+buildable.getDisplayName()+" to sabotage it");
+			throw new CivException("Too far away the "+buildable.getDisplayName()+" to sabotage it.");
 		}
 		
 		if (buildable instanceof Structure) {
@@ -319,6 +314,10 @@ public class MissionBook extends UnitItemMaterial {
 		}
 		
 		if (buildable instanceof Wonder) {
+			if (buildable.isComplete()) {
+				throw new CivException("Cannot sabotage completed Wonders.");
+			}
+			
 			// Create a new mission and with the penalties.
 			mission = CivSettings.missions.get("spy_sabotage_wonder");
 		}
@@ -344,9 +343,7 @@ public class MissionBook extends UnitItemMaterial {
 					e.printStackTrace();
 				}
 			}
-			
 		}
-		
 	}
 	
 	private static void performPirate(Player player, ConfigMission mission) throws CivException {
@@ -544,7 +541,7 @@ public class MissionBook extends UnitItemMaterial {
 			SimpleDateFormat sdf = new SimpleDateFormat("M/dd h:mm:ss a z");
 			out += "Time: "+sdf.format(new Date())+"\n";
 			out += ("Treasury: "+tc.getTown().getTreasury().getBalance()+"\n");
-			out += ("Hammers: "+tc.getTown().getHammers().total+"\n");
+			out += ("Production: "+tc.getTown().getProduction().total+"\n");
 			out += ("Culture: "+tc.getTown().getCulture().total+"\n");
 			out += ("Growth: "+tc.getTown().getGrowth().total+"\n");
 			out += ("Beakers(civ): "+tc.getTown().getBeakers().total+"\n");
@@ -582,9 +579,7 @@ public class MissionBook extends UnitItemMaterial {
 		}
 	}
 	
-	private static void performInciteRiots(Player player, ConfigMission mission) throws CivException {
+/*	private static void performInciteRiots(Player player, ConfigMission mission) throws CivException {
 		throw new CivException("Not implemented.");
-	}
-
-	
+	}*/
 }

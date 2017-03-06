@@ -1,7 +1,5 @@
 package com.avrgaming.civcraft.districts;
 
-import com.avrgaming.civcraft.exception.CivException;
-
 public class DistrictNode {
 
 	/* Named type of district. */
@@ -29,13 +27,15 @@ public class DistrictNode {
 	  All structures built in their districts need buffs, but IDK what yet.
 	 */
 	
-	public DistrictNode(String type) {
-		this.setType(type);
-	}
+//	public DistrictNode(String type, int ID) {
+//		this.setType(type);
+//		this.setID(ID);
+//	}
 	
-	public void loadFromString(String src) throws CivException {
-		setType(src);
-	}
+//	public void loadFromString(String src, int ID) throws CivException {
+//		setType(src);
+//		setID(ID);
+//	}
 	
 	public String getType() {
 		return type;

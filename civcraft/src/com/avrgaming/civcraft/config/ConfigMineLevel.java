@@ -32,7 +32,7 @@ public class ConfigMineLevel {
 	public int level;
 	public Map<Integer, Integer> consumes;
 	public int count;
-	public double hammers;
+	public double production;
 	public int item_hammers = 32;
 	
 	public ConfigMineLevel() {
@@ -41,7 +41,7 @@ public class ConfigMineLevel {
 	public ConfigMineLevel(ConfigMineLevel currentlvl) {
 		this.level = currentlvl.level;
 		this.count = currentlvl.count;
-		this.hammers = currentlvl.hammers;
+		this.production = currentlvl.production;
 		this.consumes = new HashMap<Integer, Integer>();
 		for (Entry<Integer, Integer> entry : currentlvl.consumes.entrySet()) {
 			this.consumes.put(entry.getKey(), entry.getValue());
@@ -68,7 +68,7 @@ public class ConfigMineLevel {
 			minelevel.level = (Integer)cl.get("level");
 			minelevel.consumes = consumes_list;
 			minelevel.count = (Integer)cl.get("count");
-			minelevel.hammers = (Double)cl.get("hammers");
+			minelevel.production = (Double)cl.get("production");
 			mine_levels.put(minelevel.level, minelevel);
 		}
 		CivLog.info("Loaded "+mine_levels.size()+" Mine Levels.");		

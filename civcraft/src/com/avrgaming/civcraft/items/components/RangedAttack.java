@@ -103,11 +103,17 @@ public class RangedAttack extends ItemComponent {
 				
 				ConfigUnit unit = Unit.getPlayerUnit(p);
 				if (unit != null && unit.id.equals("u_warrior")) {
-					dmg = dmg - (dmg*0.9); //only remove 10%, so 1.0 - 0.1
-//					CivMessage.send(p, CivColor.LightGrayItalic+"-25% damage with Archer Unit.");
+					dmg = dmg - (dmg*0.1);
+				} else if (unit != null && unit.id.equals("u_berserker")) {
+					dmg *= 1.10;
 				} else if (unit != null && unit.id.equals("u_archer")) {
 					dmg *= 1.25;
-//					CivMessage.send(p, CivColor.LightGrayItalic+"+25% damage with Archer Unit.");
+				} else if (unit != null && unit.id.equals("u_swordsman")) {
+					dmg = dmg - (dmg*0.2);
+				} else if (unit != null && unit.id.equals("u_berserker")) {
+					dmg *= 1.10;
+				} else if (unit != null && unit.id.equals("u_crossbowman")) {
+					dmg *= 1.40;
 				}
 				
 				if (!res.hasTechForItem(inHand)) {

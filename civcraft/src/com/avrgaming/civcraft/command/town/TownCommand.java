@@ -291,7 +291,7 @@ public class TownCommand extends CommandBase {
 			ConfigCultureBiomeInfo info = CivSettings.getCultureBiome(biome.name());
 			
 		//	coins += info.coins;
-			hammers += info.hammers;
+			hammers += info.production;
 			growth += info.growth;
 			happiness += info.happiness;
 			beakers += info.beakers;
@@ -310,7 +310,7 @@ public class TownCommand extends CommandBase {
 		
 		outList.add(CivColor.LightBlue+"Totals");
 		outList.add(CivColor.Green+" Happiness:"+CivColor.LightGreen+df.format(happiness)+
-				CivColor.Green+" Hammers:"+CivColor.LightGreen+df.format(hammers)+
+				CivColor.Green+" Production:"+CivColor.LightGreen+df.format(hammers)+
 				CivColor.Green+" Growth:"+CivColor.LightGreen+df.format(growth)+
 				CivColor.Green+" Beakers:"+CivColor.LightGreen+df.format(beakers));
 		return outList;
@@ -699,7 +699,7 @@ public class TownCommand extends CommandBase {
 			throw new CivException("Cannot invite players to a civ that is at war within "+War.getTimeDeclareDays()+" days before WarTime.");
 		}
 		
-		if (town.getAllowedPopulation().total >= town.getAllowedPopulation().total) {
+		if (town.getTotalPopulation().total >= town.getAllowedPopulation().total) {
 			throw new CivException("You cannot add more players, you are at your maximum town population!");
 		}
 		

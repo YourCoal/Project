@@ -87,6 +87,8 @@ public class CivData {
 	public static final int LOG = 17;
 	public static final int LEAF = 18;
 	
+	public static final int GLASS = 20;
+	
 	public static final int LAPIS_ORE = 21;
 	
 	public static final int TALL_GRASS = 31;

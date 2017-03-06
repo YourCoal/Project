@@ -179,7 +179,7 @@ public class BuildCommand extends CommandBase {
 			Buildable b = task.buildable;
 			DecimalFormat df = new DecimalFormat();
 			
-			CivMessage.send(sender, CivColor.LightPurple+b.getDisplayName()+": "+CivColor.Yellow+"("+df.format(b.getBuiltHammers()) + "/"+b.getHammerCost()+")"+
+			CivMessage.send(sender, CivColor.LightPurple+b.getDisplayName()+": "+CivColor.Yellow+"("+df.format(b.getBuiltProduction()) + "/"+b.getProductionCost()+")"+
 					CivColor.LightPurple+" Blocks "+CivColor.Yellow+"("+b.builtBlockCount+"/"+b.getTotalBlockCount()+")");
 			
 			//CivMessage.send(sender, CivColor.LightPurple+b.getDisplayName()+" "+CivColor.Yellow+"("+
@@ -203,7 +203,7 @@ public class BuildCommand extends CommandBase {
 				CivMessage.send(sender, CivColor.LightPurple+sinfo.displayName+
 						CivColor.Yellow+
 						" Cost: "+sinfo.cost+
-						" Upkeep: "+sinfo.upkeep+" Hammers: "+sinfo.hammer_cost+ 
+						" Upkeep: "+sinfo.upkeep+" Production: "+sinfo.production_cost+ 
 						" Left: "+leftString);
 			}
 		}
@@ -225,7 +225,7 @@ public class BuildCommand extends CommandBase {
 					CivMessage.send(sender, CivColor.LightPurple+sinfo.displayName+
 							CivColor.Yellow+
 							" Cost: "+sinfo.cost+
-							" Upkeep: "+sinfo.upkeep+" Hammers: "+sinfo.hammer_cost+ 
+							" Upkeep: "+sinfo.upkeep+" Production: "+sinfo.production_cost+ 
 							" Left: "+leftString);
 				} else {
 					Wonder wonder = CivGlobal.getWonderByConfigId(sinfo.id);

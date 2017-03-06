@@ -33,7 +33,7 @@ public class Second7UpdateEventTimer extends CivAsyncTask {
 				
 				try {
 					if (struct.getUpdateEvent() != null && !struct.getUpdateEvent().equals("")) {
-						if (struct.getUpdateEvent().equals("quarry_process")) {
+						if (struct.getUpdateEvent().equals("trommel_process")) {
 							if (!CivGlobal.questStructuresEnabled) {
 								continue;
 							}

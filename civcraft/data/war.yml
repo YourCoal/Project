@@ -24,8 +24,8 @@ war:
     vassal_hours: 168
     # Percentage of income paid to master as a vassal.
     vassal_tax: 0.3
-    # Amount of hammers a wonder is delayed by each hit
-    wonder_hammer_hit: 0.005
+    # Amount of productions a wonder is delayed by each hit
+    wonder_production_hit: 0.005
     # Amount of upkeep an agressor nation recieves for each war
     upkeep_per_war: 2000.0
     # Amount the war upkeep is multiplied per score point above the other civ
@@ -36,22 +36,14 @@ war:
     control_block_respawn_time: 10
 
     # Control block hitpoints.
-#   Old
-#    100pb, 800 total
-#    control_block_hitpoints_capitol: 100
-#    100pb, 100 total
-#    control_block_hitpoints_camp: 100
-#    20pb, 120 total
-#    control_block_hitpoints_townhall: 20
-#   New
 #    75pb, 600 total
     control_block_hitpoints_capitol: 75
-#    75pb, 75 total
+#    100pb, 100 total
     control_block_hitpoints_camp: 100
 #    25pb, 150 total
-    control_block_hitpoints_townhall: 20
+    control_block_hitpoints_townhall: 25
     
-    # Penalty of income and hammers taken and given to server when captured.
+    # Penalty of income and productions taken and given to server when captured.
     captured_penalty: 0.75
     # percentage of hitpoints to take away each hour when structures are invalid.
     invalid_hourly_penalty: 0.1
@@ -68,8 +60,8 @@ revolution:
     # Number of coins paid per point of all of your civ and town scores
     coins_per_point: 0.1
 
-    # Maximum revolution fee you can pay --> 50 Million
-    maximum_fee: 50000000.0
+    # Maximum revolution fee you can pay --> 25 Million
+    maximum_fee: 25000000.0
 
 scout_tower:
     # Range at which scout tower searches for players
@@ -120,9 +112,9 @@ warcamp:
     # template for war camps.
     template: warcamp
     # Amount of HP each control block has
-    control_block_hitpoints: 25
+    control_block_hitpoints: 30
     # Number of mins it takes to rebuild.
-    rebuild_timeout: 5
+    rebuild_timeout: 15
     # maximum number of war camps a civ can have.
     max: 2
 
@@ -136,7 +128,7 @@ cannon:
     # Number of seconds between shots.
     cooldown: 20
     # Amount of HP each cannon has
-    hitpoints: 20
+    hitpoints: 50
     # Amount of damage done to PLAYERS when hit by a blast
     player_damage: 150
     # Amount of damage d one to STRUCTURES when hit by a blast

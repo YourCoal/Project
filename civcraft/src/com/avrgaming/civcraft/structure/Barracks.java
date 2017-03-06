@@ -65,7 +65,7 @@ public class Barracks extends Structure {
 	private StructureSign unitNameSign;
 	
 	private ConfigUnit trainingUnit = null;
-	private double currentHammers = 0.0;
+	private double currentProduction = 0.0;
 	
 	private TreeMap<Integer, StructureSign> progresBar = new TreeMap<Integer, StructureSign>();
 	private Date lastSave = null;
@@ -176,7 +176,7 @@ public class Barracks extends Structure {
 		
 		getTown().getTreasury().withdraw(totalCoins);
 		
-		this.setCurrentHammers(0.0);
+		this.setCurrentProduction(0.0);
 		this.setTrainingUnit(unit);
 		CivMessage.sendTown(getTown(), "We've begun training a "+unit.name+"!");
 		this.updateTraining();
@@ -444,12 +444,12 @@ public class Barracks extends Structure {
 		this.trainingUnit = trainingUnit;
 	}
 
-	public double getCurrentHammers() {
-		return currentHammers;
+	public double getCurrentProduction() {
+		return currentProduction;
 	}
 
-	public void setCurrentHammers(double currentHammers) {
-		this.currentHammers = currentHammers;
+	public void setCurrentProduction(double currentProduction) {
+		this.currentProduction = currentProduction;
 	}
 
 	public void createUnit(ConfigUnit unit) {
@@ -469,20 +469,20 @@ public class Barracks extends Structure {
 			
 			CivMessage.sendTown(this.getTown(), "Completed a "+unit.name+"!");
 			this.trainingUnit = null;
-			this.currentHammers = 0.0;
+			this.currentProduction = 0.0;
 			
 			CivGlobal.getSessionDB().delete_all(getSessionKey());
 			
 		} catch (ClassNotFoundException | SecurityException | 
 				IllegalAccessException | IllegalArgumentException | NoSuchMethodException e) {
 			this.trainingUnit = null;
-			this.currentHammers = 0.0;
+			this.currentProduction = 0.0;
 			CivMessage.sendTown(getTown(), CivColor.Red+"ERROR couldn't find class?:"+e.getMessage());
 		} catch (InvocationTargetException e) {
 			CivMessage.sendTown(getTown(), CivColor.Rose+e.getCause().getMessage());
-			this.currentHammers -= 20.0;
-			if (this.currentHammers < 0.0) {
-				this.currentHammers = 0.0;
+			this.currentProduction -= 20.0;
+			if (this.currentProduction < 0.0) {
+				this.currentProduction = 0.0;
 			}
 		//	e.getCause().getMessage()
 			//e.printStackTrace();
@@ -494,7 +494,7 @@ public class Barracks extends Structure {
 	public void updateProgressBar() {
 		double percentageDone = 0.0;
 		
-		percentageDone = this.currentHammers / this.trainingUnit.hammer_cost;
+		percentageDone = this.currentProduction / this.trainingUnit.production_cost;
 		int size = this.progresBar.size();
 		int textCount = (int)(size*16*percentageDone);
 		int textIndex = 0;
@@ -537,7 +537,7 @@ public class Barracks extends Structure {
 	public void saveProgress() {
 		if (this.getTrainingUnit() != null) {
 			String key = getSessionKey();
-			String value = this.getTrainingUnit().id+":"+this.currentHammers; 
+			String value = this.getTrainingUnit().id+":"+this.currentProduction; 
 			ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(key);
 
 			if (entries.size() > 0) {
@@ -578,7 +578,7 @@ public class Barracks extends Structure {
 				return;
 			}
 			
-			this.currentHammers = Double.valueOf(values[1]);
+			this.currentProduction = Double.valueOf(values[1]);
 			
 			/* delete any bad extra entries. */
 			for (int i = 1; i < entries.size(); i++) {
@@ -591,9 +591,9 @@ public class Barracks extends Structure {
 	
 	public void updateTraining() {
 		if (this.trainingUnit != null) {
-			// Hammers are per hour, this runs per min. We need to adjust the hammers we add.
-			double addedHammers = (getTown().getHammers().total / 60) / 60;
-			this.currentHammers += addedHammers;
+			// Production are per hour, this runs per min. We need to adjust the hammers we add.
+			double addedProduction = (getTown().getProduction().total / 60) / 60;
+			this.currentProduction += addedProduction;
 			
 			
 			this.updateProgressBar();
@@ -603,8 +603,8 @@ public class Barracks extends Structure {
 				TaskMaster.asyncTask(new UnitSaveAsyncTask(this), 0);
 			}
 			
-			if (this.currentHammers >= this.trainingUnit.hammer_cost) {
-				this.currentHammers = this.trainingUnit.hammer_cost;
+			if (this.currentProduction >= this.trainingUnit.production_cost) {
+				this.currentProduction = this.trainingUnit.production_cost;
 				this.createUnit(this.trainingUnit);
 			}
 			

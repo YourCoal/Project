@@ -107,7 +107,6 @@ import com.avrgaming.civcraft.threading.timers.AnnouncementTimer;
 import com.avrgaming.civcraft.threading.timers.BeakerTimer;
 import com.avrgaming.civcraft.threading.timers.BossBarUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.ChangeGovernmentTimer;
-import com.avrgaming.civcraft.threading.timers.Minute5UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
 import com.avrgaming.civcraft.threading.timers.PlayerProximityComponentTimer;
 import com.avrgaming.civcraft.threading.timers.PlayerTagUpdateTimer;
@@ -152,7 +151,6 @@ public class CivCraft extends JavaPlugin {
 		// Structure event timers
 		TaskMaster.asyncTimer("Second1UpdateEventTimer", new Second1UpdateEventTimer(), TimeTools.toTicks(1));
 		TaskMaster.asyncTimer("Second7UpdateEventTimer", new Second7UpdateEventTimer(), TimeTools.toTicks(7));
-		TaskMaster.asyncTimer("Minute5UpdateEventTimer", new Minute5UpdateEventTimer(), TimeTools.toTicks(60*5));
 		
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
 		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
@@ -309,8 +307,9 @@ public class CivCraft extends JavaPlugin {
 		CivCraft.addFurnaceRecipes();
 		
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			public void run(){
+			public void run() {
 				HolographicDisplaysListener.generateTradeGoodHolograms();
+				HolographicDisplaysListener.generateBankHolograms();
 			}
 		});
 	}
@@ -323,10 +322,10 @@ public class CivCraft extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+		SQLUpdate.save();
+		isDisable = true;
 		MobSpawner.despawnAll();
 		super.onDisable();
-		isDisable = true;
-		SQLUpdate.save();
 	}
 	
 	public boolean isError() {

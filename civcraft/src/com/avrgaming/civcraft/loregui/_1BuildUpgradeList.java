@@ -10,8 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import com.avrgaming.civcraft.book.CivBook;
 import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.config.ConfigTownUpgrade;
-import com.avrgaming.civcraft.loregui.GuiAction;
-import com.avrgaming.civcraft.loregui.OpenInventoryTask;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItem;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
 import com.avrgaming.civcraft.main.CivGlobal;
@@ -19,8 +17,6 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
-
-import gpl.AttributeUtil;
 
 public class _1BuildUpgradeList implements GuiAction {
 
@@ -51,9 +47,9 @@ public class _1BuildUpgradeList implements GuiAction {
 					is = LoreGuiItem.build(info.name, type, 0, CivColor.Gold+"<Click To Upgrade>");
 					is = LoreGuiItem.setAction(is, "_1ResearchChooseUpgrade");
 					is = LoreGuiItem.setActionData(is, "info", info.id);
-						AttributeUtil attrs = new AttributeUtil(is);
-						attrs.setShiny();
-					is = attrs.getStack();
+//						AttributeUtil attrs = new AttributeUtil(is);
+//						attrs.setShiny();
+//					is = attrs.getStack();
 					guiInventory.addItem(is);
 				}
 			}

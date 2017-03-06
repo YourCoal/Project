@@ -10,7 +10,7 @@ import com.avrgaming.civcraft.main.CivLog;
 public class ConfigCultureBiomeInfo {
 	public String name;
 	public double coins;
-	public double hammers;
+	public double production;
 	public double growth;
 	public double happiness;
 	public double beakers;
@@ -23,7 +23,7 @@ public class ConfigCultureBiomeInfo {
 			ConfigCultureBiomeInfo biome = new ConfigCultureBiomeInfo();
 			biome.name = (String)cl.get("name");
 			biome.coins = (Double)cl.get("coins");
-			biome.hammers = (Double)cl.get("hammers");
+			biome.production = (Double)cl.get("production");
 			biome.growth = (Double)cl.get("growth");
 			biome.happiness = (Double)cl.get("happiness");
 			biome.beakers = (Double)cl.get("beakers");

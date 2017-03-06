@@ -221,8 +221,40 @@ public class Template {
 	
 	public void buildPreviewScaffolding(Location center, Player player) {
 		Resident resident = CivGlobal.getResident(player);
-		
 		resident.undoPreview();
+		
+		//Top
+		for (int z = 0; z < this.size_z; z++) {
+			for (int x = 0; x < this.size_x; x++) {
+				Block b = center.getBlock().getRelative(x, this.size_y-1, z);
+				ItemManager.sendBlockChange(player, b.getLocation(), CivData.GLASS, 0);
+				resident.previewUndo.put(new BlockCoord(b.getLocation()), new SimpleBlock(ItemManager.getId(b), ItemManager.getData(b)));
+			}
+		}
+		
+		for (int y = 0; y < this.size_y; y++) {
+			for (int x = 0; x < this.size_x; x++) {
+			Block b1 = center.getBlock().getRelative(x, y, 0);
+			ItemManager.sendBlockChange(player, b1.getLocation(), CivData.GLASS, 0);
+			resident.previewUndo.put(new BlockCoord(b1.getLocation()), new SimpleBlock(ItemManager.getId(b1), ItemManager.getData(b1)));
+			
+			Block b2 = center.getBlock().getRelative(x, y, this.size_z-1);
+			ItemManager.sendBlockChange(player, b2.getLocation(), CivData.GLASS, 0);
+			resident.previewUndo.put(new BlockCoord(b2.getLocation()), new SimpleBlock(ItemManager.getId(b2), ItemManager.getData(b2)));
+			}
+		}
+		
+		for (int y = 0; y < this.size_y; y++) {
+			for (int z = 0; z < this.size_z; z++) {
+			Block b1 = center.getBlock().getRelative(0, y, z);
+			ItemManager.sendBlockChange(player, b1.getLocation(), CivData.GLASS, 0);
+			resident.previewUndo.put(new BlockCoord(b1.getLocation()), new SimpleBlock(ItemManager.getId(b1), ItemManager.getData(b1)));
+			
+			Block b2 = center.getBlock().getRelative(this.size_x-1, y, z);
+			ItemManager.sendBlockChange(player, b2.getLocation(), CivData.GLASS, 0);
+			resident.previewUndo.put(new BlockCoord(b2.getLocation()), new SimpleBlock(ItemManager.getId(b2), ItemManager.getData(b2)));
+			}
+		}
 		
 		for (int y = 0; y < this.size_y; y++) {
 			Block b = center.getBlock().getRelative(0, y, 0);
@@ -240,7 +272,6 @@ public class Template {
 			b = center.getBlock().getRelative(0, y, this.size_z-1);
 			ItemManager.sendBlockChange(player, b.getLocation(), CivData.BEDROCK, 0);
 			resident.previewUndo.put(new BlockCoord(b.getLocation()), new SimpleBlock(ItemManager.getId(b), ItemManager.getData(b)));
-
 		}
 		
 		for (int x = 0; x < this.size_x; x++) {
@@ -264,6 +295,7 @@ public class Template {
 			resident.previewUndo.put(new BlockCoord(b.getLocation()), new SimpleBlock(ItemManager.getId(b), ItemManager.getData(b)));
 		}
 		
+		//Bottom
 		for (int z = 0; z < this.size_z; z++) {
 			for (int x = 0; x < this.size_x; x++) {
 				Block b = center.getBlock().getRelative(x, 0, z);

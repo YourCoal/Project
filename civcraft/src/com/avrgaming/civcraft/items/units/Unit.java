@@ -38,9 +38,20 @@ public abstract class Unit {
 	
 	public static Archer ARCHER_UNIT;
 	public static Warrior WARRIOR_UNIT;
+	public static Berserker BERSERKER_UNIT;
+	
+	public static Crossbowman CROSSBOWMAN_UNIT;
+	public static Swordsman SWORDSMAN_UNIT;
+	public static Swordsman SPEARMAN_UNIT;
+	
+	public static Slinger SLINGER_UNIT;
+	public static Musketman MUSKETMAN_UNIT;
+	public static Knight KNIGHT_UNIT;
+	
+	public static Settler SETTLER_UNIT;
+	public static Engineer ENGINEER_UNIT;
 	
 	public static Spy SPY_UNIT;
-	public static Settler SETTLER_UNIT;
 	public static ArrayList<MissionBook> SPY_MISSIONS = new ArrayList<MissionBook>();
 	public static MissionBook SPY_INVESTIGATE_TOWN;
 	public static MissionBook SPY_STEAL_TREASURY;
@@ -50,8 +61,6 @@ public abstract class Unit {
 	public static MissionBook SPY_SABOTAGE;
 	
 	public static void init() {
-		
-		SETTLER_UNIT = new Settler("u_settler", CivSettings.units.get("u_settler"));
 		SPY_UNIT = new Spy("u_spy", CivSettings.units.get("u_spy"));
 		for (ConfigMission mission : CivSettings.missions.values()) {
 			if (mission.slot > 0) {
@@ -67,6 +76,18 @@ public abstract class Unit {
 		
 		ARCHER_UNIT = new Archer("u_archer", CivSettings.units.get("u_archer"));
 		WARRIOR_UNIT = new Warrior("u_warrior", CivSettings.units.get("u_warrior"));
+		BERSERKER_UNIT = new Berserker("u_berserker", CivSettings.units.get("u_berserker"));
+		
+		CROSSBOWMAN_UNIT = new Crossbowman("u_crossbowman", CivSettings.units.get("u_crossbowman"));
+		SWORDSMAN_UNIT = new Swordsman("u_swordsman", CivSettings.units.get("u_swordsman"));
+		SPEARMAN_UNIT = new Swordsman("u_spearman", CivSettings.units.get("u_spearman"));
+		
+		SLINGER_UNIT = new Slinger("u_slinger", CivSettings.units.get("u_slinger"));
+		MUSKETMAN_UNIT = new Musketman("u_musketman", CivSettings.units.get("u_musketman"));
+		KNIGHT_UNIT = new Knight("u_knight", CivSettings.units.get("u_knight"));
+		
+		SETTLER_UNIT = new Settler("u_settler", CivSettings.units.get("u_settler"));
+		ENGINEER_UNIT = new Engineer("u_engineer", CivSettings.units.get("u_engineer"));
 	}
 	
 	public Unit() {

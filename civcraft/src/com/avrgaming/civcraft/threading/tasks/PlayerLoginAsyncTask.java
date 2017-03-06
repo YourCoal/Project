@@ -18,6 +18,7 @@
  */
 package com.avrgaming.civcraft.threading.tasks;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -98,16 +99,15 @@ public class PlayerLoginAsyncTask implements Runnable {
 								return;
 							}
 							
-							Thread.sleep(2000);
+							Thread.sleep(3000);
 							resident.setisProtected(true);
 							CivMessage.sendTitle(resident, 10, 80, 10, CivColor.ITALIC+"Time to Begin your Adventure!", CivColor.LightGray+CivColor.ITALIC+"Don't fall into the ruins of forgoten lands.");
 							CivMessage.send(resident, "Generating player... "+CivColor.LightGray+"Adding player to database...");
 							CivGlobal.addResident(resident);
+							Thread.sleep(500);
 							CivMessage.send(resident, "Generating player... "+CivColor.LightGray+"Giving tutorial kit...");
 							TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
-							CivMessage.send(resident, CivColor.LightGray+"PvP Timer enabling in 10 seconds.");
-//							CivBook.showTutorialInventory(getPlayer());
-							Thread.sleep(10000);
+							Thread.sleep(500);
 							int mins;
 							try {
 								mins = CivSettings.getInteger(CivSettings.civConfig, "global.pvp_timer");
@@ -119,206 +119,203 @@ public class PlayerLoginAsyncTask implements Runnable {
 							resident.setisProtected(true);
 							CivMessage.send(resident,  "Generating player... "+CivColor.LightGray+"Enabling PvP Timer...");
 							CivMessage.send(resident, CivColor.LightGray+"You now have a PvP Timer for "+mins+" minutes.");
-						} catch (InterruptedException | CivException e) {
+							resident.save();
+							resident.saveNow();
+							CivMessage.send(resident,  "You will be kicked in 10 seconds so we can save your new stats...");
+							Thread.sleep(10000);
+							TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, 
+									"Saving Stats... Rejoin Server."));
+						} catch (InterruptedException | CivException | SQLException e) {
 							e.printStackTrace();
 						}
 					}
 				}).start();
-			}
-			
-			/* Resident is present. Lets check the UUID against the stored UUID.
-			 * We are not going to allow residents to change names without admin permission.
-			 * If someone logs in with a name that does not match the stored UUID, we'll kick them. */
-			if (resident != null && resident.getUUID() == null) {
-				/* This resident does not yet have a UUID stored. Free lunch. */
-				resident.setUUID(getPlayer().getUniqueId());
-				CivLog.info("Resident named:"+resident.getName()+" was acquired by UUID:"+resident.getUUIDString());
-			} else if (!resident.getUUID().equals(getPlayer().getUniqueId())) {
-				TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, 
-						"You're attempting to log in with a name already in use. Please change your name."));
-				return;
-			}
-			
-			if (!resident.isGivenKit()) {
-				TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
-			}
-			
-			if (!resident.isUsesAntiCheat() && getPlayer().hasPermission(CivSettings.HACKER)) {
-				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
-					CivMessage.send(resident, CivColor.YellowItalic+"You have the 'civ.hacker' permission, but because you are admin/OP, you are allowed to stay online.");
-				} else {
-					TaskMaster.syncTask(new PlayerKickBan(resident.getName(), true, false, 
-							"Kicked: You are required to have CivCraft's Anti-Cheat plugin installed to participate in the game."+
-							"Visit http://civcraft.net to get it."));
-					return;
-				}
-			}
-			
-			if (War.isWarTime() && War.isOnlyWarriors()) {
-				if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
-					//Allowed to connect since player is OP or mini admin.
-					CivMessage.send(resident, CivColor.YellowItalic+"Only players in civilizations at war can connect right now, but since you are admin/OP, you are allowed to stay online.");
-				} else if (!resident.hasTown() || !resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
-					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "Only players in civilizations at war can connect right now. Sorry."));
-					return;
-				}
-			}
-			
-			/* turn on allchat by default for admins. */
-			if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().isOp()) {
-				resident.allchat = true;
-				Resident.allchatters.add(resident.getName());
-			}
-			
-			if (resident.getTreasury().inDebt()) {
-				TaskMaster.asyncTask("", new PlayerDelayedDebtWarning(resident), 1000);
-			}
-			
-			if (!getPlayer().isOp()) {
-				CultureChunk cc = CivGlobal.getCultureChunk(new ChunkCoord(getPlayer().getLocation()));
-				if (cc != null && cc.getCiv() != resident.getCiv()) {
-					Relation.Status status = cc.getCiv().getDiplomacyManager().getRelationStatus(getPlayer());
-					String color = PlayerChunkNotifyAsyncTask.getNotifyColor(cc, status, getPlayer());
-					String relationName = status.name();
-					
-					if (War.isWarTime() && status.equals(Relation.Status.WAR)) {
-						/* 
-						 * Test for players who were not logged in when war time started.
-						 * If they were not logged in, they are enemies, and are inside our borders
-						 * they need to be teleported back to their own town hall.
-						 */
-						
-						if (resident.getLastOnline() < War.getStart().getTime()) {
-							resident.teleportHome();
-							CivMessage.send(resident, CivColor.LightGray+"You've been teleported back to your home since you've logged into enemy during WarTime.");
-						}
-					}
-					
-					CivMessage.sendCiv(cc.getCiv(), color+getPlayer().getDisplayName()+"("+relationName+") has logged-in to our borders.");
-				}
-			}
-					
-			resident.setLastOnline(System.currentTimeMillis());
-			resident.setLastIP(getPlayer().getAddress().getAddress().getHostAddress());
-			resident.setSpyExposure(resident.getSpyExposure());
-			resident.save();
-			
-			
-			//TODO send town board messages?
-			//TODO set default modes?
-			resident.showWarnings(getPlayer());
-			resident.loadPerks();
-			
-			try {
-				String perkMessage = "";
-				perkMessage = "You have access to the Following Perks: ";
-				if (CivSettings.getString(CivSettings.perkConfig, "system.free_perks").equalsIgnoreCase("true")) {
-					resident.giveAllFreePerks();
-					perkMessage += "Weather, ";
-				} else if (CivSettings.getString(CivSettings.perkConfig, "system.free_admin_perks").equalsIgnoreCase("true")) {
-					if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
-						resident.giveAllFreePerks();
-						perkMessage += "(Admin Perks), ";
-					}
-				}
-				if (getPlayer().hasPermission(CivSettings.ARCTIC_PERKS)) {
-					resident.giveAllArcticPerks();
-					perkMessage += "Arctic, ";
-				}
-				if (getPlayer().hasPermission(CivSettings.AZTEC_PERKS)) {
-					resident.giveAllAztecPerks();
-					perkMessage += "Aztec, ";
-				}
-				if (getPlayer().hasPermission(CivSettings.CULTIST_PERKS)) {
-					resident.giveAllCultistPerks();
-					perkMessage += "Cultist, ";
-				}
-				if (getPlayer().hasPermission(CivSettings.EGYPTIAN_PERKS)) {
-					resident.giveAllEgyptianPerks();
-					perkMessage += "Egyptian, ";
-				}
-				if (getPlayer().hasPermission(CivSettings.ELVEN_PERKS)) {
-					resident.giveAllElvenPerks();
-					perkMessage += "Elven, ";
-				}
-				if (getPlayer().hasPermission(CivSettings.HELL_PERKS)) {
-					resident.giveAllHellPerks();
-					perkMessage += "Hell, ";
-				}
-				if (getPlayer().hasPermission(CivSettings.ROMAN_PERKS)) {
-					resident.giveAllRomanPerks();
-					perkMessage += "Roman, ";
-				}
-				perkMessage += "... Apply them in your backpack!";
-				CivMessage.send(resident, CivColor.LightGreen+perkMessage);
-			} catch (InvalidConfiguration e) {
-				e.printStackTrace();
-			}
-			
-			
-			/* Send Anti-Cheat challenge to player. */
-			if (!getPlayer().hasPermission("civ.ac_valid")) {
-				resident.setUsesAntiCheat(false);
-				ACManager.sendChallenge(getPlayer());
 			} else {
-				resident.setUsesAntiCheat(true);
-			}
-	
-			// Check for pending respawns.
-			ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup("global:respawnPlayer");
-			ArrayList<SessionEntry> deleted = new ArrayList<SessionEntry>();
-		
-			for (SessionEntry e : entries) {
-				String[] split = e.value.split(":");
+				/* Resident is present. Lets check the UUID against the stored UUID.
+				 * We are not going to allow residents to change names without admin permission.
+				 * If someone logs in with a name that does not match the stored UUID, we'll kick them. */
+				if (resident.getUUID() == null) {
+					/* This resident does not yet have a UUID stored. Free lunch. */
+					resident.setUUID(getPlayer().getUniqueId());
+					CivLog.info("Resident named:"+resident.getName()+" was acquired by UUID:"+resident.getUUIDString());
+				} else if (!resident.getUUID().equals(getPlayer().getUniqueId())) {
+					TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, 
+							"You're attempting to log in with a name already in use. Please change your name."));
+					return;
+				}
 				
-				BlockCoord coord = new BlockCoord(split[1]);
-				getPlayer().teleport(coord.getLocation());
-				deleted.add(e);
-			}
-			
-			for (SessionEntry e : deleted) {
-				CivGlobal.getSessionDB().delete(e.request_id, "global:respawnPlayer");
-			}
-			
-			try {
-				Player p = CivGlobal.getPlayer(resident);
-				PlatinumManager.givePlatinumDaily(resident,
-						CivSettings.platinumRewards.get("loginDaily").name, 
-						CivSettings.platinumRewards.get("loginDaily").amount, 
-						"Welcome back to CivCraft! Here is %d for logging in today!" );			
-		
+				if (!resident.isGivenKit()) {
+					TaskMaster.syncTask(new GivePlayerStartingKit(resident.getName()));
+				}
 				
-				ArrayList<SessionEntry> deathEvents = CivGlobal.getSessionDB().lookup("pvplogger:death:"+resident.getName());
-				if (deathEvents.size() != 0) {
-					CivMessage.send(resident, CivColor.Rose+CivColor.BOLD+"You were killed while offline because you logged out while in PvP!");
-					class SyncTask implements Runnable {
-						String playerName; 
+				if (!resident.isUsesAntiCheat() && getPlayer().hasPermission(CivSettings.HACKER)) {
+					if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
+						CivMessage.send(resident, CivColor.YellowItalic+"You have the 'civ.hacker' permission, but because you are admin/OP, you are allowed to stay online.");
+					} else {
+						TaskMaster.syncTask(new PlayerKickBan(resident.getName(), true, false, 
+								"Kicked: You are required to have CivCraft's Anti-Cheat plugin installed to participate in the game."+
+								"Visit http://civcraft.net to get it."));
+						return;
+					}
+				}
+				
+				if (War.isWarTime() && War.isOnlyWarriors()) {
+					if (getPlayer().isOp() || getPlayer().hasPermission(CivSettings.MINI_ADMIN)) {
+						//Allowed to connect since player is OP or mini admin.
+						CivMessage.send(resident, CivColor.YellowItalic+"Only players in civilizations at war can connect right now, but since you are admin/OP, you are allowed to stay online.");
+					} else if (!resident.hasTown() || !resident.getTown().getCiv().getDiplomacyManager().isAtWar()) {
+						TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "Only players in civilizations at war can connect right now. Sorry."));
+						return;
+					}
+				}
+				
+				/* turn on allchat by default for admins. */
+				if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().isOp()) {
+					resident.allchat = true;
+					Resident.allchatters.add(resident.getName());
+				}
+				
+				if (resident.getTreasury().inDebt()) {
+					TaskMaster.asyncTask("", new PlayerDelayedDebtWarning(resident), 1000);
+				}
+				
+				if (!getPlayer().isOp()) {
+					CultureChunk cc = CivGlobal.getCultureChunk(new ChunkCoord(getPlayer().getLocation()));
+					if (cc != null && cc.getCiv() != resident.getCiv()) {
+						Relation.Status status = cc.getCiv().getDiplomacyManager().getRelationStatus(getPlayer());
+						String color = PlayerChunkNotifyAsyncTask.getNotifyColor(cc, status, getPlayer());
+						String relationName = status.name();
 						
-						public SyncTask(String playerName) {
-							this.playerName = playerName;
-						}
-						
-						@Override
-						public void run() {
-							Player p;
-							try {
-								p = CivGlobal.getPlayer(playerName);
-								p.setHealth(0);
-								CivGlobal.getSessionDB().delete_all("pvplogger:death:"+p.getName());
-							} catch (CivException e) {
-								// You cant excape death that easily!
+						if (War.isWarTime() && status.equals(Relation.Status.WAR)) {
+							/* Test for players who were not logged in when war time started.
+							 * If they were not logged in, they are enemies, and are inside our borders
+							 * they need to be teleported back to their own town hall.  */
+							if (resident.getLastOnline() < War.getStart().getTime()) {
+								resident.teleportHome();
+								CivMessage.send(resident, CivColor.LightGray+"You've been teleported back to your home since you've logged into enemy during WarTime.");
 							}
 						}
+						CivMessage.sendCiv(cc.getCiv(), color+getPlayer().getDisplayName()+"("+relationName+") has logged-in to our borders.");
 					}
+				}
+				
+				resident.setLastOnline(System.currentTimeMillis());
+				resident.setLastIP(getPlayer().getAddress().getAddress().getHostAddress());
+				resident.setSpyExposure(resident.getSpyExposure());
+				resident.save();
+				
+				//TODO send town board messages?
+				//TODO set default modes?
+				resident.showWarnings(getPlayer());
+				resident.loadPerks();
+				
+				try {
+					String perkMessage = "";
+					perkMessage = "You have access to the Following Perks: ";
+					if (CivSettings.getString(CivSettings.perkConfig, "system.free_perks").equalsIgnoreCase("true")) {
+						resident.giveAllFreePerks();
+						perkMessage += "Weather, ";
+					} else if (CivSettings.getString(CivSettings.perkConfig, "system.free_admin_perks").equalsIgnoreCase("true")) {
+						if (getPlayer().hasPermission(CivSettings.MINI_ADMIN) || getPlayer().hasPermission(CivSettings.FREE_PERKS)) {
+							resident.giveAllFreePerks();
+							perkMessage += "(Admin Perks), ";
+						}
+					}
+					if (getPlayer().hasPermission(CivSettings.ARCTIC_PERKS)) {
+						resident.giveAllArcticPerks();
+						perkMessage += "Arctic, ";
+					}
+					if (getPlayer().hasPermission(CivSettings.AZTEC_PERKS)) {
+						resident.giveAllAztecPerks();
+						perkMessage += "Aztec, ";
+					}
+					if (getPlayer().hasPermission(CivSettings.CULTIST_PERKS)) {
+						resident.giveAllCultistPerks();
+						perkMessage += "Cultist, ";
+					}
+					if (getPlayer().hasPermission(CivSettings.EGYPTIAN_PERKS)) {
+						resident.giveAllEgyptianPerks();
+						perkMessage += "Egyptian, ";
+					}
+					if (getPlayer().hasPermission(CivSettings.ELVEN_PERKS)) {
+						resident.giveAllElvenPerks();
+						perkMessage += "Elven, ";
+					}
+					if (getPlayer().hasPermission(CivSettings.HELL_PERKS)) {
+						resident.giveAllHellPerks();
+						perkMessage += "Hell, ";
+					}
+					if (getPlayer().hasPermission(CivSettings.ROMAN_PERKS)) {
+						resident.giveAllRomanPerks();
+						perkMessage += "Roman, ";
+					}
+					perkMessage += "... Apply them in your backpack!";
+					CivMessage.send(resident, CivColor.LightGreen+perkMessage);
+				} catch (InvalidConfiguration e) {
+					e.printStackTrace();
+				}
+				
+				/* Send Anti-Cheat challenge to player. */
+//				if (!getPlayer().hasPermission("civ.ac_valid")) {
+//					resident.setUsesAntiCheat(false);
+					ACManager.sendChallenge(getPlayer());
+//				} else {
+//					resident.setUsesAntiCheat(true);
+//				}
+				
+				// Check for pending respawns.
+				ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup("global:respawnPlayer");
+				ArrayList<SessionEntry> deleted = new ArrayList<SessionEntry>();
+				
+				for (SessionEntry e : entries) {
+					String[] split = e.value.split(":");
+					BlockCoord coord = new BlockCoord(split[1]);
+					getPlayer().teleport(coord.getLocation());
+					deleted.add(e);
+				}
+				
+				for (SessionEntry e : deleted) {
+					CivGlobal.getSessionDB().delete(e.request_id, "global:respawnPlayer");
+				}
+				
+				try {
+					Player p = CivGlobal.getPlayer(resident);
+					PlatinumManager.givePlatinumDaily(resident,
+							CivSettings.platinumRewards.get("loginDaily").name, 
+							CivSettings.platinumRewards.get("loginDaily").amount, 
+							"Welcome back to CivCraft! Here is %d for logging in today!" );			
 					
-					TaskMaster.syncTask(new SyncTask(p.getName()));
-				}	
-			} catch (CivException e1) {
-				//try really hard not to give offline players who were kicked platinum.
-			}
-			
-			if (EndConditionDiplomacy.canPeopleVote()) {
-				CivMessage.send(resident, CivColor.LightGreen+"The Council of Eight is built! Use /civ vote [name] to vote for your favorite Civilization!");
+					ArrayList<SessionEntry> deathEvents = CivGlobal.getSessionDB().lookup("pvplogger:death:"+resident.getName());
+					if (deathEvents.size() != 0) {
+						CivMessage.send(resident, CivColor.Rose+CivColor.BOLD+"You were killed while offline because you logged out while in PvP!");
+						class SyncTask implements Runnable {
+							String playerName; 
+							
+							public SyncTask(String playerName) {
+								this.playerName = playerName;
+							}
+							
+							@Override
+							public void run() {
+								Player p;
+								try {
+									p = CivGlobal.getPlayer(playerName);
+									p.setHealth(0);
+									CivGlobal.getSessionDB().delete_all("pvplogger:death:"+p.getName());
+								} catch (CivException e) {
+									// You cant excape death that easily!
+								}
+							}
+						}
+						TaskMaster.syncTask(new SyncTask(p.getName()));
+					}	
+				} catch (CivException e1) {
+					//try really hard not to give offline players who were kicked platinum.
+				}
+				
+				if (EndConditionDiplomacy.canPeopleVote()) {
+					CivMessage.send(resident, CivColor.LightGreen+"The Council of Eight is built! Use /civ vote [name] to vote for your favorite Civilization!");
+				}
 			}
 		} catch (CivException | InvalidNameException exception) {
 			// Player logged out while async task was running.

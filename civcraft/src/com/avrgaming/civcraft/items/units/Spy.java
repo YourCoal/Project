@@ -36,6 +36,7 @@ import com.avrgaming.civcraft.object.MissionLogger;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.util.BookUtil;
+import com.avrgaming.civcraft.util.CivColor;
 
 import gpl.AttributeUtil;
 
@@ -51,8 +52,14 @@ public class Spy extends UnitMaterial {
 
 	public static void spawn(Inventory inv, Town town) throws CivException {
 		ItemStack is = LoreMaterial.spawn(Unit.SPY_UNIT);
-
-		UnitMaterial.setOwningTown(town, is);		
+		UnitMaterial.setOwningTown(town, is);
+		
+		AttributeUtil attrs = new AttributeUtil(is);
+		attrs.addLore(CivColor.Rose+"Level War");
+		attrs.addLore(CivColor.LightGray+"Ability to Conduct Spy Missions");
+		attrs.setCivCraftProperty("owner_civ_id", ""+town.getCiv().getId());
+		is = attrs.getStack();
+			
 		if (!Unit.addItemNoStack(inv, is)) {
 			throw new CivException("Cannot make "+Unit.SPY_UNIT.getUnit().name+". Barracks chest is full! Make Room!");
 		}

@@ -66,7 +66,7 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.IRON_ORE), (short)0, 0.01);
 		    this.addVanillaDrop(ItemManager.getId(Material.DIAMOND_ORE), (short)0, 0.007);
-			this.coinDrop(15, 60);
+			this.coinDrop(10, 40);
 			break;
 			
 		case COLD:
@@ -83,7 +83,7 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.GOLD_ORE), (short)0, 0.01);
 		    this.addVanillaDrop(ItemManager.getId(Material.REDSTONE_ORE), (short)0, 0.007);
-			this.coinDrop(15, 60);
+			this.coinDrop(10, 40);
 			break;
 			
 		case LUSH:
@@ -100,7 +100,7 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.IRON_ORE), (short)0, 0.01);
 		    this.addVanillaDrop(ItemManager.getId(Material.REDSTONE_ORE), (short)0, 0.007);
-			this.coinDrop(15, 60);
+			this.coinDrop(10, 40);
 			break;
 			
 		case WARM:
@@ -117,7 +117,7 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 			
 		    this.addVanillaDrop(ItemManager.getId(Material.GOLD_ORE), (short)0, 0.01);
 		    this.addVanillaDrop(ItemManager.getId(Material.DIAMOND_ORE), (short)0, 0.007);
-			this.coinDrop(15, 60);
+			this.coinDrop(10, 40);
 			break;
 			
 		case WATER:
@@ -136,7 +136,7 @@ public class Yobo extends CommonCustomMob implements ICustomMob {
 		    this.addVanillaDrop(ItemManager.getId(Material.LAPIS_ORE), (short)0, 0.007);
 		    this.addVanillaDrop(ItemManager.getId(Material.REDSTONE_ORE), (short)0, 0.007);
 		    this.addVanillaDrop(ItemManager.getId(Material.EMERALD_ORE), (short)0, 0.003);
-			this.coinDrop(30, 75);
+			this.coinDrop(20, 60);
 			break;
 		default:
 			defense = new MobComponentDefense(5);

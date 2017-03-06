@@ -126,7 +126,6 @@ import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
 import com.moblib.moblib.MobLib;
 
-import gpl.HorseModifier;
 import net.minecraft.server.v1_10_R1.AttributeInstance;
 import net.minecraft.server.v1_10_R1.AxisAlignedBB;
 import net.minecraft.server.v1_10_R1.DamageSource;
@@ -395,7 +394,7 @@ public class BlockListener implements Listener {
 			}
 		}
 
-		class SyncTask implements Runnable {
+/*		class SyncTask implements Runnable {
 			LivingEntity entity;
 
 			public SyncTask(LivingEntity entity) {
@@ -421,7 +420,7 @@ public class BlockListener implements Listener {
 
 			CivLog.warning("Canceling horse spawn reason:"+event.getSpawnReason().name());
 			event.setCancelled(true);
-		}
+		}*/
 
 		coord.setFromLocation(event.getLocation());
 		TownChunk tc = CivGlobal.getTownChunk(coord);
@@ -1190,14 +1189,14 @@ public class BlockListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
-		if (event.getRightClicked().getType().equals(EntityType.HORSE)) {
+/*		if (event.getRightClicked().getType().equals(EntityType.HORSE)) {
 			if (!HorseModifier.isCivCraftHorse((LivingEntity)event.getRightClicked())) {
 				CivMessage.sendError(event.getPlayer(), "Invalid horse! You can only get horses from stable structures.");
 				event.setCancelled(true);
 				event.getRightClicked().remove();
 				return;
 			}
-		}
+		}*/
 
 		ItemStack inHand = null;
 		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
@@ -1217,23 +1216,33 @@ public class BlockListener implements Listener {
 					}
 					break;
 				case PIG:
-					if (inHand.getType().equals(Material.CARROT_ITEM)) {
+					if (inHand.getType().equals(Material.CARROT_ITEM) ||
+						inHand.getType().equals(Material.POTATO_ITEM) ||
+						inHand.getType().equals(Material.BEETROOT)) {
 						denyBreeding = true;
-					}
-					break;
-				case HORSE:
-					if (inHand.getType().equals(Material.GOLDEN_APPLE) ||
-							inHand.getType().equals(Material.GOLDEN_CARROT)) {
-						CivMessage.sendError(event.getPlayer(), "You cannot breed horses, buy them from the stable.");
-						event.setCancelled(true);
-						return;
 					}
 					break;
 				case CHICKEN:
 					if (inHand.getType().equals(Material.SEEDS) ||
 						inHand.getType().equals(Material.MELON_SEEDS) ||
-						inHand.getType().equals(Material.PUMPKIN_SEEDS)) {
+						inHand.getType().equals(Material.PUMPKIN_SEEDS) ||
+						inHand.getType().equals(Material.BEETROOT_SEEDS)) {
 						denyBreeding = true;
+					}
+					break;
+				case RABBIT:
+					if (inHand.getType().equals(Material.YELLOW_FLOWER) ||
+						inHand.getType().equals(Material.CARROT_ITEM) ||
+						inHand.getType().equals(Material.GOLDEN_CARROT)) {
+						denyBreeding = true;
+					}
+					break;
+				case HORSE:
+					if (inHand.getType().equals(Material.GOLDEN_APPLE) ||
+						inHand.getType().equals(Material.GOLDEN_CARROT)) {
+						CivMessage.sendError(event.getPlayer(), "You cannot breed horses, buy them from the stable.");
+						event.setCancelled(true);
+						return;
 					}
 					break;
 				default:
@@ -1488,8 +1497,15 @@ public class BlockListener implements Listener {
 		
 		if (event.getEntity().getType().equals(EntityType.CHICKEN)) {
 			if (event.getSpawnReason().equals(SpawnReason.EGG) || event.getSpawnReason().equals(SpawnReason.DISPENSE_EGG)) {
-				event.setCancelled(true);
-				return;
+				Random rand = new Random();
+				int chance = rand.nextInt(100);
+				if (chance <= 10) {
+					event.setCancelled(false);
+					return;
+				} else {
+					event.setCancelled(true);
+					return;
+				}
 			}
 			NBTTagCompound compound = new NBTTagCompound();
 			if (compound.getBoolean("IsChickenJockey")) {
@@ -1693,7 +1709,7 @@ public class BlockListener implements Listener {
 			if (potion.getShooter() instanceof LivingEntity) {
 				entityName = shooter.getCustomName();
 			}
-			if (entityName != null && entityName.endsWith(" Ruffian")) {
+			if (entityName != null && entityName.endsWith("Ruffian")) {
 				EntityInsentient nmsEntity = (EntityInsentient) ((CraftLivingEntity) shooter).getHandle();
 				AttributeInstance attribute = nmsEntity.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE);
 				Double damage = attribute.getValue();
@@ -1840,7 +1856,6 @@ public class BlockListener implements Listener {
 		} 
 
 		Player attacker = (Player)potion.getShooter();
-
 		for (PotionEffect effect : potion.getEffects()) {
 			if (effect.getType().equals(PotionEffectType.INVISIBILITY)) {
 				event.setCancelled(true);
@@ -1986,5 +2001,4 @@ public class BlockListener implements Listener {
 	public void onEntityPortalCreate(EntityCreatePortalEvent event) {
 		event.setCancelled(true);
 	}
-
 }

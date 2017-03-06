@@ -83,7 +83,7 @@ public class CivGovCommand extends CommandBase {
 				CivColor.Green+" Cottage Rate: "+CivColor.LightGreen+civ.getGovernment().cottage_rate);
 		CivMessage.send(sender, CivColor.Green+"Upkeep Rate: "+CivColor.LightGreen+civ.getGovernment().upkeep_rate+
 				CivColor.Green+" Growth Rate: "+CivColor.LightGreen+civ.getGovernment().growth_rate);
-		CivMessage.send(sender, CivColor.Green+"Hammer Rate: "+CivColor.LightGreen+civ.getGovernment().hammer_rate+
+		CivMessage.send(sender, CivColor.Green+"Production Rate: "+CivColor.LightGreen+civ.getGovernment().production_rate+
 				CivColor.Green+" Beaker Rate: "+CivColor.LightGreen+civ.getGovernment().beaker_rate);
 		CivMessage.send(sender, CivColor.Green+"Culture Rate: "+CivColor.LightGreen+civ.getGovernment().culture_rate+
 				CivColor.Green+" Max Tax Rate: "+CivColor.LightGreen+civ.getGovernment().maximum_tax_rate);

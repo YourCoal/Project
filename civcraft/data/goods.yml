@@ -212,7 +212,7 @@ land_goods:
       name: Horses
       value: 250.0
       buffs: 'buff_advanced_tooling, buff_year_of_plenty'
-      material: 420 # lead
+      material: 415 # rabbit hide
       material_data: 0
       culture: 0.8
       food: 4

@@ -57,7 +57,7 @@ public class TownChunk extends SQLObject {
 	private boolean outpost;
 	
 	public PlotPermissions perms = new PlotPermissions();
-	public DistrictNode district = new DistrictNode("default");
+	public DistrictNode district = new DistrictNode();
 	
 	public static final String TABLE_NAME = "TOWNCHUNKS";
 	
@@ -69,14 +69,12 @@ public class TownChunk extends SQLObject {
 		ChunkCoord coord = new ChunkCoord(location);
 		setTown(newTown);
 		setChunkCord(coord);
-		district.setType("default");
 		perms.addGroup(newTown.getDefaultGroup());
 	}
 	
 	public TownChunk(Town newTown, ChunkCoord chunkLocation) {
 		setTown(newTown);
 		setChunkCord(chunkLocation);
-		district.setType("default");
 		perms.addGroup(newTown.getDefaultGroup());
 	}
 
@@ -145,12 +143,8 @@ public class TownChunk extends SQLObject {
 		this.price = rs.getDouble("price");
 		this.outpost = rs.getBoolean("outpost");
 		
+		this.district.setType(rs.getString("district"));
 		this.district.setID(rs.getInt("districtID"));
-		if (rs.getString("district") != null && rs.getString("district") != "") {
-			this.district.setType(rs.getString("district"));
-		} else {
-			this.district.setType("default");
-		}
 		
 		if (!this.outpost) {
 			try {
@@ -181,8 +175,20 @@ public class TownChunk extends SQLObject {
 		hashmap.put("world", this.getChunkCoord().getWorldname());
 		hashmap.put("x", this.getChunkCoord().getX());
 		hashmap.put("z", this.getChunkCoord().getZ());
-		hashmap.put("district", district.getType());
-		hashmap.put("districtID", district.getID());
+		
+		if (this.district.getType() == null) {
+			this.district.setType("default");
+			hashmap.put("district", this.district.getType());
+		} else {
+			hashmap.put("district", this.district.getType());
+		}
+		
+		if (this.district.getID() == null) {
+			this.district.setID(0);
+			hashmap.put("districtID", this.district.getID());
+		} else {
+			hashmap.put("districtID", this.district.getID());
+		}
 		hashmap.put("permissions", perms.getSaveString());
 		hashmap.put("for_sale", this.isForSale());
 		hashmap.put("value", this.getValue());
@@ -485,6 +491,7 @@ public class TownChunk extends SQLObject {
 		}
 		
 		this.district.setType("default");
+		this.district.setID(0);
 		this.value = this.price;
 		this.price = 0;
 		this.forSale = false;
@@ -537,7 +544,6 @@ public class TownChunk extends SQLObject {
 	public static void unclaim(TownChunk tc) throws CivException {
 		//TODO check that its not the last chunk
 		//TODO make sure that its not owned by someone else.
-		
 		tc.getTown().removeTownChunk(tc);
 		try {
 			tc.delete();

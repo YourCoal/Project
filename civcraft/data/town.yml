@@ -20,8 +20,8 @@ town:
     # upkeep = base * (distance-grace_distance)^falloff
     upkeep_town_block_falloff: 1.5
 
-    # Base hammer rate, usually 100, set higher to make building faster
-    base_hammer_rate: 1.0
+    # Base production rate, usually 100, set higher to make building faster
+    base_production_rate: 1.0
 
     # Base growth rate for towns.
     base_growth_rate: 1.0
@@ -142,7 +142,6 @@ town_levels:
 # id - unquie id for this upgrade
 # name - name to display on list
 # cost - coins for this upgrade
-# hammers - hammers required to upgrade
 # require_upgrade - upgrade that must be finished
 # require_tech - technology that must be finished
 

@@ -401,7 +401,7 @@ materials:
         - name: 'NoRightClick'
 # Checked 01/21/2017
   - id: 'civgood_horses'
-    item_id: 420
+    item_id: 415
     item_data: 0
     name: 'Horses [Goodie]'
     craftable: false
@@ -1606,7 +1606,7 @@ materials:
         - type_id: 0
           custom_id: 'civ_decorative_jewels'
           data: 0
-          count: 2
+          count: 1
 # Checked 01/21/2017
   - id: 'civ_civflag_part'
     item_id: 408
@@ -1836,6 +1836,7 @@ materials:
     craftable: true
     shaped: true
     category: '<roseb>War Materials'
+    required_techs: 'tech_advanced_masonry'
     components:
         - name: 'FoundWarCamp'
     ingredients:
@@ -1863,6 +1864,7 @@ materials:
     craftable: true
     shaped: true
     category: '<roseb>War Materials'
+    required_techs: 'tech_advanced_education'
     components:
         - name: 'BuildCannon'
         - name: 'NoRightClick'
@@ -2036,6 +2038,7 @@ materials:
     craftable: true
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_leather_refinement'
     components:
         - name: 'LeatherColor'
           color: 'A1A1A1'
@@ -2062,6 +2065,7 @@ materials:
     craftable: true
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_leather_refinement'
     components:
         - name: 'LeatherColor'
           color: 'A1A1A1'
@@ -2088,6 +2092,7 @@ materials:
     craftable: true
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_leather_refinement'
     components:
         - name: 'LeatherColor'
           color: 'A1A1A1'
@@ -2114,6 +2119,7 @@ materials:
     craftable: true
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_leather_refinement'
     components:
         - name: 'LeatherColor'
           color: 'A1A1A1'
@@ -2141,9 +2147,9 @@ materials:
     item_data: 0
     name: 'Woven Leather Cap'
     craftable: true
-    required_techs: 'tech_leather_refinement'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_leather_woving'
     components:
         - name: 'LeatherColor'
           color: 'E0C333'
@@ -2168,9 +2174,9 @@ materials:
     item_data: 0
     name: 'Woven Leather Chestplate'
     craftable: true
-    required_techs: 'tech_leather_refinement'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_leather_woving'
     components:
         - name: 'LeatherColor'
           color: 'E0C333'
@@ -2195,9 +2201,9 @@ materials:
     item_data: 0
     name: 'Woven Leather Leggings'
     craftable: true
-    required_techs: 'tech_leather_refinement'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_leather_woving'
     components:
         - name: 'LeatherColor'
           color: 'E0C333'
@@ -2222,9 +2228,9 @@ materials:
     item_data: 0
     name: 'Woven Leather Moccasins'
     craftable: true
-    required_techs: 'tech_leather_refinement'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_leather_woving'
     components:
         - name: 'LeatherColor'
           color: 'E0C333'
@@ -2252,9 +2258,9 @@ materials:
     item_data: 0
     name: 'Hardened Leather Cap'
     craftable: true
-    required_techs: 'tech_tanning'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_tanning'
     components:
         - name: 'LeatherColor'
           color: '76B221'
@@ -2279,9 +2285,9 @@ materials:
     item_data: 0
     name: 'Hardened Leather Jacket'
     craftable: true
-    required_techs: 'tech_tanning'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_tanning'
     components:
         - name: 'LeatherColor'
           color: '76B221'
@@ -2306,9 +2312,9 @@ materials:
     item_data: 0
     name: 'Hardened Leather Pants'
     craftable: true
-    required_techs: 'tech_tanning'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_tanning'
     components:
         - name: 'LeatherColor'
           color: '76B221'
@@ -2333,9 +2339,9 @@ materials:
     item_data: 0
     name: 'Hardened Leather Moccasins'
     craftable: true
-    required_techs: 'tech_tanning'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_tanning'
     components:
         - name: 'LeatherColor'
           color: '76B221'
@@ -2363,9 +2369,9 @@ materials:
     item_data: 0
     name: 'Composite Leather Cap'
     craftable: true
-    required_techs: 'tech_composites'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_composites'
     components:
         - name: 'Defense'
           value: '4.0'
@@ -2390,9 +2396,9 @@ materials:
     item_data: 0
     name: 'Composite Leather Jacket'
     craftable: true
-    required_techs: 'tech_composites'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_composites'
     components:
         - name: 'Defense'
           value: '5.5'
@@ -2417,9 +2423,9 @@ materials:
     item_data: 0
     name: 'Composite Leather Pants'
     craftable: true
-    required_techs: 'tech_composites'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_composites'
     components:
         - name: 'Defense'
           value: '4.5'
@@ -2444,9 +2450,9 @@ materials:
     item_data: 0
     name: 'Composite Leather Moccasins'
     craftable: true
-    required_techs: 'tech_composites'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_composites'
     components:
         - name: 'Defense'
           value: '4.0'
@@ -2585,11 +2591,11 @@ materials:
   - id: 'civ_iron_sword'
     item_id: 292
     item_data: 0
-    name: 'Iron Shortsword'
+    name: 'Iron Shortshank'
     craftable: true
-    required_techs: 'tech_metal_casting'
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_metal_casting'
     components:
         - name: 'Attack'
           value: '12'
@@ -2613,9 +2619,9 @@ materials:
     item_data: 0
     name: 'Iron Helmet'
     craftable: true
-    required_techs: 'tech_blacksmithing'
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_iron_working'
     components:
         - name: 'Defense'
           value: '2'
@@ -2636,9 +2642,9 @@ materials:
     item_data: 0
     name: 'Iron Chestplate'
     craftable: true
-    required_techs: 'tech_blacksmithing'
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_iron_working'
     components:
         - name: 'Defense'
           value: '3.5'
@@ -2659,9 +2665,9 @@ materials:
     item_data: 0
     name: 'Iron Leggings'
     craftable: true
-    required_techs: 'tech_blacksmithing'
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_iron_working'
     components:
         - name: 'Defense'
           value: '2.5'
@@ -2684,9 +2690,9 @@ materials:
     item_data: 0
     name: 'Iron Boots'
     craftable: true
-    required_techs: 'tech_blacksmithing'
     shaped: true
     category: '<green>Gear Tier 1'
+    required_techs: 'tech_iron_working'
     components:
         - name: 'Defense'
           value: '2'
@@ -2708,11 +2714,11 @@ materials:
   - id: 'civ_bronze_sword'
     item_id: 294
     item_data: 0
-    name: 'Bronze Longsword'
+    name: 'Bronze Longshank'
     craftable: true
-    required_techs: 'tech_sword_smithing'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_chemical_bonding'
     components:
         - name: 'Attack'
           value: '16'
@@ -2738,9 +2744,9 @@ materials:
     item_data: 0
     name: 'Bronze Helmet'
     craftable: true
-    required_techs: 'tech_alloys'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_bronze_working'
     components:
         - name: 'Defense'
           value: '3'
@@ -2765,6 +2771,7 @@ materials:
     required_techs: 'tech_alloys'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_bronze_working'
     components:
         - name: 'Defense'
           value: '4.5' 
@@ -2790,6 +2797,7 @@ materials:
     required_techs: 'tech_alloys'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_bronze_working'
     components:
         - name: 'Defense'
           value: '3.5' 
@@ -2814,6 +2822,7 @@ materials:
     required_techs: 'tech_alloys'
     shaped: true
     category: '<gold>Gear Tier 2'
+    required_techs: 'tech_bronze_working'
     components:
         - name: 'Defense'
           value: '3'
@@ -2836,11 +2845,11 @@ materials:
   - id: 'civ_steel_sword'
     item_id: 291
     item_data: 0
-    name: 'Steel Sharpsword'
+    name: 'Steel Sharpshank'
     craftable: true
-    required_techs: 'tech_folded_steel'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_sword_smithing'
     components:
         - name: 'Attack'
           value: '20'
@@ -2866,9 +2875,9 @@ materials:
     item_data: 0
     name: 'Steel Helmet'
     craftable: true
-    required_techs: 'tech_chemical_bonding'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_steel_working'
     components:
         - name: 'Defense'
           value: '4'
@@ -2890,9 +2899,9 @@ materials:
     item_data: 0
     name: 'Steel Chestplate'
     craftable: true
-    required_techs: 'tech_chemical_bonding'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_steel_working'
     components:
         - name: 'Defense'
           value: '5.5'
@@ -2914,9 +2923,9 @@ materials:
     item_data: 0
     name: 'Steel leggings'
     craftable: true
-    required_techs: 'tech_chemical_bonding'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_steel_working'
     components:
         - name: 'Defense'
           value: '4.5'
@@ -2938,9 +2947,9 @@ materials:
     item_data: 0
     name: 'Steel Boots'
     craftable: true
-    required_techs: 'tech_chemical_bonding'
     shaped: true
     category: '<purple>Gear Tier 3'
+    required_techs: 'tech_steel_working'
     components:
         - name: 'Defense'
           value: '4'
@@ -2963,11 +2972,11 @@ materials:
   - id: 'civ_tungsten_sword'
     item_id: 293
     item_data: 0
-    name: 'Tungsten Shank'
+    name: 'Tungsten Broadshank'
     craftable: true
-    required_techs: 'tech_tempering'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_tempering'
     components:
         - name: 'NoRightClick'
         - name: 'Attack'
@@ -2994,9 +3003,9 @@ materials:
     item_data: 0
     name: 'Tungsten Helmet'
     craftable: true
-    required_techs: 'tech_forging'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_forging'
     components:
         - name: 'Defense'
           value: '5'
@@ -3018,9 +3027,9 @@ materials:
     item_data: 0
     name: 'Tungsten Chestplate'
     craftable: true
-    required_techs: 'tech_forging'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_forging'
     components:
         - name: 'Defense'
           value: '6.5'
@@ -3042,9 +3051,9 @@ materials:
     item_data: 0
     name: 'Tungsten Leggings'
     craftable: true
-    required_techs: 'tech_forging'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_forging'
     components:
         - name: 'Defense'
           value: '5.5'
@@ -3066,9 +3075,9 @@ materials:
     item_data: 0
     name: 'Tungsten Boots'
     craftable: true
-    required_techs: 'tech_forging'
     shaped: true
     category: '<red>Gear Tier 4'
+    required_techs: 'tech_forging'
     components:
         - name: 'Defense'
           value: '5'
@@ -3960,7 +3969,7 @@ materials:
         - name: 'AllowBlockPlace'
     ingredients:
         - type_id: 0
-          custom_id: 'civ_vanilla_slimeball'
+          custom_id: 'civ_vanilla_slime_block'
           data: 0
           letter: 's'
         - type_id: 33
@@ -3970,6 +3979,36 @@ materials:
         - "   "
         - " s "
         - " p "
+#
+  - id: 'civ_vanilla_piston'
+    item_id: 33
+    item_data: 0
+    name: 'Piston'
+    category: '<blueb>Vanilla - Modified'
+    craftable: true
+    shaped: true
+    vanilla: true
+    components:
+        - name: 'AllowBlockPlace'
+    ingredients:
+        - type_id: 0
+          custom_id: 'civ_refined_cobblestone'
+          data: 0
+          letter: 'c'
+        - type_id: 0
+          custom_id: 'civ_refined_planks'
+          data: 0
+          letter: 'w'
+        - type_id: 152
+          data: 0
+          letter: 'r'
+        - type_id: 42
+          data: 0
+          letter: 'i'
+    shape:
+        - "www"
+        - "cic"
+        - "crc"
 #
   - id: 'civ_vanilla_magma_cream'
     item_id: 378
@@ -4010,6 +4049,32 @@ materials:
         - "sl "
         - "  s"
 #
+  - id: 'civ_vanilla_dropper'
+    item_id: 158
+    item_data: 0
+    name: 'Dropper'
+    category: '<blueb>Vanilla - Modified'
+    craftable: true
+    vanilla: true
+    shaped: true
+    components:
+        - name: 'AllowBlockPlace'
+    ingredients:
+        - type_id: 152
+          data: 0
+          letter: 'r'
+        - type_id: 154
+          data: 0
+          letter: 'h'
+        - type_id: 0
+          data: 0
+          custom_id: 'civ_refined_cobblestone'
+          letter: 'c' 
+    shape:
+        - "ccc"
+        - "chc"
+        - "crc"
+#
   - id: 'civ_vanilla_dispenser'
     item_id: 23
     item_data: 0
@@ -4021,15 +4086,16 @@ materials:
     components:
         - name: 'AllowBlockPlace'
     ingredients:
-        - type_id: 331
+        - type_id: 152
           data: 0
           letter: 'r'
         - type_id: 0
           data: 0
           custom_id: 'civ_hunting_bow'
           letter: 'b'
-        - type_id: 4
+        - type_id: 0
           data: 0
+          custom_id: 'civ_refined_cobblestone'
           letter: 'c' 
     shape:
         - "ccc"
@@ -4194,11 +4260,17 @@ removed_recipes:
   # TNT
   - type_id: 46
     data: 0
+  # Dropper
+  - type_id: 158
+    data: 0
   # Dispenser
   - type_id: 23
     data: 0
   # Sticky Piston
   - type_id: 29
+    data: 0
+  # Piston
+  - type_id: 33
     data: 0
   # Ender Chest
   - type_id: 130

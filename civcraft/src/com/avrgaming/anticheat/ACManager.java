@@ -128,7 +128,7 @@ public class ACManager implements PluginMessageListener {
 					}
 				}
 			}
-			TaskMaster.syncTask(new WarCheckTask(player.getName()), TimeTools.toTicks(15));
+			TaskMaster.syncTask(new WarCheckTask(player.getName()), TimeTools.toTicks(10));
 		}
 		
 		Resident resident = CivGlobal.getResident(player);
@@ -160,7 +160,7 @@ public class ACManager implements PluginMessageListener {
 					}
 				}
 			}
-			TaskMaster.syncTask(new ArenaCheckTask(player.getName()), TimeTools.toTicks(15));
+			TaskMaster.syncTask(new ArenaCheckTask(player.getName()), TimeTools.toTicks(10));
 		}
 		
 		class HackerCheckTask implements Runnable {
@@ -191,7 +191,7 @@ public class ACManager implements PluginMessageListener {
 			}
 		}
 		
-		TaskMaster.syncTask(new HackerCheckTask(player.getName()), TimeTools.toTicks(15));
+		TaskMaster.syncTask(new HackerCheckTask(player.getName()), TimeTools.toTicks(10));
 	}
 	
 	@Override

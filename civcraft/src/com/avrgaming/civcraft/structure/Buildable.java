@@ -117,7 +117,7 @@ public abstract class Buildable extends SQLObject {
 	private int templateZ;
 	
 	// Number of blocks to shift the structure away from us when built.
-	public static final double SHIFT_OUT = 0;
+	public static final double SHIFT_OUT = 16;
 	public static final int MIN_DISTANCE = 7;
 	
 	private Map<BlockCoord, StructureSign> structureSigns = new ConcurrentHashMap<BlockCoord, StructureSign>();
@@ -194,12 +194,12 @@ public abstract class Buildable extends SQLObject {
 	}
 
 	
-	public double getHammerCost() {
+	public double getProductionCost() {
 		double rate = 1;
 		if (this.getTown().getBuffManager().hasBuff(Buff.RUSH)) {
 			rate -= this.getTown().getBuffManager().getEffectiveDouble(Buff.RUSH);
 		}
-		return rate*info.hammer_cost;
+		return rate*info.production_cost;
 	}
 	
 	
@@ -321,12 +321,12 @@ public abstract class Buildable extends SQLObject {
 		return this.centerLocation;
 	}
 	
-	public double getBlocksPerHammer() {
-		// no hammer cost should be instant...
-		if (this.getHammerCost() == 0)
+	public double getBlocksPerProduction() {
+		// no production cost should be instant...
+		if (this.getProductionCost() == 0)
 			return this.totalBlockCount;
 		
-		return this.totalBlockCount / this.getHammerCost();
+		return this.totalBlockCount / this.getProductionCost();
 	}
 	
 	public int getHitpoints() {
@@ -577,21 +577,18 @@ public abstract class Buildable extends SQLObject {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() + SHIFT_OUT);				
-			}
-			else if (dir.equalsIgnoreCase("west")) {
+			} else if (dir.equalsIgnoreCase("west")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			}
-			else if (dir.equalsIgnoreCase("north")) {
+				loc.setX(loc.getX()+32);
+			} else if (dir.equalsIgnoreCase("north")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			}
-			else if (dir.equalsIgnoreCase("south")) {
+				loc.setZ(loc.getZ()+32);
+			} else if (dir.equalsIgnoreCase("south")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() + SHIFT_OUT);
+				loc.setZ(loc.getZ()+ SHIFT_OUT);
 			}
 		}   
 		if (info.templateYShift != 0) {
@@ -621,18 +618,15 @@ public abstract class Buildable extends SQLObject {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setX(loc.getX() + SHIFT_OUT);
-			}
-			else if (dir.equalsIgnoreCase("west")) {
+			} else if (dir.equalsIgnoreCase("west")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setX(loc.getX() - (SHIFT_OUT+x_size));
-			}
-			else if (dir.equalsIgnoreCase("north")) {
+				loc.setX(loc.getX() - SHIFT_OUT);
+			} else if (dir.equalsIgnoreCase("north")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-				loc.setZ(loc.getZ() - (SHIFT_OUT+z_size));
-			}
-			else if (dir.equalsIgnoreCase("south")) {
+				loc.setZ(loc.getZ() - SHIFT_OUT);
+			} else if (dir.equalsIgnoreCase("south")) {
 				loc.setX(loc.getX() - (x_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() + SHIFT_OUT);
@@ -1007,7 +1001,7 @@ public abstract class Buildable extends SQLObject {
 	public int getBuildSpeed() {
 		// buildTime is in hours, we need to return milliseconds.
 		// We should return the number of milliseconds to wait between each block placement.
-		double hoursPerBlock = ( this.getHammerCost() / this.town.getHammers().total ) / this.totalBlockCount;
+		double hoursPerBlock = ( this.getProductionCost() / this.town.getProduction().total ) / this.totalBlockCount;
 		double millisecondsPerBlock = hoursPerBlock * 60 * 60 * 1000;
 		// Clip millisecondsPerBlock to 500 milliseconds.
 		if (millisecondsPerBlock < 500) {
@@ -1017,8 +1011,8 @@ public abstract class Buildable extends SQLObject {
 		return (int)millisecondsPerBlock;
 	}
 	
-	public double getBuiltHammers() {
-		double hoursPerBlock = ( this.getHammerCost() / DEFAULT_HAMMERRATE ) / this.totalBlockCount;
+	public double getBuiltProduction() {
+		double hoursPerBlock = ( this.getProductionCost() / DEFAULT_HAMMERRATE ) / this.totalBlockCount;
 		return this.builtBlockCount * hoursPerBlock;
 	}
 	
@@ -1027,7 +1021,7 @@ public abstract class Buildable extends SQLObject {
 		// We do not want the blocks to be placed faster than 500 milliseconds.
 		// So in order to deal with speeds that are faster than that, we will
 		// increase the number of blocks given per tick. 
-		double hoursPerBlock = ( this.getHammerCost() / this.town.getHammers().total ) / this.totalBlockCount;
+		double hoursPerBlock = ( this.getProductionCost() / this.town.getProduction().total ) / this.totalBlockCount;
 		double millisecondsPerBlock = hoursPerBlock * 60 * 60 * 1000;
 		
 		// Dont let this get lower than 1 just in case to prevent any crazyiness...

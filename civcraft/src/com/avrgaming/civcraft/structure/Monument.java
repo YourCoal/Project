@@ -36,7 +36,6 @@ import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.object.Buff;
 import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
@@ -211,7 +210,7 @@ public class Monument extends Structure {
 //			total_culture *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
-		total_culture *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOURING);
+//		total_culture *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOURING);
 		if (this.getCiv().hasTech("tech_feudalism")) {
 			double tech_bonus;
 			try {
@@ -273,17 +272,17 @@ public class Monument extends Structure {
 		int level = getLevel(); 
 		ConfigMonumentLevel lvl = CivSettings.monumentLevels.get(level);
 		
-		int total_culture = (int)Math.round(lvl.culture*this.getTown().getMonumentRate());
+		double total_culture = lvl.culture*this.getTown().getMonumentRate();
 		//TODO make a new buff that works for monuments/monuments
 //		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
 //			total_culture *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
-		total_culture *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOURING);
-		if (this.getCiv().hasTech("tech_taxation")) {
+//		total_culture *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOURING);
+		if (this.getCiv().hasTech("tech_feudalism")) {
 			double tech_bonus;
 			try {
-				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_monument_buff");
+				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "feudalism_monument_buff");
 				total_culture *= tech_bonus;
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();

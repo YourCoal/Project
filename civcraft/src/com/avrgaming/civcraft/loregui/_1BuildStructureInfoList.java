@@ -83,7 +83,7 @@ public class _1BuildStructureInfoList implements GuiAction {
 						CivColor.LightPurpleBold+"Location: "+CivColor.LightBlue+"X "+s.getCenterLocation().getX()+", Y "+s.getCenterLocation().getY()+", Z "+s.getCenterLocation().getZ(),
 						CivColor.GreenBold+"Level: "+CivColor.Yellow+mine.getLevel(),
 						CivColor.GreenBold+"Count: "+CivColor.Yellow+mine.getCount(),
-						CivColor.GreenBold+"Hammers/Hour: "+CivColor.Yellow+mine.getBonusHammers());
+						CivColor.GreenBold+"Hammers/Hour: "+CivColor.Yellow+mine.getBonusProduction());
 				guiInventory.addItem(is);
 			} else if (s instanceof Lab) {
 				Lab lab = (Lab)s;

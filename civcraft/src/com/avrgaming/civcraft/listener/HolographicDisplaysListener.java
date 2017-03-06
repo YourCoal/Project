@@ -1,6 +1,7 @@
 package com.avrgaming.civcraft.listener;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -8,7 +9,10 @@ import com.avrgaming.civcraft.config.CivSettings;
 import com.avrgaming.civcraft.main.CivCraft;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
+import com.avrgaming.civcraft.object.StructureSign;
 import com.avrgaming.civcraft.object.TradeGood;
+import com.avrgaming.civcraft.structure.Bank;
+import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
 import com.gmail.filoghost.holograms.api.HolographicDisplaysAPI;
@@ -55,6 +59,45 @@ public class HolographicDisplaysListener {
 			}
 		}
 		CivLog.info(CivGlobal.getTradeGoods().size()+" Trade Good Holograms created.");
+	}
+	
+	public static void generateBankHolograms() {
+		if (CivSettings.hasHolographicDisplays == false) {
+			CivLog.warning("A person tried generating Bank Holograms without HolographicDisplays plugin! This is fine, but no holograms can generate for items.");
+		}
+		
+		Plugin p = CivCraft.getPlugin();
+		CivLog.info(HolographicDisplaysAPI.getHolograms(p).length+" Bank Holograms deleted.");
+		for (com.gmail.filoghost.holograms.api.Hologram hologram : HolographicDisplaysAPI.getHolograms(CivCraft.getPlugin())) {
+			hologram.delete();
+		}
+		
+		
+		for (Structure s : CivGlobal.getStructures()) {
+			if (s instanceof Bank) {
+				Bank b = (Bank)s;
+				for (StructureSign ss : b.getSigns()) {
+					switch (ss.getAction().toLowerCase()) {
+					case "iron":
+						break;
+					case "gold":
+						BlockCoord coord = ss.getCoord();
+						Location loc = new Location(coord.getBlock().getWorld(), coord.getX(), coord.getBlock().getY()+4, coord.getZ());
+						Hologram hologram = HologramsAPI.createHologram(p, loc);
+						hologram.appendItemLine(new ItemStack(Material.NETHER_STAR, 1));
+						hologram.appendTextLine(CivColor.GoldBold+"Bank Level: "+CivColor.LightGreenBold+b.getLevel());
+						hologram.appendTextLine(CivColor.GoldBold+"Exchange Rate: "+CivColor.LightGreenBold+b.getBankExchangeRate()*100+"%");
+						hologram.appendTextLine(CivColor.GoldBold+"Non-Resident Fee: "+CivColor.LightGreenBold+b.getNonResidentFee()*100+"%");
+						break;
+					case "diamond":
+						break;			
+					case "emerald":
+							break;
+					}
+				}
+			}
+		}
+		CivLog.info(CivGlobal.getTradeGoods().size()+" Bank Holograms created.");
 	}
 	
 	

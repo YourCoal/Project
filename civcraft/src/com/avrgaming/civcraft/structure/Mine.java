@@ -82,7 +82,7 @@ public class Mine extends Structure {
 	
 	@Override
 	public String getMarkerIconName() {
-		return "hammer";
+		return "production";
 	}
 	
 	public String getkey() {
@@ -119,7 +119,7 @@ public class Mine extends Structure {
 		return false;
 	}
 	
-	public void generateTownHammers(CivAsyncTask task) {
+	public void generateTownProduction(CivAsyncTask task) {
 		if (!this.isActive()) {
 			return;
 		}
@@ -175,18 +175,18 @@ public class Mine extends Structure {
 		switch (result) {
 		case STARVE:
 			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+CivColor.Rose+"starved"+
-					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no hammers.");
+					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no production.");
 			return;
 		case LEVELDOWN:
 			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+(getConsumeComponent().getLevel()+1)+" mine "+CivColor.Red+"leveled-down"+
-					CivColor.LightGreen+" and generated no hammers.");
+					CivColor.LightGreen+" and generated no production.");
 			return;
 		case STAGNATE:
 			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+CivColor.Yellow+"stagnated"+
-					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no hammers.");
+					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no production.");
 			return;
 		case UNKNOWN:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+CivColor.LightGreen+"Something "+CivColor.DarkPurple+" UnKnOwN "+CivColor.LightGreen+" happened to a mine. It generates no hammers.");
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+CivColor.LightGreen+"Something "+CivColor.DarkPurple+" UnKnOwN "+CivColor.LightGreen+" happened to a mine. It generates no production.");
 			return;
 		default:
 			break;
@@ -205,18 +205,18 @@ public class Mine extends Structure {
 			lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel());
 		}
 				
-		int total_hammers = (int)Math.round(lvl.hammers*this.getTown().getMineRate());
+		int total_production = (int)Math.round(lvl.production*this.getTown().getMineRate());
 		//TODO make a new buff that works for mines/labs
 //		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
-//			total_hammers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
+//			total_production *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
-		total_hammers *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
+		total_production *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {
 				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_mine_buff");
-				total_hammers *= tech_bonus;
+				total_production *= tech_bonus;
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
@@ -236,7 +236,7 @@ public class Mine extends Structure {
 		default:
 			break;
 		}
-		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+stateMessage+" and generated "+total_hammers+" hammers!");
+		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" mine "+stateMessage+" and generated "+total_production+" production!");
 	}
 	
 	public void generateItemHammers(CivAsyncTask task) {
@@ -267,30 +267,30 @@ public class Mine extends Structure {
 			}
 		}
 		
-		/* Calculate how many hammers we made. */
+		/* Calculate how many production we made. */
 		int mine_lvl = getLevel();
 		ConfigMineLevel lvl = CivSettings.mineLevels.get(getConsumeComponent().getLevel());
-		int total_hammers = (int)Math.round(lvl.item_hammers*mine_lvl);
-//		multiInv.addItem(new ItemStack(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ_base_hammer"), total_hammers)));
-		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A mine generated "+total_hammers+" hammers!");
+		int total_production = (int)Math.round(lvl.item_hammers*mine_lvl);
+//		multiInv.addItem(new ItemStack(LoreMaterial.spawn(LoreMaterial.materialMap.get("civ_base_production"), total_production)));
+		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A mine generated "+total_production+" hammers!");
 		
-		/* Bail early for results that do not generate hammers. */
+		/* Bail early for results that do not generate production. */
 		
 //		if (processFatigue(multiInv)) {
 //			return;
 //		}
 		
-		/* Calculate how many hammers we made. */
+		/* Calculate how many production we made. */
 		//TODO make a new buff that works for mines/labs
 //		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
-//			total_hammers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
+//			total_production *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
 //		if (this.getCiv().hasTech("tech_taxation")) {
 //			double tech_bonus;
 //			try {
 //				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_mine_buff");
-//				total_hammers *= tech_bonus;
+//				total_production *= tech_bonus;
 //			} catch (InvalidConfiguration e) {
 //				e.printStackTrace();
 //			}
@@ -315,7 +315,7 @@ public class Mine extends Structure {
 		return lvl.count;
 	}
 	
-	public double getBonusHammers() {
+	public double getBonusProduction() {
 		if (!this.isComplete()) {
 			return 0.0;
 		}
@@ -327,26 +327,26 @@ public class Mine extends Structure {
 		int level = getLevel(); 
 		ConfigMineLevel lvl = CivSettings.mineLevels.get(level);
 		
-		int total_hammers = (int)Math.round(lvl.hammers*this.getTown().getMineRate());
+		int total_production = (int)Math.round(lvl.production*this.getTown().getMineRate());
 		//TODO make a new buff that works for mines/labs
 //		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
-//			total_hammers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
+//			total_production *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
-		total_hammers *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
+		total_production *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {
 				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_mine_buff");
-				total_hammers *= tech_bonus;
+				total_production *= tech_bonus;
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
 		}
-		return total_hammers;
+		return total_production;
 	}
 	
-/*	public double getHammersPerTile() {
+/*	public double getProductionPerTile() {
 		AttributeBiomeRadiusPerLevel attrBiome = (AttributeBiomeRadiusPerLevel)this.getComponent("AttributeBiomeRadiusPerLevel");
 		double base = attrBiome.getBaseValue();
 		double rate = 1;
