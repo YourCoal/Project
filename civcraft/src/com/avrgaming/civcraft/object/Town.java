@@ -111,6 +111,7 @@ public class Town extends SQLObject {
 	private double extraProduction;
 	public Buildable currentStructureInProgress;
 	public Buildable currentWonderInProgress;
+	public Buildable randomBuildable = null;
 	
 	/* Culture */
 	private double culture;
@@ -119,9 +120,9 @@ public class Town extends SQLObject {
 	private PermissionGroup mayorGroup;
 	private PermissionGroup assistantGroup;
 	
-	/* Beakers */
-	private double baseBeakers = 1.0;
-	private double unusedBeakers;
+	/* Science */
+	private double baseScience = 1.0;
+	private double unusedScience;
 	
 	// These are used to resolve reverse references after the database loads.
 	private String defaultGroupName;
@@ -1676,7 +1677,7 @@ public class Town extends SQLObject {
 		
 		Resident res = CivGlobal.getResident(player);
 		TownChunk tChunk = CivGlobal.getTownChunk(player.getLocation());
-		if (tChunk.getTown() != res.getTown() && res.hasTown()) {
+		if (tChunk != null && tChunk.getTown() != res.getTown() && res.hasTown()) {
 			throw new CivException("You must be standing in a chunk from YOUR town (not another town) to build a structure!");
 		}
 		
@@ -1953,7 +1954,7 @@ public class Town extends SQLObject {
 		for (Structure s : this.getStructures()) {
 			if (s instanceof Farm) {
 				for (TownChunk tc : this.getTownChunks()) {
-					if (tc.district.getID().equals(1)) {
+					if (tc.district.getID().equals(6)) {
 						int tcChunkX = tc.getChunkCoord().getX();
 						int tcChunkZ = tc.getChunkCoord().getZ();
 						
@@ -2097,10 +2098,10 @@ public class Town extends SQLObject {
 		return production;
 	}
 	
-	public Double getBeakersFromCulture() {
+	public Double getScienceFromCulture() {
 		double beakers = 0;
 		for (CultureChunk cc : this.cultureChunks.values()) {
-			beakers += cc.getBeakers();
+			beakers += cc.getScience();
 		}
 		return beakers;
 	}
@@ -2352,6 +2353,25 @@ public class Town extends SQLObject {
 		return unitList;
 	}
 
+	public void onCivicUpdate() {
+		try {
+			for (Structure struct : this.structures.values()) {
+				if (struct.isActive()) {
+					struct.onCivicUpdate();
+				}
+			}
+			
+			for (Wonder wonder : this.wonders.values()) {
+				if (wonder.isActive()) {
+					wonder.onCivicUpdate();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			//continue in case some structure/wonder had an error.
+		}
+	}
+	
 	public void onTechUpdate() {
 		try {
 			for (Structure struct : this.structures.values()) {
@@ -2708,7 +2728,7 @@ public class Town extends SQLObject {
 		return this.getCiv().getGovernment();
 	}
 	
-	public AttrSource getBeakerRate() {
+	public AttrSource getScienceRate() {
 		double rate = 1.0;
 		HashMap<String, Double> rates = new HashMap<String, Double>();
 
@@ -2722,7 +2742,7 @@ public class Town extends SQLObject {
 		rates.put("Government", govRate - 1.0);
 		
 		/* Random Event */
-		double randRate = 1.0 * RandomEvent.getBeakerRate(this);
+		double randRate = 1.0 * RandomEvent.getScienceRate(this);
 		rates.put("Random Events", randRate - 1.0);
 		
 		double buffRate = getBuffManager().getEffectiveDouble(Buff.SCIENCE_RATE) + getBuffManager().getEffectiveDouble("buff_greatlibrary_extra_beakers");
@@ -2744,7 +2764,7 @@ public class Town extends SQLObject {
 		return new AttrSource(rates, finRate, null);
 	}
 	
-	public AttrSource getBeakers() {
+	public AttrSource getScience() {
 		HashMap<String, Double> sources = new HashMap<String, Double>();
 		int total = 0;
 		
@@ -2761,7 +2781,7 @@ public class Town extends SQLObject {
 			}
 		}
 		
-		double culture = this.getBeakersFromCulture();
+		double culture = this.getScienceFromCulture();
 		sources.put("Culture Biomes", culture);
 		total += culture; 
 		
@@ -2771,7 +2791,7 @@ public class Town extends SQLObject {
 		for (Structure struct : this.structures.values()) {
 			if (struct instanceof Lab) {
 				Lab lab = (Lab)struct;
-				labs += lab.getBonusBeakers();
+				labs += lab.getBonusScience();
 			}
 			for (Component comp : struct.attachedComponents) {
 				if (comp instanceof AttributeBase) {
@@ -2788,14 +2808,14 @@ public class Town extends SQLObject {
 		total += structures;
 		sources.put("Structures", structures);
 		
-		sources.put("Base Beakers", this.baseBeakers);
-		total += this.baseBeakers;
+		sources.put("Base Science", this.baseScience);
+		total += this.baseScience;
 		
-		AttrSource rate = getBeakerRate();
+		AttrSource rate = getScienceRate();
 		total *= rate.total;
 		
-		if (total < this.baseBeakers) {
-			total = (int) this.baseBeakers;
+		if (total < this.baseScience) {
+			total = (int) this.baseScience;
 		}
 		
 		AttrSource as = new AttrSource(sources, total, rate);
@@ -3117,16 +3137,16 @@ public class Town extends SQLObject {
 		this.activeEvent = activeEvent;
 	}
 
-	public double getUnusedBeakers() {
-		return unusedBeakers;
+	public double getUnusedScience() {
+		return unusedScience;
 	}
 
-	public void setUnusedBeakers(double unusedBeakers) {
-		this.unusedBeakers = unusedBeakers;
+	public void setUnusedScience(double unusedScience) {
+		this.unusedScience = unusedScience;
 	}	
 	
-	public void addUnusedBeakers(double more) {
-		this.unusedBeakers += more;
+	public void addUnusedScience(double more) {
+		this.unusedScience += more;
 	}
 	
 	public void markLastBuildableRefeshAsNow() {

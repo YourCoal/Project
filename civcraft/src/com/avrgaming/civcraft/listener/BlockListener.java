@@ -31,9 +31,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -124,16 +124,15 @@ import com.avrgaming.civcraft.util.ItemFrameStorage;
 import com.avrgaming.civcraft.util.ItemManager;
 import com.avrgaming.civcraft.war.War;
 import com.avrgaming.civcraft.war.WarRegen;
-import com.moblib.moblib.MobLib;
 
-import net.minecraft.server.v1_10_R1.AttributeInstance;
-import net.minecraft.server.v1_10_R1.AxisAlignedBB;
-import net.minecraft.server.v1_10_R1.DamageSource;
-import net.minecraft.server.v1_10_R1.Entity;
-import net.minecraft.server.v1_10_R1.EntityInsentient;
-import net.minecraft.server.v1_10_R1.EntityPlayer;
-import net.minecraft.server.v1_10_R1.GenericAttributes;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.AttributeInstance;
+import net.minecraft.server.v1_11_R1.AxisAlignedBB;
+import net.minecraft.server.v1_11_R1.DamageSource;
+import net.minecraft.server.v1_11_R1.Entity;
+import net.minecraft.server.v1_11_R1.EntityInsentient;
+import net.minecraft.server.v1_11_R1.EntityPlayer;
+import net.minecraft.server.v1_11_R1.GenericAttributes;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
 
 public class BlockListener implements Listener {
 	
@@ -383,8 +382,7 @@ public class BlockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void OnCreateSpawnEvent(CreatureSpawnEvent event) {
-
+	public void OnCreateSpawnEvent(final CreatureSpawnEvent event) {
 		if (event.getSpawnReason().equals(SpawnReason.BREEDING)) {
 			ChunkCoord coord = new ChunkCoord(event.getEntity().getLocation());
 			Pasture pasture = Pasture.pastureChunks.get(coord);
@@ -447,9 +445,8 @@ public class BlockListener implements Listener {
 			return;
 		}
 		/* prevent ender dragons from breaking blocks. */
-		if (event.getEntityType().equals(EntityType.COMPLEX_PART)) {
+		if (event.getEntityType().equals(EntityType.COMPLEX_PART) || event.getEntityType().equals(EntityType.ENDER_DRAGON)) {
 			event.setCancelled(true);
-		} else if (event.getEntityType().equals(EntityType.ENDER_DRAGON)) {
 			event.setCancelled(true);
 		}
 
@@ -939,13 +936,7 @@ public class BlockListener implements Listener {
 		if (event.isCancelled()) {
 			// Fix for bucket bug.
 			if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-				Integer item = null;
-				if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-					CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-					return;
-				} else {
-					item = ItemManager.getId(event.getPlayer().getInventory().getItemInMainHand());
-				}
+				Integer item = ItemManager.getId(event.getPlayer().getInventory().getItemInMainHand());
 				// block cheats for placing water/lava/fire/lighter use.
 				if (item == 326 || item == 327 || item == 259 || (item >= 8 && item <= 11) || item == 51) { 
 					event.setCancelled(true);
@@ -967,11 +958,12 @@ public class BlockListener implements Listener {
 
 			if (event.getItem().getType().equals(Material.INK_SACK) && event.getItem().getDurability() == 15) {
 				Block clickedBlock = event.getClickedBlock();
-				if (ItemManager.getId(clickedBlock) == CivData.WHEAT || 
-					ItemManager.getId(clickedBlock) == CivData.CARROTS || 
-					ItemManager.getId(clickedBlock) == CivData.POTATOES) {
+				if (ItemManager.getId(clickedBlock) == CivData.WHEAT_CROP || 
+					ItemManager.getId(clickedBlock) == CivData.CARROT_CROP || 
+					ItemManager.getId(clickedBlock) == CivData.POTATO_CROP || 
+					ItemManager.getId(clickedBlock) == CivData.BEETROOT_CROP) {
 					event.setCancelled(true);
-					CivMessage.sendError(event.getPlayer(), "You cannot use bone meal on carrots, wheat, or potatoes.");
+					CivMessage.sendError(event.getPlayer(), "You cannot use bone meal on carrots, wheat, potatoes, or beetroots.");
 					return;
 				}
 			}
@@ -1198,108 +1190,96 @@ public class BlockListener implements Listener {
 			}
 		}*/
 
-		ItemStack inHand = null;
-		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = event.getPlayer().getInventory().getItemInMainHand();
-		}
-			if (inHand != null) {
-				boolean denyBreeding = false;
-				switch (event.getRightClicked().getType()) {
-				case COW:
-				case SHEEP:
-				case MUSHROOM_COW:
-					if (inHand.getType().equals(Material.WHEAT)) {
-						denyBreeding = true;
-					}
-					break;
-				case PIG:
-					if (inHand.getType().equals(Material.CARROT_ITEM) ||
-						inHand.getType().equals(Material.POTATO_ITEM) ||
-						inHand.getType().equals(Material.BEETROOT)) {
-						denyBreeding = true;
-					}
-					break;
-				case CHICKEN:
-					if (inHand.getType().equals(Material.SEEDS) ||
-						inHand.getType().equals(Material.MELON_SEEDS) ||
-						inHand.getType().equals(Material.PUMPKIN_SEEDS) ||
-						inHand.getType().equals(Material.BEETROOT_SEEDS)) {
-						denyBreeding = true;
-					}
-					break;
-				case RABBIT:
-					if (inHand.getType().equals(Material.YELLOW_FLOWER) ||
-						inHand.getType().equals(Material.CARROT_ITEM) ||
-						inHand.getType().equals(Material.GOLDEN_CARROT)) {
-						denyBreeding = true;
-					}
-					break;
-				case HORSE:
-					if (inHand.getType().equals(Material.GOLDEN_APPLE) ||
-						inHand.getType().equals(Material.GOLDEN_CARROT)) {
-						CivMessage.sendError(event.getPlayer(), "You cannot breed horses, buy them from the stable.");
-						event.setCancelled(true);
-						return;
-					}
-					break;
-				default:
-					break;
+		ItemStack inHand = event.getPlayer().getInventory().getItemInMainHand();
+		if (inHand != null) {
+			boolean denyBreeding = false;
+			switch (event.getRightClicked().getType()) {
+			case COW:
+			case SHEEP:
+			case MUSHROOM_COW:
+				if (inHand.getType().equals(Material.WHEAT)) {
+					denyBreeding = true;
 				}
-
-				if (denyBreeding) {
-					ChunkCoord coord = new ChunkCoord(event.getPlayer().getLocation());
-					Pasture pasture = Pasture.pastureChunks.get(coord);
-
-					if (pasture == null) {
-						CivMessage.sendError(event.getPlayer(), "You cannot breed mobs in the wild, take them to a pasture.");
-						event.setCancelled(true);
-					} else {
-							int loveTicks;
-							NBTTagCompound tag = new NBTTagCompound();
-							((CraftEntity)event.getRightClicked()).getHandle().c(tag);
-							loveTicks = tag.getInt("InLove");
-
-							if (loveTicks == 0) {	
-								if(!pasture.processMobBreed(event.getPlayer(), event.getRightClicked().getType())) {
-									event.setCancelled(true);
-								}
-							} else {
-								event.setCancelled(true);
-							}
-					}
-
-					return;			
+				break;
+			case PIG:
+				if (inHand.getType().equals(Material.CARROT_ITEM) ||
+					inHand.getType().equals(Material.POTATO_ITEM) ||
+					inHand.getType().equals(Material.BEETROOT)) {
+					denyBreeding = true;
 				}
+				break;
+			case CHICKEN:
+				if (inHand.getType().equals(Material.SEEDS) ||
+					inHand.getType().equals(Material.MELON_SEEDS) ||
+					inHand.getType().equals(Material.PUMPKIN_SEEDS) ||
+					inHand.getType().equals(Material.BEETROOT_SEEDS)) {
+					denyBreeding = true;
+				}
+				break;
+			case RABBIT:
+				if (inHand.getType().equals(Material.YELLOW_FLOWER) ||
+					inHand.getType().equals(Material.CARROT_ITEM) ||
+					inHand.getType().equals(Material.GOLDEN_CARROT)) {
+					denyBreeding = true;
+				}
+				break;
+			case HORSE:
+				if (inHand.getType().equals(Material.GOLDEN_APPLE) ||
+					inHand.getType().equals(Material.GOLDEN_CARROT)) {
+					CivMessage.sendError(event.getPlayer(), "You cannot breed horses, buy them from the stable.");
+					event.setCancelled(true);
+					return;
+				}
+				break;
+			default:
+				break;
 			}
+			
+			if (denyBreeding) {
+				ChunkCoord coord = new ChunkCoord(event.getPlayer().getLocation());
+				Pasture pasture = Pasture.pastureChunks.get(coord);
+				if (pasture == null) {
+					CivMessage.sendError(event.getPlayer(), "You cannot breed mobs in the wild, take them to a pasture.");
+					event.setCancelled(true);
+				} else {
+					int loveTicks;
+					NBTTagCompound tag = new NBTTagCompound();
+					((CraftEntity)event.getRightClicked()).getHandle().c(tag);
+					loveTicks = tag.getInt("InLove");
+					if (loveTicks == 0) {	
+						if(!pasture.processMobBreed(event.getPlayer(), event.getRightClicked().getType())) {
+							event.setCancelled(true);
+						}
+					} else {
+						event.setCancelled(true);
+					}
+				}
+				return;
+			}
+		}
+		
 		if (!(event.getRightClicked() instanceof ItemFrame) && !(event.getRightClicked() instanceof Painting)) {
 			return;
 		}
-
+		
 		coord.setFromLocation(event.getPlayer().getLocation());
 		TownChunk tc = CivGlobal.getTownChunk(coord);
 		if (tc == null) {
 			return;
 		}
-
+		
 		Resident resident = CivGlobal.getResident(event.getPlayer().getName());
 		if (resident == null) {
 			return;
 		}
-
+		
 		if(!tc.perms.hasPermission(PlotPermissions.Type.INTERACT, resident)) {
 			event.setCancelled(true);
 			CivMessage.sendErrorNoRepeat(event.getPlayer(), "You do not have permission to interact with this painting/itemframe.");
 		}
-
 	}
-
-
-	/*
-	 * Handles breaking of paintings and itemframes.
-	 */
+	
+	// Handles breaking of paintings and itemframes
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void OnHangingBreakByEntityEvent(HangingBreakByEntityEvent event) {	
 	//	CivLog.debug("hanging painting break event");
@@ -1395,7 +1375,7 @@ public class BlockListener implements Listener {
 		if (fc == null) {
 			return;
 		}
-
+		
 		for (org.bukkit.entity.Entity ent : event.getChunk().getEntities()) {
 			if (ent.getType().equals(EntityType.ZOMBIE) || ent.getType().equals(EntityType.SKELETON) ||
 					ent.getType().equals(EntityType.CREEPER) || ent.getType().equals(EntityType.SPIDER) ||
@@ -1408,14 +1388,13 @@ public class BlockListener implements Listener {
 				ent.remove();
 			}
 		}
-
+		
 		class AsyncTask extends CivAsyncTask {
-
 			FarmChunk fc;
 			public AsyncTask(FarmChunk fc) {
 				this.fc = fc;
 			}
-
+			
 			@Override
 			public void run() {
 				if (fc.getMissedGrowthTicks() > 0) {
@@ -1423,7 +1402,6 @@ public class BlockListener implements Listener {
 					fc.getFarm().saveMissedGrowths();
 				}
 			}
-
 		}
 		TaskMaster.syncTask(new AsyncTask(fc), 500);
 	}
@@ -1547,10 +1525,6 @@ public class BlockListener implements Listener {
 		//False, we want them to be cute to players
 		if (event.getEntity().getType().equals(EntityType.SLIME) && event.getSpawnReason().equals(SpawnReason.SLIME_SPLIT)) {
 			event.setCancelled(false);
-			return;
-		}
-		
-		if (MobLib.isMobLibEntity(event.getEntity())) {
 			return;
 		}
 		

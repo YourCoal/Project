@@ -69,7 +69,6 @@ public class ReportChestsTask implements Runnable {
 			return;
 		}
 		Chunk chunk = coord.getChunk();
-		
 		for (int x = 0; x < 16; x++) {
 			for (int y = 0; y < 256; y++) {
 				for (int z = 0; z < 16; z++) {
@@ -145,7 +144,6 @@ public class ReportChestsTask implements Runnable {
 				}
 			}
 		}
-		
 		TaskMaster.syncTask(new ReportChestsTask(sender, coords), 5);
 	}
 }

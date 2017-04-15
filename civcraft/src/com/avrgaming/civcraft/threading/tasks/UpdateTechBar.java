@@ -1,21 +1,3 @@
-/*************************************************************************
- * 
- * AVRGAMING LLC
- * __________________
- * 
- *  [2013] AVRGAMING LLC
- *  All Rights Reserved.
- * 
- * NOTICE:  All information contained herein is, and remains
- * the property of AVRGAMING LLC and its suppliers,
- * if any.  The intellectual and technical concepts contained
- * herein are proprietary to AVRGAMING LLC
- * and its suppliers and may be covered by U.S. and Foreign Patents,
- * patents in process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material
- * is strictly forbidden unless prior written permission is obtained
- * from AVRGAMING LLC.
- */
 package com.avrgaming.civcraft.threading.tasks;
 
 import java.util.LinkedList;
@@ -31,7 +13,7 @@ import com.avrgaming.civcraft.util.SimpleBlock;
 import com.avrgaming.civcraft.util.SimpleBlock.Type;
 
 public class UpdateTechBar extends CivAsyncTask {
-
+	
 	private Civilization civ;
 	
 	public UpdateTechBar(Civilization civ) {
@@ -40,13 +22,10 @@ public class UpdateTechBar extends CivAsyncTask {
 	
 	@Override
 	public void run() {
-		
 		Queue<SimpleBlock> sbs = new LinkedList<SimpleBlock>();
-				
 		for (Town town : civ.getTowns()) {
 			double percentageDone = 0.0;
 			TownHall townhall = town.getTownHall();
-			
 			if (townhall == null) {
 				return;
 			}
@@ -57,30 +36,27 @@ public class UpdateTechBar extends CivAsyncTask {
 			
 			SimpleBlock sb; 
 			if (civ.getResearchTech() != null) {
-				percentageDone = (civ.getResearchProgress() / civ.getResearchTech().getAdjustedBeakerCost(civ));
+				percentageDone = (civ.getResearchTechProgress() / civ.getResearchTech().getAdjustedScienceCost(civ));
 				/* Get the number of blocks to light up. */
 				int size = townhall.getTechBarSize();
-				int blockCount = (int)(percentageDone*townhall.getTechBarSize()); 
-							
+				int blockCount = (int)(percentageDone*townhall.getTechBarSize());		
 				for (int i = 0; i < size; i++) {
 					BlockCoord bcoord = townhall.getTechBarBlockCoord(i);
-					if (bcoord == null) {
-						/* tech bar DNE, might not be finished yet. */
+					if (bcoord == null) { /* tech bar DNE, might not be finished yet. */
 						continue;
 					}
-	
+					
 					if (i <= blockCount) {
-						sb = new SimpleBlock(CivData.WOOL, CivData.DATA_WOOL_GREEN);
+						sb = new SimpleBlock(CivData.STAINED_CLAY, CivData.DATA_5);
 						sb.x = bcoord.getX(); sb.y = bcoord.getY(); sb.z = bcoord.getZ();
 						sb.worldname = bcoord.getWorldname();
 						sbs.add(sb);
 					} else {
-						sb = new SimpleBlock(CivData.WOOL, CivData.DATA_WOOL_BLACK);
+						sb = new SimpleBlock(CivData.STAINED_CLAY, CivData.DATA_15);
 						sb.x = bcoord.getX(); sb.y = bcoord.getY(); sb.z = bcoord.getZ();
 						sb.worldname = bcoord.getWorldname();
 						sbs.add(sb);				
 					}
-					
 					townhall.addStructureBlock(townhall.getTechBar(i), false);
 				}
 			} else {
@@ -88,12 +64,10 @@ public class UpdateTechBar extends CivAsyncTask {
 				int size = townhall.getTechBarSize();
 				for (int i = 0; i < size; i++) {
 					BlockCoord bcoord = townhall.getTechBarBlockCoord(i);
-					if (bcoord == null) {
-						/* tech bar DNE, might not be finished yet. */
+					if (bcoord == null) { /* tech bar DNE, might not be finished yet. */
 						continue;
 					}
-					
-					sb = new SimpleBlock(CivData.WOOL, CivData.DATA_WOOL_BLACK);
+					sb = new SimpleBlock(CivData.STAINED_CLAY, CivData.DATA_15);
 					sb.x = bcoord.getX(); sb.y = bcoord.getY(); sb.z = bcoord.getZ();
 					sb.worldname = bcoord.getWorldname();
 					sbs.add(sb);
@@ -107,22 +81,20 @@ public class UpdateTechBar extends CivAsyncTask {
 				sb.x = bcoord.getX(); sb.y = bcoord.getY(); sb.z = bcoord.getZ();
 				sb.worldname = bcoord.getWorldname();
 				sb.specialType = Type.LITERAL;
-								
+				
 				if (civ.getResearchTech() != null) {			
-					sb.message[0] = "Researching";
+					sb.message[0] = "Researching Tech";
 					sb.message[1] = "";
 					sb.message[2] = civ.getResearchTech().name;
 					sb.message[3] = "";
 				} else {
-					sb.message[0] = "Researching";
+					sb.message[0] = "Researching Tech";
 					sb.message[1] = "";
 					sb.message[2] = "Nothing";
-					sb.message[3] = "";			
+					sb.message[3] = "";
 				}
 				sbs.add(sb);
-				
 				townhall.addStructureBlock(townhall.getTechnameSign(), false);
-
 			}
 			
 			if (townhall.getTechdataSign() != null) {
@@ -131,15 +103,12 @@ public class UpdateTechBar extends CivAsyncTask {
 				sb.x = bcoord.getX(); sb.y = bcoord.getY(); sb.z = bcoord.getZ();
 				sb.worldname = bcoord.getWorldname();
 				sb.specialType = Type.LITERAL;
-					
 				if (civ.getResearchTech() != null) {
 					percentageDone = Math.round(percentageDone*100);
-				
 					sb.message[0] = "Percent";
 					sb.message[1] = "Complete";
 					sb.message[2] = ""+percentageDone+"%";
 					sb.message[3] = "";
-					
 				} else {
 					sb.message[0] = "Use";
 					sb.message[1] = "/civ research";
@@ -147,14 +116,9 @@ public class UpdateTechBar extends CivAsyncTask {
 					sb.message[3] = "";				
 				}
 				sbs.add(sb);
-
-				
 				townhall.addStructureBlock(townhall.getTechdataSign(), false);
 			}
-			
 		}
-		
 		this.updateBlocksQueue(sbs);
 	}
-
 }

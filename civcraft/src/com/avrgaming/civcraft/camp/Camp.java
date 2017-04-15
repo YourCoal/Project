@@ -151,14 +151,7 @@ public class Camp extends Buildable {
 						throw new CivException("A camp named "+name+" already exists!");
 					}
 					
-					ItemStack stack = null;
-					if (player.getInventory().getItemInOffHand().getType() != Material.AIR) {
-						CivMessage.sendError(player, "You cannot have items in your offhand!");
-						return;
-					} else {
-						stack = player.getInventory().getItemInMainHand();
-					}
-					
+					ItemStack stack = player.getInventory().getItemInMainHand();
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 					if (craftMat == null || !craftMat.hasComponent("FoundCamp")) {
 						throw new CivException("You must be holding an item that can found a camp.");

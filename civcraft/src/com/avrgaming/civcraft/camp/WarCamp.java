@@ -13,7 +13,6 @@ import org.bukkit.Color;
 import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -101,14 +100,7 @@ public class WarCamp extends Buildable implements RespawnLocationHolder {
 						throw new CivException("You can only have "+warCampMax+" war camps.");
 					}
 					
-					ItemStack stack = null;
-					if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-						CivMessage.sendError(p, "You cannot have items in your offhand!");
-						return;
-					} else {
-						stack = p.getInventory().getItemInMainHand();
-					}
-					
+					ItemStack stack = p.getInventory().getItemInMainHand();
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 					if (craftMat == null || !craftMat.hasComponent("FoundWarCamp")) {
 						throw new CivException("You must be holding an item that can found a war camp.");

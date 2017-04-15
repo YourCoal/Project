@@ -145,42 +145,39 @@ end_conditions:
     - id: 'end_culture'
       class: 'EndConditionCulture'
       name: 'Cultural'
+      days_held: 21
+      victory_points: 25
       culture_level: '10'
       towns: '2'
       wonders: '1'
-#      victory_points_required: 25
-      days_after_start: '35'
-      days_held: '21'
 #
     - id: 'end_conquest'
       class: 'EndConditionConquest'
       name: 'Conquest'
+      days_held: 21
+      victory_points: 25
       percent_captured: '0.75'
       percent_captured_with_wonder: '0.6'
-#      victory_points_required: 25
       days_after_start: '35'
-      days_held: '21'
 #
     - id: 'end_science'
       class: 'EndConditionScience'
       name: 'Scientific'
+      days_held: 21
+      victory_points: 25
       tech: 'tech_enlightenment'
-#      victory_points_required: 25
-      days_after_start: '35'
-      days_held: '21'
 #
     - id: 'end_diplomacy'
       class: 'EndConditionDiplomacy'
       name: 'Diplomatic'
+      days_held: 21
+      victory_points: 25
       vote_cooldown_hours: '24'
-#      victory_points_required: 25
-      days_after_start: '35'
-      days_held: '21'
 #
 #    - id: 'end_economic'
 #      class: 'EndConditionEconomic'
 #      name: 'Economic'
+#      days_held: 21
+#      victory_points: 25
 #      civ_treasury_amount: '1000000000'
-#      victory_points_required: 25
-#      days_after_start: '35'
-#      days_held: '21'
+#      victory_points: 25

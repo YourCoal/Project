@@ -104,7 +104,6 @@ public class MissionBook extends UnitItemMaterial {
 		
 	public void setupLore(String id) {
 		ConfigMission mission = CivSettings.missions.get(this.getId());
-		
 		if (mission == null) {
 			CivLog.warning("Couldn't find mission with id:"+id+" to set the lore.");
 			return;
@@ -544,7 +543,7 @@ public class MissionBook extends UnitItemMaterial {
 			out += ("Production: "+tc.getTown().getProduction().total+"\n");
 			out += ("Culture: "+tc.getTown().getCulture().total+"\n");
 			out += ("Growth: "+tc.getTown().getGrowth().total+"\n");
-			out += ("Beakers(civ): "+tc.getTown().getBeakers().total+"\n");
+			out += ("Beakers(civ): "+tc.getTown().getScience().total+"\n");
 			if (tc.getTown().getCiv().getResearchTech() != null) {
 				out += ("Researching: "+tc.getTown().getCiv().getResearchTech().name+"\n");
 			} else {

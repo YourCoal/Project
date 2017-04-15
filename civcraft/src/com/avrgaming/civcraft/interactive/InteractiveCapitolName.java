@@ -31,10 +31,9 @@ import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 
 public class InteractiveCapitolName implements InteractiveResponse {
-
+	
 	@Override
 	public void respond(String message, Resident resident) {
-		
 		Player player;
 		try {
 			player = CivGlobal.getPlayer(resident);
@@ -45,6 +44,7 @@ public class InteractiveCapitolName implements InteractiveResponse {
 		if (message.equalsIgnoreCase("cancel")) {
 			CivMessage.send(player, "Civilization creation cancelled.");
 			resident.clearInteractiveMode();
+			resident.undoPreview();
 			return;
 		}
 		
@@ -65,11 +65,10 @@ public class InteractiveCapitolName implements InteractiveResponse {
 		class SyncTask implements Runnable {
 			String playerName;
 			
-			
 			public SyncTask(String name) {
 				this.playerName = name;
 			}
-
+			
 			@Override
 			public void run() {
 				Player player;
@@ -89,12 +88,8 @@ public class InteractiveCapitolName implements InteractiveResponse {
 				CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"Are you sure? Type 'yes' and I will create this Civilization. Type anything else, and I will forget the whole thing.");
 				resident.setInteractiveMode(new InteractiveConfirmCivCreation());				
 			}
-		
 		}
-
 		TaskMaster.syncTask(new SyncTask(resident.getName())); 
-
 		return;
 	}
-
 }

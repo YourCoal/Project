@@ -57,8 +57,6 @@ materials:
           value: '420'
         - name: 'Defense'
           value: '420'
-        - name: 'MaxHealth'
-          value: '100'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
           value: '0.0'
@@ -75,8 +73,6 @@ materials:
           value: '420'
         - name: 'Defense'
           value: '420'
-        - name: 'MaxHealth'
-          value: '100'
         - name: 'NoVanillaDurability'
         - name: 'DurabilityOnDeath'
           value: '0.0'
@@ -4148,7 +4144,7 @@ materials:
     craftable: true
     shaped: true
     vanilla: true
-    required_techs: 'tech_global_trade'
+    required_techs: 'tech_industrialization'
     components:
         - name: 'AllowBlockPlace'
     ingredients:
@@ -4176,7 +4172,7 @@ materials:
     craftable: true
     shaped: true
     vanilla: true
-    required_techs: 'tech_flight'
+    required_techs: 'tech_mathematics'
     components:
         - name: 'Defense'
           value: '5'

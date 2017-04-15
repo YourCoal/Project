@@ -110,7 +110,6 @@ public class Farm extends Structure {
 	}
 
 	public static boolean isBlockControlled(Block b) {
-		
 		switch (ItemManager.getId(b)) {
 		//case CivData.BROWNMUSHROOM:
 		//case CivData.REDMUSHROOM:
@@ -119,14 +118,14 @@ public class Farm extends Structure {
 		case CivData.MELON_STEM:
 		case CivData.PUMPKIN:
 		case CivData.PUMPKIN_STEM:
-		case CivData.WHEAT:
-		case CivData.CARROTS:
-		case CivData.POTATOES:
-		case CivData.NETHERWART:
+		case CivData.WHEAT_CROP:
+		case CivData.CARROT_CROP:
+		case CivData.POTATO_CROP:
+		case CivData.BEETROOT_CROP:
+		case CivData.NETHERWART_CROP:
 	//	case CivData.SUGARCANE:
 			return true;
 		}
-		
 		return false;
 	}
 

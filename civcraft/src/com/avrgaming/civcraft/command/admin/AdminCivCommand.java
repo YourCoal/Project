@@ -53,7 +53,7 @@ public class AdminCivCommand extends CommandBase {
 		commands.put("rmadviser", "[civ] [player] - removes this player from the advisers group.");
 		commands.put("givetech", "[civ] [tech_id] - gives this civilization this technology.");
 		commands.put("removetech", "[civ] [tech_id] - remove this from the civilization.");
-		commands.put("beakerrate", "[civ] [amount] set this towns's beaker rate to this amount.");
+		commands.put("sciencerate", "[civ] [amount] set this towns's science rate to this amount.");
 		commands.put("toggleadminciv", "[civ] - sets/unsets this civilization to an admin civ. Prevents war.");
 		commands.put("alltech", "[civ] - gives this civilization every technology.");
 		commands.put("setrelation", "[civ] [otherCiv] [NEUTRAL|HOSTILE|WAR|PEACE|ALLY] sets the relationship between [civ] and [otherCiv].");
@@ -256,14 +256,14 @@ public class AdminCivCommand extends CommandBase {
 		CivMessage.sendSuccess(sender, civ.getName()+" admin civ is now:"+civ.isAdminCiv());
 	}
 	
-	public void beakerrate_cmd() throws CivException {
+	public void sciencerate_cmd() throws CivException {
 		Civilization civ = getNamedCiv(1);
 		Double amount = getNamedDouble(2);
 		
-		civ.setBaseBeakers(amount);
+		civ.setBaseScience(amount);
 		civ.save();
 
-		CivMessage.sendSuccess(sender, "Set "+civ.getName()+" beaker rate to "+amount);
+		CivMessage.sendSuccess(sender, "Set "+civ.getName()+" science rate to "+amount);
 	}
 	
 	public void givetech_cmd() throws CivException {

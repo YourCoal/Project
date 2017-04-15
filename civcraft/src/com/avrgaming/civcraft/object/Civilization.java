@@ -33,13 +33,13 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.arena.ArenaTeam;
 import com.avrgaming.civcraft.camp.WarCamp;
 import com.avrgaming.civcraft.config.CivSettings;
+import com.avrgaming.civcraft.config.ConfigCivic;
 import com.avrgaming.civcraft.config.ConfigGovernment;
 import com.avrgaming.civcraft.config.ConfigTech;
 import com.avrgaming.civcraft.database.SQL;
@@ -61,8 +61,9 @@ import com.avrgaming.civcraft.structure.RespawnLocationHolder;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.TownHall;
 import com.avrgaming.civcraft.threading.TaskMaster;
+import com.avrgaming.civcraft.threading.tasks.UpdateCivicBar;
 import com.avrgaming.civcraft.threading.tasks.UpdateTechBar;
-import com.avrgaming.civcraft.threading.timers.BeakerTimer;
+import com.avrgaming.civcraft.threading.timers.ScienceTimer;
 import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.ChunkCoord;
 import com.avrgaming.civcraft.util.CivColor;
@@ -70,17 +71,25 @@ import com.avrgaming.civcraft.util.DateUtil;
 import com.avrgaming.civcraft.util.ItemManager;
 
 public class Civilization extends SQLObject {
-
+	
 	private Map<String, ConfigTech> techs = new ConcurrentHashMap<String, ConfigTech>();
+	private Map<String, ConfigCivic> civics = new ConcurrentHashMap<String, ConfigCivic>();
 	
 	private int color;
 	private int daysInDebt = 0;
-	private int currentEra = 0;
 	private double incomeTaxRate;
 	private double sciencePercentage;
+	
+	private int currentEra = 0;
+	private int victoryPts = 0;
+	
+	private ConfigTech techQueue = null;
 	private ConfigTech researchTech = null;
-	private double researchProgress = 0.0;
-		
+	private double researchTechProgress = 0.0;
+	private ConfigCivic civicQueue = null;
+	private ConfigCivic researchCivic = null;
+	private double researchCivicProgress = 0.0;
+	
 	private EconObject treasury;
 	private PermissionGroup leaderGroup;
 	private PermissionGroup adviserGroup;
@@ -93,30 +102,31 @@ public class Civilization extends SQLObject {
 	
 	private ConcurrentHashMap<String, Town> towns = new ConcurrentHashMap<String, Town>();
 	private ConfigGovernment government;
-
-	private double baseBeakers = 1.0;
+	
+	private double baseScience = 1.0;
 	private double baseCulture = 1.0;
-
+	
 	public static final int HEX_COLOR_MAX = 16777215;
 	public static final int HEX_COLOR_TOLERANCE = 40;
-
+	
 	/* Store information to display about last upkeep paid. */
 	public HashMap<String, Double> lastUpkeepPaidMap = new HashMap<String, Double>();
 	
 	/* Store information about last tick's taxes */
 	public HashMap<String, Double> lastTaxesPaidMap = new HashMap<String, Double>();
 	
-	/* Used to prevent spam of tech % complete message. */
+	/* Used to prevent spam of % complete message. */
 	private int lastTechPercentage = 0;
-
+	private int lastCivicPercentage = 0;
+	
 	private DiplomacyManager diplomacyManager = new DiplomacyManager(this);
-
+	
 	private boolean adminCiv = false;
 	private boolean conquered = false;
 	
 	private Date conquer_date = null;
 	private Date created_date = null;
-
+	
 	public boolean scoutDebug = false;
 	public String scoutDebugPlayer = null;
 	
@@ -142,7 +152,7 @@ public class Civilization extends SQLObject {
 	
 	public void loadSettings() {
 		try {
-			this.baseBeakers = CivSettings.getDouble(CivSettings.civConfig, "civ.base_beaker_rate");
+			this.baseScience = CivSettings.getDouble(CivSettings.civConfig, "civ.base_beaker_rate");
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 		}
@@ -159,10 +169,17 @@ public class Civilization extends SQLObject {
 					"`debt` float NOT NULL DEFAULT '0',"+
 					"`coins` double DEFAULT 0,"+
 					"`daysInDebt` int NOT NULL DEFAULT '0',"+
+					"`victoryPts` int(11) DEFAULT 0,"+
 					"`techs` mediumtext DEFAULT NULL," +
+					"`techQueue` mediumtext DEFAULT NULL,"+
 					"`researchTech` mediumtext DEFAULT NULL,"+
-					"`researchProgress` float NOT NULL DEFAULT 0,"+
-					"`researched` mediumtext DEFAULT NULL, "+
+					"`researchTechProgress` float NOT NULL DEFAULT 0,"+
+					"`researchedTechs` mediumtext DEFAULT NULL, "+
+					"`civics` mediumtext DEFAULT NULL," +
+					"`civicQueue` mediumtext DEFAULT NULL,"+
+					"`researchCivic` mediumtext DEFAULT NULL,"+
+					"`researchCivicProgress` float NOT NULL DEFAULT 0,"+
+					"`researchedCivics` mediumtext DEFAULT NULL, "+
 					"`government_id` mediumtext DEFAULT NULL," +
 					"`color` int(11) DEFAULT 0," +
 					"`income_tax_rate` float NOT NULL DEFAULT 0," +
@@ -199,8 +216,13 @@ public class Civilization extends SQLObject {
 		setAdvisersGroupName(rs.getString("advisersGroupName"));
 		daysInDebt = rs.getInt("daysInDebt");
 		this.color = rs.getInt("color");
+		victoryPts = rs.getInt("victoryPts");
+		this.setTechQueued(CivSettings.techs.get(rs.getString("techQueue")));
 		this.setResearchTech(CivSettings.techs.get(rs.getString("researchTech")));
-		this.setResearchProgress(rs.getDouble("researchProgress"));
+		this.setResearchTechProgress(rs.getDouble("researchTechProgress"));
+		this.setCivicQueued(CivSettings.civics.get(rs.getString("civicQueue")));
+		this.setResearchCivic(CivSettings.civics.get(rs.getString("researchCivic")));
+		this.setResearchCivicProgress(rs.getDouble("researchCivicProgress"));
 		this.setGovernment(rs.getString("government_id"));
 		this.loadKeyValueString(rs.getString("lastUpkeepTick"), this.lastUpkeepPaidMap);
 		this.loadKeyValueString(rs.getString("lastTaxesTick"), this.lastTaxesPaidMap);
@@ -212,7 +234,8 @@ public class Civilization extends SQLObject {
 		}
 		
 		this.setIncomeTaxRate(taxes);
-		this.loadResearchedTechs(rs.getString("researched"));
+		this.loadResearchedTechs(rs.getString("researchedTechs"));
+		this.loadResearchedCivics(rs.getString("researchedCivics"));
 		this.adminCiv = rs.getBoolean("adminCiv");
 		this.conquered = rs.getBoolean("conquered");
 		Long ctime = rs.getLong("conquered_date");
@@ -239,7 +262,7 @@ public class Civilization extends SQLObject {
 			}
 		}
 	}
-
+	
 	@Override
 	public void save() {
 		SQLUpdate.add(this);
@@ -256,19 +279,37 @@ public class Civilization extends SQLObject {
 		hashmap.put("debt", this.getTreasury().getDebt());
 		hashmap.put("coins", this.getTreasury().getBalance());
 		hashmap.put("daysInDebt", this.daysInDebt);
+		hashmap.put("VictoryPts", this.victoryPts);
 		hashmap.put("income_tax_rate", this.getIncomeTaxRate());
 		hashmap.put("science_percentage", this.getSciencePercentage());
 		hashmap.put("color", this.getColor());
+		if (this.getCivicQueued() != null) {
+			hashmap.put("civicQueue", this.getCivicQueued().id);
+		} else {
+			hashmap.put("civicQueue", null);
+		}
+		if (this.getResearchCivic() != null) {
+			hashmap.put("researchCivic", this.getResearchCivic().id);
+		} else {
+			hashmap.put("researchCivic", null);
+		}
+		if (this.getTechQueued() != null) {
+			hashmap.put("techQueue", this.getTechQueued().id);
+		} else {
+			hashmap.put("techQueue", null);
+		}
 		if (this.getResearchTech() != null) {
 			hashmap.put("researchTech", this.getResearchTech().id);
 		} else {
 			hashmap.put("researchTech", null);
 		}
-		hashmap.put("researchProgress", this.getResearchProgress());
+		hashmap.put("researchTechProgress", this.getResearchTechProgress());
+		hashmap.put("researchCivicProgress", this.getResearchCivicProgress());
 		hashmap.put("government_id", this.getGovernment().id);
 		hashmap.put("lastUpkeepTick", this.saveKeyValueString(this.lastUpkeepPaidMap));
 		hashmap.put("lastTaxesTick", this.saveKeyValueString(this.lastTaxesPaidMap));
-		hashmap.put("researched", this.saveResearchedTechs());
+		hashmap.put("researchedTechs", this.saveResearchedTechs());
+		hashmap.put("researchedCivics", this.saveResearchedCivics());
 		hashmap.put("adminCiv", this.adminCiv);
 		hashmap.put("conquered", this.conquered);
 		if (this.conquer_date != null) {
@@ -286,13 +327,35 @@ public class Civilization extends SQLObject {
 		SQL.updateNamedObject(this, hashmap, TABLE_NAME);
 	}
 	
+	private void loadResearchedCivics(String civicstring) {
+		if (civicstring == null || civicstring.equals("")) {
+			return;
+		}
+		
+		String[] civics = civicstring.split(",");
+		for (String civic : civics) {
+			ConfigCivic c = CivSettings.civics.get(civic);
+			if (c != null) {
+				CivGlobal.researchedCivics.add(c.id.toLowerCase());
+				this.civics.put(civic, c);
+			}
+		}
+	}
+	
+	private Object saveResearchedCivics() {
+		String out = "";
+		for (ConfigCivic civic : this.civics.values()) {
+			out += civic.id+",";
+		}
+		return out;
+	}
+	
 	private void loadResearchedTechs(String techstring) {
 		if (techstring == null || techstring.equals("")) {
 			return;
 		}
 		
 		String[] techs = techstring.split(",");
-		
 		for (String tech : techs) {
 			ConfigTech t = CivSettings.techs.get(tech);
 			if (t != null) {
@@ -304,29 +367,23 @@ public class Civilization extends SQLObject {
 	
 	private Object saveResearchedTechs() {
 		String out = "";
-		
 		for (ConfigTech tech : this.techs.values()) {
 			out += tech.id+",";
 		}
-		
 		return out;
 	}
-
+	
 	private void loadKeyValueString(String string, HashMap<String, Double> map) {
-		
 		String[] keyvalues = string.split(";");
-		
 		for (String keyvalue : keyvalues) {
 			try {
 				String key = keyvalue.split(":")[0];
 				String value = keyvalue.split(":")[1];
-				
 				map.put(key, Double.valueOf(value));
 			} catch (ArrayIndexOutOfBoundsException e) {
 				// forget it then.
 			}
 		}
-		
 	}
 	
 	private String saveKeyValueString(HashMap<String, Double> map) {
@@ -338,7 +395,45 @@ public class Civilization extends SQLObject {
 		}
 		return out;
 	}
-
+	
+	public boolean hasCivicology(String require_civic) {
+		if (require_civic != null) {
+			String split[] = require_civic.split(":");
+			for (String str : split) {
+				if (!hasCivic(str)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public boolean hasCivic(String configId) {
+		if (configId == null || configId.equals("")) {
+			return true;
+		}
+		return civics.containsKey(configId);
+	}
+	
+	public void addCivic(ConfigCivic c) {
+		CivGlobal.researchedCivics.add(c.id.toLowerCase());
+		civics.put(c.id, c);
+		for (Town town : this.getTowns()) {
+			town.onCivicUpdate();
+		}
+	}
+	
+	public void removeCivic(ConfigCivic c) {
+		removeCivic(c.id);
+	}
+	
+	public void removeCivic(String configId) {
+		civics.remove(configId);
+		for (Town town : this.getTowns()) {
+			town.onCivicUpdate();
+		}
+	}
+	
 	public boolean hasTechnology(String require_tech) {
 		if (require_tech != null) {
 			String split[] = require_tech.split(":");
@@ -348,7 +443,6 @@ public class Civilization extends SQLObject {
 				}
 			}
 		}
-		
 		return true;
 	}
 	
@@ -356,7 +450,6 @@ public class Civilization extends SQLObject {
 		if (configId == null || configId.equals("")) {
 			return true;
 		}
-		
 		return techs.containsKey(configId);
 	}
 	
@@ -386,12 +479,20 @@ public class Civilization extends SQLObject {
 	
 	public void removeTech(String configId) {
 		techs.remove(configId);
-		
 		for (Town town : this.getTowns()) {
 			town.onTechUpdate();
 		}
 	}
-
+	
+	public void giveVictoryPts(int pts) {
+		victoryPts += pts;
+		this.save();
+	}
+	
+	public int getVictoryPts() {
+		return victoryPts;
+	}
+	
 	public ConfigGovernment getGovernment() {
 		return government;
 	}
@@ -497,13 +598,7 @@ public class Civilization extends SQLObject {
 	}
 
 	public static void newCiv(String name, String capitolName, Resident resident, Player p, Location loc) throws CivException {
-		ItemStack stack = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			stack = p.getInventory().getItemInMainHand();
-		}
+		ItemStack stack = p.getInventory().getItemInMainHand();
 		//Verify we have the correct item somewhere in our inventory.
 		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
 		if (craftMat == null || !craftMat.hasComponent("FoundCivilization")) {
@@ -878,10 +973,8 @@ public class Civilization extends SQLObject {
 		CivMessage.global(this.getName()+" is in "+this.getTreasury().getDebt()+" coins of debt!");
 	}
 	
-	
 	public void incrementDaysInDebt() {
 		daysInDebt++;
-		
 		if (daysInDebt >= CivSettings.CIV_DEBT_GRACE_DAYS) {
 			if (daysInDebt >= CivSettings.CIV_DEBT_SELL_DAYS) {
 				if (daysInDebt >= CivSettings.CIV_DEBT_TOWN_SELL_DAYS) {
@@ -903,7 +996,6 @@ public class Civilization extends SQLObject {
 	}
 
 	public String getDaysLeftWarning() {
-		
 		if (daysInDebt < CivSettings.CIV_DEBT_GRACE_DAYS) {
 			return ""+(CivSettings.CIV_DEBT_GRACE_DAYS-daysInDebt)+" days until civ goes up for sale.";
 		}
@@ -916,7 +1008,6 @@ public class Civilization extends SQLObject {
 		if (daysInDebt < CivSettings.CIV_DEBT_TOWN_SELL_DAYS) {
 			return this.getName()+" is up for sale, "+(CivSettings.CIV_DEBT_TOWN_SELL_DAYS-daysInDebt)+" days until the civ is deleted.";		
 		}
-		
 		return "";
 	}
 	
@@ -993,16 +1084,16 @@ public class Civilization extends SQLObject {
 		return out;
 	}
 
-	public double getBaseBeakers() {
-		return this.baseBeakers;
+	public double getBaseScience() {
+		return this.baseScience;
 	}
 	
-	public double getBeakers() {
+	public double getScience() {
 		double total = 0;
 		for (Town town : this.getTowns()) {
-			total += town.getBeakers().total;
+			total += town.getScience().total;
 		}
-		total += baseBeakers;
+		total += baseScience;
 		return total;
 	}
 	
@@ -1021,42 +1112,193 @@ public class Civilization extends SQLObject {
 		return total;
 	}
 
-	public void setBaseBeakers(double beakerRate) {
-		this.baseBeakers = beakerRate;
+	public void setBaseCulture(double cultureRate) {
+		this.baseCulture = cultureRate;
 	}
 
-	public void addBeakers(double beakers) {
+	public void addCulture(double culture) {
+		if (culture == 0) {
+			return;
+		}	
 		
+		TaskMaster.asyncTask(new UpdateCivicBar(this), 0);
+		setResearchCivicProgress(getResearchCivicProgress() + culture);
+		
+		if (getResearchCivicProgress() >= getResearchCivic().getAdjustedCultureCost(this)) {
+			CivMessage.sendCiv(this, "Our civilization has discovered the civic "+getResearchTech().name+"!");
+			this.addCivic(this.getResearchCivic());
+			this.setResearchCivicProgress(0);
+			this.setResearchCivic(null);
+			this.save();
+			
+			if (this.getCivicQueued() != null) {
+				ConfigCivic civic = this.getCivicQueued();
+				if (this.getResearchCivic() != null) {
+					CivMessage.sendCivCivicError(this, "While trying to run your queued Civic ("+civic.name+"),"
+							+ " we are already currently researching "+this.getResearchTech().name+". If you want to change your focus, use /civ civic switch instead.");
+					CivMessage.sendCivCivicError(this, CivColor.LightGrayBold+"[EARLY DEVELOPMENT] If this is a mistake, it may be a bug. Please contact our staff. Error Code: CIVCIVIC_CQE001");
+					return;
+				}
+				
+				if (!this.getTreasury().hasEnough(civic.getAdjustedCivicCost(this))) {
+					CivMessage.sendCivCivicError(this, "While trying to run your queued Civic ("+civic.name+"),"
+							+ " our Civilization's treasury does have the required  "+civic.getAdjustedCivicCost(this)+" coins to start this research.");
+					CivMessage.sendCivCivicError(this, CivColor.LightGrayBold+"[EARLY DEVELOPMENT] If this is a mistake, it may be a bug. Please contact our staff. Error Code: CIVCIVIC_CQE002");
+					return;
+				}
+				
+				if (this.hasCivic(civic.id)) {
+					CivMessage.sendCivCivicError(this, "While trying to run your queued Civic ("+civic.name+"),"
+							+ "you already have this civic.");
+					CivMessage.sendCivCivicError(this, CivColor.LightGrayBold+"[EARLY DEVELOPMENT] If this is a mistake, it may be a bug. Please contact our staff. Error Code: CIVCIVIC_CQE003");
+					return;
+				}
+				
+				if (!civic.isAvailable(this)) {
+					CivMessage.sendCivCivicError(this, "While trying to run your queued Civic ("+civic.name+"),"
+							+ " you do not have the required civic to research this civic.");
+					CivMessage.sendCivCivicError(this, CivColor.LightGrayBold+"[EARLY DEVELOPMENT] If this is a mistake, it may be a bug. Please contact our staff. Error Code: CIVCIVIC_CQE004");
+					return;
+				}
+				
+				this.setResearchCivic(civic);
+				this.setResearchCivicProgress(0.0);
+				this.setCivicQueued(null);
+				CivMessage.sendCiv(this, CivColor.Yellow+"[Civic Research-Queue] "+CivColor.White+"Your civilization started researching civic "+civic.name+"!");
+				this.getTreasury().withdraw(civic.getAdjustedCivicCost(this));
+				TaskMaster.asyncTask(new UpdateCivicBar(this),0);
+			}
+			return;
+		}
+		
+		int percentageComplete = (int)((getResearchCivicProgress() / this.getResearchCivic().getAdjustedCultureCost(this))*100);
+		if ((percentageComplete % 10) == 0) {
+			if (percentageComplete != lastCivicPercentage) {
+				CivMessage.sendCiv(this, "Our civilizations research progress on civic "+getResearchCivic().name+" is now "+percentageComplete+"% completed!");
+				lastCivicPercentage = percentageComplete;
+			}
+		}
+		this.save();
+	}
+
+	public void startCivicResearch(ConfigCivic civic) throws CivException {		
+		if (this.getResearchCivic() != null) {
+			throw new CivException("Current researching civic "+this.getResearchCivic().name+". " +
+					"If you want to change your focus, use /civ civic switch instead.");
+		}
+		
+		if (!this.getTreasury().hasEnough(civic.getAdjustedCultureCost(this))) {
+			throw new CivException("Our Civilization's treasury does have the required "+civic.getAdjustedCivicCost(this)+" coins to start this civic.");
+		}
+		
+		if (this.hasCivic(civic.id)) {
+			throw new CivException("You already have this civic.");
+		}
+		
+		if (!civic.isAvailable(this)) {
+			throw new CivException("You do not have the required civic to research this civic.");
+		}
+		
+		this.setResearchCivic(civic);
+		this.setResearchCivicProgress(0.0);
+		CivMessage.sendCiv(this, "Your civilization started researching civic "+civic.name+"!");
+		this.getTreasury().withdraw(civic.getAdjustedCivicCost(this));
+		TaskMaster.asyncTask(new UpdateCivicBar(this),0);
+		this.save();
+	}
+	
+	public ConfigCivic getCivicQueued() {
+		return civicQueue;
+	}
+	
+	public void setCivicQueued(ConfigCivic civicQueue) {
+		this.civicQueue = civicQueue;
+	}
+	
+	public ConfigCivic getResearchCivic() {
+		return researchCivic;
+	}
+	
+	public void setResearchCivic(ConfigCivic researchCivic) {
+		this.researchCivic = researchCivic;
+	}
+	
+	public double getResearchCivicProgress() {
+		return researchCivicProgress;
+	}
+	
+	public void setResearchCivicProgress(double researchCivicProgress) {
+		this.researchCivicProgress = researchCivicProgress;
+	}
+	
+	public void setBaseScience(double beakerRate) {
+		this.baseScience = beakerRate;
+	}
+
+	public void addScience(double beakers) {
 		if (beakers == 0) {
 			return;
 		}	
 		
 		TaskMaster.asyncTask(new UpdateTechBar(this), 0);
-		setResearchProgress(getResearchProgress() + beakers);
+		setResearchTechProgress(getResearchTechProgress() + beakers);
 		
-		if (getResearchProgress() >= getResearchTech().getAdjustedBeakerCost(this)) {
+		if (getResearchTechProgress() >= getResearchTech().getAdjustedScienceCost(this)) {
 			CivMessage.sendCiv(this, "Our civilization has discovered "+getResearchTech().name+"!");
 			this.addTech(this.getResearchTech());
-			this.setResearchProgress(0);
+			this.setResearchTechProgress(0);
 			this.setResearchTech(null);
-			
 			this.save();
 			
+			if (this.getTechQueued() != null) {
+				ConfigTech tech = this.getTechQueued();
+				if (this.getResearchTech() != null) {
+					CivMessage.sendCivTechError(this, "While trying to run your queued Technology ("+tech.name+"),"
+							+ " we are already currently researching "+this.getResearchTech().name+". If you want to change your focus, use /civ research switch instead.");
+					CivMessage.sendCivTechError(this, CivColor.LightGrayBold+"[EARLY DEVELOPMENT] If this is a mistake, it may be a bug. Please contact our staff. Error Code: CIVTECH_TQE001");
+					return;
+				}
+				
+				if (!this.getTreasury().hasEnough(tech.getAdjustedTechCost(this))) {
+					CivMessage.sendCivTechError(this, "While trying to run your queued Technology ("+tech.name+"),"
+							+ " our Civilization's treasury does have the required  "+tech.getAdjustedTechCost(this)+" coins to start this research.");
+					CivMessage.sendCivTechError(this, CivColor.LightGrayBold+"[EARLY DEVELOPMENT] If this is a mistake, it may be a bug. Please contact our staff. Error Code: CIVTECH_TQE002");
+					return;
+				}
+				
+				if (this.hasTech(tech.id)) {
+					CivMessage.sendCivTechError(this, "While trying to run your queued Technology ("+tech.name+"),"
+							+ "you already have this technology.");
+					CivMessage.sendCivTechError(this, CivColor.LightGrayBold+"[EARLY DEVELOPMENT] If this is a mistake, it may be a bug. Please contact our staff. Error Code: CIVTECH_TQE003");
+					return;
+				}
+				
+				if (!tech.isAvailable(this)) {
+					CivMessage.sendCivTechError(this, "While trying to run your queued Technology ("+tech.name+"),"
+							+ " you do not have the required technology to research this technology.");
+					CivMessage.sendCivTechError(this, CivColor.LightGrayBold+"[EARLY DEVELOPMENT] If this is a mistake, it may be a bug. Please contact our staff. Error Code: CIVTECH_TQE004");
+					return;
+				}
+				
+				this.setResearchTech(tech);
+				this.setResearchTechProgress(0.0);
+				this.setTechQueued(null);
+				CivMessage.sendCiv(this, CivColor.Yellow+"[Research-Queue] "+CivColor.White+"Your civilization started researching "+tech.name+"!");
+				this.getTreasury().withdraw(tech.getAdjustedTechCost(this));
+				TaskMaster.asyncTask(new UpdateTechBar(this),0);
+			}
 			return;
 		}
 		
-		int percentageComplete = (int)((getResearchProgress() / this.getResearchTech().getAdjustedBeakerCost(this))*100);
+		int percentageComplete = (int)((getResearchTechProgress() / this.getResearchTech().getAdjustedScienceCost(this))*100);
 		if ((percentageComplete % 10) == 0) {
-			
 			if (percentageComplete != lastTechPercentage) {
 				CivMessage.sendCiv(this, "Our civilizations research progress on "+getResearchTech().name+" is now "+percentageComplete+"% completed!");
 				lastTechPercentage = percentageComplete;
 			}
 			
 		}
-		
 		this.save();
-	
 	}
 
 	public void startTechnologyResearch(ConfigTech tech) throws CivException {		
@@ -1078,29 +1320,37 @@ public class Civilization extends SQLObject {
 		}
 		
 		this.setResearchTech(tech);
-		this.setResearchProgress(0.0);
+		this.setResearchTechProgress(0.0);
 		CivMessage.sendCiv(this, "Your civilization started researching "+tech.name+"!");
-		
 		this.getTreasury().withdraw(tech.getAdjustedTechCost(this));
 		TaskMaster.asyncTask(new UpdateTechBar(this),0);
+		this.save();
 	}
-
+	
+	public ConfigTech getTechQueued() {
+		return techQueue;
+	}
+	
+	public void setTechQueued(ConfigTech techQueue) {
+		this.techQueue = techQueue;
+	}
+	
 	public ConfigTech getResearchTech() {
 		return researchTech;
 	}
-
+	
 	public void setResearchTech(ConfigTech researchTech) {
 		this.researchTech = researchTech;
 	}
-
-	public double getResearchProgress() {
-		return researchProgress;
+	
+	public double getResearchTechProgress() {
+		return researchTechProgress;
 	}
-
-	public void setResearchProgress(double researchProgress) {
-		this.researchProgress = researchProgress;
+	
+	public void setResearchTechProgress(double researchTechProgress) {
+		this.researchTechProgress = researchTechProgress;
 	}
-
+	
 	public void changeGovernment(Civilization civ, ConfigGovernment gov, boolean force) throws CivException {
 		changeGovernment(civ, gov, force, 24);
 	}
@@ -1181,13 +1431,13 @@ public class Civilization extends SQLObject {
 		}
 		
 		DecimalFormat df = new DecimalFormat("#.#");
-		double totalBeakers = Double.valueOf(df.format(beakerAmount/coins_per_beaker));
-		if (totalBeakers == 0) {
+		double totalScience = Double.valueOf(df.format(beakerAmount/coins_per_beaker));
+		if (totalScience == 0) {
 			return;
 		}
 
 		if (this.researchTech != null) {	
-			this.addBeakers(totalBeakers);
+			this.addScience(totalScience);
 		} else {
 			EndGameCondition scienceVictory = EndGameCondition.getEndCondition("end_science");
 			if (scienceVictory == null) {
@@ -1198,8 +1448,8 @@ public class Civilization extends SQLObject {
 					 * We've got an active science victory, lets add these beakers
 					 * to the total stored on "the enlightenment"
 					 */
-					double beakerTotal = totalBeakers;
-					((EndConditionScience)scienceVictory).addExtraBeakersToCiv(this, beakerTotal);
+					double beakerTotal = totalScience;
+					((EndConditionScience)scienceVictory).addExtraScienceToCiv(this, beakerTotal);
 					return;
 				}
 			}		
@@ -1653,8 +1903,8 @@ public class Civilization extends SQLObject {
 	public void declareAsWinner(EndGameCondition end) {
 		try {
 			String out1a = "The Civilization of "+this.getName()+" has acheived a "+end.getVictoryName()+" Victory!";
-			String out1b = CivColor.Gray+"(Please standby for more global messages)";
 			CivGlobal.getSessionDB().add("endgame:winningCiv", out1a, 0, 0, 0);
+			String out1b = "Please standby for more global messages.";
 			
 			String out2a = "Top 5 civs in score this phase:";
 			String out2b = "";
@@ -1708,46 +1958,80 @@ public class Civilization extends SQLObject {
 				}
 			}
 			
-			String out6a = "Top 5 civs with the most towns this phase:";
+			String out6a = "Top 5 civs with most members this phase:";
 			String out6b = "";
-			synchronized(CivGlobal.civilizationTownCount) {
+			synchronized(CivGlobal.civilizationMemberCount) {
 				int i = 1;
-				for (Integer townCount : CivGlobal.civilizationTownCount.descendingKeySet()) {
-					out6b = i+") "+CivColor.Gold+CivGlobal.civilizationTownCount.get(townCount).getName()+CivColor.White+" - "+townCount+" towns";
+				for (Integer members : CivGlobal.civilizationMemberCount.descendingKeySet()) {
+					out6b = i+") "+CivColor.Gold+CivGlobal.civilizationMemberCount.get(members).getName()+CivColor.White+" - "+members+" members";
 					i++;
-					if (i > 3) {
+					if (i > 5) {
 						break;
 					}
 				}
 			}
 			
-			String out7a = "Top 5 teams with the most points this phase:";
+			String out7a = "Top 5 towns with most members this phase:";
 			String out7b = "";
+			synchronized(CivGlobal.townMemberCount) {
+				int i = 1;
+				for (Integer members : CivGlobal.townMemberCount.descendingKeySet()) {
+					out7b = i+") "+CivColor.Gold+CivGlobal.townMemberCount.get(members).getName()+CivColor.White+" - "+members+" members";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out8a = "Top 5 civs with the most towns this phase:";
+			String out8b = "";
+			synchronized(CivGlobal.civilizationTownCount) {
+				int i = 1;
+				for (Integer townCount : CivGlobal.civilizationTownCount.descendingKeySet()) {
+					out8b = i+") "+CivColor.Gold+CivGlobal.civilizationTownCount.get(townCount).getName()+CivColor.White+" - "+townCount+" towns";
+					i++;
+					if (i > 5) {
+						break;
+					}
+				}
+			}
+			
+			String out9a = "Top 5 teams with the most points this phase:";
+			String out9b = "";
 			for (int i = 0; ((i < 10) && (i < ArenaTeam.teamRankings.size())); i++) {
 				ArenaTeam team = ArenaTeam.teamRankings.get(i);
-				out7b = i+") "+CivColor.LightGreen+team.getName()+" - "+CivColor.White+team.getLadderPoints()+" points";
+				out9b = i+") "+CivColor.LightGreen+team.getName()+" - "+CivColor.White+team.getLadderPoints()+" points";
 			}
 			
 			CivMessage.global(out1a);
 			CivMessage.global(out1b);
-			Thread.sleep(10000);
+			Thread.sleep(9000);
 			CivMessage.global(out2a);
 			CivMessage.global(out2b);
-			Thread.sleep(10000);
+			Thread.sleep(9000);
 			CivMessage.global(out3a);
 			CivMessage.global(out3b);
-			Thread.sleep(10000);
+			Thread.sleep(9000);
 			CivMessage.global(out4a);
 			CivMessage.global(out4b);
-			Thread.sleep(10000);
+			Thread.sleep(9000);
 			CivMessage.global(out5a);
 			CivMessage.global(out5b);
-			Thread.sleep(10000);
+			Thread.sleep(9000);
 			CivMessage.global(out6a);
 			CivMessage.global(out6b);
-			Thread.sleep(10000);
+			Thread.sleep(9000);
 			CivMessage.global(out7a);
 			CivMessage.global(out7b);
+			Thread.sleep(9000);
+			CivMessage.global(out8a);
+			CivMessage.global(out8b);
+			Thread.sleep(9000);
+			CivMessage.global(out9a);
+			CivMessage.global(out9b);
+			Thread.sleep(9000);
+			CivMessage.global(CivColor.BOLD+"Thank you all for playing!");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -1779,7 +2063,7 @@ public class Civilization extends SQLObject {
 		return percent;
 	}
 
-	public void processUnusedBeakers() {
+	public void processUnusedScience() {
 		
 		EndGameCondition scienceVictory = EndGameCondition.getEndCondition("end_science");
 		if (scienceVictory == null) {
@@ -1790,14 +2074,14 @@ public class Civilization extends SQLObject {
 				 * We've got an active science victory, lets add these beakers
 				 * to the total stored on "the enlightenment"
 				 */
-				double beakerTotal = this.getBeakers()/BeakerTimer.BEAKER_PERIOD;
-				((EndConditionScience)scienceVictory).addExtraBeakersToCiv(this, beakerTotal);
+				double beakerTotal = this.getScience()/ScienceTimer.BEAKER_PERIOD;
+				((EndConditionScience)scienceVictory).addExtraScienceToCiv(this, beakerTotal);
 				return;
 			}
 		}
 		
 		for (Town town : this.towns.values()) {
-			town.addUnusedBeakers(town.getBeakers().total / BeakerTimer.BEAKER_PERIOD);
+			town.addUnusedScience(town.getScience().total / ScienceTimer.BEAKER_PERIOD);
 		}
 	}
 

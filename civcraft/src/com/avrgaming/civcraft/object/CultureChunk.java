@@ -144,7 +144,7 @@ public class CultureChunk {
 		return getCultureBiomeInfo().growth+getAdditionalAttributes(Attribute.TypeKeys.GROWTH.name());
 	}
 	
-	public double getBeakers() {		
+	public double getScience() {		
 		return getCultureBiomeInfo().beakers+getAdditionalAttributes(Attribute.TypeKeys.BEAKERS.name());
 	}
 	
@@ -192,15 +192,15 @@ public class CultureChunk {
 					CivColor.Green+" Coins: "+CivColor.LightGreen+info.coins+
 					CivColor.Green+" Happiness:"+CivColor.LightGreen+info.happiness+
 					CivColor.Green+" Production:"+CivColor.LightGreen+info.production+
-					CivColor.Green+" Growth:"+CivColor.LightGreen+info.growth+				
-					CivColor.Green+" Beakers:"+CivColor.LightGreen+info.beakers);
+					CivColor.Green+" Growth:"+CivColor.LightGreen+info.growth+
+					CivColor.Green+" Science:"+CivColor.LightGreen+info.beakers);
 		} else {
 			CivMessage.send(player, CivColor.LightPurple+biome.name()+
 					CivColor.Green+" Coins: "+CivColor.LightGreen+cc.getCoins()+
 					CivColor.Green+" Happiness:"+CivColor.LightGreen+cc.getHappiness()+
 					CivColor.Green+" Production:"+CivColor.LightGreen+cc.getProduction()+
-					CivColor.Green+" Growth:"+CivColor.LightGreen+cc.getGrowth()+				
-					CivColor.Green+" Beakers:"+CivColor.LightGreen+cc.getBeakers());
+					CivColor.Green+" Growth:"+CivColor.LightGreen+cc.getGrowth()+
+					CivColor.Green+" Science:"+CivColor.LightGreen+cc.getScience());
 		}
 
 	}

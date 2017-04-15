@@ -26,7 +26,6 @@ import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -233,14 +232,12 @@ public class Capitol extends TownHall {
 	
 	@Override
 	public void createControlPoint(BlockCoord absCoord) {
-		
 		Location centerLoc = absCoord.getLocation();
 		
 		/* Build the bedrock tower. */
 		//for (int i = 0; i < 1; i++) {
 		Block b = centerLoc.getBlock();
-		ItemManager.setTypeId(b, ItemManager.getId(Material.SANDSTONE)); ItemManager.setData(b, 0);
-		
+		ItemManager.setTypeId(b, CivData.MAGMA_BLOCK); ItemManager.setData(b, 0);
 		StructureBlock sb = new StructureBlock(new BlockCoord(b), this);
 		this.addStructureBlock(sb.getCoord(), true);
 		//}

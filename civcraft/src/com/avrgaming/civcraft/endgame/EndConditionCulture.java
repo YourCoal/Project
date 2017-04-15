@@ -6,7 +6,7 @@ import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 
 public class EndConditionCulture extends EndGameCondition {
-
+	
 	private int requiredCultureLevel;
 	private int numberOfTownsAtCulture;
 	private int numberOfWonders;
@@ -25,6 +25,9 @@ public class EndConditionCulture extends EndGameCondition {
 	
 	@Override
 	public boolean check(Civilization civ) {
+		if (civ.getVictoryPts() < getVictoryPtsRequired()) {
+ 			return false;
+		}
 		
 		/* Verify Civ has correct number of towns at the right culture level. */
 		int townCount = 0;
@@ -60,7 +63,6 @@ public class EndConditionCulture extends EndGameCondition {
 		if (civ.isConquered()) {
 			return false;
 		}
-		
 		return true; 
 	}
 
@@ -68,6 +70,4 @@ public class EndConditionCulture extends EndGameCondition {
 	protected void onWarDefeat(Civilization civ) {
 		this.onFailure(civ);
 	}
-
-	
 }

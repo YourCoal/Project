@@ -62,11 +62,21 @@ public class PlotCommand extends CommandBase {
 		if (!(sender instanceof Player)) {
 			throw new CivException("Must be a player in-game.");
 		}
+		
+		if (args.length < 2) {
+			throw new CivException("Please specify a district.");
+		}
 		Player p = (Player)sender;
 		TownChunk tc = CivGlobal.getTownChunk(p.getLocation());
 		String warning =  CivColor.YellowItalic+" (Warning, this may have reset district bonuses to structures in this plot)";
-		if (args.length < 2) {
-			throw new CivException("Please specify a district.");
+		
+		if (tc == null) {
+			throw new CivException("This plot is not claimed, you cannot change its district.");
+		}
+		
+		Resident res = CivGlobal.getResident(p);
+		if (tc.getTown() != res.getTown()) {
+			throw new CivException("This plot is not apart of your town.");
 		}
 		
 		if (args[1].equalsIgnoreCase("none") || args[1].equalsIgnoreCase("default")) {
@@ -77,12 +87,75 @@ public class PlotCommand extends CommandBase {
 			for (Structure s : tc.getTown().getStructures()) {
 				s.updateDistrict();
 			}
-			return;
-		} else if (args[1].equalsIgnoreCase("agricultural")) {
+		} else if (args[1].equalsIgnoreCase("campus")) {
 			tc.district.setID(1);
+			tc.district.setType("campus");
+			tc.saveNow();
+			CivMessage.sendSuccess(sender, "Set district as Campus."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else if (args[1].equalsIgnoreCase("encampment")) {
+			tc.district.setID(2);
+			tc.district.setType("encampment");
+			tc.saveNow();
+			CivMessage.sendSuccess(sender, "Set district as Encampment."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else if (args[1].equalsIgnoreCase("harbor")) {
+			tc.district.setID(3);
+			tc.district.setType("harbor");
+			tc.saveNow();
+			CivMessage.sendSuccess(sender, "Set district as Harbor."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else if (args[1].equalsIgnoreCase("commercial")) {
+			tc.district.setID(4);
+			tc.district.setType("commercial");
+			tc.saveNow();
+			CivMessage.sendSuccess(sender, "Set district as Commercial."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else if (args[1].equalsIgnoreCase("industrial")) {
+			tc.district.setID(5);
+			tc.district.setType("industrial");
+			tc.saveNow();
+			CivMessage.sendSuccess(sender, "Set district as Industrial."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else if (args[1].equalsIgnoreCase("agricultural")) {
+			tc.district.setID(6);
 			tc.district.setType("agricultural");
 			tc.saveNow();
 			CivMessage.sendSuccess(sender, "Set district as Agricultural."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else if (args[1].equalsIgnoreCase("holysite")) {
+			tc.district.setID(7);
+			tc.district.setType("holysite");
+			tc.saveNow();
+			CivMessage.sendSuccess(sender, "Set district as HolySite."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else if (args[1].equalsIgnoreCase("workplace")) {
+			tc.district.setID(8);
+			tc.district.setType("workplace");
+			tc.saveNow();
+			CivMessage.sendSuccess(sender, "Set district as Workplace."+warning);
+			for (Structure s : tc.getTown().getStructures()) {
+				s.updateDistrict();
+			}
+		} else if (args[1].equalsIgnoreCase("neighborhood")) {
+			tc.district.setID(9);
+			tc.district.setType("neighborhood");
+			tc.saveNow();
+			CivMessage.sendSuccess(sender, "Set district as Neighborhood."+warning);
 			for (Structure s : tc.getTown().getStructures()) {
 				s.updateDistrict();
 			}

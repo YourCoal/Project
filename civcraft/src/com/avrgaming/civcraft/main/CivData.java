@@ -18,25 +18,10 @@
  */
 package com.avrgaming.civcraft.main;
 
-import org.bukkit.Material;
-
 import com.avrgaming.civcraft.exception.InvalidBlockLocation;
 import com.avrgaming.civcraft.util.BlockSnapshot;
-import com.avrgaming.civcraft.util.ItemManager;
 
 public class CivData {
-	//TODO make this an enum
-	public static final int WALL_SIGN = 68;
-	public static final int SIGN = 63;
-	public static final int CHEST = 54;
-	public static final int TRAPPED_CHEST = 146;
-	
-	
-	public static final byte DATA_OAK = 0;
-	public static final byte DATA_PINE = 1;
-	public static final byte DATA_BIRCH = 2;
-	public static final byte DATA_JUNGLE = 3;
-	
 	
 	//Global Data Bytes
 	public static final int DATA_0 = 0;
@@ -56,7 +41,7 @@ public class CivData {
 	public static final int DATA_14 = 14;
 	public static final int DATA_15 = 15;
 	
-	
+	//Global Blocks
 	public static final int AIR = 0;
 	public static final int STONE = 1;
 		public static final int GRANITE = 1;
@@ -80,69 +65,154 @@ public class CivData {
 	public static final int SAND = 12;
 		public static final int RED_SAND = 1;
 	public static final int GRAVEL = 13;
-		
 	public static final int GOLD_ORE = 14;
 	public static final int IRON_ORE = 15;
 	public static final int COAL_ORE = 16;
 	public static final int LOG = 17;
 	public static final int LEAF = 18;
-	
+	public static final int SPONGE = 19;
 	public static final int GLASS = 20;
-	
 	public static final int LAPIS_ORE = 21;
+	public static final int LAPIS_BLOCK = 22;
+	public static final int DISPENSER = 23;
+	public static final int SANDSTONE = 24;
 	
+	public static final int RAIL_POWERED = 27;
+	public static final int RAIL_DETECTOR = 28;
+	public static final int STICKY_PISON = 29;
+	public static final int COBWEB = 30;
 	public static final int TALL_GRASS = 31;
 	public static final int DEAD_BUSH = 32;
-	
-	public static final int YELLOW_FLOWER = 37;
+	public static final int PISON = 33;
+	public static final int WOOL = 35;
+	public static final int DANDELION = 37;
 	public static final int OTHER_FLOWERS = 38;
+	public static final int BROWN_MUSHROOM = 39;
+	public static final int RED_MUSHROOM = 40;
+	public static final int GOLD_BLOCK = 41;
+	public static final int IRON_BLOCK = 42;
 	
+	public static final int TNT = 46;
+	
+	public static final int OBSIDIAN = 49;
+	public static final int TORCH = 50;
+	public static final int FIRE = 51;
+	
+	public static final int CHEST = 54;
 	public static final int REDSTONE_WIRE = 55;
 	public static final int DIAMOND_ORE = 56;
+	public static final int DIAMOND_BLOCK = 57;
+	public static final int WHEAT_CROP = 59;
+	public static final int FARMLAND = 60;
 	
+	public static final int SIGN = 63;
+	public static final int WOOD_DOOR = 64;
+	public static final int LADDER = 65;
+	public static final int RAIL = 66;
+	public static final int WALL_SIGN = 68;
+	
+	public static final int IRON_DOOR = 71;
 	public static final int REDSTONE_ORE = 73;
+	public static final int REDSTONE_TORCH_OFF = 75;
 	
 	public static final int ICE = 79;
 	public static final int SNOW_BLOCK = 80;
 	public static final int CACTUS = 81;
+	public static final int SUGARCANE_BLOCK = 83;
+	public static final int FENCE = 85;
+	public static final int PUMPKIN = 86;
+	public static final int NETHERRACK = 87;
+	public static final int GLOWSTONE = 89;
 	
-	public static final int SUGARCANE = 83;
+	public static final int STAINED_GLASS = 95;
+	public static final int TRAPDOOR = 96;
+	public static final int STONE_BRICK = 98;
+	
+	public static final int GLASS_PANE = 102;
+	public static final int MELON = 103;
+	public static final int PUMPKIN_STEM = 104;
+	public static final int MELON_STEM = 105;
 	
 	public static final int LILY_PAD = 111;
 	public static final int NETHER_BRICK = 112;
+	public static final int NETHER_FENCE = 113;
+	public static final int NETHERWART_CROP = 115;
 	
+	public static final int COCOAPOD = 127;
 	public static final int EMERALD_ORE = 129;
+	public static final int ENDER_CHEST = 130;
+	public static final int TRIPWIRE_HOOK = 131;
+	public static final int TRIPWIRE = 132;
+	public static final int EMERALD_BLOCK = 133;
 	
-	public static final int TRIPWIRE = 131;
-	
+	public static final int COMMAND_BLOCK = 137;
+	public static final int BEACON = 138;
 	public static final int COBBLESTONE_WALL = 139;
+	public static final int CARROT_CROP = 141;
+	public static final int POTATO_CROP = 142;
 	
+	public static final int ANVIL = 145;
+	public static final int TRAPPED_CHEST = 146;
+	
+	public static final int REDSTONE_BLOCK = 152;
+	public static final int NETHER_QUARTZ_ORE = 153;
+	public static final int HOPPER = 154;
 	public static final int QUARTZ_BLOCK = 155;
-	
+	public static final int RAIL_ACTIVATOR = 157;
+	public static final int DROPPER = 158;
 	public static final int STAINED_CLAY = 159;
-	
+	public static final int STAINED_GLASS_PANE = 160;
 	public static final int LEAF2 = 161;
+	public static final int LOG2 = 162;
 	
 	public static final int SLIME_BLOCK = 165;
-	
+	public static final int BARRIER = 166;
+	public static final int IRON_TRAPDOOR = 167;
+	public static final int PRISMARINE = 168;
+	public static final int SEA_LANTERN = 169;
+	public static final int HAY_BALE = 170;
 	public static final int CARPET = 171;
 	public static final int HARDENED_CLAY = 172;
-	
+	public static final int COAL_BLOCK = 173;
 	public static final int PACKED_ICE = 174;
 	public static final int DOUBLE_FLOWER = 175;
+	
+	public static final int SPRUCE_GATE = 183;
+	public static final int BIRCH_GATE = 184;
+	public static final int JUNGLE_GATE = 185;
+	public static final int ACACIA_GATE = 186;
+	public static final int DARK_OAK_GATE = 187;
+	public static final int SPRUCE_FENCE = 188;
+	public static final int BIRCH_FENCE = 189;
+	public static final int JUNGLE_FENCE = 190;
+	public static final int ACACIA_FENCE = 191;
+	public static final int DARK_OAK_FENCE = 192;
+	public static final int SPRUCE_DOOR = 193;
+	public static final int BIRCH_DOOR = 194;
+	public static final int JUNGLE_DOOR = 195;
+	public static final int ACACIA_DOOR = 196;
+	public static final int DARK_OAK_DOOR = 197;
+	public static final int END_ROD = 198;
+	public static final int CHORUS_PLANT = 199;
+	public static final int CHORUS_FLOWER = 200;
 	
 	public static final int BEETROOT_CROP = 207;
 	
 	public static final int MAGMA_BLOCK = 213;
-	public static final int RED_NETHER_BRICK = 214;
-	public static final int NETHER_WART_BLOCK = 215;
+	public static final int NETHERWART_BLOCK = 214;
+	public static final int RED_NETHER_BRICK = 215;
 	
+	//Global Items
 	public static final int IRON_SHOVEL = 256;
 	public static final int IRON_PICKAXE = 257;
 	public static final int IRON_AXE = 258;
-	
 	public static final int APPLE = 260;
-	
+	public static final int BOW = 261;
+	public static final int ARROW = 262;
+	public static final int COAL = 263;
+	public static final int DIAMOND = 264;
+	public static final int IRON_INGOT = 265;
+	public static final int GOLD_INGOT = 266;
 	public static final int IRON_SWORD = 267;
 	public static final int WOOD_SWORD = 268;
 	public static final int WOOD_SHOVEL = 269;
@@ -162,56 +232,68 @@ public class CivData {
 	public static final int GOLD_PICKAXE = 285;
 	public static final int GOLD_AXE = 286;
 	
+	public static final int GUNPOWDER = 289;
 	public static final int WOOD_HOE = 290;
 	public static final int STONE_HOE = 291;
 	public static final int IRON_HOE = 292;
 	public static final int DIAMOND_HOE = 293;
 	public static final int GOLD_HOE = 294;
+	public static final int WHEAT_SEED = 295;
+	public static final int WHEAT = 296;
+	public static final int BREAD = 297;
+	public static final int LEATHER_HELMET = 298;
+	public static final int LEATHER_CHESTPLATE = 299;
+	public static final int LEATHER_LEGGINGS = 300;
+	public static final int LEATHER_BOOTS = 301;
+	public static final int CHAIN_HELMET = 302;
+	public static final int CHAIN_CHESTPLATE = 303;
+	public static final int CHAIN_LEGGINGS = 304;
+	public static final int CHAIN_BOOTS = 305;
+	public static final int IRON_HELMET = 306;
+	public static final int IRON_CHESTPLATE = 307;
+	public static final int IRON_LEGGINGS = 308;
+	public static final int IRON_BOOTS = 309;
+	public static final int DIAMOND_HELMET = 310;
+	public static final int DIAMOND_CHESTPLATE = 311;
+	public static final int DIAMOND_LEGGINGS = 312;
+	public static final int DIAMOND_BOOTS = 313;
+	public static final int GOLD_HELMET = 314;
+	public static final int GOLD_CHESTPLATE = 315;
+	public static final int GOLD_LEGGINGS = 316;
+	public static final int GOLD_BOOTS = 317;
+	
+	public static final int GOLDEN_APPLE = 322;
+	public static final int EMPTY_BUCKET = 325;
+	public static final int WATER_BUCKET = 326;
+	public static final int REDSTONE_DUST = 331;
+	
+	public static final int FISHING_ROD = 346;
+	public static final int FISH_RAW = 349;
+	public static final int COOKED_FISH = 350;
+	public static final int DYE = 351;
+	
+	public static final int ROTTEN_FLESH = 367;
+	public static final int ENDER_PEARL = 368;
+	
+	public static final int SPAWN_EGG = 383;
+	public static final int PUBLISHED_BOOK = 387;
+	public static final int EMERALD = 388;
+	public static final int ITEMFRAME = 389;
+	public static final int CARROT_ITEM = 391;
+	public static final int POTATO_ITEM = 392;
+	
+	public static final int QUARTZ = 406;
 	
 	public static final int POPPED_CHORUS_FRUIT = 433;
 	public static final int BEETROOT_ITEM = 434;
 	public static final int BEETROOT_SEED = 435;
+	public static final int ARROW_SPECTRAL = 439;
 	
-//	public static final int LAPIS = ItemManager.getMaterialData(Material.INK_SACK, 4);
+	public static final int SHIELD = 442;
+	public static final int ELYTRA = 443;
 	
-	public static final int QUARTZ = 406;
 	
-	public static final int SALMON = 1;
-	public static final int CLOWNFISH = 2;
-	public static final int PUFFERFISH = 3;
-	
-	public static final int IRON_INGOT = 265;
-	public static final int GOLD_INGOT = 266;
-	public static final int FENCE = 85;
-	public static final int RAILROAD = 66;
-	public static final int MOSS_STONE = 48;
-	public static final int EMERALD = 388;
-	public static final int DIAMOND = 264;
-	public static final int DISPENSER = 23;
-	public static final int REDSTONE_DUST = 331;
-	public static final int WHEAT = 59;
-	public static final int PUMPKIN_STEM = 104;
-	public static final int MELON_STEM = 105;
-	public static final int CARROTS = 141;
-	public static final int POTATOES = 142;
-	public static final int NETHERWART = 115;
-	public static final int COCOAPOD = 127;
-	public static final int REDMUSHROOM = 39;
-	public static final int BROWNMUSHROOM = 40;
-	public static final int FARMLAND = 60;
-	public static final int MELON = 103;
-	public static final int PUMPKIN = 86;
-	public static final int PUBLISHED_BOOK = 387;
-	public static final int ROTTEN_FLESH = 367;
-	public static final int TORCH = 50;
-	public static final int WATER_BUCKET = 326;
-	public static final int EMPTY_BUCKET = 325;
-	public static final int ENDER_PEARL = 368;
-	public static final int ENDER_CHEST = 130;
-	public static final int BEACON = 138;
-	public static final int GUNPOWDER = 289;
-	
-	public static final int MONSTER_EGG = 383;
+	//Gloal Other Stuff
 	public static final String BOOK_UNDERLINE = "§n";
  	public static final String BOOK_BOLD = "§l";
  	public static final String BOOK_ITALIC = "§o";
@@ -222,35 +304,6 @@ public class CivData {
 	public static final int DATA_SIGN_NORTH = 0x2;
 	public static final int DATA_SIGN_SOUTH = 0x3;
 	
-	public static final int ITEMFRAME = 389;
-	public static final int EMERALD_BLOCK = 133;
-	public static final int GOLD_BLOCK = 41;
-	public static final int DIAMOND_BLOCK = 57;
-	public static final int REDSTONE_BLOCK = 152;
-	public static final int LAPIS_BLOCK = 22;
-	public static final int COAL_BLOCK = 173;
-	public static final int WOOL = 35;
-	public static final int SPONGE = 19;
-	public static final int HAY_BALE = 170;
-	public static final byte DATA_WOOL_BLACK = 0xF;
-	public static final int COOKED_FISH = 350;
-	public static final int OBSIDIAN = 49;
-	public static final int FIRE = 51;
-	public static final int FISHING_ROD = 346;
-	public static final int FISH_RAW = 349;
-	public static final int MUTTON_RAW = 423;
-	public static final int BREAD = 297;
-	public static final int GLOWSTONE = 89;
-	public static final int DYE = 351;
-	public static final int REDSTONE_TORCH_OFF = 75;
-	public static final int STONE_BRICK = 98;
-	public static final int PRISMARINE = 168;
-	public static final byte PRISMARINE_BRICKS = 0x1;
-	public static final byte DARK_PRISMARINE = 0x2;
-	public static final int SANDSTONE = 24;
-	public static final byte CHISELED_SANDSTONE = 0x1;
-	public static final byte SMOOTH_SANDSTONE = 0x2;
-	
 	public static final byte CHEST_NORTH = 0x2;
 	public static final byte CHEST_SOUTH = 0x3;
 	public static final byte CHEST_WEST = 0x4;
@@ -260,73 +313,18 @@ public class CivData {
 	public static final byte SIGNPOST_SOUTH = 0x0;
 	public static final byte SIGNPOST_WEST = 0x4;
 	public static final byte SIGNPOST_EAST = 0xC;
-	public static final int BREAD_SEED = 295;
-	public static final int CARROT_ITEM = 391;
-	public static final int POTATO_ITEM = 392;
-	
-	public static final int LEATHER_HELMET = 298;
-	public static final int LEATHER_CHESTPLATE = 299;
-	public static final int LEATHER_LEGGINGS = 300;
-	public static final int LEATHER_BOOTS = 301;
-
-	public static final int IRON_HELMET = 306;
-	public static final int IRON_CHESTPLATE = 307;
-	public static final int IRON_LEGGINGS = 308;
-	public static final int IRON_BOOTS = 309;
-	
-	public static final int DIAMOND_HELMET = 310;
-	public static final int DIAMOND_CHESTPLATE = 311;
-	public static final int DIAMOND_LEGGINGS = 312;
-	public static final int DIAMOND_BOOTS = 313;
-	
-	public static final int GOLD_HELMET = 314;
-	public static final int GOLD_CHESTPLATE = 315;
-	public static final int GOLD_LEGGINGS = 316;
-	public static final int GOLD_BOOTS = 317;
-	
-	public static final int CHAIN_HELMET = 302;
-	public static final int CHAIN_CHESTPLATE = 303;
-	public static final int CHAIN_LEGGINGS = 304;
-	public static final int CHAIN_BOOTS = 305;
-	
-	public static final byte DATA_WOOL_GREEN = 0x5;
-	public static final Integer LADDER = 65;
-	public static final int COAL = ItemManager.getId(Material.COAL);
-	public static final int WOOD_DOOR = 64;
-	public static final int IRON_DOOR = 71;
-	public static final int SPRUCE_DOOR = 193;
-	public static final int BIRCH_DOOR = 194;
-	public static final int JUNGLE_DOOR = 195;
-	public static final int ACACIA_DOOR = 196;
-	public static final int DARK_OAK_DOOR = 197;
-	public static final int NETHERRACK = 87;
-	public static final int BOW = 261;
-	public static final int ANVIL = 145;
-	public static final int IRON_BLOCK = 42;
-	public static final int COBWEB = 30;
-	
 	
 	public static final short MUNDANE_POTION_DATA = 8192;
 	public static final short MUNDANE_POTION_EXT_DATA = 64;
 	public static final short THICK_POTION_DATA = 32;
-	public static final short DATA_WOOL_RED = 14;
-	public static final int DATA_WOOL_WHITE = 0;
-	public static final int GOLDEN_APPLE = 322;
-	public static final int TNT = 46;
 	
 	public static String getDisplayName(int id) {
-		if (id == GOLD_ORE)
-			return "Gold Ore";
-		if (id == IRON_ORE)
-			return "Iron Ore";
-		if (id == IRON_INGOT)
-			return "Iron";
-		if (id == GOLD_INGOT)
-			return "Gold";
-		
+		if (id == GOLD_ORE) return "Gold Ore";
+		if (id == IRON_ORE) return "Iron Ore";
+		if (id == IRON_INGOT) return "Iron";
+		if (id == GOLD_INGOT) return "Gold";
 		return "Unknown_Id";
 	}
-	
 	
 	public static boolean canGrowFromStem(BlockSnapshot bs) {
 		int[][] offset = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
@@ -379,15 +377,15 @@ public class CivData {
 	
 	public static boolean canGrow(BlockSnapshot bs) {
 		switch (bs.getTypeId()) {
-		case WHEAT:
-		case CARROTS:		
-		case POTATOES:
+		case WHEAT_CROP:
+		case CARROT_CROP:		
+		case POTATO_CROP:
 			if (bs.getData() == 0x7) {
 				return false;
 			}
 			return true;
 		
-		case NETHERWART:
+		case NETHERWART_CROP:
 		case BEETROOT_CROP:
 			if (bs.getData() == 0x3) {
 				return false;

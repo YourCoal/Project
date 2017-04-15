@@ -22,7 +22,7 @@ import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.SQLObject;
 import com.avrgaming.civcraft.object.Town;
-import com.avrgaming.civcraft.randomevents.components.BeakerRate;
+import com.avrgaming.civcraft.randomevents.components.ScienceRate;
 import com.avrgaming.civcraft.randomevents.components.GrowthRate;
 import com.avrgaming.civcraft.randomevents.components.ProductionRate;
 import com.avrgaming.civcraft.randomevents.components.Happiness;
@@ -409,7 +409,7 @@ public class RandomEvent extends SQLObject {
 
 	public static double getProductionRate(Town town) {
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(ProductionRate.getKey(town));
-		double hammerrate = 1.0;
+		double productionrate = 1.0;
 		
 		ArrayList<SessionEntry> removed = new ArrayList<SessionEntry>();
 		for (SessionEntry entry : entries) {
@@ -424,18 +424,18 @@ public class RandomEvent extends SQLObject {
 				removed.add(entry);
 				continue;
 			}
-			hammerrate *= rate;
+			productionrate *= rate;
 		}
 		//Remove any expired entries
 		for (SessionEntry entry : removed) {
 			CivGlobal.getSessionDB().delete(entry.request_id, entry.key);
 		}
-		return hammerrate;	
+		return productionrate;	
 	}
 	
-	public static double getBeakerRate(Town town) {
-		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(BeakerRate.getKey(town));
-		double beakerrate = 1.0;
+	public static double getScienceRate(Town town) {
+		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(ScienceRate.getKey(town));
+		double sciencerate = 1.0;
 		
 		ArrayList<SessionEntry> removed = new ArrayList<SessionEntry>();
 		for (SessionEntry entry : entries) {
@@ -450,13 +450,13 @@ public class RandomEvent extends SQLObject {
 				removed.add(entry);
 				continue;
 			}
-			beakerrate *= rate;
+			sciencerate *= rate;
 		}
 		//Remove any expired entries
 		for (SessionEntry entry : removed) {
 			CivGlobal.getSessionDB().delete(entry.request_id, entry.key);
 		}
-		return beakerrate;	
+		return sciencerate;	
 	}
 	
 	public static double getGrowthRate(Town town) {

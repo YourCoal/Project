@@ -35,7 +35,6 @@ import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.object.Buff;
 import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
@@ -118,7 +117,7 @@ public class Lab extends Structure {
 		return false;
 	}
 	
-	public void generateTownBeakers(CivAsyncTask task) {
+	public void generateTownScience(CivAsyncTask task) {
 		if (!this.isActive()) {
 			return;
 		}
@@ -174,18 +173,18 @@ public class Lab extends Structure {
 		switch (result) {
 		case STARVE:
 			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" lab "+CivColor.Rose+"starved"+
-					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no beakers.");
+					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no science.");
 			return;
 		case LEVELDOWN:
 			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+(getConsumeComponent().getLevel()+1)+" lab "+CivColor.Red+"leveled-down"+
-					CivColor.LightGreen+" and generated no beakers.");
+					CivColor.LightGreen+" and generated no science.");
 			return;
 		case STAGNATE:
 			CivMessage.sendTown(getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" lab "+CivColor.Yellow+"stagnated"+
-					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no beakers.");
+					getConsumeComponent().getCountString()+CivColor.LightGreen+" and generated no science.");
 			return;
 		case UNKNOWN:
-			CivMessage.sendTown(getTown(), CivColor.LightGreen+CivColor.LightGreen+"Something "+CivColor.DarkPurple+" UnKnOwN "+CivColor.LightGreen+" happened to a lab. It generates no beakers.");
+			CivMessage.sendTown(getTown(), CivColor.LightGreen+CivColor.LightGreen+"Something "+CivColor.DarkPurple+" UnKnOwN "+CivColor.LightGreen+" happened to a lab. It generates no science.");
 			return;
 		default:
 			break;
@@ -204,18 +203,18 @@ public class Lab extends Structure {
 			lvl = CivSettings.labLevels.get(getConsumeComponent().getLevel());
 		}
 				
-		int total_beakers = (int)Math.round(lvl.beakers*this.getTown().getLabRate());
+		int total_science = (int)Math.round(lvl.science*this.getTown().getLabRate());
 		//TODO make a new buff that works for labs/labs
 //		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
-//			total_beakers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
+//			total_science *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
-		total_beakers *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_MIXING);
+//		total_science *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_MIXING);
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {
 				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_lab_buff");
-				total_beakers *= tech_bonus;
+				total_science *= tech_bonus;
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
@@ -235,7 +234,7 @@ public class Lab extends Structure {
 		default:
 			break;
 		}
-		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" lab "+stateMessage+" and generated "+total_beakers+" beakers!");
+		CivMessage.sendTown(this.getTown(), CivColor.LightGreen+"A level "+getConsumeComponent().getLevel()+" lab "+stateMessage+" and generated "+total_science+" science!");
 	}
 	
 	public int getLevel() {
@@ -256,7 +255,7 @@ public class Lab extends Structure {
 		return lvl.count;
 	}
 	
-	public double getBonusBeakers() {
+	public double getBonusScience() {
 		if (!this.isComplete()) {
 			return 0.0;
 		}
@@ -268,23 +267,23 @@ public class Lab extends Structure {
 		int level = getLevel(); 
 		ConfigLabLevel lvl = CivSettings.labLevels.get(level);
 		
-		int total_beakers = (int)Math.round(lvl.beakers*this.getTown().getLabRate());
+		int total_science = (int)Math.round(lvl.science*this.getTown().getLabRate());
 		//TODO make a new buff that works for labs/labs
 //		if (this.getTown().getBuffManager().hasBuff("buff_pyramid_cottage_bonus")) {
-//			total_beakers *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
+//			total_science *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
-		total_beakers *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_MIXING);
+//		total_science *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_MIXING);
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {
 				tech_bonus = CivSettings.getDouble(CivSettings.techsConfig, "taxation_lab_buff");
-				total_beakers *= tech_bonus;
+				total_science *= tech_bonus;
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 			}
 		}
-		return total_beakers;
+		return total_science;
 	}
 	
 	public void delevel() {

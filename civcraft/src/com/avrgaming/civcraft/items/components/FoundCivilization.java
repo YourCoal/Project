@@ -19,6 +19,8 @@
 
 package com.avrgaming.civcraft.items.components;
 
+import java.io.IOException;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -32,6 +34,7 @@ import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.structure.Buildable;
+import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CallbackInterface;
 import com.avrgaming.civcraft.util.CivColor;
@@ -49,22 +52,25 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 	}
 	
 	public void foundCiv(Player player) throws CivException {
-		
 		Resident resident = CivGlobal.getResident(player);
 		if (resident == null) {
 			throw new CivException("You must be a registered resident to found a civ. This shouldn't happen. Contact an admin.");
 		}
 			
-		/*
-		 * Build a preview for the Capitol structure.
-		 */
+		/* Build a preview for the Capitol structure. */
 		CivMessage.send(player, CivColor.LightGreen+CivColor.BOLD+"Checking structure position...Please wait.");
 		ConfigBuildableInfo info = CivSettings.structures.get("s_capitol");
-		Buildable.buildVerifyStatic(player, info, player.getLocation(), this);	
+		Buildable.buildPerklessVerifyStatic(player, info, player.getLocation(), this);
+		
+		try {
+			Structure struct = Structure.newStructure(player.getLocation(), info.id, null);
+			struct.buildPerklessPlayerPreview(player, player.getLocation());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void onInteract(PlayerInteractEvent event) {
-		
 		event.setCancelled(true);
 		if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) &&
 				!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
@@ -96,12 +102,10 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 			}
 		}
 		TaskMaster.syncTask(new SyncTask(event.getPlayer().getName()));
-		
 	}
 
 	@Override
 	public void execute(String playerName) {
-		
 		Player player;
 		try {
 			player = CivGlobal.getPlayer(playerName);
@@ -110,7 +114,6 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 		}
 		
 		Resident resident = CivGlobal.getResident(player);
-		
 		/* Save the location so we dont have to re-validate the structure position. */
 		resident.desiredTownLocation = player.getLocation();
 		CivMessage.sendHeading(player, "Founding A New Civ");
@@ -121,9 +124,6 @@ public class FoundCivilization extends ItemComponent implements CallbackInterfac
 		CivMessage.send(player, " ");
 		CivMessage.send(player, CivColor.LightGreen+ChatColor.BOLD+"What shall your new Civilization be called?");
 		CivMessage.send(player, CivColor.LightGray+"(To cancel, type 'cancel')");
-		
 		resident.setInteractiveMode(new InteractiveCivName());
 	}
-
-	
 }

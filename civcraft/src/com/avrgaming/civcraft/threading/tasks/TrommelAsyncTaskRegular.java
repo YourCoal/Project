@@ -10,7 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import com.avrgaming.civcraft.exception.CivTaskAbortException;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivLog;
+import com.avrgaming.civcraft.main.CivMessage;
 import com.avrgaming.civcraft.object.StructureChest;
+import com.avrgaming.civcraft.object.TownChunk;
 import com.avrgaming.civcraft.structure.Structure;
 import com.avrgaming.civcraft.structure.Trommel;
 import com.avrgaming.civcraft.structure.Trommel.Mineral;
@@ -121,7 +123,37 @@ public class TrommelAsyncTaskRegular extends CivAsyncTask {
 					int randMax = Trommel.COBBLE_MAX_RATE;
 					int rand1 = rand.nextInt(randMax);
 					ItemStack newItem;
-					if (rand1 < ((int)((trommel.getGravelChance(Mineral.EMERALD)+mod)*randMax))) {
+					if (rand1 < ((int)((trommel.getGravelChance(Mineral.BLOCK)+mod)*randMax))) {
+						ItemStack thatItem = ItemManager.createItemStack(CivData.COAL_BLOCK, 1);
+						for (TownChunk tc : trommel.getTown().getTownChunks()) {
+							if (tc.district.getID().equals(5)) {
+								int tcChunkX = tc.getChunkCoord().getX();
+								int tcChunkZ = tc.getChunkCoord().getZ();
+								
+								int sChunkX = trommel.getCorner().getLocation().getChunk().getX();
+								int sChunkZ = trommel.getCorner().getLocation().getChunk().getZ();
+								
+								if (tcChunkX == sChunkX && tcChunkZ == sChunkZ) {
+									CivMessage.global("Chunk SELECTED!!! :D");
+									int theOre = rand.nextInt(110);
+									if (theOre <= 50) {
+										thatItem = ItemManager.createItemStack(CivData.IRON_BLOCK, 1);
+									} else if (theOre >= 51 && theOre <= 75) {
+										thatItem = ItemManager.createItemStack(CivData.GOLD_BLOCK, 1);
+									} else if (theOre >= 76 && theOre <= 95) {
+										thatItem = ItemManager.createItemStack(CivData.REDSTONE_BLOCK, 1);
+									} else if (theOre >= 96 && theOre <= 105) {
+										thatItem = ItemManager.createItemStack(CivData.DIAMOND_BLOCK, 1);
+									} else if (theOre >= 106) {
+										thatItem = ItemManager.createItemStack(CivData.EMERALD_BLOCK, 1);
+									} else {
+										CivMessage.global("Trommel FAILED!? Test#ID: "+theOre);
+									}
+								}
+							}
+						}
+						newItem = thatItem;
+					} else if (rand1 < ((int)((trommel.getGravelChance(Mineral.EMERALD)+mod)*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.EMERALD, 1);
 					} else if (rand1 < ((int)((trommel.getGravelChance(Mineral.DIAMOND)+mod)*randMax))) {
 						newItem = ItemManager.createItemStack(CivData.DIAMOND, 1);

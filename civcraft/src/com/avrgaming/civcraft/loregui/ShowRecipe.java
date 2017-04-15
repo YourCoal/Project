@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.avrgaming.civcraft.config.CivSettings;
+import com.avrgaming.civcraft.config.ConfigCivic;
 import com.avrgaming.civcraft.config.ConfigIngredient;
 import com.avrgaming.civcraft.config.ConfigMaterialCategory;
 import com.avrgaming.civcraft.config.ConfigTech;
@@ -95,12 +96,18 @@ public class ShowRecipe implements GuiAction {
 			recInv.setItem(9, stack);
 		}
 		
-		//Row 3, Left 1
-		if (craftMat.isShaped()) {
-			stack = LoreGuiItem.build("Is Shaped", ItemManager.getId(Material.HOPPER), 0, "");
-			recInv.setItem(18, stack);
+		//Row 2, Left 1
+		ConfigCivic civic = CivSettings.civics.get(craftMat.getConfigMaterial().required_civic);
+		if (tech != null) {
+			if (resident.hasTown() && resident.getCiv().hasCivicology(craftMat.getConfigMaterial().required_civic)) {
+				stack = LoreGuiItem.build("You Have Required Civic", ItemManager.getId(Material.STAINED_CLAY), 5, civic.name);
+				recInv.setItem(18, stack);
+			} else if (!resident.hasTown() || !resident.getCiv().hasCivicology(craftMat.getConfigMaterial().required_civic)) {
+				stack = LoreGuiItem.build("You Don't Have Required Civic", ItemManager.getId(Material.STAINED_CLAY), 14, civic.name);
+				recInv.setItem(18, stack);
+			}
 		} else {
-			stack = LoreGuiItem.build("Is Unshaped", ItemManager.getId(Material.COAL), 0, "");
+			stack = LoreGuiItem.build("Doesn't Require Civic", ItemManager.getId(Material.STAINED_CLAY), 3, "");
 			recInv.setItem(18, stack);
 		}
 		
@@ -121,6 +128,15 @@ public class ShowRecipe implements GuiAction {
 		} else {
 			stack = LoreGuiItem.build("Vanilla Item", ItemManager.getId(Material.POTION), 0, "");
 			recInv.setItem(17, stack);
+		}
+		
+		//Row 3, Left 1
+		if (craftMat.isShaped()) {
+			stack = LoreGuiItem.build("Is Shaped", ItemManager.getId(Material.HOPPER), 0, "");
+			recInv.setItem(26, stack);
+		} else {
+			stack = LoreGuiItem.build("Is Unshaped", ItemManager.getId(Material.COAL), 0, "");
+			recInv.setItem(26, stack);
 		}
 		
 /*		//Row 1, Right 1

@@ -1,54 +1,54 @@
-  - Default: (Gives No Benefits)
+0.  - Default: (Gives No Benefits)
       - Town Hall
       - Capitol
       - Any Unlisted Structure
 
-  - Campus:
-      - Library (+15 Beakers for every River biome)
+1.  - Campus:
+      - Library
       - School
       - University
 
-  - Encampment:
+2.  - Encampment:
       - Barracks
-      - Blacksmith (+1 Ore output gain for every Extreme Hills biome)
+      - Blacksmith
       - Stable
       - Scout Tower (+16 block distance for every town level)
       - Arrow Tower (+0.5 damage on arrows)
       - Cannon Tower (+1.0 damage on cannon balls)
       - Walls
 
-  - Harbor:
+3.  - Harbor:
       - Shipyard
-      - Fishing Boat
+      - Fishing Outpost
       - Lighthouse
 
-  - Commercial Hub:
+4.  - Commercial:
       - Bank
       - Market
       - Trade Outpost
       - Stock Exchange
 
-  - Industrial:
-      - Trommel (0.05% chance to spawn a block of an item)
-      - Quarry (50% chance to mine twice as much ore)
+5.  - Industrial:
+     * - Trommel (0.3% chance to spawn a block of an item)
+      - Quarry (10% chance to mine twice as much ore)
       - Factory
       - Grocer
       - Store
 
-  - Agricultural:
-      - Farm (+25 Growth Per Farm)
-      - Granary (+3 food per Granary)
-      - Windmill (+2 Seeds Planted per Windmill or Granary)
+6.  - Agricultural:
+     * - Farm (+25 Growth Per Farm)
+      - Granary
+     * - Windmill (+2 Seeds Planted per Windmill or Granary)
       - Lumber Mill
       - Pasture
 
-  - Holy Site:
+7.  - HolySite:
       - Temple (+0.5 Faith an hour)
 
-  - Production:
-      - Mine (+15 Hammers for every Plains biome)
-      - Lab (+15 Beakers for every River biome)
+8.  - Workplace:
+      - Mine
+      - Lab
       - Monument
 
-  - NeighborHood:
+9.  - Neighborhood:
       - Cottage

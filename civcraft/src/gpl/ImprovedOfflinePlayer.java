@@ -35,8 +35,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
@@ -47,17 +47,17 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.NBTStaticHelper;
 import com.google.common.io.Files;
 
-import net.minecraft.server.v1_10_R1.AttributeMapBase;
-import net.minecraft.server.v1_10_R1.AttributeMapServer;
-import net.minecraft.server.v1_10_R1.GenericAttributes;
-import net.minecraft.server.v1_10_R1.InventoryEnderChest;
-import net.minecraft.server.v1_10_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_10_R1.NBTTagCompound;
-import net.minecraft.server.v1_10_R1.NBTTagDouble;
-import net.minecraft.server.v1_10_R1.NBTTagFloat;
-import net.minecraft.server.v1_10_R1.NBTTagList;
-import net.minecraft.server.v1_10_R1.PlayerAbilities;
-import net.minecraft.server.v1_10_R1.PlayerInventory;
+import net.minecraft.server.v1_11_R1.AttributeMapBase;
+import net.minecraft.server.v1_11_R1.AttributeMapServer;
+import net.minecraft.server.v1_11_R1.GenericAttributes;
+import net.minecraft.server.v1_11_R1.InventoryEnderChest;
+import net.minecraft.server.v1_11_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_11_R1.NBTTagCompound;
+import net.minecraft.server.v1_11_R1.NBTTagDouble;
+import net.minecraft.server.v1_11_R1.NBTTagFloat;
+import net.minecraft.server.v1_11_R1.NBTTagList;
+import net.minecraft.server.v1_11_R1.PlayerAbilities;
+import net.minecraft.server.v1_11_R1.PlayerInventory;
 
 /**
  * @name ImprovedOfflinePlayer
@@ -186,12 +186,12 @@ public void copyDataTo(String playername) {
     if(this.autosave) savePlayerData();
   }
   public Inventory getEnderChest() {
-    InventoryEnderChest endchest = new InventoryEnderChest();
+    InventoryEnderChest endchest = new InventoryEnderChest(null);
     endchest.a(this.compound.getList("EnderItems", NBTStaticHelper.TAG_COMPOUND));
     return new CraftInventory(endchest);
   }
   public void setEnderChest(Inventory inventory) {
-    this.compound.set("EnderItems", ((InventoryEnderChest)((CraftInventory)inventory).getInventory()).h());
+    this.compound.setInt("EnderItems", ((InventoryEnderChest)((CraftInventory)inventory).getInventory()).h());
     if(this.autosave) savePlayerData();
   }
   public float getExhaustion() {

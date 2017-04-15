@@ -53,7 +53,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 0,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -61,7 +61,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 1,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -69,7 +69,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 7,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -77,7 +77,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 4,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -85,7 +85,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 8,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -93,7 +93,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 5,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -101,7 +101,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 13,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -109,7 +109,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 3,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -117,7 +117,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 9,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -125,7 +125,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 11,
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -135,7 +135,7 @@ public class _2BuildTechnologyList implements GuiAction {
 								CivColor.LightBlueBold+"<VICTORY TECHNOLOGY!!!>",
 								CivColor.Gold+"<Click To Research>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -144,7 +144,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 0,
 								CivColor.Gold+"<Click To Research>  "+CivColor.LightPurple+"<Wonder Tech>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);
@@ -153,7 +153,7 @@ public class _2BuildTechnologyList implements GuiAction {
 						is = LoreGuiItem.build(info.name, type, 0,
 								CivColor.RoseItalic+"<Click To Research>  "+CivColor.LightPurple+"<Tech W/out Item>",
 								CivColor.LightGray+"Cost: "+CivColor.Yellow+info.getAdjustedTechCost(res.getCiv())+" Coins",
-								CivColor.LightGray+"Beakers: "+CivColor.Yellow+info.getAdjustedBeakerCost(res.getCiv())+" Beakers");
+								CivColor.LightGray+"Science: "+CivColor.Yellow+info.getAdjustedScienceCost(res.getCiv())+" Science");
 						is = LoreGuiItem.setAction(is, "_2ResearchChooseTech");
 						is = LoreGuiItem.setActionData(is, "info", info.id);
 						guiInventory.addItem(is);

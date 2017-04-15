@@ -71,12 +71,10 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.components.MobComponent;
 import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.threading.TaskMaster;
 import com.avrgaming.civcraft.util.CivColor;
 import com.avrgaming.civcraft.util.ItemManager;
-import com.moblib.moblib.MobLib;
 
 import gpl.AttributeUtil;
 
@@ -104,11 +102,6 @@ public class CustomItemManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreakSpawnItems(BlockBreakEvent event) {
 		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
-			if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-				CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-				return;
-			}
-			
 			if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
 				return;
 			}
@@ -170,10 +163,6 @@ public class CustomItemManager implements Listener {
 /*	@EventHandler(priority = EventPriority.NORMAL)
 	public void onLeavesDecayEvent(LeavesDecayEvent event) {
 		if (event.getBlock().getType().equals(Material.LAPIS_ORE)) {
-			if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-				CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-				return;
-			}
 			if (event.getPlayer().getInventory().getItemInMainHand().containsEnchantment(Enchantment.SILK_TOUCH)) {
 				return;
 			}
@@ -210,13 +199,7 @@ public class CustomItemManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST) 
 	public void onBlockPlace(BlockPlaceEvent event) {
-		ItemStack stack = null;
-		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-			return;
-		} else {
-			stack = event.getPlayer().getInventory().getItemInMainHand();
-		}
+		ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
 		if (stack == null || stack.getType().equals(Material.AIR)) {
 			return;
 		}
@@ -225,20 +208,12 @@ public class CustomItemManager implements Listener {
 		if (craftMat == null) {
 			return;
 		}
-		
 		craftMat.onBlockPlaced(event);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerInteract(PlayerInteractEvent event) throws CivException {
-		ItemStack stack = null;
-		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-			return;
-		} else {
-			stack = event.getPlayer().getInventory().getItemInMainHand();
-		}
-		
+		ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
 		if (stack == null) {
 			return;
 		}
@@ -255,14 +230,7 @@ public class CustomItemManager implements Listener {
 			return;
 		}
 		
-		ItemStack stack = null;
-		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-			return;
-		} else {
-			stack = event.getPlayer().getInventory().getItemInMainHand();
-		}
-		
+		ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
 		if (stack == null) {
 			return;
 		}
@@ -280,14 +248,7 @@ public class CustomItemManager implements Listener {
 			return;
 		}
 		
-		ItemStack stack = null;
-		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-			return;
-		} else {
-			stack = event.getPlayer().getInventory().getItemInMainHand();
-		}
-		
+		ItemStack stack = event.getPlayer().getInventory().getItemInMainHand();
 		if (stack == null) {
 			return;
 		}
@@ -388,17 +349,18 @@ public class CustomItemManager implements Listener {
 		if (event.getDamager() instanceof Arrow) {
 			LivingEntity shooter = (LivingEntity) ((Arrow)event.getDamager()).getShooter();
 			if (shooter instanceof Player) {
-				ItemStack inHand = null;
-				if (((Player)shooter).getInventory().getItemInOffHand().getType() != Material.AIR) {
-					CivMessage.sendError(((Player)shooter), "You cannot have items in your offhand!");
-					return;
-				} else {
-					inHand = ((Player)shooter).getInventory().getItemInMainHand();
-				}
-				
-				if (LoreMaterial.isCustom(inHand)) {
+				ItemStack inHand = ((Player)shooter).getInventory().getItemInMainHand();
+				ItemStack offHand = ((Player)shooter).getInventory().getItemInOffHand();
+				if (LoreMaterial.isCustom(inHand) || LoreMaterial.isCustom(offHand)) {
 					LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(inHand);
-					craftMat.onRangedAttack(event, inHand);
+					LoreCraftableMaterial craftMatOff = LoreCraftableMaterial.getCraftMaterial(offHand);
+					if (inHand.getType() == Material.BOW) {
+						craftMat.onRangedAttack(event, inHand);
+					} else if (offHand.getType() == Material.BOW) {
+						craftMatOff.onRangedAttack(event, offHand);
+					} else {
+						CivLog.error("Problem with Main-Hand/Off-Hand in BlockListener.onPlayerDefenseAndAttack(event) #1");
+					}
 				}
 			} else {
 				ArrowFiredCache afc = CivCache.arrowsFired.get(event.getDamager().getUniqueId());
@@ -423,17 +385,14 @@ public class CustomItemManager implements Listener {
 				}
 			}
 		} else if (event.getDamager() instanceof Player) {
-			ItemStack inHand = null;
-			if (((Player)event.getDamager()).getInventory().getItemInOffHand().getType() != Material.AIR) {
-				CivMessage.sendError(((Player)event.getDamager()), "You cannot have items in your offhand!");
-				return;
-			} else {
-				inHand = ((Player)event.getDamager()).getInventory().getItemInMainHand();
-			}
-			
+			ItemStack inHand = ((Player)event.getDamager()).getInventory().getItemInMainHand();
+			ItemStack offHand = ((Player)event.getDamager()).getInventory().getItemInOffHand();
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(inHand);
+			LoreCraftableMaterial craftMatOff = LoreCraftableMaterial.getCraftMaterial(offHand);
 			if (craftMat != null) {
 				craftMat.onAttack(event, inHand);
+			} else if (craftMatOff != null) {
+				craftMatOff.onAttack(event, offHand);
 			} else {
 				// Non-civcraft items only do 0.5 damage.
 				// Canceled this b/c we want to be more fair..?
@@ -442,11 +401,6 @@ public class CustomItemManager implements Listener {
 		}
 		
 		if (defendingPlayer == null) {
-			if (event.getEntity() instanceof LivingEntity) {
-				if (MobLib.isMobLibEntity((LivingEntity) event.getEntity())) {
-					MobComponent.onDefense(event.getEntity(), event);
-				}	
-			}
 			return;
 		} else {
 			/* Search equipt items for defense event. */
@@ -684,7 +638,7 @@ public class CustomItemManager implements Listener {
 		
 		
 		if (ItemManager.getId(event.getItem().getItemStack()) == ItemManager.getId(Material.RAW_FISH)
-				&& ItemManager.getData(event.getItem().getItemStack()) == ItemManager.getData(ItemManager.getMaterialData(CivData.FISH_RAW, CivData.CLOWNFISH))) {
+				&& ItemManager.getData(event.getItem().getItemStack()) == ItemManager.getData(ItemManager.getMaterialData(CivData.FISH_RAW, CivData.DATA_2))) {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getItem().getItemStack());
 			if (craftMat == null) {
 				/* Found a vanilla fish. */
@@ -700,7 +654,7 @@ public class CustomItemManager implements Listener {
 		
 		if (ItemManager.getId(event.getItem().getItemStack()) == ItemManager.getId(Material.RAW_FISH)
 				&& ItemManager.getData(event.getItem().getItemStack()) == 
-					ItemManager.getData(ItemManager.getMaterialData(CivData.FISH_RAW, CivData.PUFFERFISH))) {
+					ItemManager.getData(ItemManager.getMaterialData(CivData.FISH_RAW, CivData.DATA_3))) {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getItem().getItemStack());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
@@ -745,7 +699,7 @@ public class CustomItemManager implements Listener {
 		}
 		
 		if (ItemManager.getId(event.getCurrentItem()) == ItemManager.getId(Material.RAW_FISH)
-				&& ItemManager.getData(event.getCurrentItem()) == ItemManager.getData(ItemManager.getMaterialData(CivData.FISH_RAW, CivData.CLOWNFISH))) {
+				&& ItemManager.getData(event.getCurrentItem()) == ItemManager.getData(ItemManager.getMaterialData(CivData.FISH_RAW, CivData.DATA_2))) {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getCurrentItem());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
@@ -757,7 +711,7 @@ public class CustomItemManager implements Listener {
 		}
 		
 		if (ItemManager.getId(event.getCurrentItem()) == ItemManager.getId(Material.RAW_FISH)
-				&& ItemManager.getData(event.getCurrentItem()) == ItemManager.getData(ItemManager.getMaterialData(CivData.FISH_RAW, CivData.PUFFERFISH))) {
+				&& ItemManager.getData(event.getCurrentItem()) == ItemManager.getData(ItemManager.getMaterialData(CivData.FISH_RAW, CivData.DATA_3))) {
 			LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getCurrentItem());
 			if (craftMat == null) {
 				/* Found a vanilla slime ball. */
@@ -873,14 +827,7 @@ public class CustomItemManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerInteractEntityEvent (PlayerInteractEntityEvent event) {
-		LoreCraftableMaterial craftMat = null;
-		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-			return;
-		} else {
-			craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getInventory().getItemInMainHand());
-		}
-		
+		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getInventory().getItemInMainHand());
 		if (craftMat == null) {
 			return;
 		}
@@ -889,14 +836,7 @@ public class CustomItemManager implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerLeashEvent(PlayerLeashEntityEvent event) {
-		LoreCraftableMaterial craftMat = null;
-		if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(event.getPlayer(), "You cannot have items in your offhand!");
-			return;
-		} else {
-			craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getInventory().getItemInMainHand());
-		}
-		
+		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(event.getPlayer().getInventory().getItemInMainHand());
 		if (craftMat == null) {
 			return;
 		}

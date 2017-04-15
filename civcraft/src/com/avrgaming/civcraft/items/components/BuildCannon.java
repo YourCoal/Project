@@ -1,7 +1,6 @@
 package com.avrgaming.civcraft.items.components;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.avrgaming.civcraft.config.ConfigUnit;
@@ -21,10 +20,6 @@ public class BuildCannon extends ItemComponent {
 	public void onInteract(PlayerInteractEvent event) {
 		try {
 			Resident res = CivGlobal.getResident(event.getPlayer());
-			if (event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR) {
-				throw new CivException("You cannot have items in your offhand!");
-			}
-			
 			if (!War.isWarTime()) {
 				throw new CivException("Cannons can only be deployed during WarTime.");
 			}

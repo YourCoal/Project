@@ -1443,12 +1443,12 @@ public class Resident extends SQLObject {
 			 */
 			
 			/* Top part which is for the other resident. */
-			ItemStack signStack = LoreGuiItem.build("", CivData.WOOL, CivData.DATA_WOOL_WHITE, "");
+			ItemStack signStack = LoreGuiItem.build("", CivData.WOOL, CivData.DATA_0, "");
 			int start = 0;
 			for (int i = start; i < (9 + start); i++) {
 				if ((i-start) == 8) {
 					ItemStack guiStack = LoreGuiItem.build(resident.getName()+" Confirm", 
-							CivData.WOOL, CivData.DATA_WOOL_RED, 
+							CivData.WOOL, CivData.DATA_14, 
 							CivColor.LightGreen+"Waiting for "+CivColor.LightBlue+resident.getName(),
 							CivColor.LightGray+"to confirm this trade.");
 					inv.setItem(i, guiStack);
@@ -1466,7 +1466,7 @@ public class Resident extends SQLObject {
 			for (int i = start; i < (9 + start); i++) {
 				if ((i-start) == 8) {					
 					ItemStack guiStack = LoreGuiItem.build("Your Confirm", 
-							CivData.WOOL, CivData.DATA_WOOL_RED, 
+							CivData.WOOL, CivData.DATA_14, 
 							CivColor.Gold+"<Click to Confirm Trade>");
 					inv.setItem(i, guiStack);
 					
@@ -1515,7 +1515,6 @@ public class Resident extends SQLObject {
 			CivMessage.sendError(resident, "Couldn't trade: "+e.getMessage());
 			return null;
 		}
-				
 	}
 	
 	public boolean hasTechForItem(ItemStack stack) {
@@ -1544,7 +1543,35 @@ public class Resident extends SQLObject {
 				return false;
 			}
 		}
+		return true;	
+	}
+	
+	public boolean hasCivicForItem(ItemStack stack) {
+		if (this.isInsideArena()) {
+			return true;
+		}
 		
+		LoreCraftableMaterial craftMat = LoreCraftableMaterial.getCraftMaterial(stack);
+		if (craftMat == null) {
+			return true;
+		}
+		
+		if (craftMat.getConfigMaterial().required_civic == null) {
+			return true;
+		}
+		
+		if (!this.hasTown()) {
+			return false;
+		}
+		
+		/* Parse technoloies */
+		String[] split = craftMat.getConfigMaterial().required_civic.split(",");
+		for (String civic : split) {
+			civic = civic.replace(" ", "");
+			if (!this.getCiv().hasCivicology(civic)) {
+				return false;
+			}
+		}
 		return true;	
 	}
 

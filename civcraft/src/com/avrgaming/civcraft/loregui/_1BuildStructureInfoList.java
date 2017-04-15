@@ -91,7 +91,7 @@ public class _1BuildStructureInfoList implements GuiAction {
 						CivColor.LightPurpleBold+"Location: "+CivColor.LightBlue+"X "+s.getCenterLocation().getX()+", Y "+s.getCenterLocation().getY()+", Z "+s.getCenterLocation().getZ(),
 						CivColor.GreenBold+"Level: "+CivColor.Yellow+lab.getLevel(),
 						CivColor.GreenBold+"Count: "+CivColor.Yellow+lab.getCount(),
-						CivColor.GreenBold+"Beakers/Hour: "+CivColor.Yellow+lab.getBonusBeakers());
+						CivColor.GreenBold+"Beakers/Hour: "+CivColor.Yellow+lab.getBonusScience());
 				guiInventory.addItem(is);
 			} else {
 				is = LoreGuiItem.build(s.getDisplayName(), type, 0, 

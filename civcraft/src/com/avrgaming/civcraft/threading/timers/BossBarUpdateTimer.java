@@ -45,6 +45,10 @@ public class BossBarUpdateTimer implements Runnable {
 				Thread.sleep(4900);
 				BarAPI.removeBar(p);
 				
+				if (CivCraft.isDisable) {
+					return;
+				}
+				
 				String sp;
 				if (!res.hasTown()) {
 					sp = CivColor.Rose+"No Town";
@@ -60,6 +64,10 @@ public class BossBarUpdateTimer implements Runnable {
 				BarAPI.setMessage(p, CivColor.GoldBold+"Structure: "+sp, 5);
 				Thread.sleep(4900);
 				BarAPI.removeBar(p);
+				
+				if (CivCraft.isDisable) {
+					return;
+				}
 				
 				String wp;
 				if (!res.hasTown()) {

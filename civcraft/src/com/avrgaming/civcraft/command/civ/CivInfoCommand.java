@@ -47,7 +47,7 @@ public class CivInfoCommand extends CommandBase {
 		
 		commands.put("upkeep", "Shows upkeep information for this civ.");
 		commands.put("taxes", "Shows tax information on towns.");
-		commands.put("beakers", "Shows Civilization beaker information.");
+		commands.put("science", "Shows Civilization science information.");
 		commands.put("online", "Lists all members of the civilization that are currently online.");
 	}
 	
@@ -62,10 +62,10 @@ public class CivInfoCommand extends CommandBase {
 		CivMessage.send(sender, out);
 	}
 	
-	public void beakers_cmd() throws CivException {
+	public void science_cmd() throws CivException {
 		Civilization civ = getSenderCiv();
 		
-		CivMessage.sendHeading(sender, "Civ Beaker Info");
+		CivMessage.sendHeading(sender, "Civ Science Info");
 		ArrayList<String> out = new ArrayList<String>();
 		
 		for (Town t : civ.getTowns()) {
@@ -77,7 +77,7 @@ public class CivInfoCommand extends CommandBase {
 	/*	for (Town t : civ.getTowns()) {
 			for (BonusGoodie goodie : t.getEffectiveBonusGoodies()) {
 				try {
-					double bonus = Double.valueOf(goodie.getBonusValue("beaker_bonus"));
+					double bonus = Double.valueOf(goodie.getBonusValue("science_bonus"));
 					out.add(CivColor.Green+"From Goodie "+goodie.getDisplayName()+": "+CivColor.LightGreen+(bonus*100)+"%");
 					
 				} catch (NumberFormatException e) {
@@ -85,7 +85,7 @@ public class CivInfoCommand extends CommandBase {
 				}
 				
 				try {
-					double bonus = Double.valueOf(goodie.getBonusValue("extra_beakers"));
+					double bonus = Double.valueOf(goodie.getBonusValue("extra_science"));
 					out.add(CivColor.Green+"From Goodie "+goodie.getDisplayName()+": "+CivColor.LightGreen+bonus);
 					
 				} catch (NumberFormatException e) {
@@ -95,7 +95,7 @@ public class CivInfoCommand extends CommandBase {
 		}*/
 		
 		out.add(CivColor.LightBlue+"------------------------------------");
-		out.add(CivColor.Green+"Total: "+CivColor.LightGreen+df.format(civ.getBeakers()));	
+		out.add(CivColor.Green+"Total: "+CivColor.LightGreen+df.format(civ.getScience()));	
 		CivMessage.send(sender, out);
 	}
 	
@@ -212,7 +212,7 @@ public class CivInfoCommand extends CommandBase {
 //			CivMessage.send(sender, CivColor.Green+CivColor.MAGIC+"----- -----"+CivColor.Green+": "+CivColor.LightGreen+"0 (0/10)");
 			
 			DecimalFormat df = new DecimalFormat("#.0");
-			CivMessage.send(sender ,CivColor.Green+"Beakers: "+CivColor.LightGreen+df.format(civ.getBeakers())
+			CivMessage.send(sender ,CivColor.Green+"Science: "+CivColor.LightGreen+df.format(civ.getScience())
 									+CivColor.Green+" | Culture: "+CivColor.LightGreen+df.format(civ.getCulture()));
 	    }
 		
@@ -249,11 +249,11 @@ public class CivInfoCommand extends CommandBase {
 					CivColor.LightPurple+CivColor.BOLD+votes+CivColor.White+" diplomatic votes");
 		}
 		
-		Double beakers = EndConditionScience.getBeakersFor(civ);
-		if (beakers > 0) {
+		Double science = EndConditionScience.getScienceFor(civ);
+		if (science > 0) {
 			DecimalFormat df = new DecimalFormat("#.#");
 			CivMessage.send(sender, CivColor.LightBlue+CivColor.BOLD+civ.getName()+CivColor.White+" has "+
-					CivColor.LightPurple+CivColor.BOLD+df.format(beakers)+CivColor.White+" beakers on The Enlightenment.");			
+					CivColor.LightPurple+CivColor.BOLD+df.format(science)+CivColor.White+" science on The Enlightenment.");			
 		}
 		
 		String out = CivColor.Green+"Towns: ";

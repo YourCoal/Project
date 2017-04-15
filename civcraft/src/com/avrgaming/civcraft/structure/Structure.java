@@ -188,9 +188,9 @@ public class Structure extends Buildable {
 			break;
 		case "ti_fishing_boat":
 			if (rs == null) {
-				struct = (Structure) new FishingBoat(center, id, town);
+				struct = (Structure) new TradeBoat(center, id, town);
 			} else {
-				struct = (Structure) new FishingBoat(rs);
+				struct = (Structure) new TradeBoat(rs);
 			}
 			break;
 		case "s_townhall":

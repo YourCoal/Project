@@ -31,7 +31,7 @@ import com.avrgaming.civcraft.util.BlockCoord;
 import com.avrgaming.civcraft.util.CivColor;
 
 import gpl.AttributeUtil;
-import net.minecraft.server.v1_10_R1.Material;
+import net.minecraft.server.v1_11_R1.Material;
 
 public class StructureBlockHitEvent implements Runnable {
 
@@ -63,14 +63,7 @@ public class StructureBlockHitEvent implements Runnable {
 		if (dmgBlock.allowDamageNow(player)) {
 			/* Do our damage. */
 			int damage = 1;
-			LoreMaterial material = null;
-			if (player.getInventory().getItemInOffHand().getType() != org.bukkit.Material.AIR) {
-				CivMessage.sendError(player, "You cannot have items in your offhand!");
-				return;
-			} else {
-				material = LoreMaterial.getMaterial(player.getInventory().getItemInMainHand());
-			}
-			
+			LoreMaterial material = LoreMaterial.getMaterial(player.getInventory().getItemInMainHand());
 			if (material != null) {
 				damage = material.onStructureBlockBreak(dmgBlock, damage);
 			}

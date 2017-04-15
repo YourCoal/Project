@@ -31,9 +31,11 @@ war:
     # Amount the war upkeep is multiplied per score point above the other civ
     upkeep_per_war_multiplier: 0.001
     # Default Respawn Time (all control blocks active) in seconds
-    respawn_time: 30
+    respawn_time: 20
     # Respawn time per control block, destroying control blocks add this much time to respawn in seconds.
-    control_block_respawn_time: 10
+    control_block_respawn_time: 5
+    # number of seconds increase the respawn time if captials/townhalls are invalid.
+    invalid_respawn_penalty: 20
 
     # Control block hitpoints.
 #    75pb, 600 total
@@ -47,8 +49,6 @@ war:
     captured_penalty: 0.75
     # percentage of hitpoints to take away each hour when structures are invalid.
     invalid_hourly_penalty: 0.1
-    # number of seconds increase the respawn time if captials/townhalls are invalid (in mins)
-    invalid_respawn_penalty: 5
 
 revolution:
     # Base cost for a revolution

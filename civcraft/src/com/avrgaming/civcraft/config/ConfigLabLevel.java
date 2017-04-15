@@ -32,7 +32,7 @@ public class ConfigLabLevel {
 	public int level;
 	public Map<Integer, Integer> consumes;
 	public int count;
-	public double beakers;
+	public double science;
 	
 	public ConfigLabLevel() {
 	}
@@ -40,7 +40,7 @@ public class ConfigLabLevel {
 	public ConfigLabLevel(ConfigLabLevel currentlvl) {
 		this.level = currentlvl.level;
 		this.count = currentlvl.count;
-		this.beakers = currentlvl.beakers;
+		this.science = currentlvl.science;
 		this.consumes = new HashMap<Integer, Integer>();
 		for (Entry<Integer, Integer> entry : currentlvl.consumes.entrySet()) {
 			this.consumes.put(entry.getKey(), entry.getValue());
@@ -67,7 +67,7 @@ public class ConfigLabLevel {
 			lablevel.level = (Integer)cl.get("level");
 			lablevel.consumes = consumes_list;
 			lablevel.count = (Integer)cl.get("count");
-			lablevel.beakers = (Double)cl.get("beakers");
+			lablevel.science = (Double)cl.get("science");
 			lab_levels.put(lablevel.level, lablevel);
 		}
 		CivLog.info("Loaded "+lab_levels.size()+" lab Levels.");		

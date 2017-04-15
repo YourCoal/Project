@@ -55,10 +55,8 @@ public class BuildPreviewAsyncTask extends CivAsyncTask {
 		centerBlock = center;
 		this.playerUUID = playerUUID;
 		resident = CivGlobal.getResidentViaUUID(playerUUID);
-		//this.blocksPerTick = getBlocksPerTick();
-		//this.speed = getBuildSpeed();
-		this.blocksPerTick = 75;
-		this.speed = 500;
+		this.blocksPerTick = 256;
+		this.speed = 750;
 	}
 	
 	public Player getPlayer() throws CivException {
@@ -107,8 +105,7 @@ public class BuildPreviewAsyncTask extends CivAsyncTask {
 					}
 				}
 			}
-		} catch (CivException | InterruptedException e) {
-			//abort task.
+		} catch (CivException | InterruptedException e) { //abort task.
 		}
 	}
 }

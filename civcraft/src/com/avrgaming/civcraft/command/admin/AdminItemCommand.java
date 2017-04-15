@@ -2,7 +2,6 @@ package com.avrgaming.civcraft.command.admin;
 
 import java.util.HashMap;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -63,14 +62,7 @@ public class AdminItemCommand extends CommandBase {
 	public void enhance_cmd() throws CivException {
 		Player p = getPlayer();
 		HashMap<String, LoreEnhancement> enhancements = new HashMap<String, LoreEnhancement>();
-		
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		
 		enhancements.put("durability", new LoreEnhancementDurability());
 		enhancements.put("soulbound", new LoreEnhancementSoulBound());

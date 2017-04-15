@@ -107,27 +107,27 @@ public class AdminGUICommand extends CommandBase implements Listener {
 			if (res.getCiv() == null) {
 				CivMessage.sendError(p, "You are not in a civilization!");
 			}
-			res.getCiv().getTreasury().deposit(10000000);
+			res.getCiv().getTreasury().deposit(1000000);
 			res.getCiv().save();
-			CivMessage.sendSuccess(p, "Added 10 million coins to civ treasury.");
+			CivMessage.sendSuccess(p, "Added 1 million coins to civ treasury.");
 			break;
 		case DIAMOND:
 			p.closeInventory();
 			if (res.getTown() == null) {
 				CivMessage.sendError(p, "You are not in a town!");
 			}
-			res.getTown().getTreasury().deposit(10000000);
+			res.getTown().getTreasury().deposit(1000000);
 			res.getTown().save();
-			CivMessage.sendSuccess(p, "Added 10 million coins to town treasury.");
+			CivMessage.sendSuccess(p, "Added 1 million coins to town treasury.");
 			break;
 		case GOLD_INGOT:
 			p.closeInventory();
 			if (res == null) {
 				CivMessage.sendError(p, "You are not a resident!?");
 			}
-			res.getTreasury().deposit(10000000);
+			res.getTreasury().deposit(1000000);
 			res.save();
-			CivMessage.sendSuccess(p, "Added 10 million coins to your treasury.");
+			CivMessage.sendSuccess(p, "Added 1 million coins to your treasury.");
 			break;
 		case BEACON:
 			p.closeInventory();
@@ -145,27 +145,27 @@ public class AdminGUICommand extends CommandBase implements Listener {
 			if (res.getCiv() == null) {
 				CivMessage.sendError(p, "You are not in a civilization!");
 			}
-			res.getCiv().setBaseBeakers(10000000);
+			res.getCiv().setBaseScience(1000000);
 			res.getCiv().save();
-			CivMessage.sendSuccess(p, "Set beakerrate to 10 million in your civilization.");
+			CivMessage.sendSuccess(p, "Set beakerrate to 1 million in your civilization.");
 			break;
 		case PURPUR_BLOCK:
 			p.closeInventory();
 			if (res.getTown() == null) {
 				CivMessage.sendError(p, "You are not in a town!");
 			}
-			res.getTown().addAccumulatedCulture(50000);
+			res.getTown().addAccumulatedCulture(10000);
 			res.getTown().save();
-			CivMessage.sendSuccess(p, "Added 50,000 culture to your town.");
+			CivMessage.sendSuccess(p, "Added 10,000 culture to your town.");
 			break;
 		case COBBLE_WALL:
 			p.closeInventory();
 			if (res.getTown() == null) {
 				CivMessage.sendError(p, "You are not in a town!");
 			}
-			res.getTown().setProductionRate(10000000);
+			res.getTown().setProductionRate(1000000);
 			res.getTown().save();
-			CivMessage.sendSuccess(p, "Set hammerrate to 10 million in your town.");
+			CivMessage.sendSuccess(p, "Set hammerrate to 1 million in your town.");
 			break;
 		case AIR:
 			break;

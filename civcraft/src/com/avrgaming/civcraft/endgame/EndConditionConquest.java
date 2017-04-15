@@ -11,11 +11,11 @@ import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 
 public class EndConditionConquest extends EndGameCondition {
-
+	
 	int daysAfterStart;
 	double percentCaptured;
 	double percentCapturedWithWonder;
-
+	
 	Date startDate = null;
 	
 	@Override
@@ -28,7 +28,6 @@ public class EndConditionConquest extends EndGameCondition {
 	
 	private void getStartDate() {
 		String key = "endcondition:conquest:startdate";
-		
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(key);
 		if (entries.size() == 0) {
 			/* Start date is now! */
@@ -44,11 +43,8 @@ public class EndConditionConquest extends EndGameCondition {
 	private boolean isAfterStartupTime() {
 		Calendar startCal = Calendar.getInstance();
 		startCal.setTime(startDate);
-		
 		Calendar now = Calendar.getInstance();
-		
 		startCal.add(Calendar.DATE, daysAfterStart);
-		
 		if (now.after(startCal)) {
 			return true;
 		}
@@ -64,6 +60,10 @@ public class EndConditionConquest extends EndGameCondition {
 	public boolean check(Civilization civ) {
 		if (!isAfterStartupTime()) {
 			return false;
+		}
+		
+		if (civ.getVictoryPts() < getVictoryPtsRequired()) {
+ 			return false;
 		}
 		
 		boolean hasChichenItza = false;
@@ -95,17 +95,15 @@ public class EndConditionConquest extends EndGameCondition {
 				return false;
 			}
 		}
-				
+		
 		if (civ.isConquered()) {
 			return false;
 		}
-		
 		return true;
 	}
-
+	
 	@Override
 	protected void onWarDefeat(Civilization civ) {
 		this.onFailure(civ);
 	}
-
 }

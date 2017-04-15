@@ -59,12 +59,12 @@ public class WindmillPostProcessSyncTask implements Runnable {
 			case 0:
 				if (breadCount > 0) { //Seed
 					try {
-						source_inv.removeItem(CivData.BREAD_SEED, 1);
+						source_inv.removeItem(CivData.WHEAT_SEED, 1);
 					} catch (CivException e) {
 						e.printStackTrace();
 					}
 					breadCount--;
-					ItemManager.setTypeId(coord.getBlock(), CivData.WHEAT);
+					ItemManager.setTypeId(coord.getBlock(), CivData.WHEAT_CROP);
 					ItemManager.setData(coord.getBlock(), 0, true);
 					continue;
 				}
@@ -76,7 +76,7 @@ public class WindmillPostProcessSyncTask implements Runnable {
 						e.printStackTrace();
 					}
 					carrotCount--;
-					ItemManager.setTypeId(coord.getBlock(), CivData.CARROTS);
+					ItemManager.setTypeId(coord.getBlock(), CivData.CARROT_CROP);
 					ItemManager.setData(coord.getBlock(), 0, true);
 					continue;
 				}
@@ -89,7 +89,7 @@ public class WindmillPostProcessSyncTask implements Runnable {
 						e.printStackTrace();
 					}
 					potatoCount--;
-					ItemManager.setTypeId(coord.getBlock(), CivData.POTATOES);
+					ItemManager.setTypeId(coord.getBlock(), CivData.POTATO_CROP);
 					ItemManager.setData(coord.getBlock(), 0, true);
 					continue;
 				}
@@ -109,12 +109,12 @@ public class WindmillPostProcessSyncTask implements Runnable {
 			/* our randomly selected crop couldn't be placed, try them all now. */
 			if (breadCount > 0) { //Seed
 				try {
-					source_inv.removeItem(CivData.BREAD_SEED, 1);
+					source_inv.removeItem(CivData.WHEAT_SEED, 1);
 				} catch (CivException e) {
 					e.printStackTrace();
 				}
 				breadCount--;
-				ItemManager.setTypeId(coord.getBlock(), CivData.WHEAT);
+				ItemManager.setTypeId(coord.getBlock(), CivData.WHEAT_CROP);
 				ItemManager.setData(coord.getBlock(), 0, true);
 				continue;
 			}
@@ -125,7 +125,7 @@ public class WindmillPostProcessSyncTask implements Runnable {
 					e.printStackTrace();
 				}
 				carrotCount--;
-				ItemManager.setTypeId(coord.getBlock(), CivData.CARROTS);
+				ItemManager.setTypeId(coord.getBlock(), CivData.CARROT_CROP);
 				ItemManager.setData(coord.getBlock(), 0, true);
 				continue;
 			}
@@ -136,7 +136,7 @@ public class WindmillPostProcessSyncTask implements Runnable {
 					e.printStackTrace();
 				}
 				potatoCount--;
-				ItemManager.setTypeId(coord.getBlock(), CivData.POTATOES);
+				ItemManager.setTypeId(coord.getBlock(), CivData.POTATO_CROP);
 				ItemManager.setData(coord.getBlock(), 0, true);
 				continue;
 			}

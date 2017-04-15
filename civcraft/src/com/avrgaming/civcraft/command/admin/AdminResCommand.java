@@ -20,7 +20,6 @@ package com.avrgaming.civcraft.command.admin;
 
 import java.sql.SQLException;
 
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -146,13 +145,7 @@ public class AdminResCommand extends CommandBase {
 		int level = getNamedInteger(2);
 		
 		
-		ItemStack stack = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			stack = p.getInventory().getItemInMainHand();
-		}
+		ItemStack stack = p.getInventory().getItemInMainHand();
 		Enchantment ench = Enchantment.getByName(enchant);
 		if (ench == null) {
 			String out ="";

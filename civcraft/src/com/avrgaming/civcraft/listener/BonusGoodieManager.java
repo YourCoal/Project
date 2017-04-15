@@ -20,7 +20,6 @@ package com.avrgaming.civcraft.listener;
 
 import java.util.Map.Entry;
 
-import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
@@ -290,18 +289,11 @@ public class BonusGoodieManager implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.LOW) 
 	public void OnPlayerInteractEntityEvent(PlayerInteractEntityEvent event) throws CivException {
-		Player p = event.getPlayer();
 		if (!(event.getRightClicked() instanceof ItemFrame)) {
 			return;
 		}
 		
-		LoreMaterial material = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			material = LoreMaterial.getMaterial(event.getPlayer().getInventory().getItemInMainHand());
-		}
+		LoreMaterial material = LoreMaterial.getMaterial(event.getPlayer().getInventory().getItemInMainHand());
 		if (material != null) {
 			if (material instanceof UnitItemMaterial ||
 					material instanceof UnitMaterial) {
@@ -485,14 +477,7 @@ public class BonusGoodieManager implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void OnPlayerInteractEvent(PlayerInteractEvent event) {
 		Player p = event.getPlayer();
-		ItemStack item = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			item = p.getInventory().getItemInMainHand();
-		}
-		
+		ItemStack item = p.getInventory().getItemInMainHand();
 		BonusGoodie goodie = CivGlobal.getBonusGoodie(item);
 		if (goodie == null) {
 			return;

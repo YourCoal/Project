@@ -32,8 +32,7 @@ public class CivBook {
 	public static void showTutorialInventory(Player player) {	
 		if (tutorialInventory == null) {
 			tutorialInventory = Bukkit.getServer().createInventory(player, 9*3, "CivCraft Tutorial");
-		
-	
+			
 			tutorialInventory.addItem(LoreGuiItem.build(CivColor.LightBlue+ChatColor.BOLD+"What is CivCraft?", ItemManager.getId(Material.WORKBENCH), 0, 
 				ChatColor.RESET+"CivCraft is a game about building civilizations set in",
 				ChatColor.RESET+"a large world filled with players. Players start",
@@ -269,6 +268,10 @@ public class CivBook {
 			craftRec = LoreGuiItem.setAction(craftRec, "OpenInventory");
 			craftRec = LoreGuiItem.setActionData(craftRec, "invType", "showCraftingHelp");
 			guiInventory.setItem(3, craftRec);
+			
+			ItemStack newsInfo = LoreGuiItem.build("CivCraft Daily News", ItemManager.getId(Material.PAPER), 0, CivColor.Gold+"<Click To View>");
+			newsInfo = LoreGuiItem.setAction(newsInfo, "NewspaperInventory");
+			guiInventory.setItem(4, newsInfo);
 			
 			ItemStack dynmapInfo = LoreGuiItem.build("Useful Links", ItemManager.getId(Material.LADDER), 0, CivColor.Gold+"<Click to View>", "links_tag000_COMING_SOON");
 //			dynmapInfo = LoreGuiItem.setAction(dynmapInfo, "SendDynmapLink");

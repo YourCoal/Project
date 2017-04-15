@@ -36,7 +36,6 @@ public class SyncGrowTask implements Runnable {
 	
 	public static Queue<GrowRequest> requestQueue = new LinkedList<GrowRequest>();
 	public static ReentrantLock lock;
-	
 	public static final int UPDATE_LIMIT = 200;
 	
 	public SyncGrowTask() {
@@ -50,7 +49,6 @@ public class SyncGrowTask implements Runnable {
 		}
 		
 		HashSet<FarmChunk> unloadedFarms = new HashSet<FarmChunk>();
-		
 		if (lock.tryLock()) {
 			try {
 				for (int i = 0; i < UPDATE_LIMIT; i++) {
@@ -62,19 +60,18 @@ public class SyncGrowTask implements Runnable {
 					if (request.farmChunk == null) {
 						request.result = false;
 					} else if (!request.farmChunk.getChunk().isLoaded()) {
-						// This farm's chunk isn't loaded so we can't update 
-						// the crops. Add the missed growths to the farms to
-						// process later.
+						// This farm's chunk isn't loaded so we can't update the crops.
+						// Add the missed growths to the farms to process later.
 						unloadedFarms.add(request.farmChunk);
 						request.result = false;
-
 					} else {
-						
 						for (GrowBlock growBlock : request.growBlocks) {
 							switch (growBlock.typeId) {
-							case CivData.CARROTS:
-							case CivData.WHEAT:
-							case CivData.POTATOES:
+							case CivData.WHEAT_CROP:
+							case CivData.CARROT_CROP:
+							case CivData.POTATO_CROP:
+							case CivData.BEETROOT_CROP:
+							case CivData.NETHERWART_CROP:
 								if ((growBlock.data-1) != ItemManager.getData(growBlock.bcoord.getBlock())) {
 									// replanted??
 									continue;
@@ -92,10 +89,8 @@ public class SyncGrowTask implements Runnable {
 								ItemManager.setData(growBlock.bcoord.getBlock(), growBlock.data);
 								request.result = true;
 							}
-							
 						}
 					}
-					
 					request.finished = true;
 					request.condition.signalAll();
 				}
@@ -106,8 +101,6 @@ public class SyncGrowTask implements Runnable {
 					Farm farm = (Farm)fc.getStruct();
 					farm.saveMissedGrowths();
 				}
-				
-				
 			} finally {
 				lock.unlock();
 			}

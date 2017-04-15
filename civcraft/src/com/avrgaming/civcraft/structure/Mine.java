@@ -35,7 +35,6 @@ import com.avrgaming.civcraft.exception.InvalidConfiguration;
 import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.object.Buff;
 import com.avrgaming.civcraft.object.StructureChest;
 import com.avrgaming.civcraft.object.Town;
 import com.avrgaming.civcraft.sessiondb.SessionEntry;
@@ -211,7 +210,7 @@ public class Mine extends Structure {
 //			total_production *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
-		total_production *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
+//		total_production *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {
@@ -333,7 +332,7 @@ public class Mine extends Structure {
 //			total_production *= this.getTown().getBuffManager().getEffectiveDouble("buff_pyramid_cottage_bonus");
 //		}
 		
-		total_production *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
+//		total_production *= this.getTown().getBuffManager().getEffectiveDouble(Buff.ADVANCED_TOOLING);
 		if (this.getCiv().hasTech("tech_taxation")) {
 			double tech_bonus;
 			try {

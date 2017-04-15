@@ -390,11 +390,21 @@ public abstract class Buildable extends SQLObject {
 		}
 	}
 	
-	public void buildPlayerPreview(Player player, Location centerLoc) throws CivException, IOException {
+	public void buildPerklessPlayerPreview(Player player, Location centerLoc) throws CivException, IOException {
+		/* Look for any custom template perks and ask the player if they want to use them. */
+		Template tpl = new Template();
+		tpl.initTemplate(player.getLocation(), info, "default");
 		
+		centerLoc = repositionCenter(centerLoc, tpl.dir(), tpl.size_x, tpl.size_z);
+		tpl.buildPreviewScaffolding(centerLoc, player);
+		Resident resident = CivGlobal.getResident(player);
+		resident.startPreviewTask(tpl, centerLoc.getBlock(), player.getUniqueId());
+	}
+	
+	public void buildPlayerPreview(Player player, Location centerLoc) throws CivException, IOException {
 		/* Look for any custom template perks and ask the player if they want to use them. */
 		Resident resident = CivGlobal.getResident(player);
-		ArrayList<Perk> perkList = this.getTown().getTemplatePerks(this, resident, this.info);		
+		ArrayList<Perk> perkList = this.getTown().getTemplatePerks(this, resident, this.info);
 		ArrayList<Perk> personalUnboundPerks = resident.getUnboundTemplatePerks(perkList, this.info);
 		if (perkList.size() != 0 || personalUnboundPerks.size() != 0) {
 			/* Store the pending buildable. */
@@ -437,11 +447,7 @@ public abstract class Buildable extends SQLObject {
 			return;
 		}
 		
-
-		
-		Template tpl;
-		
-		tpl = new Template();
+		Template tpl = new Template();
 		try {
 			tpl.initTemplate(centerLoc, this);
 		} catch (CivException e) {
@@ -481,13 +487,24 @@ public abstract class Buildable extends SQLObject {
 	 * This includes Capitols, Camps, and Town Halls.
 	 */
 	
-	public static void buildVerifyStatic(Player player, ConfigBuildableInfo info, Location centerLoc, CallbackInterface callback) throws CivException {
+	public static void buildPerklessVerifyStatic(Player player, ConfigBuildableInfo info, Location centerLoc, CallbackInterface callback) throws CivException {
+		String path = Template.getTemplateFilePath(info.template_base_name, Template.getDirection(player.getLocation()), TemplateType.STRUCTURE, "default");
+		Template tpl;
+		try {
+			tpl = Template.getTemplate(path, player.getLocation());
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		centerLoc = repositionCenterStatic(centerLoc, info, tpl.dir(), tpl.size_x, tpl.size_z);	
+		TaskMaster.asyncTask(new StructureValidator(player, tpl.getFilepath(), centerLoc, callback), 0);
+	}
 	
+	public static void buildVerifyStatic(Player player, ConfigBuildableInfo info, Location centerLoc, CallbackInterface callback) throws CivException {
 		Resident resident = CivGlobal.getResident(player);
 		/* Look for any custom template perks and ask the player if they want to use them. */
 		LinkedList<Perk> perkList = resident.getPersonalTemplatePerks(info);
 		if (perkList.size() != 0) {
-			
 			/* Store the pending buildable. */
 			resident.pendingBuildableInfo = info;
 			resident.pendingCallback = callback;
@@ -515,7 +532,6 @@ public abstract class Buildable extends SQLObject {
 		}
 		
 		String path = Template.getTemplateFilePath(info.template_base_name, Template.getDirection(player.getLocation()), TemplateType.STRUCTURE, "default");
-		
 		Template tpl;
 		try {
 			tpl = Template.getTemplate(path, player.getLocation());
@@ -569,10 +585,10 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (info.tile || info.outpost) {
-			// just put the center at 0,0 of this chunk?
-			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-		} else { 
+//		if (info.tile || info.outpost) {
+//			// just put the center at 0,0 of this chunk?
+//			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+//		} else { 
 			if (dir.equalsIgnoreCase("east")) {				
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
@@ -590,7 +606,7 @@ public abstract class Buildable extends SQLObject {
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ()+ SHIFT_OUT);
 			}
-		}   
+//		}   
 		if (info.templateYShift != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
 			loc.setY(loc.getY() + info.templateYShift);
@@ -610,10 +626,10 @@ public abstract class Buildable extends SQLObject {
 		
 		
 		// Reposition tile improvements
-		if (this.isTile() || this.isOutpost()) {
-			// just put the center at 0,0 of this chunk?
-			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
-		} else {  
+//		if (this.isTile() || this.isOutpost()) {
+//			// just put the center at 0,0 of this chunk?
+//			loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
+//		} else {  
 			if (dir.equalsIgnoreCase("east")) {
 				loc.setZ(loc.getZ() - (z_size / 2));
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
@@ -631,7 +647,7 @@ public abstract class Buildable extends SQLObject {
 				loc = center.getChunk().getBlock(0, center.getBlockY(), 0).getLocation();
 				loc.setZ(loc.getZ() + SHIFT_OUT);
 			}
-		}  
+//		}  
 		if (this.getTemplateYShift() != 0) {
 			// Y-Shift based on the config, this allows templates to be built underground.
 			loc.setY(loc.getY() + this.getTemplateYShift());
@@ -837,11 +853,11 @@ public abstract class Buildable extends SQLObject {
 			throw new CivException("You must build this structure while inside town borders.");
 		}
 		
-		if (centerBlock.getLocation().getY() >= 200) {
+		if (centerBlock.getLocation().getY() > 200) {
 			throw new CivException("You're too high to build structures. Must be lower than Y=200");
 		}
 		
-		if (centerBlock.getLocation().getY() <= 20) {
+		if (centerBlock.getLocation().getY() < 20) {
 			throw new CivException("You can not place structures this far underground!");
 		
 		}
@@ -1334,6 +1350,9 @@ public abstract class Buildable extends SQLObject {
 	public void onPostBuild(BlockCoord absCoord, SimpleBlock commandBlock) {
 	}
 	
+	public void onCivicUpdate() {
+	}
+	
 	public void onTechUpdate() {
 	}
 	
@@ -1479,7 +1498,7 @@ public abstract class Buildable extends SQLObject {
 	}
 
 	public void setValid(boolean b) {
-		if (this.getCiv().isAdminCiv()) {
+		if (this.getCiv() != null && this.getCiv().isAdminCiv()) {
 			this.valid = true;
 		} else {
 			this.valid = b;
@@ -1532,40 +1551,41 @@ public abstract class Buildable extends SQLObject {
 		case CivData.COBWEB:
 		case CivData.TALL_GRASS:
 		case CivData.DEAD_BUSH:
-		case CivData.YELLOW_FLOWER:
+		case CivData.DANDELION:
 		case CivData.OTHER_FLOWERS:
-		case CivData.BROWNMUSHROOM:
-		case CivData.REDMUSHROOM:
+		case CivData.BROWN_MUSHROOM:
+		case CivData.RED_MUSHROOM:
 		case CivData.TORCH:
 		case CivData.FIRE:
-		case CivData.WHEAT:
+		case CivData.WHEAT_CROP:
 		case CivData.REDSTONE_WIRE:
-		case CivData.SUGARCANE:
+		case CivData.SUGARCANE_BLOCK:
 		case CivData.LILY_PAD:
+		case CivData.TRIPWIRE_HOOK:
 		case CivData.TRIPWIRE:
-		case CivData.CARROTS:
-		case CivData.POTATOES:
-		case CivData.BEETROOT_CROP:
+		case CivData.CARROT_CROP:
+		case CivData.POTATO_CROP:
 		case CivData.ANVIL:
 		case CivData.LEAF2:
 		case CivData.SLIME_BLOCK:
 		case CivData.CARPET:
 		case CivData.DOUBLE_FLOWER:
+		case CivData.BEETROOT_CROP:
 			return 0;
 		case CivData.DIAMOND_BLOCK:
 		case CivData.EMERALD_BLOCK:
 			return 5;
 		case CivData.GOLD_BLOCK:
-		case CivData.IRON_BLOCK:
 		case CivData.OBSIDIAN:
 			return 4;
 		case CivData.STONE_BRICK:
-		case CivData.COAL_BLOCK:
+		case CivData.IRON_BLOCK:
 			return 3;
 		case CivData.STONE:
 		case CivData.COBBLESTONE:
 		case CivData.STAINED_CLAY:
 		case CivData.HARDENED_CLAY:
+		case CivData.COAL_BLOCK:
 			return 2;
 		default:
 			return 1;

@@ -12,11 +12,13 @@ import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.util.CivColor;
 
 public abstract class EndGameCondition {
-
+	
 	public static ArrayList<EndGameCondition> endConditions = new ArrayList<EndGameCondition>(); 
-		
+	
 	private String id;
 	private String victoryName;
+	private Integer days_held;
+	private Integer victory_points;
 	public HashMap<String, String> attributes = new HashMap<String, String>();
 	
 	public EndGameCondition() {
@@ -26,15 +28,15 @@ public abstract class EndGameCondition {
 		for (ConfigEndCondition configEnd : CivSettings.endConditions.values()) {
 			String className = "com.avrgaming.civcraft.endgame."+configEnd.className;
 			Class<?> someClass;
-			
 			try {
 				someClass = Class.forName(className);
 				EndGameCondition endCompClass;
 				endCompClass = (EndGameCondition)someClass.newInstance();
 				endCompClass.setId(configEnd.id);
 				endCompClass.setVictoryName(configEnd.victoryName);
+				endCompClass.setDaysToHold(configEnd.days_held);
+				endCompClass.setVictoryPtsRequired(configEnd.victory_points);
 				endCompClass.attributes = configEnd.attributes;
-			
 				endCompClass.onLoad();
 				endConditions.add(endCompClass);
 			} catch (InstantiationException e) {
@@ -57,7 +59,6 @@ public abstract class EndGameCondition {
 	public abstract String getSessionKey();
 	
 	public void onVictoryReset(Civilization civ) {}
-	
 	/* Do one last check to see if it's ok to win.
 	 * Science and diplomatic victories require you to have the most
 	 * beakers/votes so this is needed. 
@@ -71,7 +72,7 @@ public abstract class EndGameCondition {
 	public void onSuccess(Civilization civ) {
 		this.checkForWin(civ);		
 	}
-
+	
 	public void onFailure(Civilization civ) {
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getSessionKey());
 		if (entries.size() == 0) {
@@ -87,10 +88,8 @@ public abstract class EndGameCondition {
 				return;
 			}
 		}
-				
 		CivLog.error("Couldn't find civilization:"+civ.getName()+" with id:"+civ.getId()+" to fail end condition:"+this.victoryName);
 	}
-	
 	
 	public String getString(String key) {
 		return attributes.get(key);
@@ -103,34 +102,46 @@ public abstract class EndGameCondition {
 	public void setAttribute(String key, String value) {
 		attributes.put(key, value);
 	}
-
+	
 	public String getId() {
 		return id;
 	}
-
+	
 	public void setId(String id) {
 		this.id = id;
 	}
-
+	
 	public String getVictoryName() {
 		return victoryName;
 	}
-
+	
 	public void setVictoryName(String victoryName) {
 		this.victoryName = victoryName;
 	}
-
-	/*
-	 * Returns true if this civ is currently awaiting a 2 week countdown after
-	 * meeting winning conditions.
-	 */
+	
+	public Integer getDaysToHold() {
+		return days_held;
+	}
+	
+	public void setDaysToHold(Integer days_held) {
+		this.days_held = days_held;
+	}
+	
+	public Integer getVictoryPtsRequired() {
+		return victory_points;
+	}
+	
+	public void setVictoryPtsRequired(Integer victory_points) {
+		this.victory_points = victory_points;
+	}
+	
+	/* Returns true if this civ is currently awaiting a 2 week countdown after
+	 * meeting winning conditions. */
 	public boolean isActive(Civilization civ) {
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getSessionKey());
-		
 		if (entries.size() == 0) {
 			return false;
 		}
-		
 		return true;
 	}
 	
@@ -139,23 +150,15 @@ public abstract class EndGameCondition {
 		if (entries.size() == 0) {
 			return -1;
 		}
-		
 		int daysToHold = getDaysToHold();
 		Integer daysHeld = Integer.valueOf(entries.get(0).value);
-		
 		return daysToHold - daysHeld;
-	}
-	
-	public int getDaysToHold() {
-		return Integer.valueOf(this.getString("days_held"));
 	}
 	
 	public void checkForWin(Civilization civ) {
 		/* All win conditions are met, now check for time left. */
  		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getSessionKey());
-
 		int daysToHold = getDaysToHold();
-		
  		if (entries.size() == 0) {
  			/* No entry yet, first time we hit the win condition, save entry. */
  			civ.sessionAdd(getSessionKey(), getSessionData(civ, 0));
@@ -178,11 +181,9 @@ public abstract class EndGameCondition {
 	 					civ.declareAsWinner(this);
 	 				}
 	 			}
-	 			
 	 			CivGlobal.getSessionDB().update(entries.get(0).request_id, entries.get(0).key, getSessionData(civ, daysHeld));
  			}
  		}
- 		
  		return;
 	}
 	
@@ -216,5 +217,5 @@ public abstract class EndGameCondition {
 	}
 	
 	protected abstract void onWarDefeat(Civilization civ);
-
+	
 }

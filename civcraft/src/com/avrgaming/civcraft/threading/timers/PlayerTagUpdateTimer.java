@@ -17,14 +17,14 @@ public class PlayerTagUpdateTimer implements Runnable {
 			Resident res = CivGlobal.getResident(p);
 			String pName;
 			if (res == null) {
-				pName = CivColor.RoseItalic+" [resident NULL]";
+				pName = CivColor.RoseItalic+" [NULL]";
 			} else {
 				if (res.getCiv() != null) {
-					pName = CivColor.LightPurpleBold+" ["+StringUtils.left(res.getCiv().getName(), 5)+"]";
+					pName = CivColor.LightPurpleBold+" ["+StringUtils.left(res.getCiv().getName(), 4)+"]";
 				} else if (res.getCiv() == null && res.getCamp() != null) {
-					pName = CivColor.GoldBold+" ["+StringUtils.left(res.getCamp().getName(), 5)+"]";
+					pName = CivColor.GoldBold+" ["+StringUtils.left(res.getCamp().getName(), 4)+"]";
 				} else {
-					pName = CivColor.LightGrayBold+" [-----]";
+					pName = CivColor.LightGrayBold+" [----]";
 				}
 				NametagEdit.getApi().setSuffix(p, pName);
 				

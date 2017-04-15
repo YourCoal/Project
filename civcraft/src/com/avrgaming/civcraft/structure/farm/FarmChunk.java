@@ -155,14 +155,14 @@ public class FarmChunk {
 		//XXX we are skipping hydration as I guess we dont seem to care.
 		//XXX we also skip light level checks, as we dont really care about that either.
 		switch(bs.getTypeId()) {
-		case CivData.WHEAT:
-		case CivData.CARROTS:
-		case CivData.POTATOES:
+		case CivData.WHEAT_CROP:
+		case CivData.CARROT_CROP:
+		case CivData.POTATO_CROP:
 			if (bs.getData() < 0x7) {
 				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);
 			}
 			break;
-		case CivData.NETHERWART:
+		case CivData.NETHERWART_CROP:
 		case CivData.BEETROOT_CROP:
 			if (bs.getData() < 0x3) {
 				addGrowBlock("world", growMe.getX(), growMe.getY(), growMe.getZ(), bs.getTypeId(), bs.getData()+0x1, false);

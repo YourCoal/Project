@@ -10,21 +10,24 @@ import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 
 public class EndConditionScience extends EndGameCondition {
-
+	
 	String techname;
 	
 	@Override
 	public void onLoad() {		
 		techname = this.getString("tech");
 	}
-
+	
 	@Override
 	public boolean check(Civilization civ) {
+		if (civ.getVictoryPts() < getVictoryPtsRequired()) {
+ 			return false;
+		}
 		
 		if (!civ.hasTechnology(techname)) {
 			return false;
 		}
-
+		
 		if (civ.isAdminCiv()) {
 			return false;
 		}
@@ -52,33 +55,29 @@ public class EndConditionScience extends EndGameCondition {
 		if (!hasGreatLibrary) {
 			return false;
 		}
-	
 		return true;
 	}
 	
 	@Override
 	public boolean finalWinCheck(Civilization civ) {
-		Civilization rival = getMostAccumulatedBeakers();
+		Civilization rival = getMostAccumulatedScience();
 		if (rival != civ) {
 			CivMessage.global(civ.getName()+" doesn't have enough beakers for a scientific victory. The rival civilization of "+rival.getName()+" has more!");
 			return false;
 		}
-		
 		return true;
 	}
-
-	public Civilization getMostAccumulatedBeakers() {
+	
+	public Civilization getMostAccumulatedScience() {
 		double most = 0;
 		Civilization mostCiv = null;
-		
 		for (Civilization civ : CivGlobal.getCivs()) {
-			double beakers = getExtraBeakersInCiv(civ);
+			double beakers = getExtraScienceInCiv(civ);
 			if (beakers > most) {
 				most = beakers;
 				mostCiv = civ;
 			}
 		}
-		
 		return mostCiv;
 	}
 	
@@ -86,35 +85,34 @@ public class EndConditionScience extends EndGameCondition {
 	public String getSessionKey() {
 		return "endgame:science";
 	}
-
+	
 	@Override
 	protected void onWarDefeat(Civilization civ) {
 		/* remove any extra beakers we might have. */
-		CivGlobal.getSessionDB().delete_all(getBeakerSessionKey(civ));
+		CivGlobal.getSessionDB().delete_all(getScienceSessionKey(civ));
 		civ.removeTech(techname);
 		CivMessage.sendCiv(civ, "We were defeated while trying to achieve a science victory! We've lost all of our accumulated beakers and our victory tech!");
-		
 		civ.save();
 		this.onFailure(civ);
 	}
-
-	public static String getBeakerSessionKey(Civilization civ) {
+	
+	public static String getScienceSessionKey(Civilization civ) {
 		return "endgame:sciencebeakers:"+civ.getId();
 	}
 	
-	public double getExtraBeakersInCiv(Civilization civ) {
-		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getBeakerSessionKey(civ));
+	public double getExtraScienceInCiv(Civilization civ) {
+		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getScienceSessionKey(civ));
 		if (entries.size() == 0) {
 			return 0;
 		}
 		return Double.valueOf(entries.get(0).value);
 	}
 	
-	public void addExtraBeakersToCiv(Civilization civ, double beakers) {
-		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getBeakerSessionKey(civ));
+	public void addExtraScienceToCiv(Civilization civ, double beakers) {
+		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getScienceSessionKey(civ));
 		double current = 0;
 		if (entries.size() == 0) {
-			CivGlobal.getSessionDB().add(getBeakerSessionKey(civ), ""+beakers, civ.getId(), 0, 0);
+			CivGlobal.getSessionDB().add(getScienceSessionKey(civ), ""+beakers, civ.getId(), 0, 0);
 			current += beakers;
 		} else {
 			current = Double.valueOf(entries.get(0).value);
@@ -124,14 +122,13 @@ public class EndConditionScience extends EndGameCondition {
 		//DecimalFormat df = new DecimalFormat("#.#");
 		//CivMessage.sendCiv(civ, "Added "+df.format(beakers)+" beakers to our scientific victory! We now have "+df.format(current)+" beakers saved up.");
 	}
-
-	public static Double getBeakersFor(Civilization civ) {
-		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getBeakerSessionKey(civ));
+	
+	public static Double getScienceFor(Civilization civ) {
+		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getScienceSessionKey(civ));
 		if (entries.size() == 0) {
 			return 0.0;
 		} else {
 			return Double.valueOf(entries.get(0).value);
 		}
 	}
-
 }

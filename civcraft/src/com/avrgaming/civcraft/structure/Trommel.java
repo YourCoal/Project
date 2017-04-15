@@ -16,6 +16,8 @@ import com.avrgaming.civcraft.util.SimpleBlock;
 
 public class Trommel extends Structure {
 	
+	private static final double DISTRICT_BLOCK_CHANCE = CivSettings.getDoubleStructure("trommel.district_block_chance");
+	
 	public static final int COBBLE_MAX_RATE = CivSettings.getIntegerStructure("trommel_cobble.max");
 	private static final double COBBLE_IRON = CivSettings.getDoubleStructure("trommel_cobble.iron_rate");
 	private static final double COBBLE_GOLD = CivSettings.getDoubleStructure("trommel_cobble.gold_rate");
@@ -56,9 +58,10 @@ public class Trommel extends Structure {
 	public ReentrantLock lock = new ReentrantLock();
 	
 	public enum Mineral {
-		REDSTONE,
+		BLOCK,
 		EMERALD,
 		DIAMOND,
+		REDSTONE,
 		GOLD,
 		IRON
 	}
@@ -87,6 +90,9 @@ public class Trommel extends Structure {
 	public double getGravelChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
+		case BLOCK:
+			chance = DISTRICT_BLOCK_CHANCE;
+			break;
 		case EMERALD:
 			chance = COBBLE_EMERALD;
 			break;
@@ -109,6 +115,9 @@ public class Trommel extends Structure {
 	public double getStoneChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
+		case BLOCK:
+			chance = DISTRICT_BLOCK_CHANCE;
+			break;
 		case EMERALD:
 			chance = STONE_EMERALD;
 			break;
@@ -131,6 +140,9 @@ public class Trommel extends Structure {
 	public double getGraniteChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
+		case BLOCK:
+			chance = DISTRICT_BLOCK_CHANCE;
+			break;
 		case EMERALD:
 			chance = GRANITE_EMERALD;
 			break;
@@ -153,6 +165,9 @@ public class Trommel extends Structure {
 	public double getDioriteChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
+		case BLOCK:
+			chance = DISTRICT_BLOCK_CHANCE;
+			break;
 		case EMERALD:
 			chance = DIORITE_EMERALD;
 			break;
@@ -175,6 +190,9 @@ public class Trommel extends Structure {
 	public double getAndesiteChance(Mineral mineral) {
 		double chance = 0;
 		switch (mineral) {
+		case BLOCK:
+			chance = DISTRICT_BLOCK_CHANCE;
+			break;
 		case EMERALD:
 			chance = ANDESITE_EMERALD;
 			break;

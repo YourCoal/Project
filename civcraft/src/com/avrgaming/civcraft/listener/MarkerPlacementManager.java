@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,11 +47,6 @@ public class MarkerPlacementManager implements Listener {
 	
 	
 	public static void addToPlacementMode(Player p, Structure structure, String markerName) throws CivException {
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		}
-		
 		if (p.getInventory().getItemInMainHand() != null && ItemManager.getId(p.getInventory().getItemInMainHand()) != CivData.AIR) {
 			throw new CivException("You must not be holding anything to enter placement mode.");
 		}
@@ -96,11 +90,6 @@ public class MarkerPlacementManager implements Listener {
 	public static void setMarker(Player p, Location location) throws CivException {
 		ArrayList<Location> locs = markers.get(p.getName());
 		Structure struct = playersInPlacementMode.get(p.getName());
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		}
-		
 		int amount = p.getInventory().getItemInMainHand().getAmount();
 		if (amount == 1) {
 			p.getInventory().setItemInMainHand(null);

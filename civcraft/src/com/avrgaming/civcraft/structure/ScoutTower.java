@@ -44,7 +44,7 @@ public class ScoutTower extends Structure {
 	double range;
 	private PlayerProximityComponent proximityComponent;
 	
-	private int reportSeconds = 60;
+	private int reportSeconds = 30;
 	private int count = 0;
 	
 	public ScoutTower(ResultSet rs) throws SQLException, CivException {
@@ -187,7 +187,7 @@ public class ScoutTower extends Structure {
 				continue;
 			}
 			
-			if (center.distance(player.getLocation()) < range) {
+			if (center.distance(player.getLocation()) <= range) {
 				/* Notify the town or civ. */
 					CivMessage.sendScout(this.getCiv(), "Scout tower detected "+relationColor+player.getName()+"("+relationName+")"+CivColor.White+
 							" at ("+player.getLocation().getBlockX()+","+player.getLocation().getBlockY()+","+player.getLocation().getBlockZ()+") in "+this.getTown().getName());

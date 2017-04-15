@@ -23,7 +23,7 @@ public class Second1UpdateEventTimer extends CivAsyncTask {
 	}
 	
 	@Override
-	public void run() {		
+	public void run() {
 		if (!lock.tryLock()) {
 			return;
 		} try {

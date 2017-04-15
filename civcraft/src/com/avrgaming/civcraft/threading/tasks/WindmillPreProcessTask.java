@@ -57,7 +57,7 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 			for (Structure s : windmill.getTown().getStructures()) {
 				if (s instanceof Windmill) {
 					for (TownChunk tc : windmill.getTown().getTownChunks()) {
-						if (tc.district.getID().equals(1)) {
+						if (tc.district.getID().equals(6)) {
 							int tcChunkX = tc.getChunkCoord().getX();
 							int tcChunkZ = tc.getChunkCoord().getZ();
 							
@@ -111,7 +111,7 @@ public class WindmillPreProcessTask extends CivAsyncTask {
 			}
 
 			switch (ItemManager.getId(stack)) {
-			case CivData.BREAD_SEED:
+			case CivData.WHEAT_SEED:
 				breadCount += stack.getAmount();
 				break;
 			case CivData.CARROT_ITEM:

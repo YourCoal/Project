@@ -13,17 +13,20 @@ import com.avrgaming.civcraft.sessiondb.SessionEntry;
 import com.avrgaming.civcraft.structure.wonders.Wonder;
 
 public class EndConditionDiplomacy extends EndGameCondition {
-
+	
 	public static int vote_cooldown_hours;
 	
 	@Override
 	public void onLoad() {
 		vote_cooldown_hours = Integer.valueOf(this.getString("vote_cooldown_hours"));
 	}
-
+	
 	@Override
 	public boolean check(Civilization civ) {
-
+		if (civ.getVictoryPts() < getVictoryPtsRequired()) {
+ 			return false;
+		}
+		
 		boolean hasCouncil = false;
 		for (Town town : civ.getTowns()) {
 			if (town.getMotherCiv() != null) {
@@ -55,15 +58,14 @@ public class EndConditionDiplomacy extends EndGameCondition {
 		if (civ.isConquered()) {
 			return false;
 		}
-		
 		return true;
 	}
-
+	
 	@Override
 	public String getSessionKey() {
 		return "endgame:diplomacy";
 	}
-
+	
 	@Override
 	protected void onWarDefeat(Civilization civ) {
 		for (Town town : civ.getTowns()) {
@@ -86,7 +88,6 @@ public class EndConditionDiplomacy extends EndGameCondition {
 				}
 			}
 		}
-		
 		deleteAllVotes(civ);
 		this.onFailure(civ);
 	}
@@ -102,14 +103,12 @@ public class EndConditionDiplomacy extends EndGameCondition {
 				return true;
 			}
 		}
-		
 		return false;
 	}
 	
 	@Override
 	public boolean finalWinCheck(Civilization civ) {
 		Integer votes = getVotesFor(civ);
-		
 		for (Civilization otherCiv : CivGlobal.getCivs()) {
 			if (otherCiv == civ) {
 				continue;
@@ -121,7 +120,6 @@ public class EndConditionDiplomacy extends EndGameCondition {
 				return false;
 			}
 		}
-		
 		return true;
 	}
 	
@@ -147,10 +145,9 @@ public class EndConditionDiplomacy extends EndGameCondition {
 			votes++;
 			CivGlobal.getSessionDB().update(entries.get(0).request_id, entries.get(0).key, ""+votes);			
 		}
-		
 		CivMessage.sendSuccess(resident, "Added a vote for "+civ.getName());
 	}
-
+	
 	public static void setVotes(Civilization civ, Integer votes) {
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(getVoteSessionKey(civ));
 		if (entries.size() == 0) {
@@ -165,10 +162,9 @@ public class EndConditionDiplomacy extends EndGameCondition {
 		if (entries.size() == 0) {
 			return 0;
 		}
-		
 		return Integer.valueOf(entries.get(0).value);
 	}
-
+	
 	private static boolean canVoteNow(Resident resident) {
 		String key = "endgame:residentvote:"+resident.getName();
 		ArrayList<SessionEntry> entries = CivGlobal.getSessionDB().lookup(key);
@@ -183,9 +179,7 @@ public class EndConditionDiplomacy extends EndGameCondition {
 				return true;
 			}
 		}
-
 		CivMessage.sendError(resident, "You must wait 24 hours before casting another vote.");
 		return false;
 	}
-
 }

@@ -72,6 +72,7 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 	public static int MAX_GOODIE_FRAMES = 8;
 	
 	private BlockCoord[] techbar = new BlockCoord[10];
+	private BlockCoord[] civicbar = new BlockCoord[10];
 	
 	private BlockCoord technameSign;
 	private byte technameSignData; //Hold the sign's orientation
@@ -137,12 +138,18 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 	}
 
 	public BlockCoord getTechBarBlockCoord(int i) {
-		if (techbar[i] == null)
-			return null;
-		
+		if (techbar[i] == null)	return null;
 		return techbar[i];
 	}
-
+	
+	public BlockCoord getTechBar(int i) {
+		return techbar[i];
+	}
+	
+	public int getTechBarSize() {
+		return techbar.length;
+	}
+	
 	public BlockCoord getTechnameSign() {
 		return technameSign;
 	}
@@ -173,6 +180,23 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 
 	public void setTechnameSignData(byte technameSignData) {
 		this.technameSignData = technameSignData;
+	}
+	
+	public void addCivicBarBlock(BlockCoord coord, int index) {
+		civicbar[index] = coord;
+	}
+	
+	public int getCivicBarSize() {
+		return civicbar.length;
+	}
+	
+	public BlockCoord getCivicBarBlockCoord(int i) {
+		if (civicbar[i] == null) return null;
+		return civicbar[i];
+	}
+	
+	public BlockCoord getCivicBar(int i) {
+		return civicbar[i];
 	}
 	
 	public BlockCoord getCivicnameSign() {
@@ -207,20 +231,14 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 		this.civicnameSignData = civicnameSignData;
 	}
 
-	public BlockCoord getTechBar(int i) {
-		return techbar[i];
-	}
-
 	public void createGoodieItemFrame(BlockCoord absCoord, int slotId, int direction) {
-		if (slotId >= MAX_GOODIE_FRAMES)	{
+		if (slotId >= MAX_GOODIE_FRAMES) {
 			return;
 		}
 		
-		/* 
-		 * Make sure there isn't another frame here. We have the position of the sign, but the entity's
+		/* Make sure there isn't another frame here. We have the position of the sign, but the entity's
 		 * position is the block it's attached to. We'll use the direction from the sign data to determine
-		 * which direction to look for the entity.
-		 */
+		 * which direction to look for the entity. */
 		Block attachedBlock;
 		BlockFace facingDirection;
 
@@ -268,7 +286,6 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 				itemStore.setFacingDirection(facingDirection);
 			}
 		}
-		
 		itemStore.setBuildable(this);
 		goodieFrames.add(itemStore);
 		
@@ -306,7 +323,7 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 			}
 			
 			if (this.validated && !this.isValid()) {
-				totalRespawn += invalidRespawnPenalty*60;
+				totalRespawn += invalidRespawnPenalty;
 			}
 			
 			// Search for any town in our civ with the medicine goodie.
@@ -317,13 +334,11 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 					break;
 				}
 			}
-			
-			
 			return totalRespawn;
 		} catch (InvalidConfiguration e) {
 			e.printStackTrace();
 		}
-		return 60;
+		return 30;
 	}
 
 	public void setRevivePoint(BlockCoord absCoord) {
@@ -341,7 +356,6 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 	}
 
 	public void createControlPoint(BlockCoord absCoord) {
-		
 		Location centerLoc = absCoord.getLocation();
 		
 		/* Build the bedrock tower. */
@@ -481,10 +495,6 @@ public class TownHall extends Structure implements RespawnLocationHolder {
 			ControlPoint cp = this.controlPoints.get(coord);
 			cp.setHitpoints(cp.getMaxHitpoints());
 		}
-	}
-
-	public int getTechBarSize() {
-		return techbar.length;
 	}
 	
 	@Override

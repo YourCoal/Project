@@ -95,19 +95,20 @@ public class CivSettings {
 	public static double highjump;
 	
 	public static FileConfiguration gameConfig; /*game.yml */
-	
-	public static FileConfiguration townConfig; /* town.yml */
-	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
-	public static Map<String, ConfigTownUpgrade> townUpgrades = new TreeMap<String, ConfigTownUpgrade>();
+	public static Map<String, ConfigNewspaper> newspapers = new HashMap<String, ConfigNewspaper>();
 	
 	public static FileConfiguration civConfig; /* civ.yml */
 	public static Map<String, ConfigEndCondition> endConditions = new HashMap<String, ConfigEndCondition>();
 	public static Map<String, ConfigPlatinumReward> platinumRewards = new HashMap<String, ConfigPlatinumReward>();
 	
+	public static FileConfiguration civicsConfig; /* civics.yml */
+	public static Map<String, ConfigCivic> civics = new HashMap<String, ConfigCivic>();
+	public static Map<Integer, ConfigCivicItem> civicItems = new HashMap<Integer, ConfigCivicItem>();
+	
 	public static FileConfiguration cultureConfig; /* culture.yml */
 	public static Map<Integer, ConfigCultureLevel> cultureLevels = new HashMap<Integer, ConfigCultureLevel>();
 	private static Map<String, ConfigCultureBiomeInfo> cultureBiomes = new HashMap<String, ConfigCultureBiomeInfo>();
-
+	
 	public static FileConfiguration structureConfig; /* structures.yml */
 	public static Map<String, ConfigBuildableInfo> structures = new HashMap<String, ConfigBuildableInfo>();
 	public static Map<Integer, ConfigGrocerLevel> grocerLevels = new HashMap<Integer, ConfigGrocerLevel>();
@@ -117,15 +118,19 @@ public class CivSettings {
 	public static Map<Integer, ConfigMineLevel> mineLevels = new HashMap<Integer, ConfigMineLevel>();
 	public static Map<Integer, ConfigLabLevel> labLevels = new HashMap<Integer, ConfigLabLevel>();
 	
-	public static FileConfiguration wonderConfig; /* wonders.yml */
-	public static Map<String, ConfigBuildableInfo> wonders = new HashMap<String, ConfigBuildableInfo>();
-	public static Map<String, ConfigWonderBuff> wonderBuffs = new HashMap<String, ConfigWonderBuff>();
-	
 	public static FileConfiguration techsConfig; /* techs.yml */
 	public static Map<String, ConfigTech> techs = new HashMap<String, ConfigTech>();
 	public static Map<Integer, ConfigTechItem> techItems = new HashMap<Integer, ConfigTechItem>();
 	public static Map<Integer, ConfigTechPotion> techPotions = new HashMap<Integer, ConfigTechPotion>();
-
+	
+	public static FileConfiguration townConfig; /* town.yml */
+	public static Map<Integer, ConfigTownLevel> townLevels = new HashMap<Integer, ConfigTownLevel>();
+	public static Map<String, ConfigTownUpgrade> townUpgrades = new TreeMap<String, ConfigTownUpgrade>();
+	
+	public static FileConfiguration wonderConfig; /* wonders.yml */
+	public static Map<String, ConfigBuildableInfo> wonders = new HashMap<String, ConfigBuildableInfo>();
+	public static Map<String, ConfigWonderBuff> wonderBuffs = new HashMap<String, ConfigWonderBuff>();
+	
 	public static FileConfiguration goodsConfig; /* goods.yml */
 	public static Map<String, ConfigTradeGood> goods = new HashMap<String, ConfigTradeGood>();
 	public static Map<String, ConfigTradeGood> landGoods = new HashMap<String, ConfigTradeGood>();
@@ -403,6 +408,12 @@ public class CivSettings {
 		ConfigGovernment.loadConfig(governmentConfig, governments);
 	}
 	
+	public static void reloadNewspaperConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		CivSettings.newspapers.clear();
+		gameConfig = loadCivConfig("game.yml");
+		ConfigNewspaper.loadConfig(gameConfig, newspapers);
+	}
+	
 	public static void reloadStructureConfigFiles() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
 		CivSettings.structures.clear();
 		structureConfig = loadCivConfig("structures.yml");
@@ -467,6 +478,7 @@ public class CivSettings {
 		ConfigEnchant.loadConfig(enchantConfig, enchants);
 		ConfigUnit.loadConfig(unitConfig, units);
 		ConfigMission.loadConfig(espionageConfig, missions);
+		ConfigNewspaper.loadConfig(gameConfig, newspapers);
 		ConfigPerk.loadConfig(perkConfig, perks);
 		ConfigCampLonghouseLevel.loadConfig(campConfig, longhouseLevels);
 		ConfigCampUpgrade.loadConfig(campConfig, campUpgrades);

@@ -37,7 +37,6 @@ import org.bukkit.Effect;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -76,9 +75,6 @@ import com.avrgaming.civcraft.main.CivData;
 import com.avrgaming.civcraft.main.CivGlobal;
 import com.avrgaming.civcraft.main.CivLog;
 import com.avrgaming.civcraft.main.CivMessage;
-import com.avrgaming.civcraft.mobs.MobSpawner;
-import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobLevel;
-import com.avrgaming.civcraft.mobs.MobSpawner.CustomMobType;
 import com.avrgaming.civcraft.object.Civilization;
 import com.avrgaming.civcraft.object.CultureChunk;
 import com.avrgaming.civcraft.object.Resident;
@@ -206,26 +202,6 @@ public class DebugCommand extends CommandBase {
 		commands.put("saveinv", "save an inventory");
 		commands.put("restoreinv", "restore your inventory.");
 		commands.put("arenainfo", "Shows arena info for this player.");
-		commands.put("spawn", "remote entities test");
-	}
-	
-	public void spawn_cmd() throws CivException {
-		Player player = getPlayer();		
-		String mob = getNamedString(1, "name");
-		String lvl = getNamedString(2, "level");
-		
-		MobSpawner.CustomMobType type = CustomMobType.valueOf(mob.toUpperCase());
-		MobSpawner.CustomMobLevel level = CustomMobLevel.valueOf(lvl.toUpperCase());
-		
-		if (type == null) {
-			throw new CivException("no mob named:"+mob);
-		}
-		
-		if (level == null) {
-			throw new CivException("no level named:"+lvl);
-		}
-		
-		MobSpawner.spawnCustomMob(type, level, player.getLocation());
 	}
 	
 	public void arenainfo_cmd() throws CivException {
@@ -616,15 +592,7 @@ public class DebugCommand extends CommandBase {
 		Player p = getPlayer();
 		String hex = getNamedString(1, "color code");
 		long value = Long.decode(hex);
-		
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
-		
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand == null || ItemManager.getId(inHand) == CivData.AIR) {
 			throw new CivException("please have an item in your hand.");
 		}
@@ -653,15 +621,7 @@ public class DebugCommand extends CommandBase {
 		Player p = getPlayer();
 		String key = getNamedString(1, "key");
 		String value = getNamedString(2, "value");
-		
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
-		
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand == null) {
 			throw new CivException("You must have an item in hand.");
 		}
@@ -670,21 +630,12 @@ public class DebugCommand extends CommandBase {
 		attrs.setCivCraftProperty(key, value);
 		p.getInventory().setItemInMainHand(attrs.getStack());
 		CivMessage.sendSuccess(p, "Set property.");
-		
 	}
 	
 	public void getcivnbt_cmd() throws CivException {
 		Player p = getPlayer();
 		String key = getNamedString(1, "key");
-		
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
-		
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand == null) {
 			throw new CivException("You must have an item in hand.");
 		}
@@ -696,13 +647,7 @@ public class DebugCommand extends CommandBase {
 	}
 	public void getdura_cmd() throws CivException {
 		Player p = getPlayer();
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		CivMessage.send(p, "Durability:"+inHand.getDurability());
 		CivMessage.send(p, "MaxDura:"+inHand.getType().getMaxDurability());
 	}
@@ -710,13 +655,7 @@ public class DebugCommand extends CommandBase {
 	public void setdura_cmd() throws CivException {
 		Player p = getPlayer();
 		Integer dura = getNamedInteger(1);
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		inHand.setDurability((short)dura.shortValue());
 		CivMessage.send(p, "Set Durability:"+inHand.getDurability());
 		CivMessage.send(p, "MaxDura:"+inHand.getType().getMaxDurability());
@@ -724,13 +663,7 @@ public class DebugCommand extends CommandBase {
 	
 	public void getmid_cmd() throws CivException {
 		Player p = getPlayer();
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand == null) {
 			throw new CivException("You need an item in your hand.");
 		}
@@ -739,14 +672,7 @@ public class DebugCommand extends CommandBase {
 	
 	public void setspecial_cmd() throws CivException {
 		Player p = getPlayer();
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
-		
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand == null) {
 			throw new CivException("You need an item in your hand.");
 		}
@@ -757,13 +683,7 @@ public class DebugCommand extends CommandBase {
 	
 	public void getspecial_cmd() throws CivException {
 		Player p = getPlayer();
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand == null) {
 			throw new CivException("You need an item in your hand.");
 		}
@@ -927,19 +847,11 @@ public class DebugCommand extends CommandBase {
 	
 	public void giveold_cmd() throws CivException {
 		Player p = getPlayer();
-		
 		if (args.length < 3) {
 			throw new CivException("Enter name and first lore line.");
 		}
 		
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
-		
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand != null) {
 			ItemMeta meta = inHand.getItemMeta();
 			meta.setDisplayName(args[1]);
@@ -952,14 +864,7 @@ public class DebugCommand extends CommandBase {
 	
 	public void loretest_cmd() throws CivException {
 		Player p = getPlayer();
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
-		
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand != null) {
 			ItemMeta meta = inHand.getItemMeta();
 			List<String> newLore = meta.getLore();
@@ -973,14 +878,7 @@ public class DebugCommand extends CommandBase {
 	
 	public void loreset_cmd() throws CivException {
 		Player p = getPlayer();
-		ItemStack inHand = null;
-		if (p.getInventory().getItemInOffHand() != null) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		} else {
-			inHand = p.getInventory().getItemInMainHand();
-		}
-		
+		ItemStack inHand = p.getInventory().getItemInMainHand();
 		if (inHand != null) {
 			LoreStoreage.setMatID(1337, inHand);
 		}
@@ -1317,11 +1215,6 @@ public class DebugCommand extends CommandBase {
 	
 	public void dupe_cmd() throws CivException {
 		Player p = getPlayer();
-		if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
-			CivMessage.sendError(p, "You cannot have items in your offhand!");
-			return;
-		}
-		
 		if (p.getInventory().getItemInMainHand() == null || ItemManager.getId(p.getInventory().getItemInMainHand()) == 0) {
 			throw new CivException("No item in hand.");
 		}

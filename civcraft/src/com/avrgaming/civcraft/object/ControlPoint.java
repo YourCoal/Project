@@ -22,7 +22,7 @@ import com.avrgaming.civcraft.structure.Buildable;
 import com.avrgaming.civcraft.util.BlockCoord;
 
 public class ControlPoint {
-
+	
 	/* Location of the control block. */
 	private BlockCoord coord;
 	
@@ -34,7 +34,7 @@ public class ControlPoint {
 	
 	/* TownHall this control point belongs to. */
 	private Buildable buildable;
-
+	
 	public ControlPoint (BlockCoord coord, Buildable buildable, int hitpoints) {
 		this.coord = coord;
 		this.setBuildable(buildable);

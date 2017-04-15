@@ -98,7 +98,7 @@ public class EffectEventTimer extends CivAsyncTask {
 			case "process_lab":
 				if (struct instanceof Lab) {
 					Lab lab = (Lab)struct;
-					lab.generateTownBeakers(this);
+					lab.generateTownScience(this);
 				}
 				break;
 			case "process_monument":
@@ -131,17 +131,17 @@ public class EffectEventTimer extends CivAsyncTask {
 			totalCulture += cultureSources.total;
 			
 			try {
-				double baseBeakers = CivSettings.getDouble(CivSettings.cultureConfig, "base_culture") * (town.getGovernment().culture_rate*2);
-				if (baseBeakers <= 0) {
-					baseBeakers = 0.5;
+				double baseScience = CivSettings.getDouble(CivSettings.cultureConfig, "base_culture") * (town.getGovernment().culture_rate*2);
+				if (baseScience <= 0) {
+					baseScience = 0.5;
 				}
 				
 				DecimalFormat df = new DecimalFormat("#.0");
-				String newTotal = df.format(baseBeakers);
-				double newBaseBeakers = Double.parseDouble(newTotal);
+				String newTotal = df.format(baseScience);
+				double newBaseScience = Double.parseDouble(newTotal);
 				
-				CivMessage.sendTown(town, CivColor.LightGreen+"Given "+CivColor.LightPurple+newBaseBeakers+CivColor.LightGreen+" culture from government rate.");
-				totalCulture += newBaseBeakers;
+				CivMessage.sendTown(town, CivColor.LightGreen+"Given "+CivColor.LightPurple+newBaseScience+CivColor.LightGreen+" culture from government rate.");
+				totalCulture += newBaseScience;
 			} catch (InvalidConfiguration e) {
 				e.printStackTrace();
 				return;
@@ -151,18 +151,18 @@ public class EffectEventTimer extends CivAsyncTask {
 				if (town.getCiv().getResearchProgress() > 0) {
 					return;
 				}
-				double unusedBeakers = Math.round(town.getUnusedBeakers());
-				double cultureToBeakerConversion = CivSettings.getDouble(CivSettings.cultureConfig, "beakers_per_culture");
-				if (unusedBeakers > 0) {
-					double cultureFromBeakers = Math.round(unusedBeakers*cultureToBeakerConversion);
-					if (cultureFromBeakers > 0) {
-						CivMessage.sendTown(town, CivColor.LightGreen+"Converted "+CivColor.LightPurple+unusedBeakers+CivColor.LightGreen+" beakers into "+CivColor.LightPurple+
-								cultureFromBeakers+CivColor.LightGreen+" culture, since no tech was being researched.");
+				double unusedScience = Math.round(town.getUnusedScience());
+				double cultureToScienceConversion = CivSettings.getDouble(CivSettings.cultureConfig, "science_per_culture");
+				if (unusedScience > 0) {
+					double cultureFromScience = Math.round(unusedScience*cultureToScienceConversion);
+					if (cultureFromScience > 0) {
+						CivMessage.sendTown(town, CivColor.LightGreen+"Converted "+CivColor.LightPurple+unusedScience+CivColor.LightGreen+" science into "+CivColor.LightPurple+
+								cultureFromScience+CivColor.LightGreen+" culture, since no tech was being researched.");
 						
-						totalCulture += cultureFromBeakers;
+						totalCulture += cultureFromScience;
 						totalCulture += Math.round(totalCulture);
 						town.addAccumulatedCulture(totalCulture);
-						town.setUnusedBeakers(0);
+						town.setUnusedScience(0);
 					}
 				}
 			} catch (InvalidConfiguration e) {

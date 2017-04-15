@@ -32,7 +32,7 @@ import com.avrgaming.civcraft.object.Civilization;
 public class ConfigTech {
 	public String id;
 	public String name;
-	public double beaker_cost;
+	public double science_cost;
 	public double cost;
 	public String require_techs;
 	public Integer points;
@@ -46,7 +46,7 @@ public class ConfigTech {
 			ConfigTech tech = new ConfigTech();
 			tech.id = (String)confTech.get("id");
 			tech.name = (String)confTech.get("name");
-			tech.beaker_cost = (Double)confTech.get("beaker_cost");
+			tech.science_cost = (Double)confTech.get("science_cost");
 			tech.cost = (Double)confTech.get("cost");
 			tech.require_techs = (String)confTech.get("require_techs");
 			tech.points = (Integer)confTech.get("points");
@@ -67,10 +67,10 @@ public class ConfigTech {
 		return rate;
 	}
 	
-	public double getAdjustedBeakerCost(Civilization civ) {
+	public double getAdjustedScienceCost(Civilization civ) {
 		double rate = 1.0;
 		rate -= eraRate(civ);
-		return Math.floor(this.beaker_cost*Math.max(rate, .01));
+		return Math.floor(this.science_cost*Math.max(rate, .01));
 	}
 	
 	public double getAdjustedTechCost(Civilization civ) {

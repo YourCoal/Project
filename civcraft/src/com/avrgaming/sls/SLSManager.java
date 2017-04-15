@@ -43,9 +43,14 @@ public class SLSManager implements Runnable {
 			throw new CivException("Cannot have a server description with a ';' in it.");
 		}
 		
-		serverAddress = CivSettings.getStringBase("server_address");
-		if (serverAddress.contains(";")) {
-			throw new CivException("Cannot have a server address with a ';' in it.");
+		String showCustomAddress = CivSettings.getStringBase("show_custom_address");
+		if (!showCustomAddress.equalsIgnoreCase("true") || showCustomAddress == null) {
+			serverAddress = Bukkit.getIp();
+		} else {
+			serverAddress = CivSettings.getStringBase("server_address");
+			if (serverAddress.contains(";")) {
+				throw new CivException("Cannot have a server address with a ';' in it.");
+			}
 		}
 		
 		serverTimezone = CivSettings.getStringBase("server_timezone");
@@ -63,16 +68,33 @@ public class SLSManager implements Runnable {
 	}
 	
 	public static String getParsedVersion() {
-		//String version = "Vanilla Minecraft 1.10-1.10.2";
 		String version = Bukkit.getVersion();
 		version = version.split("MC: ")[1].split("\\)")[0];
 		return version;
 	}
 	
+	public static String getAddressAndPort() throws InvalidConfiguration, CivException {
+		String ip = Bukkit.getIp();
+		String showCustomAddress = CivSettings.getStringBase("show_custom_address");
+		if (showCustomAddress.equalsIgnoreCase("true") && showCustomAddress != null) {
+			ip = CivSettings.getStringBase("server_address");
+			if (ip.contains(";")) {
+				throw new CivException("Cannot have a server address with a ';' in it.");
+			}
+		}
+		
+		String showPort = CivSettings.getStringBase("showPort");
+		if (!showPort.equalsIgnoreCase("true")) {
+			return ip;
+		} else {
+			return ip+":"+Bukkit.getPort();
+		}
+	}
+	
 	public static void sendHeartbeat() {
 		try {
 			InetAddress address = InetAddress.getByName("atlas.civcraft.net");
-			String message = gen_id+";"+serverName+";"+serverDescription+";"+serverTimezone+";"+serverAddress+";"
+			String message = gen_id+";"+serverName+";"+serverDescription+";"+serverTimezone+";"+getAddressAndPort()+";"
 						+Bukkit.getOnlinePlayers().size()+";"+Bukkit.getMaxPlayers()+";"+getParsedVersion();
 			
 			try {
@@ -90,7 +112,7 @@ public class SLSManager implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} catch (UnknownHostException e) {
+		} catch (UnknownHostException | InvalidConfiguration | CivException e) {
 			CivLog.error("Couldn't IP address to SLS service. If you're on a LAN with no internet access, disable SLS in the CivCraft config.");
 		}
 	}

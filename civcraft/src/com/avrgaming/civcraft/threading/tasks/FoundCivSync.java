@@ -28,7 +28,7 @@ import com.avrgaming.civcraft.object.Resident;
 import com.avrgaming.civcraft.util.CivColor;
 
 public class FoundCivSync implements Runnable {
-
+	
 	Resident resident;
 	
 	public FoundCivSync(Resident resident) {
@@ -37,22 +37,15 @@ public class FoundCivSync implements Runnable {
 	
 	@Override
 	public void run() {
-
 		Player player;
 		try {
 			player = CivGlobal.getPlayer(resident);
 		} catch (CivException e1) {
 			return;
-		}
-		
-		try {
+		} try {
 			Civilization.newCiv(resident.desiredCivName, resident.desiredCapitolName, resident, player, resident.desiredTownLocation);
 		} catch (CivException e) {
 			CivMessage.send(player, CivColor.Rose+e.getMessage());
 		}
-		
 	}
-
-	
-	
 }

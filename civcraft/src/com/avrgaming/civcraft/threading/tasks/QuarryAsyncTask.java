@@ -198,7 +198,7 @@ public class QuarryAsyncTask extends CivAsyncTask {
 								newItems.add(ItemManager.createItemStack(CivData.NETHER_BRICK, 2));
 							}
 						} else if (rand1 < ((int)((quarry.getBeakerChance(Block.WARTBLOCK))*randMax))) {
-							newItems.add(ItemManager.createItemStack(CivData.NETHER_WART_BLOCK, 2));
+							newItems.add(ItemManager.createItemStack(CivData.NETHERWART_BLOCK, 2));
 						} else {
 							newItems.add(ItemManager.createItemStack(CivData.NETHERRACK, 2));
 						} try {

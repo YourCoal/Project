@@ -45,21 +45,17 @@ public class DebugFarmCommand extends CommandBase {
 		commands.put("cropcache", "show the crop cache for this plot.");
 		commands.put("unloadchunk", "[x] [z] unloads this farm chunk");
 		commands.put("cache", "Runs the crop cache task.");
-
 	}
-
+	
 	public void unloadchunk_cmd() throws CivException {
-		
 		int x = getNamedInteger(1);
 		int z = getNamedInteger(2);
-		
 		Bukkit.getWorld("world").unloadChunk(x, z);
 		CivMessage.sendSuccess(sender, "Chunk "+x+","+z+" unloaded");
 	}
 	
 	public void showgrowth_cmd() throws CivException {
 		Player player = getPlayer();
-	
 		ChunkCoord coord = new ChunkCoord(player.getLocation());
 		FarmChunk fc = CivGlobal.getFarmChunk(coord);
 		if (fc == null) {
@@ -69,10 +65,8 @@ public class DebugFarmCommand extends CommandBase {
 		for(BlockCoord bcoord : fc.getLastGrownCrops()) {
 			bcoord.getBlock().getWorld().playEffect(bcoord.getLocation(), Effect.MOBSPAWNER_FLAMES, 1);
 		}
-		
 		CivMessage.sendSuccess(player, "Flashed last grown crops");
 	}
-	
 	
 	public void cropcache_cmd() throws CivException {
 		Player player = getPlayer();
@@ -90,7 +84,6 @@ public class DebugFarmCommand extends CommandBase {
 	}
 	
 	public void grow_cmd() throws CivException {
-		
 		int count = getNamedInteger(1);
 		for (int i = 0; i < count; i++) {
 			TaskMaster.asyncTask(new FarmGrowthSyncTask(), 0);
@@ -106,15 +99,14 @@ public class DebugFarmCommand extends CommandBase {
 	public void doDefaultAction() throws CivException {
 		showHelp();
 	}
-
+	
 	@Override
 	public void showHelp() {
 		showBasicHelp();
 	}
-
+	
 	@Override
 	public void permissionCheck() throws CivException {
 		
 	}
-
 }

@@ -28,6 +28,7 @@ public class ConfigMaterial {
 	public String[] lore = null;
 	public boolean craftable = false;
 	public String required_tech = null;
+	public String required_civic = null;
 	public boolean shaped = false;
 	public boolean shiny = false;
 	public HashMap<String, ConfigIngredient> ingredients;
@@ -113,6 +114,11 @@ public class ConfigMaterial {
 				mat.required_tech = required_tech;
 			}
 			
+			String required_civic = (String)b.get("required_civics");
+			if (required_civic != null) {
+				mat.required_civic = required_civic;
+			}
+			
 			List<Map<?,?>> comps = (List<Map<?,?>>)b.get("components");
 			if (comps != null) {
 				for (Map<?, ?> compObj : comps) {
@@ -185,13 +191,10 @@ public class ConfigMaterial {
 					mat.shape = shape;
 				}
 			}
-			
-
 			/* Add to category map. */
 			ConfigMaterialCategory.addMaterial(mat);
 			materials.put(mat.id, mat);
 		}
-		
 		CivLog.info("Loaded "+materials.size()+" Materials.");
 	}	
 	
@@ -213,16 +216,15 @@ public class ConfigMaterial {
 				return false;
 			}
 		}
-		
 		return true;	
 	}
 	
-	public String getRequireString() {
+	public String getRequireTechString() {
 		String out = "";
 		if (this.required_tech == null) {
 			return out;
 		}
-				
+		
 		/* Parse technoloies */
 		String[] split = this.required_tech.split(",");
 		for (String tech : split) {
@@ -232,8 +234,45 @@ public class ConfigMaterial {
 				out += technology.name+", ";
 			}
 		}
-		
 		return out;
 	}
 	
+	public boolean playerHasCivic(Player player) {
+		if (this.required_civic == null) {
+			return true;
+		}
+		
+		Resident resident = CivGlobal.getResident(player);
+		if (resident == null || !resident.hasTown()) {
+			return false;
+		}
+		
+		/* Parse civics */
+		String[] split = this.required_civic.split(",");
+		for (String tech : split) {
+			tech = tech.replace(" ", "");
+			if (!resident.getCiv().hasCivicology(tech)) {
+				return false;
+			}
+		}
+		return true;	
+	}
+	
+	public String getRequireCivicString() {
+		String out = "";
+		if (this.required_civic == null) {
+			return out;
+		}
+		
+		/* Parse technoloies */
+		String[] split = this.required_civic.split(",");
+		for (String civic : split) {
+			civic = civic.replace(" ", "");
+			ConfigCivic civics = CivSettings.civics.get(civic);
+			if (civics != null) {
+				out += civics.name+", ";
+			}
+		}
+		return out;
+	}
 }

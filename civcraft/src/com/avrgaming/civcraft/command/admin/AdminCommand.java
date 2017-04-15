@@ -23,10 +23,13 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -76,7 +79,6 @@ public class AdminCommand extends CommandBase {
 		commands.put("cbinstantbreak", "Allows instant breaking of control blocks.");
 
 		commands.put("recover", "Manage recovery commands");
-		commands.put("server", "shows the name of this server");
 		commands.put("spawnunit", "[unit-id] [town] spawn the unit with this id for this town.");
 
 		commands.put("chestreport", "[radius] check in this radius for chests");
@@ -98,13 +100,69 @@ public class AdminCommand extends CommandBase {
 		commands.put("arena", "Arena management commands.");
 		commands.put("perk", "Admin perk management.");
 		
-		commands.put("mob", "Mob management commands.");
 		commands.put("gui", "Opens book options. Type 'open' after book to get the GUI.");
 		commands.put("reload", "Allows for some aspects of CivCraft to be reloaded in the server.");
 		commands.put("holograms", "Refreshes all holograms in the game.");
 		commands.put("test", "Literally for testing purposes.");
 		commands.put("usd", "Update Structure Districts");
 		commands.put("savesql", "Saves SQL Databases");
+	}
+	
+	public void test_cmd() {
+//		CivMessage.sendSuccess(sender, "Nothing to test right now.");
+		
+		Player player = (Player) sender;
+		Location teleportLocation = null;
+		Location teleportLocationBelow = null;
+		boolean isOnLand = false;
+		boolean isClearAbove = false;
+		
+		Random random = new Random();
+		int x = -3500+(random.nextInt(7000));
+		int y = 100;
+		int z = -3500+(random.nextInt(7000));
+		
+		while (isOnLand == false) {
+			teleportLocation = new Location(player.getWorld(), x, y, z);
+			teleportLocationBelow = new Location(player.getWorld(), x, y-1, z);
+			if (teleportLocation.getBlock().getType() != Material.AIR && teleportLocation.getBlock().getType() != Material.BEDROCK &&
+					teleportLocation.getBlock().getType() != Material.WATER && teleportLocation.getBlock().getType() != Material.LAVA &&
+					teleportLocation.getBlock().getType() != Material.STATIONARY_WATER && teleportLocation.getBlock().getType() != Material.STATIONARY_LAVA &&
+					teleportLocationBelow.getBlock().getType() != Material.AIR && teleportLocationBelow.getBlock().getType() != Material.BEDROCK &&
+					teleportLocationBelow.getBlock().getType() != Material.WATER && teleportLocationBelow.getBlock().getType() != Material.LAVA &&
+					teleportLocationBelow.getBlock().getType() != Material.STATIONARY_WATER && teleportLocationBelow.getBlock().getType() != Material.STATIONARY_LAVA
+					
+					&& teleportLocation.getBlock().getBiome() != Biome.DEEP_OCEAN && y >= 63) {
+				isOnLand = true;
+			} else {
+				if (y > 63) {
+					y--;
+				} else {
+					x++;
+					y = 100;
+					z++;
+				}
+			}
+		}
+		
+		while (isClearAbove == false) {
+			Location tpLocAbove1 = new Location(player.getWorld(), x, y+1, z);
+			Location tpLocAbove2 = new Location(player.getWorld(), x, y+2, z);
+			Location tpLocAbove3 = new Location(player.getWorld(), x, y+3, z);
+			Location tpLocAbove4 = new Location(player.getWorld(), x, y+4, z);
+			if (tpLocAbove1.getBlock().getType() == Material.AIR && tpLocAbove2.getBlock().getType() == Material.AIR &&
+					tpLocAbove3.getBlock().getType() == Material.AIR && tpLocAbove4.getBlock().getType() == Material.AIR) {
+				isClearAbove = true;
+			} else {
+				x++;
+				y = 100;
+				z++;
+				isOnLand = false;
+			}
+		}
+		
+		player.teleport(new Location(player.getWorld(), teleportLocation.getX(), teleportLocation.getY()+2, teleportLocation.getZ()));
+		CivMessage.sendSuccess(player, "You have been teleported to "+x+", "+y+", "+z+"!");
 	}
 	
 	public void savesql_cmd() {
@@ -164,12 +222,8 @@ public class AdminCommand extends CommandBase {
 	
 	public void holograms_cmd() {
 		HolographicDisplaysListener.generateTradeGoodHolograms();
-		HolographicDisplaysListener.generateBankHolograms();
+//		HolographicDisplaysListener.generateBankHolograms();
 		CivMessage.sendSuccess(sender, "Updated holograms.");
-	}
-	
-	public void test_cmd() {
-		CivMessage.sendSuccess(sender, "Nothing to test right now.");
 	}
 	
 /*	public void test_cmd() {
@@ -229,27 +283,27 @@ public class AdminCommand extends CommandBase {
 				}
 			}
 			
-			String out6a = "Top 3 civs with most members this phase:";
+			String out6a = "Top 5 civs with most members this phase:";
 			String out6b = "";
 			synchronized(CivGlobal.civilizationMemberCount) {
 				int i = 1;
 				for (Integer members : CivGlobal.civilizationMemberCount.descendingKeySet()) {
 					out6b = i+") "+CivColor.Gold+CivGlobal.civilizationMemberCount.get(members).getName()+CivColor.White+" - "+members+" members";
 					i++;
-					if (i > 3) {
+					if (i > 5) {
 						break;
 					}
 				}
 			}
 			
-			String out7a = "Top 3 towns with most members this phase:";
+			String out7a = "Top 5 towns with most members this phase:";
 			String out7b = "";
 			synchronized(CivGlobal.townMemberCount) {
 				int i = 1;
 				for (Integer members : CivGlobal.townMemberCount.descendingKeySet()) {
 					out7b = i+") "+CivColor.Gold+CivGlobal.townMemberCount.get(members).getName()+CivColor.White+" - "+members+" members";
 					i++;
-					if (i > 3) {
+					if (i > 5) {
 						break;
 					}
 				}
@@ -262,7 +316,7 @@ public class AdminCommand extends CommandBase {
 				for (Integer townCount : CivGlobal.civilizationTownCount.descendingKeySet()) {
 					out8b = i+") "+CivColor.Gold+CivGlobal.civilizationTownCount.get(townCount).getName()+CivColor.White+" - "+townCount+" towns";
 					i++;
-					if (i > 3) {
+					if (i > 5) {
 						break;
 					}
 				}
@@ -301,15 +355,12 @@ public class AdminCommand extends CommandBase {
 			Thread.sleep(9000);
 			CivMessage.global(out9a);
 			CivMessage.global(out9b);
+			Thread.sleep(9000);
+			CivMessage.global(CivColor.BOLD+"Thank you all for playing!");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}*/
-	
-	public void mob_cmd() {
-		AdminMobCommand cmd = new AdminMobCommand();	
-		cmd.onCommand(sender, null, "mob", this.stripArgs(args, 1));
-	}
 	
 	public void gui_cmd() {
 		AdminGUICommand cmd = new AdminGUICommand();	
@@ -417,7 +468,6 @@ public class AdminCommand extends CommandBase {
 	}
 	
 	public void playerreport_cmd() {
-	
 		LinkedList<OfflinePlayer> offplayers = new LinkedList<OfflinePlayer>();
 		for (OfflinePlayer offplayer : Bukkit.getOfflinePlayers()) {
 			offplayers.add(offplayer);
@@ -479,15 +529,8 @@ public class AdminCommand extends CommandBase {
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			throw new CivException(e.getMessage());
 		}
-
-		
 		CivMessage.sendSuccess(sender, "Spawned a "+unit.name);
 	}
-	
-	public void server_cmd() {
-		CivMessage.send(sender, Bukkit.getServerName());
-	}
-	
 	
 	public void recover_cmd() {
 		AdminRecoverCommand cmd = new AdminRecoverCommand();	

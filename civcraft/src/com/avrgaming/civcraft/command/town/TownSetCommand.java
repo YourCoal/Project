@@ -66,7 +66,7 @@ public class TownSetCommand extends CommandBase {
 		Stable stable = (Stable)struct;
 		
 		if (feeInt < Stable.FEE_MIN || feeInt > Stable.FEE_MAX) {
-			throw new CivException("Must be a number between 5% and 100%");
+			throw new CivException("Must be a number between 0% and 50%");
 		}
 	
 		stable.setNonResidentFee(((double)feeInt/100));
@@ -80,7 +80,7 @@ public class TownSetCommand extends CommandBase {
 		Integer rate = getNamedInteger(1);
 		
 		if (rate != 10 && rate != 30 && rate != 60) {
-			throw new CivException("Reporting rate must be 10,30, or 60 seconds.");
+			throw new CivException("Reporting rate must be 10, 30, or 60 seconds.");
 		}
 		
 		for (Structure struct : town.getStructures()) {
@@ -96,8 +96,8 @@ public class TownSetCommand extends CommandBase {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
 		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 15) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_blacksmith");
@@ -117,7 +117,7 @@ public class TownSetCommand extends CommandBase {
 		Integer feeInt = getNamedInteger(1);
 		
 		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_library");
@@ -135,8 +135,8 @@ public class TownSetCommand extends CommandBase {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
 		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_grocer");
@@ -155,8 +155,8 @@ public class TownSetCommand extends CommandBase {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
 		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_store");
@@ -175,8 +175,8 @@ public class TownSetCommand extends CommandBase {
 		Town town = getSelectedTown();
 		Integer feeInt = getNamedInteger(1);
 		
-		if (feeInt < 5 || feeInt > 15) {
-			throw new CivException("Must be a number between 5% and 15%");
+		if (feeInt < 0 || feeInt > 20) {
+			throw new CivException("Must be a number between 0% and 20%");
 		}
 		
 		Structure struct = town.findStructureByConfigId("s_bank");

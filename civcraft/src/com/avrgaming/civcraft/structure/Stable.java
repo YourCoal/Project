@@ -53,11 +53,10 @@ import gpl.HorseModifier;
 import gpl.HorseModifier.HorseType;
 import gpl.HorseModifier.HorseVariant;
 
-@SuppressWarnings("deprecation")
 public class Stable extends Structure {
 
-	public static Integer FEE_MIN = 5;
-	public static Integer FEE_MAX = 100;
+	public static Integer FEE_MIN = 0;
+	public static Integer FEE_MAX = 50;
 	private HashMap<Integer, SignSelectionComponent> signSelectors = new HashMap<Integer, SignSelectionComponent>();
 	private BlockCoord horseSpawnCoord;
 	private BlockCoord muleSpawnCoord;
@@ -153,7 +152,7 @@ public class Stable extends Structure {
 				}	
 
 				HorseModifier mod;
-				if (!horse.mule) {			
+				if (!horse.mule) {
 					mod = HorseModifier.spawn(horseSpawnCoord.getLocation());
 					mod.setType(HorseType.NORMAL);
 				} else {
@@ -168,7 +167,6 @@ public class Stable extends Structure {
 				((Horse)mod.getHorse()).setHealth(horse.health);
 				((Horse)mod.getHorse()).setOwner(player);
 				((Horse)mod.getHorse()).setAdult();
-				
 				CivMessage.send(player, CivColor.LightGreen+"Paid "+paid+" coins.");
 			}
 		}

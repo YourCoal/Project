@@ -78,10 +78,6 @@ import com.avrgaming.civcraft.listener.minecraft.MinecraftVersionListener;
 import com.avrgaming.civcraft.loreenhancements.LoreEnhancementArenaItem;
 import com.avrgaming.civcraft.lorestorage.LoreCraftableMaterialListener;
 import com.avrgaming.civcraft.lorestorage.LoreGuiItemListener;
-import com.avrgaming.civcraft.mobs.CommonCustomMob;
-import com.avrgaming.civcraft.mobs.MobSpawner;
-import com.avrgaming.civcraft.mobs.listeners.MobListener;
-import com.avrgaming.civcraft.mobs.timers.MobSpawnerTimer;
 import com.avrgaming.civcraft.nocheat.NoCheatPlusSurvialFlyHandler;
 import com.avrgaming.civcraft.populators.TradeGoodPopulator;
 import com.avrgaming.civcraft.randomevents.RandomEventSweeper;
@@ -104,7 +100,6 @@ import com.avrgaming.civcraft.threading.tasks.ProjectileComponentTimer;
 import com.avrgaming.civcraft.threading.tasks.ScoutTowerTask;
 import com.avrgaming.civcraft.threading.timers.ActionBarUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.AnnouncementTimer;
-import com.avrgaming.civcraft.threading.timers.BeakerTimer;
 import com.avrgaming.civcraft.threading.timers.BossBarUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.ChangeGovernmentTimer;
 import com.avrgaming.civcraft.threading.timers.PlayerLocationCacheUpdate;
@@ -112,6 +107,7 @@ import com.avrgaming.civcraft.threading.timers.PlayerProximityComponentTimer;
 import com.avrgaming.civcraft.threading.timers.PlayerTagUpdateTimer;
 import com.avrgaming.civcraft.threading.timers.ReduceExposureTimer;
 import com.avrgaming.civcraft.threading.timers.RegenTimer;
+import com.avrgaming.civcraft.threading.timers.ScienceTimer;
 import com.avrgaming.civcraft.threading.timers.Second1UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.Second7UpdateEventTimer;
 import com.avrgaming.civcraft.threading.timers.UnitTrainTimer;
@@ -122,8 +118,6 @@ import com.avrgaming.civcraft.util.TimeTools;
 import com.avrgaming.civcraft.war.WarListener;
 import com.avrgaming.global.scores.CalculateScoreTimer;
 import com.avrgaming.sls.SLSManager;
-import com.moblib.moblib.MobLib;
-import com.moblib.moblib.MobLibListener;
 
 import pvptimer.PvPListener;
 import pvptimer.PvPTimer;
@@ -153,7 +147,7 @@ public class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("Second7UpdateEventTimer", new Second7UpdateEventTimer(), TimeTools.toTicks(7));
 		
 		TaskMaster.asyncTimer("RegenTimer", new RegenTimer(), TimeTools.toTicks(5));
-		TaskMaster.asyncTimer("BeakerTimer", new BeakerTimer(60), TimeTools.toTicks(60));
+		TaskMaster.asyncTimer("ScienceTimer", new ScienceTimer(60), TimeTools.toTicks(60));
 		TaskMaster.syncTimer("UnitTrainTimer", new UnitTrainTimer(), TimeTools.toTicks(1));
 		TaskMaster.asyncTimer("ReduceExposureTimer", new ReduceExposureTimer(), 0, TimeTools.toTicks(2));
 
@@ -197,7 +191,6 @@ public class CivCraft extends JavaPlugin {
 		TaskMaster.asyncTimer("SessionDBAsyncTimer", new SessionDBAsyncTimer(), 10);
 		TaskMaster.asyncTimer("pvptimer", new PvPTimer(), TimeTools.toTicks(30));
 		
-		TaskMaster.syncTimer("MobSpawner", new MobSpawnerTimer(), TimeTools.toTicks(15));
 		TaskMaster.syncTimer("ArenaTimer", new ArenaManager(), TimeTools.toTicks(30));
 		TaskMaster.syncTimer("ArenaTimeoutTimer", new ArenaTimer(), TimeTools.toTicks(1));
 	}
@@ -221,9 +214,6 @@ public class CivCraft extends JavaPlugin {
 		pluginManager.registerEvents(new PvPListener(), this);
 		pluginManager.registerEvents(new LoreEnhancementArenaItem(), this);
 		
-		pluginManager.registerEvents(new MobListener(), this);
-		pluginManager.registerEvents(new MobLibListener(), this);
-		pluginManager.registerEvents(new CommonCustomMob(), this);
 		pluginManager.registerEvents(new MinecraftVersionListener(), this);
 		
 		//Registered GUIs
@@ -300,16 +290,13 @@ public class CivCraft extends JavaPlugin {
 			CivLog.warning("NoCheatPlus not found, not registering NCP hooks. This is fine if you're not using NCP.");
 		}
 		
-		MobLib.registerAllEntities();
-		MobSpawner.register();
-		
 		startTimers();
 		CivCraft.addFurnaceRecipes();
 		
 		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 			public void run() {
 				HolographicDisplaysListener.generateTradeGoodHolograms();
-				HolographicDisplaysListener.generateBankHolograms();
+//				HolographicDisplaysListener.generateBankHolograms();
 			}
 		});
 	}
@@ -324,7 +311,6 @@ public class CivCraft extends JavaPlugin {
 	public void onDisable() {
 		SQLUpdate.save();
 		isDisable = true;
-		MobSpawner.despawnAll();
 		super.onDisable();
 	}
 	

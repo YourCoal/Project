@@ -24,6 +24,7 @@ public class AdminReloadCommand extends CommandBase implements Listener {
 		displayName = "Admin Reload";
 		
 		commands.put("govs", "Reloads the governments.yml file");
+		commands.put("newspaper", "Reloads the game.yml file (of newspapers only)");
 	}
 	
 	public void govs_cmd() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
@@ -33,6 +34,12 @@ public class AdminReloadCommand extends CommandBase implements Listener {
 			civ.setGovernment(gov.id);
 		}
 		CivMessage.send(sender, CivColor.Gold+"Reloaded Governments");
+	}
+	
+	public void newspaper_cmd() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {
+		CivSettings.reloadNewspaperConfigFiles();
+		CivMessage.send(sender, CivColor.Gold+"Reloaded the Newspaper");
+		CivMessage.global("Extra Extra! The CivCraft Daily News has been updated with a new issue!");
 	}
 	
 	public void structures_cmd() throws FileNotFoundException, IOException, InvalidConfigurationException, InvalidConfiguration {

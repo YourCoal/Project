@@ -39,10 +39,8 @@ import com.avrgaming.civcraft.util.SimpleBlock;
 
 public class PostBuildSyncTask implements Runnable {
 
-	/*
-	 * Search the template for special command blocks and handle them *after* the structure 
-	 * has finished building.
-	 */
+	/* Search the template for special command blocks and handle them *after* the structure 
+	 * has finished building. */
 	
 	Template tpl;
 	Buildable buildable;
@@ -56,7 +54,6 @@ public class PostBuildSyncTask implements Runnable {
 		for (BlockCoord relativeCoord : tpl.doorRelativeLocations) {
 			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
 			BlockCoord absCoord = new BlockCoord(buildable.getCorner().getBlock().getRelative(relativeCoord.getX(), relativeCoord.getY(), relativeCoord.getZ()));
-
 			Block block = absCoord.getBlock();
 			if (ItemManager.getId(block) != sb.getType()) {
 				if (buildable.getCiv().isAdminCiv()) {
@@ -66,29 +63,25 @@ public class PostBuildSyncTask implements Runnable {
 				}
 			}
 		}
-			
+		
 		for (BlockCoord relativeCoord : tpl.attachableLocations) {
 			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
 			BlockCoord absCoord = new BlockCoord(buildable.getCorner().getBlock().getRelative(relativeCoord.getX(), relativeCoord.getY(), relativeCoord.getZ()));
-
 			Block block = absCoord.getBlock();
 			if (ItemManager.getId(block) != sb.getType()) {
 					ItemManager.setTypeIdAndData(block, sb.getType(), (byte)sb.getData(), false);
 			}
 		}
 		
-		/*
-		 * Use the location's of the command blocks in the template and the buildable's corner 
+		/* Use the location's of the command blocks in the template and the buildable's corner 
 		 * to find their real positions. Then perform any special building we may want to do
-		 * at those locations.
-		 */
+		 * at those locations.  */
 		/* These block coords do not point to a location in the world, just a location in the template. */
 		for (BlockCoord relativeCoord : tpl.commandBlockRelativeLocations) {
 			SimpleBlock sb = tpl.blocks[relativeCoord.getX()][relativeCoord.getY()][relativeCoord.getZ()];
 			StructureSign structSign;
 			Block block;
 			BlockCoord absCoord = new BlockCoord(buildable.getCorner().getBlock().getRelative(relativeCoord.getX(), relativeCoord.getY(), relativeCoord.getZ()));
-			
 			/* Signs and chests should already be handled, look for more exotic things. */
 			switch (sb.command) {
 			case "/tradeoutpost":
@@ -101,42 +94,54 @@ public class PostBuildSyncTask implements Runnable {
 					} catch (CivException e) {
 						e.printStackTrace();
 					}
-					
 				}
 				break;
-			
 			case "/techbar":
 				if (buildable instanceof TownHall) {
 					TownHall townhall = (TownHall)buildable;
-					
 					int index = Integer.valueOf(sb.keyvalues.get("id"));
 					townhall.addTechBarBlock(absCoord, index);
-					
 				}
 				break;
 			case "/techname":
 				if (buildable instanceof TownHall) {
 					TownHall townhall = (TownHall)buildable;
-					
 					townhall.setTechnameSign(absCoord);
 					townhall.setTechnameSignData((byte)sb.getData());
-					
 				}							
 				break;
 			case "/techdata":
 				if (buildable instanceof TownHall) {
 					TownHall townhall = (TownHall)buildable;
-					
 					townhall.setTechdataSign(absCoord);
 					townhall.setTechdataSignData((byte)sb.getData());
-					
+				}
+				break;
+			case "/civicbar":
+				if (buildable instanceof TownHall) {
+					TownHall townhall = (TownHall)buildable;
+					int index = Integer.valueOf(sb.keyvalues.get("id"));
+					townhall.addCivicBarBlock(absCoord, index);
+				}
+				break;
+			case "/civicname":
+				if (buildable instanceof TownHall) {
+					TownHall townhall = (TownHall)buildable;
+					townhall.setCivicnameSign(absCoord);
+					townhall.setCivicnameSignData((byte)sb.getData());
+				}							
+				break;
+			case "/civicdata":
+				if (buildable instanceof TownHall) {
+					TownHall townhall = (TownHall)buildable;
+					townhall.setCivicdataSign(absCoord);
+					townhall.setCivicdataSignData((byte)sb.getData());
 				}
 				break;
 			case "/itemframe":
 				String strvalue = sb.keyvalues.get("id");
 				if (strvalue != null) {
 					int index = Integer.valueOf(strvalue);
-					
 					if (buildable instanceof TownHall) {
 						TownHall townhall = (TownHall)buildable;
 						townhall.createGoodieItemFrame(absCoord, index, sb.getData());
@@ -147,14 +152,12 @@ public class PostBuildSyncTask implements Runnable {
 			case "/respawn":
 				if (buildable instanceof TownHall) {
 					TownHall townhall = (TownHall)buildable;
-					
 					townhall.setRespawnPoint(absCoord);
 				}
 				break;
 			case "/revive":
 				if (buildable instanceof TownHall) {
 					TownHall townhall = (TownHall)buildable;
-					
 					townhall.setRevivePoint(absCoord);
 				}
 				break;
@@ -183,18 +186,15 @@ public class PostBuildSyncTask implements Runnable {
 				block = absCoord.getBlock();
 				ItemManager.setTypeId(block, sb.getType());
 				ItemManager.setData(block, sb.getData());
-				
 				structSign.setDirection(ItemManager.getData(block.getState()));
 				for (String key : sb.keyvalues.keySet()) {
 					structSign.setType(key);
 					structSign.setAction(sb.keyvalues.get(key));
 					break;
 				}
-				
 				structSign.setOwner(buildable);
 				buildable.addStructureSign(structSign);
 				CivGlobal.addStructureSign(structSign);
-				
 				break;
 			case "/chest":
 				StructureChest structChest = CivGlobal.getStructureChest(absCoord);
@@ -212,23 +212,23 @@ public class PostBuildSyncTask implements Runnable {
 					byte chestData = CivData.convertSignDataToChestData((byte)sb.getData());
 					ItemManager.setTypeId(block, CivData.CHEST);
 					ItemManager.setData(block, chestData, true);
-				
 					Chest chest = (Chest)block.getState();
 					MaterialData data = chest.getData();
 					ItemManager.setData(data, chestData);
 					chest.setData(data);
 					chest.update();
 				}
-				
 				break;
 			}
-			
 			buildable.onPostBuild(absCoord, sb);
 		}
 		/* Run the tech bar task now in order to protect the blocks */
 		if (buildable instanceof TownHall) {
 			UpdateTechBar techbartask = new UpdateTechBar(buildable.getCiv());
 			techbartask.run();
+			
+			UpdateCivicBar civicbartask = new UpdateCivicBar(buildable.getCiv());
+			civicbartask.run();
 		}
 		
 	//	if (buildable instanceof Structure) {
@@ -240,5 +240,4 @@ public class PostBuildSyncTask implements Runnable {
 	public void run() {
 		PostBuildSyncTask.start(tpl, buildable);
 	}
-	
 }

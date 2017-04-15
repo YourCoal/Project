@@ -343,18 +343,55 @@ public class CivMessage {
 				} catch (CivException e) {
 				}
 			}
-			
 		}
 	}
-
-
+	
+	public static void sendCivCivicError(Civilization civ, String string) {
+		CivLog.info("[Civ:"+civ.getName()+"][CIVIC_ERROR] "+string);
+		for (Town t : civ.getTowns()) {
+			for (Resident resident : t.getResidents()) {
+				if (!resident.isShowCiv()) {
+					continue;
+				}
+				
+				Player player;
+				try {
+					player = CivGlobal.getPlayer(resident);
+					if (player != null) {
+						CivMessage.send(player, CivColor.LightPurple+"[Civ] "+CivColor.RoseItalic+"[Civic Error] "+CivColor.White+string);
+					}
+				} catch (CivException e) {
+				}
+			}
+		}
+	}
+	
+	public static void sendCivTechError(Civilization civ, String string) {
+		CivLog.info("[Civ:"+civ.getName()+"][TECH_ERROR] "+string);
+		for (Town t : civ.getTowns()) {
+			for (Resident resident : t.getResidents()) {
+				if (!resident.isShowCiv()) {
+					continue;
+				}
+				
+				Player player;
+				try {
+					player = CivGlobal.getPlayer(resident);
+					if (player != null) {
+						CivMessage.send(player, CivColor.LightPurple+"[Civ] "+CivColor.RoseItalic+"[Tech Error] "+CivColor.White+string);
+					}
+				} catch (CivException e) {
+				}
+			}
+		}
+	}
+	
 	public static void send(CommandSender sender, List<String> outs) {
 		for (String str : outs) {
 			send(sender, str);
 		}
 	}
-
-
+	
 	public static void sendTownChat(Town town, Resident resident, String format, String message) {
 		if (town == null) {
 			try {

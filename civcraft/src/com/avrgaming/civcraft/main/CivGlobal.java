@@ -155,6 +155,7 @@ public class CivGlobal {
 	public static HashSet<BlockCoord> vanillaGrowthLocations = new HashSet<BlockCoord>();
 	private static Map<BlockCoord, Market> markets = new ConcurrentHashMap<BlockCoord, Market>();
 	public static HashSet<String> researchedTechs = new HashSet<String>();
+	public static HashSet<String> researchedCivics = new HashSet<String>();
 	
 	/* TODO change this to true for MC 1.8 */
 //	public static boolean useUUID = false;

@@ -18,7 +18,6 @@
  */
 package com.avrgaming.civcraft.threading.tasks;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -94,7 +93,7 @@ public class PlayerLoginAsyncTask implements Runnable {
 							try {
 								resident = new Resident(getPlayer().getUniqueId(), getPlayer().getName());
 							} catch (InvalidNameException e) {
-								CivLog.info("Resident has invalid name:"+resident.getName());
+								CivLog.info("Resident has invalid name: "+resident.getName());
 								TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, "You have an invalid name. Sorry."));
 								return;
 							}
@@ -120,12 +119,11 @@ public class PlayerLoginAsyncTask implements Runnable {
 							CivMessage.send(resident,  "Generating player... "+CivColor.LightGray+"Enabling PvP Timer...");
 							CivMessage.send(resident, CivColor.LightGray+"You now have a PvP Timer for "+mins+" minutes.");
 							resident.save();
-							resident.saveNow();
-							CivMessage.send(resident,  "You will be kicked in 10 seconds so we can save your new stats...");
-							Thread.sleep(10000);
-							TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, 
-									"Saving Stats... Rejoin Server."));
-						} catch (InterruptedException | CivException | SQLException e) {
+//							CivMessage.send(resident,  "You will be kicked in 10 seconds so we can save your new stats...");
+//							Thread.sleep(10000);
+//							TaskMaster.syncTask(new PlayerKickBan(getPlayer().getName(), true, false, 
+//									"Saving Stats... Rejoin Server."));
+						} catch (InterruptedException | CivException e) {
 							e.printStackTrace();
 						}
 					}

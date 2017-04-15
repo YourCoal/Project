@@ -26,7 +26,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import com.avrgaming.civcraft.main.CivLog;
 
 public class ConfigMission {
-
+	
 	public String id;
 	public String name;
 	public List<String> description;
@@ -51,7 +51,7 @@ public class ConfigMission {
 		this.cooldown = mission.cooldown;
 		this.intel = mission.intel;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public static void loadConfig(FileConfiguration cfg, Map<String, ConfigMission> missions){
 		missions.clear();
@@ -69,11 +69,8 @@ public class ConfigMission {
 			mission.compromise_chance = (Double)b.get("compromise_chance");
 			mission.slot = (Integer)b.get("slot");
 			mission.description = (List<String>) b.get("description");
-			
 			missions.put(mission.id.toLowerCase(), mission);
 		}
-		
 		CivLog.info("Loaded "+missions.size()+" Espionage Missions.");
-	}	
-	
+	}
 }

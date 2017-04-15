@@ -307,7 +307,6 @@ public class Template {
 	}
 	
 	public void buildScaffolding(Location center) {
-		
 		for (int y = 0; y < this.size_y; y++) {
 			Block b = center.getBlock().getRelative(0, y, 0);
 			ItemManager.setTypeId(b, CivData.BEDROCK);		

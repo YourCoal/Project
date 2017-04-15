@@ -4,7 +4,7 @@ quarry:
 #        max: 10000
 #        stone_rate: 0.5
 #        gda_rate: 0.3
-#    beakers:
+#    science:
 #        max: 10000
 #        wartblock_rate: 0.5
 #        brm_rate: 0.3
@@ -24,8 +24,9 @@ quarry:
 #====================[ Trommel Settings ]====================#
 #Basic Information
 trommel:
-    technocracy_rate: 1.75
+    despotism_rate: 1.75
     penalty_rate: 0.85
+    district_block_chance: 0.003
 #
 trommel_cobble:
     max: 10000
@@ -37,43 +38,43 @@ trommel_cobble:
 #
 trommel_stone:
     max: 10000
-    iron_rate: 0.05
-    gold_rate: 0.02
-    redstone_rate: 0.01
-    diamond_rate: 0.005
-    emerald_rate: 0.002
+    iron_rate: 0.06
+    gold_rate: 0.04
+    redstone_rate: 0.025
+    diamond_rate: 0.01
+    emerald_rate: 0.004
 #
 trommel_granite:
     max: 10000
     iron_rate: 0.05
-    gold_rate: 0.02
-    redstone_rate: 0.01
-    diamond_rate: 0.005
-    emerald_rate: 0.002
+    gold_rate: 0.03
+    redstone_rate: 0.015
+    diamond_rate: 0.008
+    emerald_rate: 0.003
 #
 trommel_diorite:
     max: 10000
     iron_rate: 0.05
-    gold_rate: 0.02
-    redstone_rate: 0.01
-    diamond_rate: 0.005
-    emerald_rate: 0.002
+    gold_rate: 0.03
+    redstone_rate: 0.015
+    diamond_rate: 0.008
+    emerald_rate: 0.003
 #
 trommel_andesite:
     max: 10000
     iron_rate: 0.05
-    gold_rate: 0.02
-    redstone_rate: 0.01
-    diamond_rate: 0.005
-    emerald_rate: 0.002
+    gold_rate: 0.03
+    redstone_rate: 0.015
+    diamond_rate: 0.008
+    emerald_rate: 0.003
 #
 trommel_obsidian:
     max: 100000
-    iron_rate: 0.1
-    gold_rate: 0.04
-    redstone_rate: 0.02
-    diamond_rate: 0.01
-    emerald_rate: 0.004
+    iron_rate: 0.15
+    gold_rate: 0.07
+    redstone_rate: 0.05
+    diamond_rate: 0.03
+    emerald_rate: 0.015
 #
 ################ Grocer Settings ###############
 grocer_levels:
@@ -311,53 +312,53 @@ lab_levels:
    - level: 1
      consumes:
          - 331,3
-     beakers: 30.0
+     science: 30.0
      count: 24
 #
    - level: 2
      consumes:
          - 331,6
-     beakers: 60.0
+     science: 60.0
      count: 36
 #
    - level: 3
      consumes:
          - 331,9
-     beakers: 90.0
+     science: 90.0
      count: 48
 #
    - level: 4
      consumes:
          - 331,12
-     beakers: 120.0
+     science: 120.0
      count: 60
 ##### Redstone, Gold
    - level: 5
      consumes:
          - 331,12
          - 266,2
-     beakers: 150.0
+     science: 150.0
      count: 72
 #
    - level: 6
      consumes:
          - 331,15
          - 266,4
-     beakers: 180.0
+     science: 180.0
      count: 84
 #
    - level: 7
      consumes:
          - 331,18
          - 266,6
-     beakers: 210.0
+     science: 210.0
      count: 96
 #
    - level: 8
      consumes:
          - 331,21
          - 266,8
-     beakers: 240.0
+     science: 240.0
      count: 108
 ##### Redstone, Gold, Emerald
    - level: 9
@@ -365,7 +366,7 @@ lab_levels:
          - 331,21
          - 266,8
          - 388,1
-     beakers: 270.0
+     science: 270.0
      count: 120
 #
    - level: 10
@@ -373,7 +374,7 @@ lab_levels:
          - 331,24
          - 266,10
          - 388,2
-     beakers: 300.0
+     science: 300.0
      count: 132
 #
    - level: 11
@@ -381,7 +382,7 @@ lab_levels:
          - 331,27
          - 266,12
          - 388,3
-     beakers: 330.0
+     science: 330.0
      count: 144
 #
    - level: 12
@@ -389,7 +390,7 @@ lab_levels:
          - 331,30
          - 266,14
          - 388,4
-     beakers: 360.0
+     science: 360.0
      count: 156
 ##################### Farm Settings ##########################
 farm:
@@ -624,13 +625,13 @@ structures:
     max_hitpoints: 500
     ignore_floating: true
 #
-  - id: ti_fishing_boat
+  - id: ti_trade_boat
     itemId: 346
     itemData: 0
     position: 5
-    template: fishingboats
+    template: tradeboat
     template_y_shift: -3
-    displayName: Fishing Boat
+    displayName: Trade Boat
     require_tech: 'tech_trade'
     require_structure: 's_shipyard'
     onBuild_event: build_trade_outpost
@@ -739,7 +740,7 @@ structures:
     itemData: 0
     position: 12
     template: blacksmith
-    template_y_shift: -2
+    template_y_shift: 0
     displayName: Blacksmith
     require_tech: 'tech_blacksmithing'
     limit: 1
@@ -789,8 +790,8 @@ structures:
     itemId: 374
     itemData: 0
     position: 15
-    template: mine
-    template_y_shift: -6
+    template: lab
+    template_y_shift: 0
     displayName: Lab
     require_tech: 'tech_productivity'
     effect_event: process_lab
@@ -866,7 +867,7 @@ structures:
     itemData: 0
     position: 18
     template: farm
-    template_y_shift: -1
+    template_y_shift: -2
     displayName: Farm
     require_tech: 'tech_irrigation'
     onBuild_event: build_farm
@@ -987,7 +988,7 @@ structures:
     template: grocer
     template_y_shift: 0
     displayName: Grocer
-    require_tech: 'tech_irrigation'
+    require_tech: 'tech_commerce'
     limit: 1
     cost: 1000.0
     upkeep: 100.0
